@@ -1,7 +1,14 @@
-import React from "react";
-import "../designs/style.css"
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import "../designs/style.css";
+
 
 function HomePage() {
+  const [searchItem, setSearchItem] = useState('');
+
+  const performSearch = () => {
+    alert("Searching for: " + searchItem);
+  };
   return (
     <body>
       <section className="first-section">
@@ -22,7 +29,7 @@ function HomePage() {
                     Login
                   </a> */}
                 <a style={{ textDecoration: "none" }} href="./provider">
-                  Login
+                 <Link style={{textDecoration:"none"}} to="/ProviderSeeker">Login</Link> 
                 </a>
               </p>
             </div>
@@ -34,15 +41,12 @@ function HomePage() {
               <p>Find Mess Near Your University</p>
             </div>
             <div className="searchbox">
-              <input type="search" id="search" placeholder="Enter Location" />
-              <input type="submit" value="&rarr;" onclick="performSearch()" />
+              <input type="search" id="search" placeholder="Enter Location" value={searchItem} onChange={(e)=>setSearchItem(e.target.value)}/>
+              <input type="submit" value="&rarr;" onClick={performSearch} />
             </div>
-            {/* <script>
-          function performSearch() {
-            var searchItem = document.getElementById("search").value;
-            alert("Searching for: " + searchItem);
-          }
-        </script> */}
+           
+         
+        
           </div>
           <div className="image_container">
             <img src="/assets/home.png" alt="logo" />
