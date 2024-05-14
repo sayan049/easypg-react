@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@800&family=Montserrat:wght@400&family=Press+Start+2P&family=Urbanist:wght@600&family=Work+Sans:wght@800&display=swap');
+.last-section-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: none;
+    justify-content: space-around;
+    font-family: Montserrat;
+}
+
+li {
+    list-style: none;
+    margin-bottom: 15px;
+}
+
+.col1 {
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    flex-direction: column;
+
+}
+
+.footereasypg {
+    color: #2CA4B5;
+    font-family: 'Montserrat';
+    font-weight: bold;
+    font-size: large;
+}
+
+.col2 {
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    flex-direction: column;
+
+}
+
+.footer-text {
+    grid-column: span 4;
+    display: flex;
+    color: black;
+    font-size: 12px;
+    font-weight: 300;
+    justify-content: center;
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+.Easyp-pv-ltd {
+    font-weight: 700;
+    margin-left: 5px;
+}
+
+.first-item {
+    color: black;
+    font-weight: 700;
+}

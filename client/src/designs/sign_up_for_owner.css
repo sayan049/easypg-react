@@ -1,0 +1,339 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    font-family: Montserrat;
+}
+
+.formbody{
+    padding: 50px 140px; display: flex;
+}
+.uppernav {
+    height: 60px;
+    display: grid;
+    grid-template-columns: 17fr 2fr;
+}
+
+.signupheader {
+    color: #2CA4B5;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+    padding: 15px;
+}
+
+.headertext {
+    color: #000;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.logo {
+    font-size: 31px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+}
+
+.formheader {
+    color: #000;
+    font-size: 27px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+}
+
+.inputbox {
+    border-radius: 44px;
+    /* background: rgba(17, 110, 123, 0.10); */
+    /* width: 687px; */
+    height: 45px;
+    flex-shrink: 0;
+    margin-top: 30px;
+    display: flex;
+    margin-right: 3px;
+    align-items: center;
+}
+
+.inputbox input {
+    background: rgba(17, 110, 123, 0.10);
+    /* outline: none; */
+    border-radius: 44px;
+    /* background: transparent; */
+    height: 100%;
+    width: 100%;
+    border: none;
+    padding-left: 30px;
+    color: #000;
+    font-family: Montserrat;
+    font-size: medium;
+    font-style: normal;
+    /* font-weight: 600; */
+    line-height: normal;
+    outline-color: #2CA4B5;
+}
+
+.rightform {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.Ellipse3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.uploadtxt {
+    color: #000;
+
+    font-family: Montserrat;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    padding: 10px;
+}
+
+.checkfacilitytxt {
+    color: #2CA4B5;
+    font-family: Montserrat;
+    font-size: larger;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    margin: 9px;
+    padding: 8px;
+    border-radius: 44px;background: rgba(7, 75, 84, 0.10);
+}
+.checkboxes div{
+    display: flex;
+}
+
+/* .checkboxes div .checkbox {
+    border-radius: 7px;
+    width: 30px;
+    height: 30px;
+    border: 3px solid #2CA4B5;
+    background: rgba(217, 217, 217, 0.00);
+    margin: 9px;
+} */
+.checkboxtxt{
+    color: #000;
+font-family: Montserrat;
+font-size: larger;
+font-style: normal;
+font-weight: 200;
+margin: 15px;
+line-height: normal;
+}
+.checkboxicon{
+    width: 30px;
+    height: 30px;
+    margin: 15px;
+}
+.Ellipse3{
+    width: 232px; height: 218px; background: rgba(6.64, 74.65, 83.92, 0.10); border-radius: 9999px
+}
+
+/* Remove default checkbox */
+[type="checkbox"]:not(:checked),
+[type="checkbox"]:checked {
+  position: absolute;
+  left: -9999px;
+}
+[type="checkbox"]:not(:checked) + label,
+[type="checkbox"]:checked + label {  
+  position: relative;
+  /* overflow: hidden; */
+  padding-left: 35px;
+  cursor: pointer;
+  display: inline-block;
+  height:30px;
+  line-height: 25px;
+  margin: 15px;
+  border-radius: 7px;
+  -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+  -moz-user-select: none; /* mozilla browsers */
+  -khtml-user-select: none; /* webkit (konqueror) browsers */
+  -ms-user-select: none; /* IE10+ */
+}
+
+/* checkbox aspect */
+[type="checkbox"] + label:before,
+[type="checkbox"] + label:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  z-index: 1;
+
+  -webkit-transition: .2s;
+  transition: .2s;
+}
+/* Unchecked styles */
+[type="checkbox"]:not(:checked) + label:before {
+  top: 0px;
+  width: 30px; height: 30px;
+  border: 3px solid #2CA4B5;
+}
+[type="checkbox"]:not(:checked) + label:after {
+  top: 0px;
+  width: 30px; height: 30px;
+  border: 3px solid #2CA4B5;
+  z-index: 0;
+}
+/* Checked styles */
+[type="checkbox"]:checked + label:before {
+  top: 2px;
+  width: 10px; height: 24px;
+  border-top: 1px solid transparent;
+  border-left: 1px solid transparent;
+  border-right: 3px solid #2CA4B5;
+  border-bottom:3px solid #2CA4B5;
+  -webkit-transform: rotateZ(37deg);
+  transform: rotateZ(37deg);
+
+  -webkit-transform-origin: 20% 40%;
+  transform-origin: 100% 100%;
+}
+[type="checkbox"]:checked + label:after {
+  top: 0px;
+  width: 30px; height: 30px;
+  border: 3px solid #2CA4B5;
+  z-index: 0;
+}
+/* disabled checkbox */
+[type="checkbox"]:disabled:not(:checked) + label:before,
+[type="checkbox"]:disabled:checked + label:before {
+  top: 0;
+  box-shadow: none;
+  /* background-color: #444; */
+  width: 30px; height: 30px;
+  border: 3px solid #444;
+  -webkit-transform: rotateZ(0deg);
+  transform: rotateZ(0deg);
+}
+[type="checkbox"]:disabled + label {
+  /* color: #555; */
+}
+[type="checkbox"]:disabled:not(:checked) + label:hover:before {
+  /* border-color: red; */
+}
+.uploadphoto{
+    border-radius: 44px;
+border: 2px dashed #000;
+padding: 10px;
+background: rgba(7, 75, 84, 0.00);
+margin: 50px;
+}
+.uploadmesstxt{
+    color: #000;
+font-family: Montserrat;
+font-size: 24px;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+text-align: center;
+}
+.uploadphotowarning{
+    color: #534242;
+    font-family: Montserrat;
+    font-size: small;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+    text-align: center;
+}
+.termstxt{
+    color: #000;
+font-family: Montserrat;
+font-size: 24px;
+font-style: normal;
+font-weight: 600;
+line-height: normal;margin: 15px 4px;
+}
+.creataccountbtn{
+    border-radius: 17px;
+background: #2CA4B5;
+color: #F4F4F4;
+font-family: Montserrat;
+font-size: 24px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+width: 300px;
+height: 80px;
+margin: 60px;
+}
+
+#eyeicon{
+    height: 20px;
+    width: 20px;
+    object-fit: contain;
+    cursor: pointer;
+    /* height: 15px;
+    position: absolute;
+    margin-top: -30px;
+    /* margin-bottom: 19px; */
+    /* margin-left: 28.6rem;
+    margin-right: -2px;  */
+    position: relative;
+  right: 32px;
+}
+.upload__img-wrap{
+
+}
+
+.img-bg{
+    /* height: 300px;
+    width: 300px; */
+    /* background-color: antiquewhite; */
+    margin: 10px;
+    display: inline-block;
+    padding: 5px;
+    height: 240px;
+  width: 200px;
+}
+.upload__img-box{
+    display: inline-block;
+}
+.upload__img-close{
+    display: inline-block;
+}
+.img-bg1{
+    /* height: 240px; */
+  width: 200px; 
+    /* background-color: antiquewhite; */
+    margin: 10px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    /* background-color:bisque; */
+}
+.upload__img-close{
+    cursor: pointer;
+    position: relative;
+    bottom: 235px;
+    right: 43px;
+    /* background-image: url(); */
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    line-height: 24px;
+    z-index: 1;
+    text-align: center;
+    &:after {
+        content: '\2716';
+        font-size: 14px;
+        color: white;
+      }
+}
+.madarchod{
+    width: 200px;
+  text-align: center;
+}
