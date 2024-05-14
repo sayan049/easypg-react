@@ -1,0 +1,334 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@800&family=Montserrat:wght@500&family=Press+Start+2P&family=Urbanist:wght@600&family=Work+Sans:wght@800&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@700&family=Montserrat:wght@300;800&family=Press+Start+2P&family=Urbanist:wght@200&family=Work+Sans:wght@200&display=swap');
+*/
+html, 
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: Montserrat;
+}
+
+.main {
+    height: 100%;
+    width: 100%;
+    display: flex;
+
+}
+
+.content {
+    height: 100%;
+    width: 65%;
+    background: linear-gradient(123deg, rgba(9, 225, 255, 0.41) 0%, rgba(217, 217, 217, 0.00) 72.32%);
+}
+
+.loginTitle {
+    color: #2CA4B5;
+
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+    width: 105px;
+    height: 39px;
+    margin-top: 30px;
+    margin-left: 37px;
+
+
+}
+
+.findNearestMess {
+    height: 100%;
+    width: 35%;
+    background: rgba(44, 164, 181, 0.23);
+}
+
+.welcome {
+    width: 212px;
+    height: 78px;
+    margin-top: 35px;
+    margin-left: 37px;
+
+
+
+
+}
+
+.upper {
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.lower1 {
+    color: #2CA4B5;
+    font-family: Montserrat;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+}
+
+.lower2 {
+    color: #1B2093;
+    font-family: Montserrat;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+}
+
+.parentforum {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+     align-items: center; 
+
+}
+
+.mainforum {
+    display: flex;
+    /* height: 23em;
+    width: 42rem;
+    /* background-color: red; */
+    /* margin-top: 35px; */
+    flex-direction: column;
+    width: 45%;
+
+}
+
+.emailText {
+    margin-top: 30px;
+    height: 45px;
+    width: 100%;
+    border-radius: 44px;
+    flex-shrink: 0;
+    font-size: medium;
+    border: 3px solid #2CA4B5;
+    background: rgb(95 219 235 / 41%);
+    padding-left: 27px;
+    border: none;
+    outline-color: #2CA4B5;
+    
+    box-sizing: border-box;
+
+}
+.password-container{
+    width: 100%;
+}
+.formC {
+    height: 100%;
+}
+
+.passwordText {
+    margin-top: 35px;
+    height: 45px;
+    width: 30rem;
+    border-radius: 44px;
+    flex-shrink: 0;
+    width: 100%;
+    border: none;
+    outline-color: #2CA4B5;
+    background: rgba(7, 75, 84, 0.10);
+    padding-left: 27px;
+    font-size: medium;
+    box-sizing: border-box;
+}
+
+.loginSubmit {
+    color: #F4F4F4;
+    font-family: Montserrat;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-top: 35px;
+    height: 45px;
+    width: 100%;
+    border: 3px solid #2CA4B5;
+    border-radius: 44px;
+    flex-shrink: 0;
+    background: #2CA4B5;
+    cursor: pointer;
+}
+
+.or {
+    color: #000;
+
+    font-family: Montserrat;
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    text-align: center;
+}
+
+.signupGoogle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    height: 45px;
+    flex-shrink: 0;
+    border-radius: 44px;
+    background: rgba(17, 110, 123, 0.10);
+   
+}
+
+.parentSignupGoogle {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+
+}
+.googleimg{
+    height:55%;
+    /* margin-left: 27px; */
+  
+}
+.signupwithgoogleText{
+    color: rgba(0, 0, 0, 0.54);
+    font-family: Montserrat;
+    font-size: 17px;
+    font-style: normal;
+    /* width: 100%; */
+    line-height: normal;
+    margin-left: 10px;
+
+}
+.findNearestMess{
+    display: flex;
+    flex-direction: column;
+    width: 35%;
+}
+.parent-img{
+        /* width: 100%; */
+        height: 60%;
+        position: absolute;
+        right: 5%;
+}
+.parent-column{
+height: 65%;
+}
+.parent-elipse{
+    height: 35%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+}
+.col1{
+    width: 55px;
+    height: 410px;
+    flex-shrink: 0;
+    border-radius: 38px;
+    background: rgba(9, 225, 255, 0.41);
+    /* margin-top: 249px; */
+    margin-left: 45px;
+    /* position: relative; */
+    bottom: 0px;
+    position: absolute;
+    bottom: 0px;
+}
+.col2{
+    width: 55px;
+    height: 315px;
+    flex-shrink: 0;
+    border-radius: 38px;
+    background: rgba(16, 87, 96, 0.27);
+    /* margin-top: 350px; */
+    margin-left: 66px;
+    position: absolute;
+    margin-left: 135px;
+    bottom: 0px;
+}
+ .col3{
+    width: 55px;
+    height: 537px;
+    flex-shrink: 0;
+    border-radius: 38px;
+    background: rgba(44, 164, 181, 0.23);
+    position: absolute;
+    bottom: 0px;
+    /* margin-left: 430px; */
+    right: 30px;
+} 
+.ellipse{
+    height: 45%;
+    margin-top: 30px;
+    /* margin-left: 140px; */
+    right: 2%;
+    /* position: fixed; */
+    /* position: absolute; */
+    width: 100%;
+}
+.FindyourNearestMess{
+     width: 220px;
+    /* height: 137px; */
+    flex-shrink: 0;
+    font-family: Montserrat;
+    font-size: 45px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+    background: linear-gradient(121deg, #2CA4B5 2.49%, #006D7B 59.71%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /* position: absolute; */
+    /* margin-left: 140px; */
+    /* margin-top: 145px;*/
+}    
+#eye{
+    height: 15px;
+    position: absolute;
+    margin-top: 52px;
+    /* margin-bottom: 19px; */
+    margin-left: -3.4rem;
+    /* margin-right: -2px;*/
+}
+.parentnotAccount{
+    display: flex;
+    justify-content: center;
+}
+.notAccount{
+    color: rgba(0, 0, 0, 0.54);
+    font-size: 17px;
+}
+.whoareyou{
+    text-decoration: none;
+    text-decoration: none;
+    background: linear-gradient(121deg, #2CA4B5 2.49%, #006D7B 59.71%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+/* .popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    border-radius: 6px;
+   
+    left: 31%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  .popup-content {
+    text-align: center;
+  }
+  
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+  }
+   */

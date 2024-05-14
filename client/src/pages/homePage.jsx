@@ -1,21 +1,23 @@
 import React from "react";
+import "../designs/style.css"
+
 function HomePage() {
   return (
     <body>
-      <section class="first-section">
+      <section className="first-section">
         <header>
-          <div class="Container">
-            <div class="easypg">
-              Easy<span class="nunu">Pg</span>
+          <div className="Container">
+            <div className="easypg">
+              Easy<span className="nunu">Pg</span>
             </div>
-            <div class="mid_div">
-              <div class="home">Home</div>
-              <div class="about">About</div>
-              <div class="service">Service</div>
-              <div class="contact_us">Contact us</div>
+            <div className="mid_div">
+              <div className="home">Home</div>
+              <div className="about">About</div>
+              <div className="service">Service</div>
+              <div className="contact_us">Contact us</div>
             </div>
-            <div class="login-box">
-              <p class="login-text">
+            <div className="login-box">
+              <p className="login-text">
                 {/* <a style="text-decoration: none;" href="./provider">
                     Login
                   </a> */}
@@ -26,12 +28,12 @@ function HomePage() {
             </div>
           </div>
         </header>
-        <div class="body_container">
+        <div className="body_container">
           <div>
             <div>
               <p>Find Mess Near Your University</p>
             </div>
-            <div class="searchbox">
+            <div className="searchbox">
               <input type="search" id="search" placeholder="Enter Location" />
               <input type="submit" value="&rarr;" onclick="performSearch()" />
             </div>
@@ -42,35 +44,35 @@ function HomePage() {
           }
         </script> */}
           </div>
-          <div class="image_container">
+          <div className="image_container">
             <img src="/assets/home.png" alt="logo" />
           </div>
         </div>
       </section>
-      <section class="about-section">
-        <div class="about-us-container">
-          <div class="about-us-text">About us</div>
-          <div class="abouttt">
-            <div class="about-us">
+      <section className="about-section">
+        <div className="about-us-container">
+          <div className="about-us-text">About us</div>
+          <div className="abouttt">
+            <div className="about-us">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum
               enim similique aperiam aliquam incidunt sunt cupiditate nihil quo
               blanditiis doloribus, tempora harum, fugit consectetur dolorem
               asperiores? Modi libero perspiciatis magni?
             </div>
-            <div class="learn-more">Learn More &rarr;</div>
+            <div className="learn-more">Learn More &rarr;</div>
           </div>
-          <div class="about-image">
+          <div className="about-image">
             <img src="/assets/About_image.png" alt="idk" />
           </div>
         </div>
       </section>
 
-      <section class="last-section">
-        <div class="last-section-container">
-          <div class="col1">
+      <section className="last-section">
+        <div className="last-section-container">
+          <div className="col1">
             <ul>
-              <li class="footereasypg">
-                Easy <span class="nunu">Pg</span>
+              <li className="footereasypg">
+                Easy <span className="nunu">Pg</span>
               </li>
               <li>
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit.
@@ -80,9 +82,9 @@ function HomePage() {
               </li>
             </ul>
           </div>
-          <div class="col2">
+          <div className="col2">
             <ul>
-              <li class="first-item">Company</li>
+              <li className="first-item">Company</li>
               <li>Careers</li>
               <li>About Us</li>
               <li>For Partners</li>
@@ -91,23 +93,23 @@ function HomePage() {
               <li>Contact Us</li>
             </ul>
           </div>
-          <div class="col2">
+          <div className="col2">
             <ul>
-              <li class="first-item">SUPPORT</li>
+              <li className="first-item">SUPPORT</li>
               <li>FAQe</li>
               <li>Contact Us</li>
             </ul>
           </div>
-          <div class="col2">
+          <div className="col2">
             <ul>
-              <li class="first-item">QUICK LINK</li>
+              <li className="first-item">QUICK LINK</li>
               <li>Terms</li>
               <li>Privacy Policy</li>
             </ul>
           </div>
-          <div class="footer-text">
+          <div className="footer-text">
             copyright 2024 - All Right Reserved by{" "}
-            <span class="Easyp-pv-ltd">Easypg.pv.ltd</span>
+            <span className="Easyp-pv-ltd">Easypg.pv.ltd</span>
           </div>
         </div>
       </section>

@@ -1,0 +1,282 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    ;
+}
+
+#Main-container {
+    background: linear-gradient(123deg, rgba(9, 225, 255, 0.41) 0%, rgba(217, 217, 217, 0.00) 72.32%);
+    width: 100%;
+    height: 100vh;
+    flex-shrink: 0;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+}
+
+.form-container {
+    margin-top: 20px;
+    margin-left: 20px;
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 800;
+    color: #2CA4B5;
+}
+
+.form-container span {
+    color: #000;
+
+}
+
+.left-container {
+    display: flex;
+    height: 80%;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.right-container {
+    background: linear-gradient(172deg, #00ACC4 0%, rgba(9, 225, 255, 0.41) 58.65%);
+}
+
+.create-account-grid {
+    width: 500px;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: repeat(6, 70px);
+    align-items: center;
+}
+
+.CA {
+    display: block;
+    grid-column: span 2;
+    color: #000;
+    font-family: Montserrat;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+input[type="first-name"] {
+    height: 40px;
+    width: 80%;
+    border-radius: 44px;
+    outline-color: #2CA4B5;
+    border: none;
+    background: rgba(17, 110, 123, 0.10);
+    text-indent: 15px;
+    font-size: medium;
+}
+
+input[type="last-name"] {
+    width: 80%;
+    height: 40px;
+    border-radius: 44px;
+    background: rgba(17, 110, 123, 0.10);
+    outline-color: #2CA4B5;
+    border: none;
+    text-indent: 15px;
+    font-size: medium;
+}
+
+.email {
+    grid-column: span 2;
+}
+
+input[type="email"] {
+    width: 90%;
+    height: 40px;
+    border-radius: 44px;
+    background: rgba(17, 110, 123, 0.10);
+    outline-color: #2CA4B5;
+    border: none;
+    text-indent: 15px;
+    font-size: medium;
+}
+
+.address {
+    grid-column: span 2;
+}
+
+input[type="address"] {
+    width: 90%;
+    height: 40px;
+    border-radius: 44px;
+    background: rgba(17, 110, 123, 0.10);
+    outline-color: #2CA4B5;
+    border: none;
+    text-indent: 15px;
+    font-size: medium;
+}
+
+input[type="pin"] {
+    width: 80%;
+    height: 40px;
+    border-radius: 44px;
+    background: rgba(17, 110, 123, 0.10);
+    outline-color: #2CA4B5;
+    border: none;
+    text-indent: 15px;
+    font-size: medium;
+}
+
+.create-account {
+    border-radius: 44px;
+    background: #2CA4B5;
+    border: none;
+    height: 40px;
+    width: 80%;
+    text-align: center;
+    font-size: medium;
+    color: White;
+    font-weight: bold;
+}
+
+.pass-container {
+    height: 40px;
+    width: 80%;
+    border-radius: 44px;
+    border: 2px solid #2CA4B5;
+    outline: black;
+    background: rgba(17, 110, 123, 0.10);
+}
+
+.clicked-pass-container {}
+
+.pass {
+    display: flex;
+    align-items: center;
+}
+
+.pass img {
+    height: 20px;
+    width: 20px;
+    object-fit: contain;
+    cursor: pointer;
+}
+
+.pass input {
+    border-radius: 44px 0 0 44px;
+    outline: none;
+    border: none;
+    height: 40px;
+    width: 80%;
+    background: none;
+    text-indent: 15px;
+    font-size: medium;
+}
+
+input[type="text"] {
+    border-radius: 44px 0 0 44px;
+    outline: none;
+    border: none;
+    height: 40px;
+    width: 80%;
+    background: none;
+    text-indent: 15px;
+    font-size: medium;
+}
+
+.google-sign-up {
+    width: 80%;
+    height: 40px;
+    border-radius: 44px;
+    background: rgba(17, 110, 123, 0.10);
+    outline-color: #2CA4B5;
+    border: none;
+    display: flex;
+    gap: 5%;
+    align-items: center;
+    font-size: medium;
+    color: rgba(23, 23, 23, 0.544);
+    font-weight: 600;
+}
+
+.google-sign-up img {
+    height: 29px;
+    width: 29px;
+}
+
+
+
+.easy-pg {
+    display: flex;
+    gap: 5px;
+    margin-top: 20px;
+    margin-right: 20px;
+    justify-content: end;
+    color: #2CA4B5;
+    font-weight: 800;
+    font-size: large;
+}
+
+.easy-pg span {
+    color: #1B2093;
+    font-weight: 800;
+}
+
+.ellipse {
+    display: flex;
+    justify-content: center;
+    position: fixed;
+}
+
+.ellipse img {
+    height: 70%;
+    width: 50%;
+    margin-left: 50%;
+}
+
+.bottom-ellipse {
+    justify-content: start;
+    margin-top: 20px;
+}
+
+.bottom-ellipse img {
+    height: 25%;
+    width: 25%;
+    margin-left: 5%;
+}
+
+.mid-text {
+    width: 200px;
+    height: 137px;
+    position: relative;
+    top: 100px;
+    flex-shrink: 0;
+    background: linear-gradient(121deg, #2CA4B5 2.49%, #006D7B 59.71%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 30px;
+    font-weight: 800;
+    margin-left: 10%;
+}
+
+.login-button {
+    margin-top: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20%;
+}
+
+.login-button button {
+    border-radius: 44px;
+    background: #2CA4B5;
+    border: none;
+    height: 40px;
+    width: 180px;
+    text-align: center;
+    font-size: medium;
+    color: White;
+    font-weight: bold;
+}
+
+.try {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
