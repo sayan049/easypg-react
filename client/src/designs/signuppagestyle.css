@@ -28,7 +28,7 @@ body {
 
 }
 
-.left-container {
+.leftcontainer {
     display: flex;
     height: 80%;
     justify-content: center;
@@ -279,4 +279,8 @@ input[type="text"] {
     display: flex;
     flex-direction: column;
     position: relative;
+}
+
+.fs{
+    font-size: small;
 }

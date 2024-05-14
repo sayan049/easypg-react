@@ -1,5 +1,5 @@
 import React from "react";
-import "../designs/provider-seeker-page.css";
+import style from "../designs/provider-seeker-page.module.css";
 import "../designs/footerstyle.css";
 
 
@@ -7,8 +7,8 @@ function ProviderSeeker() {
     return(
         
         <body>
-    <div className="main-container">
-        <div className="left-container">
+    <div className={style.maincontainer}>
+        <div className={style.leftcontainer}>
             <h2>Sign Up</h2>
             <h3>Who are you ?</h3>
             <button id="seeker"> <a className="seekera" href="./loginUser">Mess Seeker</a></button>
