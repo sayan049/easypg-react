@@ -9,15 +9,17 @@ function SignUpForm() {
     const [address, setAddress] = useState('');
     const [password, setPassword] = useState('');
     const [pin, setPin] = useState('');
-    const [passwordShown, setPasswordShown] = useState(false);
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
 
     const togglePasswordVisibility = () => {
-        setPasswordShown(!passwordShown);
+        setIsPasswordVisible(!isPasswordVisible);
     };
+    
 
     return (
         <body>
-    <div id="Main-container">
+    <div id="Maincontainer">
         <div className="form-container">
             Sign Up <span className='fs'>User</span>
             <div className="leftcontainer">
@@ -36,10 +38,22 @@ function SignUpForm() {
                         <input type="address" id="address" placeholder="Enter Your Address" value={address} onChange={(e)=>setAddress(e.target.value)}/>
                     </div>
                     <div className="pass-container">
-                        <div className="pass">
-                            <input type="password" name="password" id="password" placeholder="Password" value={password} onChange={(e)=>setPassword(e.target.value)}/>
-                            <img src="./assets/closeEye.png" alt="closeEye" id="eyeicon" onClick={togglePasswordVisibility}/>
-                        </div>
+                          <div className="pass">
+                          <input type={isPasswordVisible ? "text" : "password"}
+                                 name="password"
+                                 id="password"
+                                 placeholder="Password"
+                                 value={password}
+                                 onChange={(e) => setPassword(e.target.value)}
+                                />
+                         <img
+                                 src={isPasswordVisible ? "./assets/openEye.png" : "./assets/closeEye.png"}
+                                 alt={isPasswordVisible ? "openEye" : "closeEye"}
+                                 onClick={togglePasswordVisibility}
+                                 style={{ cursor: 'pointer' }}
+                                 />
+
+        </div>
                     </div>
 
                     <div className="pin">
@@ -54,7 +68,7 @@ function SignUpForm() {
             </div>
 
         </div>
-        <div className="right-container">
+        <div className="rightcontainer">
             <div className="easy-pg">
                 Easy <span>Pg</span>
             </div>
