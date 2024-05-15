@@ -7,7 +7,8 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import ProviderSeeker from './pages/ProviderSeeker';
 import SignUpForm from './pages/signupUser';
 import LoginUser from './pages/loginUser'
-import LandingPage from "./landingPage";
+import LandingPage from "./pages/landingPage";
+import LoginOwner from "./pages/LoginOwner";
 
 
 const router = createBrowserRouter([
@@ -30,7 +31,12 @@ const router = createBrowserRouter([
   {
     path:"/LandingPage",
     element:<LandingPage/>
+  },
+  {
+    path:"/LoginOwner",
+    element:<LoginOwner/>
   }
+  
 
 ])
 
