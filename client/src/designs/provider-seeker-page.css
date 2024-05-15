@@ -9,12 +9,12 @@ body {
     color: #1B2093;
 }
 
-.maincontainer {
+.main-container {
     display: grid;
     grid-template-columns: 2.5fr 1.5fr;
 }
 
-.leftcontainer {
+.left-container {
     display: flex;
     flex-direction: column;
     background: linear-gradient(123deg, rgba(9, 225, 255, 0.41) 0%, rgba(217, 217, 217, 0.00) 72.32%);
