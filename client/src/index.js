@@ -6,6 +6,8 @@ import reportWebVitals from './reportWebVitals';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import ProviderSeeker from './pages/ProviderSeeker';
 import SignUpForm from './pages/signupUser';
+import LoginUser from './pages/loginUser'
+
 
 const router = createBrowserRouter([
   {
@@ -19,7 +21,12 @@ const router = createBrowserRouter([
   {
     path: "/signupforuser",
     element:<SignUpForm/>
+  },
+  {
+    path:"/LoginUser",
+    element:<LoginUser/>
   }
+
 ])
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
