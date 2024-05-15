@@ -85,7 +85,7 @@ input[type="last-name"] {
     grid-column: span 2;
 }
 
-input[type="email"] {
+.email input[type="email"] {
     width: 90%;
     height: 40px;
     border-radius: 44px;
