@@ -168,7 +168,7 @@ input[type="pin"] {
     font-size: medium;
 }
 
-input[type="text"] {
+/* input[type="text"] {
     border-radius: 44px 0 0 44px;
     outline: none;
     border: none;
@@ -177,7 +177,7 @@ input[type="text"] {
     background: none;
     text-indent: 15px;
     font-size: medium;
-}
+} */
 
 .google-sign-up {
     width: 80%;

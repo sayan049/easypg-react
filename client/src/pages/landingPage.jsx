@@ -1,9 +1,10 @@
 import React from 'react'
+import '../designs/landing-page.css'
 
 function landingPage() {
   return (
     
-    <body>
+    <body className='bodyx' >
    
     <div className="r1">
          <div className="col-m"></div>
@@ -35,11 +36,11 @@ function landingPage() {
             </div>
             <div className="main-picture">
                <div className="first">
-                <div className="picture"><img src="young-handsome-business-man-with-laptop-office 1.png" alt="" srcset=""/></div>
+                <div className="picture"><img src="./assets/young-handsome-business-man-with-laptop-office 1.png" alt="" srcset=""/></div>
                 <div className="text1">
                     <div className="weight title-text1">Sign Up Process</div><div className="text-left">Click the Join us button for signing up in 30 seconds</div></div></div>
                <div className="first">
-                <div className="picture"><img src="portrait-young-indian-top-manager-t-shirt-tie-crossed-arms-smiling-white-isolated-wall 1.png" alt="" srcset=""/></div>
+                <div className="picture"><img src="./assets/portrait-young-indian-top-manager-t-shirt-tie-crossed-arms-smiling-white-isolated-wall 1.png" alt="" srcset=""/></div>
                <div className="text1">
                     <div className="weight title-text1">Privacy Policy</div><div className="text-left">Read the privacy policy terms for better understanding</div>
                </div></div>
@@ -58,11 +59,11 @@ function landingPage() {
             </div>
             <div className="main-picture">
                 <div className="first new-border">
-                 <div className="picture"><img src="businessman-black-suit-makes-thumbs-up 1.png" alt="" srcset=""/></div>
+                 <div className="picture"><img src="/assets/businessman-black-suit-makes-thumbs-up 1.png" alt="" srcset=""/></div>
                  <div className="text1">
                      <div className="weight title-text1">Sign Up Process</div><div className="text-left">Click the Join us button for signing up in 30 seconds</div></div></div>
                 <div className="first new-border">
-                 <div className="picture"><img src="outdoor-businessman-having-his-arms-crossed (1) 1.png" alt="" srcset=""/></div>
+                 <div className="picture"><img src="/assets/outdoor-businessman-having-his-arms-crossed (1) 1.png" alt="" srcset=""/></div>
                 <div className="text1">
                      <div className="weight title-text1">Privacy Policy</div><div className="text-left">Read the privacy policy terms for better understanding</div>
                 </div></div>
