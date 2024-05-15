@@ -4,7 +4,7 @@ html,
 body {
     margin: 0;
     padding: 0;
-    height: 100%;
+    height: 100vh;
     width: 100%;
     font-family: Montserrat;
 
@@ -18,12 +18,12 @@ body {
 
 }
 
-.col0 {
+.col0O {
     width: 2%;
     background: rgb(22 195 220 / 15%);
 }
 
-.col1 {
+.col1O {
     height: 100%;
     width: 20%;
     min-width: 20%;
@@ -37,7 +37,7 @@ body {
     background: rgb(22 195 220 / 15%);
 }
 
-.col2 {
+.col2O {
     height: 90%;
     width: 100%;
     display: flex;
@@ -45,7 +45,7 @@ body {
     
 }
 
-.col3 {
+.col3O {
     height: 100%;
     width: 35%;
     background: linear-gradient(180deg, #2CA4B5 0%, rgba(44, 164, 181, 0.00) 100%);

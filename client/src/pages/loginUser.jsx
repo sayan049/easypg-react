@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Link } from "react-router-dom";
 import "../designs/loginForUser.css";
 import "../designs/util.css"
 
+
 function LoginUser() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+
+    const togglePasswordVisibility = () => {
+        setIsPasswordVisible(!isPasswordVisible);
+    };
     return (
+
 
         <body id="container">
             <div className="main">
@@ -15,11 +26,11 @@ function LoginUser() {
                     <form className="formC" action="" method="post">
                         <div className="parentforum">
                             <div className="mainforum">
-                                <input className="emailText" type="text" name="email" placeholder="Email" autocomplete="off" />
+                                <input className="emailText" type="text" name="email" placeholder="Email" autocomplete="off" value={email} onChange={(e) => setEmail(e.target.value)} />
                                 <div className="password-container">
-                                    <input type="password" id="password" name="password" className="passwordText" placeholder="Password" autocomplete="off" />
+                                    <input type={isPasswordVisible ? "text" : "password"} id="password" name="password" className="passwordText" placeholder="Password" autocomplete="off" value={password} onChange={(e) => setPassword(e.target.value)} />
 
-                                    <img id="eye" src="closeEye.png" alt="Eye Icon" onclick="togglePassword()" />
+                                    <img id="eye" src={isPasswordVisible ? "./assets/openEye.png" : "./assets/closeEye.png"} alt={isPasswordVisible ? "openEye" : "closeEye"} onClick={togglePasswordVisibility} style={{ cursor: 'pointer' }} />
 
                                 </div>
                                 <button className="loginSubmit" type="submit">Log in</button>
@@ -27,12 +38,12 @@ function LoginUser() {
                                 <div className="or">Or</div>
                                 <br />
                                 <div className="parentSignupGoogle">
-                                    <div className="signupGoogle"><img className="googleimg" src="google.png" alt="" srcset="" />
+                                    <div className="signupGoogle"><img className="googleimg" src="../assets/google.png" alt="" srcset="" />
                                         <div className="signupwithgoogleText">Sign up with Google Account</div>
                                     </div>
                                 </div>
                                 <br />
-                                <div className="parentnotAccount"> <div className="notAccount">Don't have any EasyPg account?<a className="whoareyou" id="signupLink" href="./signupUser"> Sign Up</a> </div></div>
+                                <div className="parentnotAccount"> <div className="notAccount">Don't have any EasyPg account?<a className="whoareyou" id="signupLink" href="./signupforuser"><Link style={{textDecoration:"none"}} to="/signupforuser">Sign Up</Link> </a> </div></div>
 
 
                             </div>
@@ -45,7 +56,7 @@ function LoginUser() {
                 </div>
                 <div className="findNearestMess">
                     <div className="parent-img">
-                        <img className="ellipseeep" src="Ellipse.png" alt="" srcset="" />
+                        <img className="ellipseeep" src="../assets/Ellipse.png" alt="" srcset="" />
                     </div>
                     <div className="parent-elipse">
                         <div className="FindyourNearestMess">Find your
@@ -61,7 +72,7 @@ function LoginUser() {
 
 
 
-                </div>
+            </div>
         </body>
 
     )
