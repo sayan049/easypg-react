@@ -1,9 +1,13 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../designs/style.css";
 
 
 function HomePage() {
+  useEffect(() => {
+    document.title = "Home";
+  }, []); 
   const [searchItem, setSearchItem] = useState('');
 
   const performSearch = () => {
@@ -25,10 +29,10 @@ function HomePage() {
             </div>
             <div className="login-box">
               <p className="login-text">
-                {/* <a style="text-decoration: none;" href="./provider">
+                {/* <a style={{ textDecoration: "none" }} href="./ProviderSeeker">
                     Login
                   </a> */}
-                <a style={{ textDecoration: "none" }} href="./provider">
+                <a style={{ textDecoration: "none" }} href="./ProviderSeeker">
                  <Link style={{textDecoration:"none"}} to="/ProviderSeeker">Login</Link> 
                 </a>
               </p>
