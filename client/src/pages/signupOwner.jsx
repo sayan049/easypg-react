@@ -132,36 +132,36 @@ function SignupOwner() {
     <div className="checkboxes grid checkboxgrid" >
 
     <div >
-        <div className="checkboxicon"><img src="./assets/air-conditioner 1.png" alt="" srcset=""/></div><input type="checkbox" id="test1" />
+        <div className="checkboxicon"><img src="./assets/air-conditioner 1.png" alt="" srcset=""/></div><input type="checkbox" className="checki" id="test1" />
         <label for="test1"></label><div className="checkboxtxt">A/C</div>
     </div>
     <div >
-        <div className="checkboxicon"><img src="./assets/screen 1.png" alt="" srcset=""/></div><input type="checkbox" id="test2" 
-        checked="checked"/>
+        <div className="checkboxicon"><img src="./assets/screen 1.png" alt="" srcset=""/></div><input type="checkbox" className="checki" id="test2" 
+        />
         <label for="test2"></label><div className="checkboxtxt">TV</div>
 </div>
     <div >
-        <div className="checkboxicon"><img src="./assets/power 1.png" alt="" srcset=""/></div><input type="checkbox" id="test3" />
+        <div className="checkboxicon"><img src="./assets/power 1.png" alt="" srcset=""/></div><input type="checkbox" className="checki" id="test3" />
         <label for="test3"></label><div className="checkboxtxt">Power Backup</div>
     </div>
     <div >
-        <div className="checkboxicon"><img src="./assets/wifi (1) 1.png" alt="" srcset=""/></div><input type="checkbox" id="test4" />
+        <div className="checkboxicon"><img src="./assets/wifi (1) 1.png" alt="" srcset=""/></div><input type="checkbox" className="checki" id="test4" />
         <label for="test4"></label><div className="checkboxtxt">Wi-fi</div>
     </div>
     <div >
-        <div className="checkboxicon"><img src="./assets/restaurant 1.png" alt="" srcset=""/></div><input type="checkbox" id="test5" />
+        <div className="checkboxicon"><img src="./assets/restaurant 1.png" alt="" srcset=""/></div><input type="checkbox" className="checki" id="test5" />
         <label for="test5"></label><div className="checkboxtxt">Kitchen</div>
     </div>
     <div >
-        <div className="checkboxicon"><img src="./assets/tank-water 1.png" alt="" srcset=""/></div><input type="checkbox" id="test6" />
+        <div className="checkboxicon"><img src="./assets/tank-water 1.png" alt="" srcset=""/></div><input type="checkbox" className="checki" id="test6" />
         <label for="test6"></label><div className="checkboxtxt">Water Available Anytime</div>
     </div>
     <div >
-        <div className="checkboxicon"><img src="./assets/single-bed (1) 1.png" alt="" srcset=""/></div><input type="checkbox" id="test7" />
+        <div className="checkboxicon"><img src="./assets/single-bed (1) 1.png" alt="" srcset=""/></div><input type="checkbox" className="checki" id="test7" />
         <label for="test7"></label><div className="checkboxtxt">Double Bed</div>
     </div>
     <div >
-        <div className="checkboxicon"><img src="./assets/single-bed 1.png" alt="" srcset=""/></div><input type="checkbox" id="test8" />
+        <div className="checkboxicon"><img src="./assets/single-bed 1.png" alt="" srcset=""/></div><input type="checkbox" className="checki" id="test8" />
         <label for="test8"></label><div className="checkboxtxt">Single Bed</div>
     </div>
 </div>
@@ -209,7 +209,7 @@ function SignupOwner() {
 </div>
 
 <div className="terms flex justifycentre" >
-    <input type="checkbox" id="test9" />
+    <input type="checkbox" className="checki" id="test9" />
     <label  for="test9"></label>
     <div className="termstxt">Check all </div><div className="termstxt blue" >Trems & Condition </div><div className="termstxt">and Privacy</div>
     <div className="termstxt blue" >Policy</div>

@@ -142,13 +142,13 @@ line-height: normal;
 }
 
 /* Remove default checkbox */
-[type="checkbox"]:not(:checked),
-[type="checkbox"]:checked {
+.checki:not(:checked),
+.checki:checked {
   position: absolute;
   left: -9999px;
 }
-[type="checkbox"]:not(:checked) + label,
-[type="checkbox"]:checked + label {  
+.checki:not(:checked) + label,
+.checki:checked + label {  
   position: relative;
   /* overflow: hidden; */
   padding-left: 35px;
@@ -165,8 +165,8 @@ line-height: normal;
 }
 
 /* checkbox aspect */
-[type="checkbox"] + label:before,
-[type="checkbox"] + label:after {
+.checki + label:before,
+.checki + label:after {
   content: '';
   position: absolute;
   left: 0;
@@ -176,19 +176,19 @@ line-height: normal;
   transition: .2s;
 }
 /* Unchecked styles */
-[type="checkbox"]:not(:checked) + label:before {
+.checki:not(:checked) + label:before {
   top: 0px;
   width: 30px; height: 30px;
   border: 3px solid #2CA4B5;
 }
-[type="checkbox"]:not(:checked) + label:after {
+.checki:not(:checked) + label:after {
   top: 0px;
   width: 30px; height: 30px;
   border: 3px solid #2CA4B5;
   z-index: 0;
 }
 /* Checked styles */
-[type="checkbox"]:checked + label:before {
+.checki:checked + label:before {
   top: 2px;
   width: 10px; height: 24px;
   border-top: 1px solid transparent;
@@ -201,15 +201,15 @@ line-height: normal;
   -webkit-transform-origin: 20% 40%;
   transform-origin: 100% 100%;
 }
-[type="checkbox"]:checked + label:after {
+.checki:checked + label:after {
   top: 0px;
   width: 30px; height: 30px;
   border: 3px solid #2CA4B5;
   z-index: 0;
 }
 /* disabled checkbox */
-[type="checkbox"]:disabled:not(:checked) + label:before,
-[type="checkbox"]:disabled:checked + label:before {
+.checki:disabled:not(:checked) + label:before,
+.checki:disabled:checked + label:before {
   top: 0;
   box-shadow: none;
   width: 30px; height: 30px;
@@ -217,10 +217,10 @@ line-height: normal;
   -webkit-transform: rotateZ(0deg);
   transform: rotateZ(0deg);
 }
-[type="checkbox"]:disabled + label {
+.checki:disabled + label {
 
 }
-[type="checkbox"]:disabled:not(:checked) + label:hover:before {
+.checki:disabled:not(:checked) + label:hover:before {
 
 }
 .uploadphoto{
