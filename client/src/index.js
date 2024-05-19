@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import ProviderSeeker from './pages/ProviderSeeker';
-import SignUpForm from './pages/signupUser';
+import SignUpUser from './pages/signupUser';
 import LoginUser from './pages/loginUser'
 import LandingPage from "./pages/landingPage";
 import LoginOwner from "./pages/LoginOwner";
@@ -23,7 +23,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/signupforuser",
-    element:<SignUpForm/>
+    element:<SignUpUser/>
   },
   {
     path:"/LoginUser",

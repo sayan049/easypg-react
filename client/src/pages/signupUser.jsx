@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
+import {Link} from 'react-router-dom';
 import '../designs/signuppagestyle.css';
+import { useEffect } from 'react';
 
 
 function SignUpForm() {
+    useEffect(()=>{
+        document.title="Student signup";
+    },[]);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -82,7 +87,7 @@ function SignUpForm() {
             </div>
 
             <div className="login-button">
-                <button>Log In</button>
+                <button><Link style={{textDecoration:"none",color:"white"}} to="/LoginUser">Log In</Link></button>
             </div>
             <div className="bottom-ellipse">
                 <img src="./assets/bottom-ellipse.png" alt="bottom-ellipse"/>

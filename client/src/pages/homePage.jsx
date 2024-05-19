@@ -6,7 +6,7 @@ import "../designs/style.css";
 
 function HomePage() {
   useEffect(() => {
-    document.title = "Home";
+    document.title = "Find your nearest paying guest";
   }, []); 
   const [searchItem, setSearchItem] = useState('');
 
@@ -33,7 +33,7 @@ function HomePage() {
                     Login
                   </a> */}
                 <a style={{ textDecoration: "none" }} href="./ProviderSeeker">
-                 <Link style={{textDecoration:"none"}} to="/ProviderSeeker">Login</Link> 
+                 <Link style={{textDecoration:"none",color:"white",fontSize:"13px"}} to="/ProviderSeeker">Login</Link> 
                 </a>
               </p>
             </div>
