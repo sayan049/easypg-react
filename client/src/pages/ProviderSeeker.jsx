@@ -1,19 +1,24 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import {useEffect} from 'react';
 import "../designs/provider-seeker-page.css";
 import "../designs/footerstyle.css";
 
 
 function ProviderSeeker() {
+    useEffect(() => {
+        document.title = "Choose your role";
+      }, []); 
     return(
+        
         
         <body>
     <div className="main-container">
         <div className="left-container">
             <h2>Sign Up</h2>
             <h3>Who are you ?</h3>
-            <button id="seeker"> <a className="seekera" href="./loginUser">  <Link style={{textDecoration:"none",color:"white"}} to="/LoginUser">Mess Seeker</Link></a></button>
-            <button id="provider"> <a className="seekera p" href="./landing-page">Mess Owner</a></button>
+            <button id="seeker"> <a className="seekera" href="./LoginUser">  <Link style={{textDecoration:"none",color:"white"}} to="/LoginUser">Mess Seeker</Link></a></button>
+            <button id="provider"> <a className="seekera p" href="./LandingPage"><Link style={{textDecoration:"none",color:"#2CA4B5"}} to="/LandingPage">Mess Owner</Link></a></button>
         </div>
         <div className="right-container">
             <img src="./assets/house-design.png" alt="sweet-home"/>

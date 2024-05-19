@@ -1,10 +1,14 @@
 import React,{useState} from 'react';
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 
 import "../designs/loginForMessOwner.css"
 
 
 function LoginOwner() {
+  useEffect(()=>{
+    document.title="Pg owner login"
+},[]);
   const [email,setEmail]=useState('');
   const [password,setPassword]=useState('');
   const [isPasswordVisible,setIsPasswordVisible]=useState(false);

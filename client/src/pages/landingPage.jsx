@@ -1,7 +1,12 @@
-import React from 'react'
+import React from 'react';
+import {Link} from 'react-router-dom';
+import { useEffect } from 'react';
 import '../designs/landing-page.css'
 
-function landingPage() {
+function LandingPage() {
+  useEffect(()=>{
+    document.title="Our promises to grow your business fast";
+  },[]);
   return (
     
     <body className='bodyx' >
@@ -17,7 +22,7 @@ function landingPage() {
                     <div className="weight line-2">has became even easier,</div>
                     <div className="line-3">Only for you.</div>
                     <div className="brand"><span className="font easy">Easy</span><span className="font easy-2">Pg</span></div>
-                    <button type="button" className="join"><a className="log-mess" href="loginMessOwner">Join Us Today</a></button>
+                    <button type="button" className="join"><a className="log-mess" href="./LoginOwner"><Link style={{textDecoration:"none",color:"white"}} to="/LoginOwner" >Join Us Today</Link></a></button>
                 </div>
 
             </div>
@@ -136,4 +141,4 @@ function landingPage() {
   )
 }
 
-export default landingPage
+export default LandingPage

@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
+import { useEffect } from 'react';
 import "../designs/loginForUser.css";
 import "../designs/util.css"
 
 
 function LoginUser() {
+    useEffect(()=>{
+        document.title="Student login";
+    },[]);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
