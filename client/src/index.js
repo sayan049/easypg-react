@@ -9,6 +9,7 @@ import SignUpForm from './pages/signupUser';
 import LoginUser from './pages/loginUser'
 import LandingPage from "./pages/landingPage";
 import LoginOwner from "./pages/LoginOwner";
+import SignupOwner from './pages/signupOwner';
 
 
 const router = createBrowserRouter([
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
   {
     path:"/LoginOwner",
     element:<LoginOwner/>
+  },
+  {
+    path:"/signupowner",
+    element:<SignupOwner/>
   }
   
 
