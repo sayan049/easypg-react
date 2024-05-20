@@ -1,8 +1,8 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@800&family=Montserrat:wght@500&family=Press+Start+2P&family=Urbanist:wght@600&family=Work+Sans:wght@800&display=swap');
+
 /* @import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@700&family=Montserrat:wght@300;800&family=Press+Start+2P&family=Urbanist:wght@200&family=Work+Sans:wght@200&display=swap');
 */
-html, 
+html,
 body {
     margin: 0;
     padding: 0;
@@ -17,7 +17,8 @@ body {
     display: flex;
 
 }
-.hh{
+
+.hh {
     position: absolute;
 }
 
@@ -87,7 +88,7 @@ body {
     width: 100%;
     display: flex;
     justify-content: center;
-     align-items: center; 
+    align-items: center;
 
 }
 
@@ -114,13 +115,15 @@ body {
     padding-left: 27px;
     border: none;
     outline-color: #2CA4B5;
-    
+
     box-sizing: border-box;
 
 }
-.password-container{
+
+.password-container {
     width: 100%;
 }
+
 .formC {
     height: 100%;
 }
@@ -177,7 +180,7 @@ body {
     flex-shrink: 0;
     border-radius: 44px;
     background: rgba(17, 110, 123, 0.10);
-   
+
 }
 
 .parentSignupGoogle {
@@ -187,12 +190,14 @@ body {
     text-align: center;
 
 }
-.googleimg{
-    height:55%;
+
+.googleimg {
+    height: 55%;
     /* margin-left: 27px; */
-  
+
 }
-.signupwithgoogleText{
+
+.signupwithgoogleText {
     color: rgba(0, 0, 0, 0.54);
     font-family: Montserrat;
     font-size: 17px;
@@ -202,28 +207,33 @@ body {
     margin-left: 10px;
 
 }
-.findNearestMess{
+
+.findNearestMess {
     display: flex;
     flex-direction: column;
     width: 35%;
 }
-.parent-img{
-        /* width: 100%; */
-        height: 60%;
-        position: absolute;
-        right: 5%;
+
+.parent-img {
+    /* width: 100%; */
+    height: 60%;
+    position: absolute;
+    right: 5%;
 }
-.parent-column{
-height: 65%;
+
+.parent-column {
+    height: 65%;
 }
-.parent-elipse{
+
+.parent-elipse {
     height: 35%;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 80%;
 }
-.col1L{
+
+.col1L {
     width: 55px;
     height: 410px;
     flex-shrink: 0;
@@ -236,7 +246,8 @@ height: 65%;
     position: absolute;
     bottom: 0px;
 }
-.col2L{
+
+.col2L {
     width: 55px;
     height: 315px;
     flex-shrink: 0;
@@ -248,7 +259,8 @@ height: 65%;
     margin-left: 135px;
     bottom: 0px;
 }
- .col3L{
+
+.col3L {
     width: 55px;
     height: 537px;
     flex-shrink: 0;
@@ -258,8 +270,9 @@ height: 65%;
     bottom: 0px;
     /* margin-left: 430px; */
     right: 30px;
-} 
-.ellipseeep{
+}
+
+.ellipseeep {
     height: 45%;
     margin-top: 30px;
     /* margin-left: 140px; */
@@ -268,8 +281,9 @@ height: 65%;
     /* position: absolute; */
     width: 100%;
 }
-.FindyourNearestMess{
-     width: 220px;
+
+.FindyourNearestMess {
+    width: 220px;
     /* height: 137px; */
     flex-shrink: 0;
     font-family: Montserrat;
@@ -278,14 +292,15 @@ height: 65%;
     font-weight: 800;
     line-height: normal;
     background: linear-gradient(121deg, #2CA4B5 2.49%, #006D7B 59.71%);
-    background-clip: text;
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     /* position: absolute; */
     /* margin-left: 140px; */
     /* margin-top: 145px;*/
-}    
-#eye{
+}
+
+#eye {
     height: 15px;
     position: absolute;
     margin-top: 52px;
@@ -293,21 +308,25 @@ height: 65%;
     margin-left: -3.4rem;
     /* margin-right: -2px;*/
 }
-.parentnotAccount{
+
+.parentnotAccount {
     display: flex;
     justify-content: center;
 }
-.notAccount{
+
+.notAccount {
     color: rgba(0, 0, 0, 0.54);
     font-size: 17px;
 }
-.whoareyou{
+
+.whoareyou {
     text-decoration: none;
     text-decoration: none;
     background: linear-gradient(121deg, #2CA4B5 2.49%, #006D7B 59.71%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+
 /* .popup {
     display: none;
     position: fixed;
