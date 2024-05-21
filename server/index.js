@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const authRouts = require('./routes/auth');
 
 const MONGODB_URI =
-    'mongodb+srv://tanmoysarkar:TanmoY@learningbackend.henbli8.mongodb.net/?retryWrites=true&w=majority&appName=LearningBackend';
+    'mongodb+srv://easypg:SitOnMyFace@cluster0.j3zo3x9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
 const app = express();
 app.use(cors())
