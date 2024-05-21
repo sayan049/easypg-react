@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 
 function SignupOwner() {
     useEffect(()=>{
-        document.title="asdasd"
+        document.title="sign up for owner"
     })
     const [image,setimage]=useState('');
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);

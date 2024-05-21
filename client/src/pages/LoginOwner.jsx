@@ -51,7 +51,7 @@ function LoginOwner() {
               <div className="forgot">Forget Password?</div>
             </div>
             <button className="pad log-text" type="submit">Log in</button>
-            <div className="Parent-not"><span>Don't have any EasyPg account? </span><a className="under" href="signupMessOwner"><Link style={{textDecoration:"none"}} to="/">Sign Up</Link></a></div>
+            <div className="Parent-not"><span>Don't have any EasyPg account? </span><a className="under" href="signupMessOwner"><Link style={{textDecoration:"none"}} to="/signupOwner">Sign Up</Link></a></div>
             <div className="parent-google"><img src="../assets/google.png" alt=""/>
               <div className="logGoogle-text">Log in with Google</div>
             </div>
