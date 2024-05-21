@@ -1,4 +1,5 @@
 const User = require('../modules/user');
+const PgOwner = require('../modules/pgProvider');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
 
@@ -37,3 +38,20 @@ exports.loginHandler = async (req, res) => {
         res.status(500).send('Failed to login');
     }
 };
+
+exports.signupHandlerOwner = async (req, res) => {
+    const email = req.body.email;
+    const existingUser = await PgOwner.findOne({ email: email });
+    if (existingUser) {
+        return console.log(`${email} already used`)
+    }
+    try {
+        const profilePhoto = req.files.profilePhoto ? req.files.profilePhoto[0].path : null;
+        const messPhotos = req.files.messPhotos ? req.files.messPhotos.map(file => file.path) : [];
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        const newUser = await PgOwner.create({ ...req.body, password: hashedPassword, profilePhoto: profilePhoto, messPhotos: messPhotos });
+        res.status(201).json(newUser);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
