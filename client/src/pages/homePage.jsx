@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../designs/style.css";
 
 
 function HomePage() {
+  const navigate = useNavigate();
   useEffect(() => {
     document.title = "Find your nearest paying guest";
   }, []); 
@@ -12,6 +13,7 @@ function HomePage() {
 
   const performSearch = () => {
     alert("Searching for: " + searchItem);
+    navigate('/messFind');
   };
   return (
     <body>
@@ -46,7 +48,8 @@ function HomePage() {
             </div>
             <div className="searchbox">
               <input type="search" id="search" placeholder="Enter Location" value={searchItem} onChange={(e)=>setSearchItem(e.target.value)}/>
-              <input type="submit" value="&rarr;" onClick={performSearch} />
+              <input type="submit" value="&rarr;" onClick={performSearch} 
+               />   <Link style={{textDecoration:"none",color:"white",fontSize:"13px"}} to="/MessFind">Login</Link>
             </div>
            
          

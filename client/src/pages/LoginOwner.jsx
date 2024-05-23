@@ -45,7 +45,7 @@ function LoginOwner() {
             <img id="ey" src={isPasswordVisible ? "../assets/openEye.png" : "../assets/closeEye.png"}alt={isPasswordVisible ? "../assets/openEye.png" : "../assets/closeEye.png"}  onClick={togglePassword} style={{ cursor: 'pointer' }} /></div>
   
             <div className="parent-mid">
-              <div className="parent-check"><input type="checkbox" name="check" id="c"/>
+              <div className="parent-check"><input type="checkbox" className='checkcheck' name="check" id="c"/>
                 <label for="c" className="chk"></label>
                 <span>Remember Me</span> </div>
               <div className="forgot">Forget Password?</div>

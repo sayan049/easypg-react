@@ -1,0 +1,11 @@
+.justifyspace{
+    justify-content: space-between;}
+.displaynone{
+    display: none;
+}
+.aligncentre{
+    align-items: center;
+}
+.inlineblock{
+    display: inline-block;
+}
