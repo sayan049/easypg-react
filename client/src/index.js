@@ -10,6 +10,7 @@ import LoginUser from './pages/loginUser'
 import LandingPage from "./pages/landingPage";
 import LoginOwner from "./pages/LoginOwner";
 import SignupOwner from './pages/signupOwner';
+import MessFind from './pages/messFind';
 
 
 const router = createBrowserRouter([
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
   {
     path:"/signupowner",
     element:<SignupOwner/>
+  },
+  {
+    path:"/MessFind",
+    element:<MessFind/>
   }
   
 
