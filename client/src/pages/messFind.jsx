@@ -6,6 +6,9 @@ import Box from '@mui/material/Box';
 import { useState } from "react";
 import ToggleSwitch from '../components/toggle';
 import Dropdown from '../components/dropdown';
+import MessBars from '../components/messBars';
+
+// downlead package  google-map-react !!!!
 
 function MessFind() {
     const [range, setRange] = useState([1000, 3000]);
@@ -30,6 +33,12 @@ function MessFind() {
       { logo:'single-bed 1.png' ,title:'Single Bed'},
       { logo:'single-bed (1) 1.png' ,title:'Double Bed'},
     ];
+
+    const [isChecked, setIsChecked] = useState(false);
+
+    const handleToggle = () => {
+      setIsChecked(!isChecked);
+    };
 
   return (
     <div style={{padding : "0px 45px ",}}>
@@ -68,8 +77,33 @@ function MessFind() {
         <div className="rightCon inlineblock" >
           <div className="upnav flex justifyspace">
             <div className="dynamicmessdetails flex aligncentre justifycentre">20 Mess in Simhat, Nadia , West Bengal, India</div>
-            <div className="togglebtn flex aligncentre"> map view<ToggleSwitch label="map view"/> </div>
+            <div className="togglebtn flex aligncentre"> map view<ToggleSwitch isChecked={isChecked} handleToggle={handleToggle}/> </div>
             <div className="shortby"><Dropdown/></div>
+          </div>
+          <div className="messbody" style={{display: isChecked ? "inline-block" : "grid" , width: isChecked ? "50%" : "100%"}}>
+            <MessBars />
+            <MessBars />
+            <MessBars />
+            <MessBars />
+            <MessBars />
+            <MessBars />
+            <MessBars />
+            <MessBars />
+          </div>
+          <div className="mapview" style={{display: isChecked ? "inline-block" : "none" , width: isChecked ? "39%" : "100%"}}>
+           <div className="mapcontainer">
+            {/* <GoogleMapReact
+          bootstrapURLKeys={{ key: "YOUR_API_KEY" }}
+          defaultCenter={location}
+          defaultZoom={17}>
+          <LocationPin
+            lat={location.lat}
+            lng={location.lng}
+            text={location.address}
+          />
+        </GoogleMapReact> */}
+        google map
+        </div>
           </div>
         </div>
     </div>
@@ -77,3 +111,6 @@ function MessFind() {
 }
 
 export default MessFind
+/* a49c07cbf2a456aed0a594170a0e0e43 1 */
+
+
