@@ -58,7 +58,7 @@ function MessFind() {
                   <div className="liver">
                       <Box sx={{ width: "105%", margin: 'auto', textAlign: 'center' }}>
                           <Typography id="range-slider" gutterBottom>
-                              Select Range
+                              Select Price Range
                           </Typography>
                           <Slider
                               min={1000}
