@@ -8,6 +8,7 @@ import ToggleSwitch from '../components/toggle';
 import Dropdown from '../components/dropdown';
 import MessBars from '../components/messBars';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import Hamburger from '../components/hamburger';
 
 
 // downlead package  google-map-react !!!!
@@ -47,7 +48,8 @@ function MessFind() {
 
   return (
       <div style={{ padding: "0px 45px " }}>
-          <div className="leftCon inlineblock ">
+        <Hamburger Slider={Slider} Typography={Typography} Box={Box} handleChanges={handleChanges} range={range} checkboxesData={checkboxesData}  isWideScreen={isWideScreen}/>
+          <div className="leftCon inlineblock " style={{display : isWideScreen ? "inline-block" : "none"}} >
               <div className="priceFilter">
                   <div className='justifyspace flex'>
                       <p>filter price</p>
@@ -86,13 +88,14 @@ function MessFind() {
               </div>
           </div>
 
-          <div className="rightCon inlineblock">
+          <div className="rightCon inlineblock" style={{ width: isWideScreen ? "calc(80% - 45px)" :"calc(99% - 45px)"}}>
               <div className="upnav flex justifyspace">
                   <div className="dynamicmessdetails flex aligncentre justifycentre">20 Mess in Simhat, Nadia, West Bengal, India</div>
                   <div className="togglebtn flex aligncentre"> map view<ToggleSwitch isChecked={isChecked} handleToggle={handleToggle} /> </div>
                   <div className="shortby"><Dropdown /></div>
               </div>
-              <div className="messbody" style={{ display: isChecked ? "inline-block" : (isWideScreen ? "grid" : "block") }}>
+              <div className="messbody" style={{ display: isChecked ? "inline-block"  : "grid" }}>
+              {/* display: isChecked ? (isWideScreen ? "inline-block" : "none")  : (isWideScreen ? "grid" : "block") */}
                   <MessBars />
                   <MessBars />
                   <MessBars />
@@ -102,7 +105,7 @@ function MessFind() {
                   <MessBars />
                   <MessBars />
               </div>
-              <div className="mapview" style={{ display: isChecked ? (isWideScreen ? "inline-block" : "block") : (isWideScreen ? "grid" : "block") }}>
+              <div className="mapview" style={{ display: isChecked ? "inline-block" : "none", zindex: isChecked ? "9" : "5"}}>
                   <div className="mapcontainer">
                       {/* <GoogleMapReact
                           bootstrapURLKeys={{ key: "YOUR_API_KEY" }}

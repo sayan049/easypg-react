@@ -16,7 +16,7 @@ function Dropdown() {
         {name:"Latest  "}
     ]
   return (
-    <nav onClick={updateDisplay}>
+    <nav onClick={updateDisplay} className='dropdownnav'>
   <ul style={{bottom:"-8px"}}>
     <li>
       <a href="#0" className='sb flex aligncentre justifyspace'>{text} <img  style={{height:"16px"}}  src="./assets/dropdoown.png" alt="" srcset=""/> </a>
