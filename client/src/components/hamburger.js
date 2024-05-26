@@ -16,7 +16,7 @@ function hamburger({Slider, Typography ,Box,range,handleChanges,checkboxesData ,
         
        
         <ul id="menu">
-        <div className="leftCon inlineblock " style={{width:"325px" , border:"0px" , height:"100%"}}>
+        <div className="leftCon inlineblock " style={{width:"325px" , border:"0px" , height:"100%" ,   maxheight: "calc(100vh - 100px)"}}>
               <div className="priceFilter">
                   <div className='justifyspace flex'>
                       <p>filter price</p>
@@ -25,7 +25,7 @@ function hamburger({Slider, Typography ,Box,range,handleChanges,checkboxesData ,
                   <div className="liver">
                       <Box sx={{ width: "105%", margin: 'auto', textAlign: 'center' }}>
                           <Typography id="range-slider" gutterBottom>
-                              Select Range
+                              Select Price Range
                           </Typography>
                           <Slider
                               min={1000}

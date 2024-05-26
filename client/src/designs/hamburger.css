@@ -128,7 +128,7 @@
    padding: 50px;
    padding-top: 125px;
    left: 63px;
-   overflow-y: auto;
+   /* overflow-y: auto; */
    background: #ededed;
    list-style-type: none;
    -webkit-font-smoothing: antialiased;
@@ -138,7 +138,7 @@
    transform: translate(-100%, 0);
    
    transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
-   max-height: calc(100vh - 100px);
+   /* max-height: calc(100vh - 100px); */
  }
  
  #menu li
