@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    is_verified:{
+        type:Number,
+        default:0
+    }
 });
 
 const User = mongoose.model('User', userSchema);

@@ -142,7 +142,7 @@ function SignUpForm() {
                 onChange={handlePinChange}
               />
             </div>
-            <button className="create-account" onClick={signupHandler}>
+            <button className="create-account" type="submit" onClick={signupHandler}>
               Create Account
             </button>
             <button className="google-sign-up">

@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const authRouts = require('./routes/auth');
 
+
+
 const MONGODB_URI =
     'mongodb+srv://easypg:SitOnMyFace@cluster0.j3zo3x9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
@@ -40,11 +42,11 @@ mongoose
 
 // Routes
 app.use('/uploads', express.static('uploads'));
-app.use("/auth", authRouts);
+app.use('/auth', authRouts);
 
 // Error handling
 app.use((req, res, next) => {
-    res.status(404).send('<h1>Page not found</h1>')
+    res.send("page is working");
 })
 
 

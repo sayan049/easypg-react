@@ -19,9 +19,13 @@ function LoginUser() {
   };
   function loginHandler() {
     console.log("clicked");
+
     const jsonData = {
+     
       email: email,
+      
       password: password,
+     
     };
     axios
       .post(loginUrl, jsonData, {
@@ -30,8 +34,8 @@ function LoginUser() {
       .then((response) => {
         console.log("Response:", response.data);
       })
-      .catch((err) => {
-        console.error("Error sending JSON data:", err);
+      .catch((error) => {
+        console.error("Error sending JSON data:", error);
       });
   }
 
@@ -48,7 +52,7 @@ function LoginUser() {
               <span className="lower2">Pg</span>
             </div>
           </div>
-          <form className="formC" action="" method="post">
+          <form className="formC" onSubmit={loginHandler}>
             <div className="parentforum">
               <div className="mainforum">
                 <input
@@ -85,10 +89,7 @@ function LoginUser() {
                   />
                 </div>
                 <button
-                  className="loginSubmit"
-                  type="submit"
-                  onClick={loginHandler}
-                >
+                  className="loginSubmit" type="submit" >
                   Log in
                 </button>
                 <br />
