@@ -20,7 +20,7 @@ function SignUpForm() {
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
-  function signupHandler() {
+  function signuphandler() {
     console.log("clicked");
 
     const jsonData = {
@@ -142,7 +142,7 @@ function SignUpForm() {
                 onChange={handlePinChange}
               />
             </div>
-            <button className="create-account" type="submit" onClick={signupHandler}>
+            <button className="create-account" type="submit" onClick={signuphandler}>
               Create Account
             </button>
             <button className="google-sign-up">
