@@ -12,6 +12,7 @@ exports.signupHandler = async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const newUser = await User.create({ ...req.body, password: hashedPassword });
+        console.log(newUser);
         res.status(201).json(newUser);
     } catch (error) {
         console.error("Error:", error);
@@ -25,14 +26,19 @@ exports.loginHandler = async (req, res) => {
     try {
         const user = await User.findOne({ email });
         if (!user) {
+            console.log("user not found");
             return res.status(401).send('Invalid username or password');
+           
         }
         const isPassValid = await bcrypt.compare(pass, user.password);
         if (!isPassValid) {
+            console.log("invalid user or password");
             return res.status(401).send('Invalid username or password');
+            
         }
         req.session.user = user;
         res.status(200).send('Login successful');
+        console.log("succesfully logged in")
     } catch (error) {
         console.error('Error logging in user:', error);
         res.status(500).send('Failed to login');
