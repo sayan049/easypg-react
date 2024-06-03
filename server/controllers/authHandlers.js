@@ -2,6 +2,8 @@ const User = require('../modules/user');
 const PgOwner = require('../modules/pgProvider');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
+const sendmail = require('../controllers/emailSender');
+
 
 exports.signupHandler = async (req, res) => {
     const email = req.body.email;
@@ -14,6 +16,7 @@ exports.signupHandler = async (req, res) => {
         const newUser = await User.create({ ...req.body, password: hashedPassword });
         console.log(newUser);
         res.status(201).json(newUser);
+        sendmail(email);
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ message: "Server error" });
