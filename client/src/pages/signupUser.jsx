@@ -4,6 +4,8 @@ import "../designs/signuppagestyle.css";
 import { useEffect } from "react";
 import axios from "axios";
 import { signupUrl } from "../constant/urls";
+import { useNavigate } from 'react-router-dom';
+
 
 function SignUpForm() {
   useEffect(() => {
@@ -16,11 +18,12 @@ function SignUpForm() {
   const [password, setPassword] = useState("");
   const [pin, setPin] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
+  const navigate = useNavigate();
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
-  function signuphandler() {
+
+  const signuphandler = async ()=>{
     console.log("clicked");
 
     const jsonData = {
@@ -31,16 +34,21 @@ function SignUpForm() {
       password: password,
       pin: pin,
     };
-    axios
-      .post(signupUrl, jsonData, {
+    try {
+      const response = await axios.post(signupUrl, jsonData, {
         headers: { "Content-Type": "application/json" },
-      })
-      .then((response) => {
-        console.log("Response:", response.data);
-      })
-      .catch((error) => {
-        console.error("Error sending JSON data:", error);
       });
+
+      if (response.status === 201) {
+        console.log("Response:", response.data);
+        // Redirect to login page upon successful signup
+        navigate('/LoginUser',{state: {message:"Please verify your email to log in"}});
+      } else {
+        console.error("Signup failed:", response.data);
+      }
+    } catch (error) {
+      console.error("Error sending JSON data:", error);
+    }
   }
   const handleFirstNameChange = (e) => {
     setFirstName(e.target.value);
@@ -65,6 +73,9 @@ function SignUpForm() {
   const handlePinChange = (e) => {
     setPin(e.target.value);
   };
+  //redirecting
+  
+  
   return (
     <div id="Maincontainer">
       <div className="form-container">

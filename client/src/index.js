@@ -11,13 +11,19 @@ import LandingPage from "./pages/landingPage";
 import LoginOwner from "./pages/LoginOwner";
 import SignupOwner from './pages/signupOwner';
 import MessFind from './pages/messFind';
+// import HomePage from './pages/homePage';
 
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <App/>
+    path:"/",
+    element:<App/>
   },
+  // {
+    
+  //   path: "/home",
+  //   element: <HomePage/>
+  // },
   {
     path:"/ProviderSeeker",
     element:<ProviderSeeker/>
