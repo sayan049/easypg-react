@@ -9,7 +9,7 @@ const authRouts = require('./routes/auth');
 
 
 const MONGODB_URI =
-    'mongodb+srv://easypg:SitOnMyFace@cluster0.j3zo3x9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+    'mongodb+srv://easypg:PaCjM5ZdJnwjM9zW@cluster0.j3zo3x9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
 const app = express();
 app.use(cors())

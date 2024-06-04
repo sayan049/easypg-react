@@ -15,6 +15,7 @@ exports.signupHandler = async (req, res) => {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const newUser = await User.create({ ...req.body, password: hashedPassword });
         console.log(newUser);
+        console.log("---------------------------------------------------")
         res.status(201).json(newUser);
         sendmail(email);
     } catch (error) {
