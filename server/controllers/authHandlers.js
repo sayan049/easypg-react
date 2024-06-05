@@ -31,13 +31,13 @@ exports.loginHandler = async (req, res) => {
         if (!user) {
             console.log("user not found");
             return res.status(401).send('Invalid username or password');
-           
+
         }
         const isPassValid = await bcrypt.compare(pass, user.password);
         if (!isPassValid) {
             console.log("invalid user or password");
             return res.status(401).send('Invalid username or password');
-            
+
         }
         req.session.user = user;
         res.status(200).send('Login successful');
