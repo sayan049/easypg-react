@@ -28,8 +28,8 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     is_verified:{
-        type:Number,
-        default:0
+        type:Boolean,
+        default:false
     }
 });
 

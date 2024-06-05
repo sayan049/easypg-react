@@ -5,6 +5,7 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const authRouts = require('./routes/auth');
+const mailRoute = require('./routes/mailVerifierRoute')
 
 
 
@@ -43,6 +44,8 @@ mongoose
 // Routes
 app.use('/uploads', express.static('uploads'));
 app.use('/auth', authRouts);
+app.use('/mail',mailRoute);
+
 
 // Error handling
 app.use((req, res, next) => {

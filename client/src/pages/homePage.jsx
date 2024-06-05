@@ -1,20 +1,31 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import "../designs/style.css";
+import FlashMessage from "../components/flashMessage";
 
 
 function HomePage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [message, setMessage] = useState(location.state?.message || '');
   useEffect(() => {
     document.title = "Find your nearest paying guest";
-  }, []); 
+    if(message){
+      const timer = setTimeout(() => {
+        setMessage('');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]); 
   const [searchItem, setSearchItem] = useState('');
 
   const performSearch = () => {
     alert("Searching for: " + searchItem);
     navigate('/messFind');
   };
+  
   return (
     <body>
       <section className="first-section">
@@ -41,6 +52,11 @@ function HomePage() {
             </div>
           </div>
         </header>
+        <div style={{position:"absolute",textAlign:"center",height:"auto",width:"100%"}}> {message && (
+        <div style={{color:"green",fontSize:"20px"}}>
+          <p><FlashMessage message={message}/></p>
+        </div>
+      )}</div>
         <div className="body_container">
           <div>
             <div>

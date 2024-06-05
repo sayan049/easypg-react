@@ -39,8 +39,8 @@ function LoginUser() {
       });
       if(response.status === 200){
         console.log("Response:",response.data);
-        navigate('/');
-        // navigate('/',{state:{message: "Succesfully logged in"}});
+        // navigate('/');
+           navigate('/',{state:{message: "Succesfully logged in bitch"}});
       }else{
         console.error("Login failed",response.data);
       }
