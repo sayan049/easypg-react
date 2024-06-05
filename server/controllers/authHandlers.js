@@ -7,7 +7,10 @@ const sendmail = require('../controllers/emailSender');
 
 exports.signupHandler = async (req, res) => {
     const email = req.body.email;
+    // const name = req.body.Firstname;
+    
     const existnigUser = await User.findOne({ email: email });
+   
     if (existnigUser) {
         return console.log(`${email} already used`);
     }
@@ -17,7 +20,7 @@ exports.signupHandler = async (req, res) => {
         console.log(newUser);
         console.log("---------------------------------------------------")
         res.status(201).json(newUser);
-        sendmail(email);
+        sendmail(req.body.firstName,email,newUser._id);
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ message: "Server error" });
@@ -40,9 +43,19 @@ exports.loginHandler = async (req, res) => {
             return res.status(401).send('Invalid username or password');
 
         }
-        req.session.user = user;
-        res.status(200).send('Login successful');
-        console.log("succesfully logged in")
+        try {
+            if(user.is_verified == 0){
+                console.log("Email is not verified");
+                return res.status(403).send('Not verified credentials');
+            }
+            req.session.user = user;
+            console.log("succesfully logged in")
+            res.status(200).send('Login successful');
+            
+        } catch (error) {
+            console.log("login Error:",error);
+        }
+        
     } catch (error) {
         console.error('Error logging in user:', error);
         res.status(500).send('Failed to login');

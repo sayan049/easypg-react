@@ -11,7 +11,9 @@ import LandingPage from "./pages/landingPage";
 import LoginOwner from "./pages/LoginOwner";
 import SignupOwner from './pages/signupOwner';
 import MessFind from './pages/messFind';
+import MailVerify from './pages/mailVerify'
 // import HomePage from './pages/homePage';
+// import FlashMessage from './components/flashMessage';
 
 
 const router = createBrowserRouter([
@@ -51,6 +53,14 @@ const router = createBrowserRouter([
   {
     path:"/MessFind",
     element:<MessFind/>
+  },
+  // {
+  //   path:"/Flashmessage",
+  //   element:<FlashMessage/>
+  // }
+  {
+    path:"/MailVerify",
+    element:<MailVerify/>
   }
   
 

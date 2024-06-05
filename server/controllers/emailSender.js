@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 const User = require('../modules/user');
 const PgOwner = require('../modules/pgProvider');
 
-async function sendmail(email){
+async function sendmail(name,email,userId){
     const transporter = nodemailer.createTransport({
         service:'gmail',
         auth:{
@@ -13,8 +13,8 @@ async function sendmail(email){
     const mailOptions = {
         from:'projecteasypg@gmail.com',
         to:  email,
-        subject:'SORRY',
-        text:'sorry bhai ,parle khoma koris'
+        subject:'Verification Email',
+        html:'<h3>Hi, '+name+' Click <a href="http://localhost:3000/MailVerify?id='+userId+'">here</a> to verify you email </h3>'
     }
     try {
         const result = await transporter.sendMail(mailOptions);
@@ -24,4 +24,13 @@ async function sendmail(email){
     }
 
 }
+// verifying route email
+// exports.verifyMail = async(req,res)=>{
+//     try {
+//         const updateInfo = await User.updateOne ({_id : req.query.id},{$set : {is_verified:1}});
+//         console.log(updateInfo);
+//     } catch (error) {
+//         console.log("Error: ", error);
+//     }
+// }
 module.exports = sendmail;
