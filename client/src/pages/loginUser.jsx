@@ -5,21 +5,27 @@ import axios from "axios";
 import "../designs/loginForUser.css";
 import "../designs/util.css";
 import { loginUrl } from "../constant/urls";
+import { useLocation } from "react-router-dom";
+import {  useNavigate} from "react-router-dom";
 
 function LoginUser() {
   useEffect(() => {
     document.title = "Student login";
   }, []);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const message = location.state?.message;
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
-  function loginHandler() {
+  const loginHandler = async (event)=> {
+    event.preventDefault();
     console.log("clicked");
-
     const jsonData = {
      
       email: email,
@@ -27,16 +33,21 @@ function LoginUser() {
       password: password,
      
     };
-    axios
-      .post(loginUrl, jsonData, {
-        headers: { "Content-Type": "application/json" },
-      })
-      .then((response) => {
-        console.log("Response:", response.data);
-      })
-      .catch((error) => {
-        console.error("Error sending JSON data:", error);
+    try {
+      const response = await axios.post(loginUrl,jsonData,{
+        headers : { 'Content-Type':"application/json"},
       });
+      if(response.status === 200){
+        console.log("Response:",response.data);
+        navigate('/');
+        // navigate('/',{state:{message: "Succesfully logged in"}});
+      }else{
+        console.error("Login failed",response.data);
+      }
+      
+    } catch (error) {
+        console.log("Error sending JSON data:",error);
+    }
   }
 
   return (
@@ -54,6 +65,9 @@ function LoginUser() {
           </div>
           <form className="formC" onSubmit={loginHandler}>
             <div className="parentforum">
+              <div>
+              {message && <p style={{ color: 'red' }}>{message}</p>}
+              </div>
               <div className="mainforum">
                 <input
                   className="emailText"
