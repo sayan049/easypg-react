@@ -18,13 +18,29 @@ function LoginUser() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const message = location.state?.message;
+   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    // Check if the message should be displayed based on localStorage
+    const storedMessage = localStorage.getItem('loginMessage');
+    if (storedMessage) {
+      setMessage(location.state?.message || "");
+    }
+
+    // Remove the message after 5 seconds
+    const timer = setTimeout(() => {
+      setMessage("");
+      localStorage.removeItem('loginMessage'); // Remove the message from local storage
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
   const loginHandler = async (event)=> {
-    event.preventDefault();
+    event.preventDefault();   
     console.log("clicked");
     const jsonData = {
      
