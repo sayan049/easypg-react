@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { mailVerifyUrl } from "../constant/urls";
 
 const MailVerify = () => {
     const location = useLocation();
+    const navigate = useNavigate(); // Use useNavigate hook
     const query = new URLSearchParams(location.search);
     const id = query.get('id');
     const [message, setMessage] = useState('Verifying your email...');
@@ -13,7 +14,7 @@ const MailVerify = () => {
     useEffect(() => {
         if (id && !requestSent.current) {
             requestSent.current = true;  // Mark the request as sent
-            console.log(id + "xxx")
+            // console.log(id)
             fetch(`${mailVerifyUrl}?id=${id}`)
                 .then(response => response.json())
                 .then(data => {
@@ -41,7 +42,12 @@ const MailVerify = () => {
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column' }}>
             <h1>{message}</h1>
-            {verified === true && <button onClick={() => window.location.href = '/login'}>Go to Login</button>}
+              
+            {verified === true && (
+                <button style={{ height: "20px", width: "auto" }} onClick={() => navigate('/LoginUser')}> {/* Use navigate instead */}
+                    Go to Login
+                </button>
+            )}
         </div>
     );
 };

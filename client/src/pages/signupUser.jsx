@@ -41,8 +41,11 @@ function SignUpForm() {
 
       if (response.status === 201) {
         console.log("Response:", response.data);
+        
         // Redirect to login page upon successful signup
-        navigate('/LoginUser',{state: {message:"Please verify your email to log in"}});
+        const a = "Please verify your email to log in"
+        navigate('/LoginUser',{state: {message:a}});
+        localStorage.setItem('loginMessage',a);
       } else {
         console.error("Signup failed:", response.data);
       }

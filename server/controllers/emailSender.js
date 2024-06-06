@@ -18,7 +18,7 @@ async function sendmail(name,email,userId){
     }
     try {
         const result = await transporter.sendMail(mailOptions);
-        console.log("email has ben sent succesfully",result);
+        console.log("email has ben sent succesfully");
     } catch (error) {
         console.log("Error: ",error);
     }
