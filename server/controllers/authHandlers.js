@@ -74,16 +74,19 @@ exports.signupHandlerOwner = async (req, res) => {
       mobileNo,
       messName,
       aboutMess,
-      location
+      location,
+      facility
     } = req.body;
   
     try {
       const existingUser = await PgOwner.findOne({ email });
       if (existingUser) {
+        console.log({ error: `${email} already exists` })
         return res.status(400).json({ error: `${email} already exists` });
       }
   
       if (!password) {
+        console.log({ error: "Password is required" })
         return res.status(400).json({ error: "Password is required" });
       }
   
@@ -113,7 +116,8 @@ exports.signupHandlerOwner = async (req, res) => {
         aboutMess,
         location,
         profilePhoto,
-        messPhoto
+        messPhoto,
+        facility
       });
       console.log(newUser);
       return res.status(201).json(newUser);
