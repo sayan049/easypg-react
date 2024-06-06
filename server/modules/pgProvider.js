@@ -17,32 +17,32 @@ const pgOwnerSchema = new mongoose.Schema({
     },
     address: {
         type: String,
-        required: true,
+        // required: true,
         trim: true
     },
     password: {
         type: String,
         required: true,
     },
-    mobileNumber: {
+    mobileNo: {
         type: String,
-        required: true,
+        // required: true,
         trim: true
     },
     pincode: {
         type: String,
-        required: true,
+        // required: true,
         trim: true
-    },
-    checkboxData: {
-        type: Map,
-        of: Boolean
     },
     messName: {
         type: String,
         trim: true
     },
-    messDetails: {
+    aboutMess: {
+        type: String,
+        trim: true
+    },
+    location: {
         type: String,
         trim: true
     },
@@ -50,13 +50,24 @@ const pgOwnerSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
-    messPhotos: [{
+    messPhoto: [{
         type: String,
         trim: true
-    }]
+    }],
 });
 
-const PgOwner = mongoose.model('PgOwner', pgOwnerSchema);
+const PgOwner = mongoose.model('Pgowner', pgOwnerSchema);
 
 module.exports = PgOwner;
 
+// firstName: '',
+// lastName: '',
+// email: '',
+// address: '',
+// password: '',
+// pincode: '',
+// mobileNo: '',
+// messName: '',
+// aboutMess: '',
+// location: '',
+// profilePhoto:''

@@ -63,18 +63,75 @@ exports.loginHandler = async (req, res) => {
 };
 
 exports.signupHandlerOwner = async (req, res) => {
-    const email = req.body.email;
-    const existingUser = await PgOwner.findOne({ email: email });
-    if (existingUser) {
-        return console.log(`${email} already used`)
-    }
+    //console.log(req.files); // Log req.files to see if files are being received
+    const {
+      firstName,
+      lastName,
+      email,
+      address,
+      password,
+      pincode,
+      mobileNo,
+      messName,
+      aboutMess,
+      location
+    } = req.body;
+  
     try {
-        const profilePhoto = req.files.profilePhoto ? req.files.profilePhoto[0].path : null;
-        const messPhotos = req.files.messPhotos ? req.files.messPhotos.map(file => file.path) : [];
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        const newUser = await PgOwner.create({ ...req.body, password: hashedPassword, profilePhoto: profilePhoto, messPhotos: messPhotos });
-        res.status(201).json(newUser);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+      const existingUser = await PgOwner.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ error: `${email} already exists` });
+      }
+  
+      if (!password) {
+        return res.status(400).json({ error: "Password is required" });
+      }
+  
+      const hashedPassword = await bcrypt.hash(password, 10);
+  
+      const profilePhoto = req.files.profilePhoto ? req.files.profilePhoto[0].filename : null;
+     // console.log("mhm  "+ typeof [req.files.messPhoto.map(file => file.filename)]);
+      let messPhoto = [];
+
+
+    if (req.files && req.files.messPhoto) {
+     req.files.messPhoto.map(file=>{
+        console.log(file.filename+"\n")
+        messPhoto.push(file.filename);
+     })
     }
-}
+  
+      const newUser = await PgOwner.create({
+        firstName,
+        lastName,
+        email,
+        address,
+        password: hashedPassword,
+        pincode,
+        mobileNo,
+        messName,
+        aboutMess,
+        location,
+        profilePhoto,
+        messPhoto
+      });
+      console.log(newUser);
+      return res.status(201).json(newUser);
+    } catch (error) {
+      console.error('Error creating user:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+  
+   
+// firstName: '',
+// lastName: '',
+// email: '',
+// address: '',
+// password: '',
+// pincode: '',
+// mobileNo: '',
+// messName: '',
+// aboutMess: '',
+// location: '',
+// profilePhoto:''
