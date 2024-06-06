@@ -13,7 +13,7 @@ const pgOwnerSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        match: [/.+\@.+\..+/, 'Please fill a valid email address'],
+       // match: [/.+\@.+\..+/, 'Please fill a valid email address'],
     },
     address: {
         type: String,
@@ -51,6 +51,10 @@ const pgOwnerSchema = new mongoose.Schema({
         trim: true
     },
     messPhoto: [{
+        type: String,
+        trim: true
+    }],
+    facility: [{
         type: String,
         trim: true
     }],

@@ -10,6 +10,16 @@ function SignupOwner() {
   const [imgArray, setImgArray] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
 
+  const amenities = [
+    { id: 'test1', label: 'A/C', imgSrc: './assets/air-conditioner 1.png' },
+    { id: 'test2', label: 'TV', imgSrc: './assets/screen 1.png' },
+    { id: 'test3', label: 'Power Backup', imgSrc: './assets/power 1.png' },
+    { id: 'test4', label: 'Wi-fi', imgSrc: './assets/wifi (1) 1.png' },
+    { id: 'test5', label: 'Kitchen', imgSrc: './assets/restaurant 1.png' },
+    { id: 'test6', label: 'Water Available Anytime', imgSrc: './assets/tank-water 1.png' },
+    { id: 'test7', label: 'Double Bed', imgSrc: './assets/single-bed (1) 1.png' }
+  ];
+
   useEffect(() => {
     document.title = "Sign up for owner";
   }, []);
@@ -26,7 +36,8 @@ function SignupOwner() {
     aboutMess: '',
     location: '',
     profilePhoto: null,
-    messPhoto: []
+    messPhoto: [],
+    facility: []
   });
 
   const handleChange = (e) => {
@@ -42,13 +53,31 @@ function SignupOwner() {
     }
   };
 
-  
+  const handleFacility = (e) => {
+    const { value, checked } = e.target;
+    setFormData((prevData) => {
+      const facilities = checked
+        ? [...prevData.facility, value]
+        : prevData.facility.filter((facility) => facility !== value);
+    
+      return { ...prevData, facility: facilities };
+    });
+  };
+
+  const removeImage = (index) => {
+    setImgArray((prevArray) => prevArray.filter((_, i) => i !== index));
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      messPhoto: prevFormData.messPhoto.filter((_, i) => i !== index)
+    }));
+    setErrorMessage('');
+  };
 
   const imgUpload = (event) => {
     const filesArr = Array.from(event.target.files);
     const newMessPhotos = [];
-  
-    filesArr.forEach(file => {
+
+    filesArr.forEach((file) => {
       if (!file.type.match('image.*')) {
         setErrorMessage('Only image files are allowed.');
         return;
@@ -57,62 +86,49 @@ function SignupOwner() {
         setErrorMessage('Maximum number of images reached.');
         return;
       }
-  
+
       const reader = new FileReader();
       reader.onload = () => {
-        setImgArray(prevArray => [...prevArray, { src: reader.result, name: file.name }]);
+        setImgArray((prevArray) => [...prevArray, { src: reader.result, name: file.name }]);
       };
       reader.readAsDataURL(file);
       newMessPhotos.push(file);
-      setFormData({ ...formData, messPhoto : [...formData.messPhoto, file] });
     });
-  
-    console.log('New mess photos before state update:', newMessPhotos);
-  
-    // setFormData(prevFormData => {
-    //   const updatedMessPhoto = [...prevFormData.messPhoto, ...newMessPhotos];
-    //   console.log('Updated messPhoto array:', updatedMessPhoto); // Debugging line
-      
-    //   return {
-    //     ...prevFormData,
-    //     messPhoto: Array.from(updatedMessPhoto)
-    //   };
-    // });
 
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      messPhoto: [...prevFormData.messPhoto, ...newMessPhotos]
+    }));
   };
-  
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const formDataToSend = new FormData();
       for (const key in formData) {
         if (key === 'messPhoto') {
-          formData.messPhoto.forEach(file => formDataToSend.append(key, file));
+          formData.messPhoto.forEach((file) => formDataToSend.append(key, file));
         } else {
           formDataToSend.append(key, formData[key]);
         }
       }
-  
+
       const response = await axios.post(signupownerUrl, formDataToSend, {
-        headers: { "Content-Type": 'multipart/form-data' },
+        headers: { "Content-Type": 'multipart/form-data' }
       });
       console.log("Response:", response.data);
     } catch (error) {
       console.error("Error creating user:", error.response ? error.response.data : error.message);
     }
   };
-  
-  
+
   const toggleEye = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
-
-  const removeImage = (index) => {
-    setImgArray(prevArray => prevArray.filter((_, i) => i !== index));
-    //setFormData();
-    setErrorMessage('');
+  const isFormComplete = () => {
+    return formData.mobileNo && formData.address && formData.email && formData.firstName && formData.lastName && formData.pincode && formData.messName;
   };
+
   return (
     <form className='bodystyle' onSubmit={handleSubmit} method='POST' encType="multipart/form-data">
       <div className="uppernav">
@@ -172,54 +188,16 @@ function SignupOwner() {
           <div className="checkfacilitytxt">Check your Provide Facility</div>
         </div>
         <div className="checkboxes grid checkboxgrid">
-          <div>
-            <div className="checkboxicon"><img src="./assets/air-conditioner 1.png" alt="" /></div>
-            <input type="checkbox" className="checki" id="test1" />
-            <label htmlFor="test1"></label>
-            <div className="checkboxtxt">A/C</div>
-          </div>
-          <div>
-            <div className="checkboxicon"><img src="./assets/screen 1.png" alt="" /></div>
-            <input type="checkbox" className="checki" id="test2" />
-            <label htmlFor="test2"></label>
-            <div className="checkboxtxt">TV</div>
-          </div>
-          <div>
-            <div className="checkboxicon"><img src="./assets/power 1.png" alt="" /></div>
-            <input type="checkbox" className="checki" id="test3" />
-            <label htmlFor="test3"></label>
-            <div className="checkboxtxt">Power Backup</div>
-          </div>
-          <div>
-            <div className="checkboxicon"><img src="./assets/wifi (1) 1.png" alt="" /></div>
-            <input type="checkbox" className="checki" id="test4" />
-            <label htmlFor="test4"></label>
-            <div className="checkboxtxt">Wi-fi</div>
-          </div>
-          <div>
-            <div className="checkboxicon"><img src="./assets/restaurant 1.png" alt="" /></div>
-            <input type="checkbox" className="checki" id="test5" />
-            <label htmlFor="test5"></label>
-            <div className="checkboxtxt">Kitchen</div>
-          </div>
-          <div>
-            <div className="checkboxicon"><img src="./assets/tank-water 1.png" alt="" /></div>
-            <input type="checkbox" className="checki" id="test6" />
-            <label htmlFor="test6"></label>
-            <div className="checkboxtxt">Water Available Anytime</div>
-          </div>
-          <div>
-            <div className="checkboxicon"><img src="./assets/single-bed (1) 1.png" alt="" /></div>
-            <input type="checkbox" className="checki" id="test7" />
-            <label htmlFor="test7"></label>
-            <div className="checkboxtxt">Double Bed</div>
-          </div>
-          <div>
-            <div className="checkboxicon"><img src="./assets/single-bed 1.png" alt="" /></div>
-            <input type="checkbox" className="checki" id="test8" />
-            <label htmlFor="test8"></label>
-            <div className="checkboxtxt">Single Bed</div>
-          </div>
+          {amenities.map(amenity => (
+            <div key={amenity.id}>
+              <div className="checkboxicon">
+                <img src={amenity.imgSrc} alt={amenity.label} />
+              </div>
+              <input type="checkbox" className="checki" id={amenity.id} onClick={handleFacility} value={amenity.label} />
+              <label htmlFor={amenity.id}></label>
+              <div className="checkboxtxt">{amenity.label}</div>
+            </div>
+          ))}
         </div>
 
         <div className="inputbox wid30">
@@ -267,14 +245,14 @@ function SignupOwner() {
         </div>
 
         <div className="terms flex justifycentre">
-          <input type="checkbox" className="checki" id="test9" />
+          <input type="checkbox" className="checki" id="test9" disabled={!isFormComplete()} />
           <label htmlFor="test9"></label>
           <div className="termstxt">Check all </div><div className="termstxt blue">Terms & Condition </div><div className="termstxt">and Privacy</div>
           <div className="termstxt blue">Policy</div>
         </div>
 
         <div className="terms flex justifycentre">
-          <button className="creataccountbtn cursorpointer" type="submit">Create Account</button>
+          <button className="creataccountbtn cursorpointer" type="submit"  >Create Account</button>
         </div>
       </div>
     </form>
