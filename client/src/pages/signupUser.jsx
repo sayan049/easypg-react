@@ -30,7 +30,7 @@ function SignUpForm() {
       firstName: firstName,
       lastName: lastName,
       email: email,
-      address: address,
+      address: address, 
       password: password,
       pin: pin,
     };
