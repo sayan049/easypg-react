@@ -1,33 +1,45 @@
-import React, { useEffect } from 'react'; // Removed useState import
-import "../designs/messfind.css"
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { baseurl, findMessUrl } from '../constant/urls';
+import "../designs/messfind.css";
 
-// Renamed function to start with an uppercase letter
-function MessBars() {
+function MessBars({ isWideScreen }) {
+  const [messData, setMessData] = useState([]);
+  const [error, setError] = useState(null);
 
-  const [list, setList] = React.useState([]);
-
-  // will be run once 
-  useEffect(()=> {  
-      // here we get the data by requesting data from this link
-      // to our nodejs server
-      axios.get('/signupOwner')
-      .then((res)=> setList(res.data));
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(findMessUrl);
+        setMessData(res.data);
+      } catch (err) {
+        console.log("Error fetching data", err);
+        setError('Failed to fetch PG owners');
+      }
+    };
+    fetchData();
   }, []);
 
-  let messName = list.map((item)=>{
-    return <li key={item.messName}>{item.messName}</li>
-  });
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
-    <div className="mess flex"  >
-      <img src="https://4.imimg.com/data4/XP/JB/MY-29402471/pg-rooms-1000x1000.jpg" alt="" className='messimg' />
-      <div style={{width:"100%",padding:"0px 25px"}} >
-        <div className="messname" style={{fontSize:"x-large"}} > {messName}</div>
-        <div className="messaddress">Near magipara</div>
-        <div className="features">1 bed</div>
-        <div className="twobtns"><button>view details</button> <button>Book now</button></div>
-      </div>
+    <div>
+      {messData.map(owner => (
+        <div className="mess flex" key={owner._id}>
+          <div><img src={`${baseurl}/uploads/${owner.profilePhoto}`} alt="" className='messimg' /></div>
+          <div style={{ width: "100%", padding: "0px 25px" }}>
+            <div className="messname" style={{ fontSize: "x-large" }}>{owner.messName}</div>
+            <div className="messaddress">{owner.address}</div>
+            <div className="features">{owner.aboutMess}</div>
+            <div className="twobtns">
+              <button className={isWideScreen ? "wide-button" : "narrow-button"}>View details</button>
+              <button className={isWideScreen ? "wide-button" : "narrow-button"}>Book now</button>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

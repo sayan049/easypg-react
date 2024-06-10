@@ -11,6 +11,8 @@ router.post('/login', authHandlers.loginHandler);
 
 router.post('/signupOwner', upload, authHandlers.signupHandlerOwner);
 
+router.get('/findMess',  authHandlers.findMess);
+
 
 
 module.exports = router;

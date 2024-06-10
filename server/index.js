@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const authRouts = require('./routes/auth');
 const mailRoute = require('./routes/mailVerifierRoute')
+const path =require('path');
+
 
 
 
@@ -18,7 +20,7 @@ app.use(cors());
 // Store for session
 const store = new MongoDBStore({
     uri: MONGODB_URI,
-    collection: 'sessions'
+    collection: 'sessions' 
 });
 
 //Middleware
@@ -30,6 +32,8 @@ app.use(session({
     saveUninitialized: false,
     store: store,
 }));
+app.use('/api', authRouts);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Connection
 mongoose
