@@ -12,6 +12,7 @@ import LoginOwner from "./pages/LoginOwner";
 import SignupOwner from './pages/signupOwner';
 import MessFind from './pages/messFind';
 import MailVerify from './pages/mailVerify'
+import ProtectedRoute from './pages/protectedRoute';
 // import HomePage from './pages/homePage';
 // import FlashMessage from './components/flashMessage';
 
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
   {
     path:"/MailVerify",
     element:<MailVerify/>
+  },
+  {
+    path:"/protected",
+    element:<ProtectedRoute/>
   }
   
 

@@ -3,6 +3,10 @@ const PgOwner = require('../modules/pgProvider');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const sendmail = require('../controllers/emailSender');
+const jwt = require('jsonwebtoken');
+
+//jwt Secret
+const JWT_SECRET = 'sit on my face';
 
 
 exports.signupHandler = async (req, res) => {
@@ -43,18 +47,28 @@ exports.loginHandler = async (req, res) => {
             return res.status(401).send('Invalid username or password');
 
         }
-        try {
-            if(user.is_verified == 0){
-                console.log("Email is not verified");
-                return res.status(403).send('Not verified credentials');
-            }
-            req.session.user = user;
-            console.log("succesfully logged in")
-            res.status(200).send('Login successful');
-            
-        } catch (error) {
-            console.log("login Error:",error);
+        
+        if(user.is_verified == 0){
+            console.log("Email is not verified");
+            return res.status(403).send('Not verified credentials');
         }
+        const token = jwt.sign({id: user._id, email:user.email}, JWT_SECRET, { expiresIn:'5d' });
+        // const token = 'abc'
+
+        // req.session.user = user;
+        res.cookie('user_token', token, {
+          // httpOnly: true,
+          secure: process.env.NODE_ENV === 'production', // Set to true if serving over HTTPS
+          maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days in milliseconds
+          sameSite: 'strict' ,
+          // secure:true// Adjust according to your needs (e.g., 'lax', 'none' for cross-site)
+      });
+      res.status(200).send('Login successful');
+        console.log("succesfully logged in")
+        console.log(token)
+        
+            
+        
         
     } catch (error) {
         console.error('Error logging in user:', error);

@@ -1,31 +1,68 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+// import Cookies from 'js-cookie';
 import "../designs/style.css";
 import FlashMessage from "../components/flashMessage";
-
 
 function HomePage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [message, setMessage] = useState(location.state?.message || '');
+  const [message, setMessage] = useState("");
+  const [searchItem, setSearchItem] = useState('');
+
   useEffect(() => {
     document.title = "Find your nearest paying guest";
-    if(message){
-      const timer = setTimeout(() => {
-        setMessage('');
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [message]); 
-  const [searchItem, setSearchItem] = useState('');
+  }, []);
 
   const performSearch = () => {
     alert("Searching for: " + searchItem);
     navigate('/messFind');
   };
-  
+
+  useEffect(() => {
+    const storedMessage = localStorage.getItem('sId_message');
+    if (storedMessage) {
+      setMessage(location.state?.message || "");
+    }
+
+    const timer = setTimeout(() => {
+      setMessage("");
+      localStorage.removeItem('sId_message');
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [location.state?.message]);
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+  useEffect(() => {
+    const token = getCookie('user_token'); // Access token from cookies
+    console.log('Token from cookies:', token); // Debugging log
+    if (token) {
+      try {
+        // Decode token
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c =>
+          '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+        ).join(''));
+
+        const decodedToken = JSON.parse(jsonPayload);
+        const userId = decodedToken.id;
+        const userEmail = decodedToken.email;
+        console.log('User ID:', userId);
+        console.log('User Email:', userEmail);
+      } catch (error) {
+        console.error('Error decoding or accessing token:', error);
+      }
+    } else {
+      console.error('Token is not present in cookies');
+    }
+  }, []);
+
   return (
     <body>
       <section className="first-section">
@@ -42,34 +79,34 @@ function HomePage() {
             </div>
             <div className="login-box">
               <p className="login-text">
-                {/* <a style={{ textDecoration: "none" }} href="./ProviderSeeker">
-                    Login
-                  </a> */}
-                <a style={{ textDecoration: "none" }} href="./ProviderSeeker">
-                 <Link style={{textDecoration:"none",color:"white",fontSize:"13px"}} to="/ProviderSeeker">Login</Link> 
-                </a>
+                <Link style={{ textDecoration: "none", color: "white", fontSize: "13px" }} to="/ProviderSeeker">Login</Link>
               </p>
             </div>
           </div>
         </header>
-        <div style={{position:"absolute",textAlign:"center",height:"auto",width:"100%"}}> {message && (
-        <div style={{color:"green",fontSize:"20px"}}>
-          <p><FlashMessage message={message}/></p>
+        <div style={{ position: "absolute", textAlign: "center", height: "auto", width: "100%" }}>
+          {message && (
+            <div style={{ color: "green", fontSize: "20px" }}>
+              <p><FlashMessage message={message} /></p>
+            </div>
+          )}
         </div>
-      )}</div>
         <div className="body_container">
           <div>
             <div>
               <p>Find Mess Near Your University</p>
             </div>
             <div className="searchbox">
-              <input type="search" id="search" placeholder="Enter Location" value={searchItem} onChange={(e)=>setSearchItem(e.target.value)}/>
-              <input type="submit" value="&rarr;" onClick={performSearch} 
-               />   <Link style={{textDecoration:"none",color:"white",fontSize:"13px"}} to="/MessFind">Login</Link>
+              <input
+                type="search"
+                id="search"
+                placeholder="Enter Location"
+                value={searchItem}
+                onChange={(e) => setSearchItem(e.target.value)}
+              />
+              <input type="submit" value="&rarr;" onClick={performSearch} />
+              <Link style={{ textDecoration: "none", color: "white", fontSize: "13px" }} to="/MessFind">Login</Link>
             </div>
-           
-         
-        
           </div>
           <div className="image_container">
             <img src="/assets/home.png" alt="logo" />
