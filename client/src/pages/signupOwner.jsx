@@ -14,9 +14,9 @@ function SignupOwner() {
     { id: 'test1', label: 'A/C', imgSrc: './assets/air-conditioner 1.png' },
     { id: 'test2', label: 'TV', imgSrc: './assets/screen 1.png' },
     { id: 'test3', label: 'Power Backup', imgSrc: './assets/power 1.png' },
-    { id: 'test4', label: 'Wi-fi', imgSrc: './assets/wifi (1) 1.png' },
-    { id: 'test5', label: 'Kitchen', imgSrc: './assets/restaurant 1.png' },
-    { id: 'test6', label: 'Water Available Anytime', imgSrc: './assets/tank-water 1.png' },
+    { id: 'test4', label: 'WiFi', imgSrc: './assets/wifi (1) 1.png' },
+    { id: 'test5', label: 'kitchen', imgSrc: './assets/restaurant 1.png' },
+    { id: 'test6', label: 'tank water', imgSrc: './assets/tank-water 1.png' },
     { id: 'test7', label: 'Double Bed', imgSrc: './assets/single-bed (1) 1.png' }
   ];
 

@@ -144,7 +144,7 @@ exports.signupHandlerOwner = async (req, res) => {
   exports.findMess=  async (req, res) => {
     try {
         const pgOwners = await PgOwner.find();
-        console.log(pgOwners)
+        // console.log(pgOwners)
         res.status(200).json(pgOwners);
     } catch (error) {
         console.error('Error fetching PG owners:', error);
