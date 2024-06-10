@@ -1,21 +1,31 @@
 const express = require('express');
-var cors = require('cors');
+const cors = require('cors');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const authRouts = require('./routes/auth');
 const mailRoute = require('./routes/mailVerifierRoute')
+
 const path =require('path');
 
 
+const cookieParser = require('cookie-parser');
 
 
-const MONGODB_URI =
-    'mongodb+srv://easypg:PaCjM5ZdJnwjM9zW@cluster0.j3zo3x9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+
+
+const MONGODB_URI ='mongodb+srv://easypg:PaCjM5ZdJnwjM9zW@cluster0.j3zo3x9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    credentials: true // Enable credentials (cookies, authorization headers, etc.)
+  };
+  
+
 
 const app = express();
-app.use(cors());
+app.use(cors(corsOptions));
+app.use(cookieParser());
 
 // Store for session
 const store = new MongoDBStore({

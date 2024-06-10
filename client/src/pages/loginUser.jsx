@@ -7,6 +7,7 @@ import "../designs/util.css";
 import { loginUrl } from "../constant/urls";
 import { useLocation } from "react-router-dom";
 import {  useNavigate} from "react-router-dom";
+// import Cookies from 'js-cookie';
 
 function LoginUser() {
   useEffect(() => {
@@ -19,7 +20,7 @@ function LoginUser() {
   const navigate = useNavigate();
   const location = useLocation();
    const [message, setMessage] = useState("");
-
+  //  const cookies = new Cookies();
   useEffect(() => {
     // Check if the message should be displayed based on localStorage
     const storedMessage = localStorage.getItem('loginMessage');
@@ -30,15 +31,17 @@ function LoginUser() {
     // Remove the message after 5 seconds
     const timer = setTimeout(() => {
       setMessage("");
-      localStorage.removeItem('loginMessage'); // Remove the message from local storage
+      localStorage.removeItem('loginMessage'); 
     }, 5000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [location.state?.message]);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
+
+  ////////////////////////////////////////////////////////////////////
   const loginHandler = async (event)=> {
     event.preventDefault();   
     console.log("clicked");
@@ -51,12 +54,20 @@ function LoginUser() {
     };
     try {
       const response = await axios.post(loginUrl,jsonData,{
+        withCredentials:true,
         headers : { 'Content-Type':"application/json"},
       });
       if(response.status === 200){
         console.log("Response:",response.data);
         // navigate('/');
-           navigate('/',{state:{message: "Succesfully logged in bitch"}});
+        // const token =getCookie('user_token'); 
+        
+        const message =  "Succesfully logged in"
+        
+        // localStorage.setItem('token', token);
+        localStorage.setItem('sId_message',message);
+        navigate('/',{state:{message: message}});
+        // Cookies.set('user', token);
       }else{
         console.error("Login failed",response.data);
       }
