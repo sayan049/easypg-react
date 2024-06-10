@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import  '../designs/messfind.css'
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
@@ -15,6 +15,11 @@ import Hamburger from '../components/hamburger';
 
 function MessFind() {
   const [range, setRange] = useState([1000, 3000]);
+  const [checkFeatures,setCheckFestures]=useState([]);
+
+  useEffect(() => {
+    console.log('CheckFeatures updated:', checkFeatures);
+  }, [checkFeatures])
 
   function handleChanges(event, newValue) {
       // Ensure minimum value is not greater than maximum value
@@ -33,11 +38,27 @@ function MessFind() {
       { logo: 'tank-water 1.png', title: 'tank water' },
       { logo: 'wifi (1) 1.png', title: 'WiFi' },
       { logo: 'power 1.png', title: 'Power Backup' },
-      { logo: 'restaurant 1.png', title: 'Kitchen' },
+      { logo: 'restaurant 1.png', title: 'kitchen' },
       { logo: 'single-bed 1.png', title: 'Single Bed' },
       { logo: 'single-bed (1) 1.png', title: 'Double Bed' },
   ];
 
+
+
+    const featureChanges=(e)=>{
+        const {value,checked}=e.target;
+        console.log(checkFeatures);
+        if (checked) {
+            setCheckFestures([...checkFeatures, value]);
+          } else {
+            setCheckFestures(checkFeatures.filter((feature) => feature !== value));
+          }
+          
+      }
+    
+
+
+  
   const [isChecked, setIsChecked] = useState(false);
   const handleToggle = () => {
       setIsChecked(!isChecked);
@@ -80,7 +101,7 @@ function MessFind() {
                           <div className="checkboxicon">
                               <img className="checkimg" src={`${process.env.PUBLIC_URL}/assets/${data.logo}`} alt="" srcSet="" />
                           </div>
-                          <input type="checkbox" className="checki" id={`test${index}`} />
+                          <input type="checkbox" className="checki" id={`test${index}`} onClick={featureChanges} value={data.title} />
                           <label style={{ bottom: "4px" }} htmlFor={`test${index}`} />
                           <div className="checkboxtxt flex aligncentre">{data.title}</div>
                       </div>
@@ -94,13 +115,13 @@ function MessFind() {
                   <div className="togglebtn flex aligncentre"> map view<ToggleSwitch isChecked={isChecked} handleToggle={handleToggle} /> </div>
                   <div className="shortby"><Dropdown /></div>
               </div>
-              <div className="messbody" style={{ display: isChecked ? "inline-block"  : "grid" }}>
+              
               {/* display: isChecked ? (isWideScreen ? "inline-block" : "none")  : (isWideScreen ? "grid" : "block") */}
-                  <MessBars isWideScreen={isWideScreen} />
-                  <MessBars isWideScreen={isWideScreen} />
+                  <MessBars isWideScreen={isWideScreen} isChecked={isChecked} checkFeatures={checkFeatures} />
                   
                   
-              </div>
+                  
+              
               <div className="mapview" style={{ display: isChecked ? "inline-block" : "none", zindex: isChecked ? "9" : "5"}}>
                   <div className="mapcontainer">
                       {/* <GoogleMapReact

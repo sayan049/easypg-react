@@ -328,6 +328,7 @@ body {
   max-height: calc(100vh - 92px);
   display: grid;
   grid-template-columns: auto auto;
+  /* grid-template-columns: repeat(2, 1fr); */
   z-index: 8;
 }
 .mess div div{
