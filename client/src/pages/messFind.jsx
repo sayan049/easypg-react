@@ -43,7 +43,7 @@ function MessFind() {
       setIsChecked(!isChecked);
   };
 
-  const isWideScreen = useMediaQuery('(min-width:1500px)');
+  const isWideScreen = useMediaQuery('(min-width:1700px)');
   console.log(isWideScreen);
 
   return (
@@ -96,14 +96,10 @@ function MessFind() {
               </div>
               <div className="messbody" style={{ display: isChecked ? "inline-block"  : "grid" }}>
               {/* display: isChecked ? (isWideScreen ? "inline-block" : "none")  : (isWideScreen ? "grid" : "block") */}
-                  <MessBars />
-                  <MessBars />
-                  <MessBars />
-                  <MessBars />
-                  <MessBars />
-                  <MessBars />
-                  <MessBars />
-                  <MessBars />
+                  <MessBars isWideScreen={isWideScreen} />
+                  <MessBars isWideScreen={isWideScreen} />
+                  
+                  
               </div>
               <div className="mapview" style={{ display: isChecked ? "inline-block" : "none", zindex: isChecked ? "9" : "5"}}>
                   <div className="mapcontainer">

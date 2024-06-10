@@ -312,7 +312,7 @@ body {
 
 .messimg{
   height: 12em;
-  width: 20vw;
+  width: 11vw;
 }
 .mess{
   /* box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px; */
@@ -321,7 +321,7 @@ body {
   margin: 25px;
   border-radius: 10px;
   padding: 15px;
-
+  /* width:calc(50vw - 336px); */
 }
 .messbody{
   overflow-y: auto; /* Enable vertical scrolling */
@@ -373,7 +373,7 @@ body {
 } */
 .twobtns button {
   font-family: system-ui, sans-serif;
-  font-size: 22px;
+  /* font-size: 1.2vw; */
   cursor: pointer;
   padding: 0.1em .6em;
   /* font-weight: bold; */
@@ -395,4 +395,29 @@ body {
   position: absolute;
   height:calc(100vh-92px);
   z-index: 5;
+}
+
+.messaddress{
+  width: 16vw;
+  word-wrap: break-word;
+}
+
+.features{
+  width: 16vw;
+  word-wrap: break-word;
+}
+
+.wide-button {
+  /* font-size: 1.2vw; */
+  font-size: 20px;
+  height: 40px;
+  /* width: 8.2vw; */
+  width: 155px;
+}
+
+.narrow-button {
+  /* font-size: 1.5vw; */
+  font-size: 19px;
+  height: 40px;
+  width: 155px;
 }

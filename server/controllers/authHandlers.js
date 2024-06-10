@@ -126,6 +126,17 @@ exports.signupHandlerOwner = async (req, res) => {
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   };
+
+  exports.findMess=  async (req, res) => {
+    try {
+        const pgOwners = await PgOwner.find();
+        console.log(pgOwners)
+        res.status(200).json(pgOwners);
+    } catch (error) {
+        console.error('Error fetching PG owners:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
   
    
 // firstName: '',
