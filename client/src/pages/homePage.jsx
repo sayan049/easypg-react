@@ -10,6 +10,7 @@ function HomePage() {
   const location = useLocation();
   const [message, setMessage] = useState("");
   const [searchItem, setSearchItem] = useState('');
+  const [IsAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     document.title = "Find your nearest paying guest";
@@ -53,6 +54,7 @@ function HomePage() {
         const decodedToken = JSON.parse(jsonPayload);
         const userId = decodedToken.id;
         const userEmail = decodedToken.email;
+        setIsAuthenticated(true)
         console.log('User ID:', userId);
         console.log('User Email:', userEmail);
       } catch (error) {
@@ -62,6 +64,7 @@ function HomePage() {
       console.error('Token is not present in cookies');
     }
   }, []);
+
 
   return (
     <body>
@@ -77,10 +80,17 @@ function HomePage() {
               <div className="service">Service</div>
               <div className="contact_us">Contact us</div>
             </div>
-            <div className="login-box">
-              <p className="login-text">
-                <Link style={{ textDecoration: "none", color: "white", fontSize: "13px" }} to="/ProviderSeeker">Login</Link>
-              </p>
+            <div className="login-box">{ !IsAuthenticated &&
+               <p className="login-text">
+               <Link style={{ textDecoration: "none", color: "white", fontSize: "14px" }} to="/ProviderSeeker">Login</Link>
+             </p>}
+             {
+              IsAuthenticated &&
+              <p className="logout-text">
+              <Link style={{ textDecoration: "none", color: "white", fontSize: "13px" }} to="/ProviderSeeker">Log Out</Link>
+            </p>}
+             
+             
             </div>
           </div>
         </header>

@@ -57,8 +57,8 @@ header {
         align-items: center;
         border-radius: 31px;
         background: #2CA4B5;
-        width: 72px;
-        height: 25px;
+        width: 82px;
+        height: 28px;
         flex-shrink: 0;
     }
 
@@ -69,6 +69,16 @@ header {
         font-style: normal;
         font-weight: 700;
         line-height: normal;
+        letter-spacing: 0.5px;
+    }
+    .logout-text {
+        color: rgba(255, 255, 255, 0.97);
+        font-family: 'Montserrat';
+        font-size: 10px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        letter-spacing: 0.5px;
     }
 }
 
