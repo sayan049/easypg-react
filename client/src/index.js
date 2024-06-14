@@ -3,82 +3,54 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ProviderSeeker from './pages/ProviderSeeker';
 import SignUpUser from './pages/signupUser';
-import LoginUser from './pages/loginUser'
+import LoginUser from './pages/loginUser';
 import LandingPage from "./pages/landingPage";
 import LoginOwner from "./pages/LoginOwner";
 import SignupOwner from './pages/signupOwner';
 import MessFind from './pages/messFind';
-import MailVerify from './pages/mailVerify'
+import MailVerify from './pages/mailVerify';
 import ProtectedRoute from './pages/protectedRoute';
-// import HomePage from './pages/homePage';
-// import FlashMessage from './components/flashMessage';
+import SecurityCheck from './pages/securityCheck';
 
-
-const router = createBrowserRouter([
-  {
-    path:"/",
-    element:<App/>
-  },
-  // {
-    
-  //   path: "/home",
-  //   element: <HomePage/>
-  // },
-  {
-    path:"/ProviderSeeker",
-    element:<ProviderSeeker/>
-  },
-  {
-    path: "/signupforuser",
-    element:<SignUpUser/>
-  },
-  {
-    path:"/LoginUser",
-    element:<LoginUser/>
-  },
-  {
-    path:"/LandingPage",
-    element:<LandingPage/>
-  },
-  {
-    path:"/LoginOwner",
-    element:<LoginOwner/>
-  },
-  {
-    path:"/signupowner",
-    element:<SignupOwner/>
-  },
-  {
-    path:"/MessFind",
-    element:<MessFind/>
-  },
-  // {
-  //   path:"/Flashmessage",
-  //   element:<FlashMessage/>
-  // }
-  {
-    path:"/MailVerify",
-    element:<MailVerify/>
-  },
-  {
-    path:"/protected",
-    element:<ProtectedRoute/>
-  }
-  
-
-])
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    {/* <App /> */}
-    <RouterProvider router={router}/>
+    <Router>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/ProviderSeeker" element={<ProviderSeeker />} />
+        <Route path="/signupforuser" element={
+          <ProtectedRoute>
+            <SignUpUser />
+          </ProtectedRoute>
+        } />
+        <Route path="/Secure" element={<SecurityCheck/>}/>
+        <Route path="/LoginUser" element={
+          <ProtectedRoute>
+            <LoginUser />
+          </ProtectedRoute>
+        } />
+        <Route path="/LandingPage" element={<LandingPage />} />
+        <Route path="/LoginOwner" element={
+         
+            <LoginOwner />
+          
+        } />
+        <Route path="/signupowner" element={<SignupOwner />} />
+        <Route path="/MessFind" element={<MessFind />} />
+        <Route path="/MailVerify" element={<MailVerify />} />
+        {/* Example of using ProtectedRoute for another route */}
+        <Route path="/protected" element={
+          <ProtectedRoute>
+            <SecurityCheck/>
+          </ProtectedRoute>
+        } />
+      </Routes>
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );
-
 
 reportWebVitals();

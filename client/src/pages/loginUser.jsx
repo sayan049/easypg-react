@@ -7,7 +7,7 @@ import "../designs/util.css";
 import { loginUrl } from "../constant/urls";
 import { useLocation } from "react-router-dom";
 import {  useNavigate} from "react-router-dom";
-// import Cookies from 'js-cookie';
+// import ProtectedRoute from "./protectedRoute";
 
 function LoginUser() {
   useEffect(() => {

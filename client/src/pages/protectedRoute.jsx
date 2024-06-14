@@ -1,41 +1,52 @@
-// import React, { useEffect, useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
-// import * as jwt_decode from 'jwt-decode'; // Import jwt_decode for decoding tokens
-// import { useCookies } from 'react-cookie'; // Import useCookies from react-cookie
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-// function ProtectedRoute() {
-//     const navigate = useNavigate();
-//     const [isAuthenticated, setIsAuthenticated] = useState(false);
-//     const [cookies] = useCookies(['token']); // Use useCookies hook to access cookies
 
-//     useEffect(() => {
-//         const token = cookies.token; // Access token from cookies
-//         if (token) {
-//             try {
-//                 const decoded = jwt_decode(token);
-//                 console.log('User ID:', decoded.id);
-//                 console.log('User Email:', decoded.email);
-//                 setIsAuthenticated(true);
-//             } catch (error) {
-//                 console.error('Error decoding token:', error);
-//                 // navigate('/login');
-//             }
-//         } else {
-//             console.error('Token is not present in cookies');
-//             // navigate('/login');
-//         }
-//     }, [navigate, cookies.token]); // Add cookies.token to dependency array
+function ProtectedRoute({ children }) {
+  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+  }
 
-//     return (
-//         <div>
-//             {isAuthenticated ? (
-//                 <>
-//                     <h1>Protected Route</h1>
-//                     <p>This is a protected route. Only authenticated users can see this.</p>
-//                 </>
-//             ) : null}
-//         </div>
-//     );
-// }
+  useEffect(() => {
+    const token = getCookie('user_token'); 
+    if (token) {
+      try {
+        const base64Url = token.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split("")
+            .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+            .join("")
+        );
 
-// export default ProtectedRoute;
+        const decodedToken = JSON.parse(jsonPayload);
+        const userId = decodedToken.id;
+        const userEmail = decodedToken.email;
+        console.log(userId + " from protced route");
+        console.log(userEmail + " from protced route");
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        // navigate('/login');
+      }
+    } else {
+      console.error("Token is not present in cookies");
+      // navigate('/login');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
+
+  return <div>{children}</div>;
+}
+
+export default ProtectedRoute;
