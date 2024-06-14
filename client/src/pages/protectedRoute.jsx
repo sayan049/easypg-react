@@ -27,8 +27,10 @@ function ProtectedRoute({ children }) {
         const decodedToken = JSON.parse(jsonPayload);
         const userId = decodedToken.id;
         const userEmail = decodedToken.email;
+        const name =  decodedToken.name;
         console.log(userId + " from protced route");
         console.log(userEmail + " from protced route");
+        console.log(name+" from protected route");
         setIsAuthenticated(true);
       } catch (error) {
         console.error("Error decoding token:", error);

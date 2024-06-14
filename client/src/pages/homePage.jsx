@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-// import Cookies from 'js-cookie';
+import { CSSTransition } from "react-transition-group"; 
 import "../designs/style.css";
 import FlashMessage from "../components/flashMessage";
+import UserProfile from '../components/UserProfile';
+import '../designs/UserProfile.css'
 
 function HomePage() {
   const navigate = useNavigate();
@@ -11,6 +13,7 @@ function HomePage() {
   const [message, setMessage] = useState("");
   const [searchItem, setSearchItem] = useState('');
   const [IsAuthenticated, setIsAuthenticated] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     document.title = "Find your nearest paying guest";
@@ -50,13 +53,15 @@ function HomePage() {
         const jsonPayload = decodeURIComponent(atob(base64).split('').map(c =>
           '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
         ).join(''));
-
+  
         const decodedToken = JSON.parse(jsonPayload);
         const userId = decodedToken.id;
         const userEmail = decodedToken.email;
-        setIsAuthenticated(true)
+        const name = decodedToken.name;
+        setIsAuthenticated(true);
         console.log('User ID:', userId);
         console.log('User Email:', userEmail);
+        console.log('user name:', name);
       } catch (error) {
         console.error('Error decoding or accessing token:', error);
       }
@@ -64,7 +69,10 @@ function HomePage() {
       console.error('Token is not present in cookies');
     }
   }, []);
-
+  
+  const handleLogout = () =>{
+    navigate('/Secure');
+  }
 
   return (
     <body>
@@ -79,19 +87,30 @@ function HomePage() {
               <div className="about">About</div>
               <div className="service">Service</div>
               <div className="contact_us">Contact us</div>
-            </div>
-            <div className="login-box">{ !IsAuthenticated &&
-               <p className="login-text">
-               <Link style={{ textDecoration: "none", color: "white", fontSize: "14px" }} to="/ProviderSeeker">Login</Link>
-             </p>}
-             {
-              IsAuthenticated &&
-              <p className="logout-text">
-              <Link style={{ textDecoration: "none", color: "white", fontSize: "13px" }} to="/ProviderSeeker">Log Out</Link>
-            </p>}
-             
-             
-            </div>
+              </div>
+            {IsAuthenticated? (
+              <>
+                <div className="imageProfile" onClick={() => setShowDropdown(!showDropdown)}>
+                  <UserProfile/>
+                  <CSSTransition
+                      in={showDropdown}
+                      timeout={300}
+                      classNames="dropdownanimation"
+                      unmountOnExit
+                    >
+                      <div className="login-box">
+                      {/* <p className="login-text" onclick={handleLogout}>Log Out</Link></p> */}
+                      <p className="logout-text" onClick={handleLogout}>Log Out</p>
+                      </div>
+                    </CSSTransition>
+
+                </div>
+              </>
+            ) : (
+              <div className="login-box">
+               <p className="login-text"> <Link style={{ textDecoration: "none", color: "white", fontSize: "14px" }} to="/ProviderSeeker">Login</Link></p>
+              </div>
+            )}
           </div>
         </header>
         <div style={{ position: "absolute", textAlign: "center", height: "auto", width: "100%" }}>
