@@ -52,7 +52,7 @@ exports.loginHandler = async (req, res) => {
             console.log("Email is not verified");
             return res.status(403).send('Not verified credentials');
         }
-        const token = jwt.sign({id: user._id, email:user.email}, JWT_SECRET, { expiresIn:'5d' });
+        const token = jwt.sign({id: user._id, email:user.email,name:user.firstName}, JWT_SECRET, { expiresIn:'5d' });
         // const token = 'abc'
 
         // req.session.user = user;
