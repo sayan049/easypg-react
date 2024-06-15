@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-// import { CSSTransition } from "react-transition-group"; 
+
 import "../designs/style.css";
 import FlashMessage from "../components/flashMessage";
 import UserProfile from '../components/UserProfile';
 import '../designs/UserProfile.css'
+import Cookies from 'js-cookie'
 
 function HomePage() {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ function HomePage() {
   const [searchItem, setSearchItem] = useState('');
   const [IsAuthenticated, setIsAuthenticated] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [logoutStatus, setLogoutStatus] = useState("");
+  // const isMounted = useRef(false);;
 
   useEffect(() => {
     document.title = "Find your nearest paying guest";
@@ -37,14 +40,14 @@ function HomePage() {
 
     return () => clearTimeout(timer);
   }, [location.state?.message]);
-  function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-  }
+  // function getCookie(name) {
+  //   const value = `; ${document.cookie}`;
+  //   const parts = value.split(`; ${name}=`);
+  //   if (parts.length === 2) return parts.pop().split(';').shift();
+  // }
   useEffect(() => {
-    const token = getCookie('user_token'); // Access token from cookies
-    console.log('Token from cookies:', token); // Debugging log
+    const token = Cookies.get('user_token'); 
+    console.log('Token from cookies:', token); 
     if (token) {
       try {
         // Decode token
@@ -69,10 +72,23 @@ function HomePage() {
       console.error('Token is not present in cookies');
     }
   }, []);
+  useEffect(() => {
+    const storedLogoutStatus = localStorage.getItem('logoutStatus');
+    if (storedLogoutStatus) {
+      setLogoutStatus(storedLogoutStatus);
+      setTimeout(() => {
+        localStorage.removeItem('logoutStatus');
+        setLogoutStatus(""); // Clear the state as well
+      }, 5000);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    Cookies.remove('user_token');
+    localStorage.setItem('logoutStatus', "Successfully Logged out");
+    window.location.reload();
+  };
   
-  const handleLogout = () =>{
-    navigate('/Secure');
-  }
 
   return (
     <body>
@@ -117,6 +133,14 @@ function HomePage() {
             </div>
           )}
         </div>
+        <div style={{ position: "absolute", textAlign: "center", height: "auto", width: "100%" }}>
+          {logoutStatus && (
+            <div style={{ color: "green", fontSize: "20px" }}>
+              {logoutStatus}
+            </div>
+          )}
+        </div>
+      
         <div className="body_container">
           <div>
             <div>

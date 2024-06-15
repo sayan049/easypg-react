@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie'
 
 
 function ProtectedRoute({ children }) {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(";").shift();
-  }
+ 
 
   useEffect(() => {
-    const token = getCookie('user_token'); 
+    const token = Cookies.get('user_token'); 
     if (token) {
       try {
         const base64Url = token.split(".")[1];
