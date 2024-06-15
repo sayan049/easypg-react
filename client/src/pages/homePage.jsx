@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { CSSTransition } from "react-transition-group"; 
+// import { CSSTransition } from "react-transition-group"; 
 import "../designs/style.css";
 import FlashMessage from "../components/flashMessage";
 import UserProfile from '../components/UserProfile';
@@ -92,17 +92,14 @@ function HomePage() {
               <>
                 <div className="imageProfile" onClick={() => setShowDropdown(!showDropdown)}>
                   <UserProfile/>
-                  <CSSTransition
-                      in={showDropdown}
-                      timeout={300}
-                      classNames="dropdownanimation"
-                      unmountOnExit
-                    >
-                      <div className="login-box">
+                 
+                      <div className="dropdown-content">
                       {/* <p className="login-text" onclick={handleLogout}>Log Out</Link></p> */}
-                      <p className="logout-text" onClick={handleLogout}>Log Out</p>
+                      <p className="" >Dashboard</p>
+                      <hr className="HR" />
+                      <p className="logoutuser" onClick={handleLogout}>Log Out</p>
                       </div>
-                    </CSSTransition>
+                    
 
                 </div>
               </>

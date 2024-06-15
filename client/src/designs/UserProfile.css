@@ -16,4 +16,6 @@
     
     /* background-color: rgba(255, 255, 255, 0.7); Optional: Adds a semi-transparent background to the initials*/
   } 
-  
+.dropdown:hover .dropdown-content {display: block;}
+
+.dropdown:hover .dropbtn {background-color: #3e8e41;}
