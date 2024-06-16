@@ -4,9 +4,11 @@ export const loginUrl = `${baseUrl}/auth/login`
 export const signupUrl = `${baseUrl}/auth/signup`
 
 export const mailVerifyUrl = `${baseUrl}/mail/verify-email`;
+export const mailVerifyOwnerUrl = `${baseUrl}/mailOwner/verify-email-pgOwner`;
 export const protectedUrl = `${baseUrl}/auth/protected`;
 
 export const signupownerUrl = `${baseUrl}/auth/signupOwner`
 export const findMessUrl = `${baseUrl}/api/findMess`
+export const loginOwnerUrl = `${baseUrl}/auth/loginOwner`
 
 export const baseurl =`${baseUrl}`;

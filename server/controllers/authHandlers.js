@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const sendmail = require('../controllers/emailSender');
 const jwt = require('jsonwebtoken');
+const sendmailOwner = require('./emailSenderOwner');
+
 
 //jwt Secret
 const JWT_SECRET = 'sit on my face';
@@ -48,7 +50,7 @@ exports.loginHandler = async (req, res) => {
 
         }
         
-        if(user.is_verified == 0){
+        if(user.is_verified === false){
             console.log("Email is not verified");
             return res.status(403).send('Not verified credentials');
         }
@@ -63,7 +65,7 @@ exports.loginHandler = async (req, res) => {
           sameSite: 'strict' ,
           // secure:true// Adjust according to your needs (e.g., 'lax', 'none' for cross-site)
       });
-      res.status(200).send('Login successful');
+        res.status(200).send('Login successful');
         console.log("succesfully logged in")
         console.log(token)
         
@@ -134,6 +136,7 @@ exports.signupHandlerOwner = async (req, res) => {
         facility
       });
       console.log(newUser);
+      sendmailOwner(req.body.firstName,email,newUser._id);
       return res.status(201).json(newUser);
     } catch (error) {
       console.error('Error creating user:', error);
@@ -153,14 +156,43 @@ exports.signupHandlerOwner = async (req, res) => {
 }
   
    
-// firstName: '',
-// lastName: '',
-// email: '',
-// address: '',
-// password: '',
-// pincode: '',
-// mobileNo: '',
-// messName: '',
-// aboutMess: '',
-// location: '',
-// profilePhoto:''
+exports.loginHandlerOwner = async (req,res)=>{
+  const email = req.body.email;
+  const password  = req.body.password;
+  try {
+    const pgOwner = await PgOwner.findOne({email:email});
+    if (!pgOwner) {
+      console.log("Pg Owner not found");
+      return res.status(401).send("Invalid email or password");
+    }
+    const passWordValid = bcrypt.compare(password, pgOwner.password);
+    if (!passWordValid) {
+      console.log("Invlid email or password");
+      return res.status(401).send("Invalid email or password");
+    }
+    if(passWordValid && pgOwner.is_verified_Owner === false){
+      console.log("Email not verified");
+      return res.status(403).send('Not verified credentials');
+    }
+    const token = jwt.sign({id: pgOwner._id, email:pgOwner.email,name:pgOwner.firstName}, JWT_SECRET, { expiresIn:'30d' });
+    
+
+    
+    res.cookie('owner_token', token, {
+      // httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', 
+      maxAge: 30 * 24 * 60 * 60 * 1000, 
+      sameSite: 'strict' ,
+      secure:true
+  });
+    res.status(200).send('Login successful');
+    console.log("succesfully logged in");
+    console.log(token);
+
+    
+  } catch (error) {
+      console.log("Error: ",error);
+      res.status(404).send('Failed to log in');
+  }
+   
+}

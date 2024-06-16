@@ -58,6 +58,10 @@ const pgOwnerSchema = new mongoose.Schema({
         type: String,
         trim: true
     }],
+   is_verified_Owner:{
+        type: Boolean,
+        default: false
+   } 
 });
 
 const PgOwner = mongoose.model('Pgowner', pgOwnerSchema);
