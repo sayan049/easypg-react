@@ -14,6 +14,7 @@ import MessFind from './pages/messFind';
 import MailVerify from './pages/mailVerify';
 import ProtectedRoute from './pages/protectedRoute';
 import SecurityCheck from './pages/securityCheck';
+import MailVerifyOwner from './pages/mailVerifyOwner';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -41,6 +42,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/signupowner" element={<SignupOwner />} />
         <Route path="/MessFind" element={<MessFind />} />
         <Route path="/MailVerify" element={<MailVerify />} />
+        <Route path="/MailVerifyOwner" element={<MailVerifyOwner/>}/>
         {/* Example of using ProtectedRoute for another route */}
         <Route path="/protected" element={
           <ProtectedRoute>

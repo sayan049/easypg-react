@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../modules/user'); // Ensure you have the correct path to your User model
+const Pg = require('../modules/pgProvider'); // Ensure you have the correct path to your User model
 
 // Email verification route
-router.get('/verify-email', async (req, res) => {
+router.get('/verify-email-pgOwner', async (req, res) => {
     try {
         const userId = req.query.id;
 
@@ -12,7 +12,7 @@ router.get('/verify-email', async (req, res) => {
             return res.status(400).json({ verified: 'error' });
         }
 
-        const user = await User.findById(userId);
+        const user = await Pg.findById(userId);
         console.log("Initial fetch user:", user);
 
         if (!user) {
@@ -20,13 +20,13 @@ router.get('/verify-email', async (req, res) => {
             return res.status(404).json({ verified: 'false' });
         }
 
-        if (user.is_verified) {
+        if (user.is_verified_Owner) {
             console.log(`User ID ${userId} is already verified.`);
             return res.status(200).json({ verified: 'false' });
         }
 
         // Update the is_verified field to true
-        user.is_verified = true;
+        user.is_verified_Owner = true;
         await user.save();
         console.log("User after verification update:", user);
 

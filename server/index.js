@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const authRouts = require('./routes/auth');
 const mailRoute = require('./routes/mailVerifierRoute')
-
+const mailVerifyOwner = require('./routes/mailVerifyOwner');
 const path =require('path');
 
 
@@ -59,6 +59,7 @@ mongoose
 app.use('/uploads', express.static('uploads'));
 app.use('/auth', authRouts);
 app.use('/mail',mailRoute);
+app.use('/mailOwner',mailVerifyOwner);
 
 
 // Error handling

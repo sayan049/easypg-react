@@ -1,6 +1,10 @@
 import React,{useState} from 'react';
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
+import {loginOwnerUrl} from '../constant/urls'
+// import { useLocation } from "react-router-dom";
+import {  useNavigate} from "react-router-dom";
+import axios from 'axios';
 
 import "../designs/loginForMessOwner.css"
 
@@ -13,9 +17,35 @@ function LoginOwner() {
   const [password,setPassword]=useState('');
   const [isPasswordVisible,setIsPasswordVisible]=useState(false);
 
+  const navigate = useNavigate();
   const togglePassword = () => {
     setIsPasswordVisible(!isPasswordVisible);
 };
+const loginHandlerOwner = async (event) =>{
+  event.preventDefault();
+  console.log("clicked");
+  const jsonData = {
+    email:email,
+    password:password
+  };
+  try {
+    const response = await axios.post(loginOwnerUrl,jsonData,{
+      withCredentials :true,
+      headers : { 'Content-Type':"application/json"}
+  });
+  if(response.status === 200){
+    console.log("succesfully logged in");
+    navigate('/');
+  }
+  else{
+    console.error("Login failed",response.data);
+  }
+
+
+  } catch (error) {
+    console.log("Error sending JSON data:",error);
+  }
+}
 
 
   return (
@@ -39,7 +69,7 @@ function LoginOwner() {
       </div>
       <div className="parent-col2">
         <div className="col2O">
-          <form className="loginOwnerform" action="#" method="post">
+          <form className="loginOwnerform"   onSubmit={loginHandlerOwner}>
             <input type="text" name="email" id="e" className="pad e-text" placeholder="Email" autocomplete="off" value={email} onChange={(e)=>setEmail(e.target.value)} />
             <div className="password-con"><input type={isPasswordVisible ? "text" : "password"} id="pass" name="password"  className="p-text" placeholder="Password" autocomplete="off" value={password} onChange={(e)=> setPassword(e.target.value)}/>
             <img id="ey" src={isPasswordVisible ? "../assets/openEye.png" : "../assets/closeEye.png"}alt={isPasswordVisible ? "../assets/openEye.png" : "../assets/closeEye.png"}  onClick={togglePassword} style={{ cursor: 'pointer' }} /></div>
