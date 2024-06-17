@@ -68,6 +68,7 @@ function LoginUser() {
         localStorage.setItem('sId_message',message);
         navigate('/',{state:{message: message}});
         // Cookies.set('user', token);
+        window.location.reload();
       }else{
         console.error("Login failed",response.data);
       }

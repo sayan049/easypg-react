@@ -1,11 +1,23 @@
-import React from 'react'
+import React from 'react';
+import { useAuth } from '../contexts/AuthContext';
 
-function securityCheck() {
-  return (
-    <div>
-      ALL SET
-    </div>
-  )
-}
+const SecurityCheck = () => {
+  const { isAuthenticated } = useAuth();
 
-export default securityCheck
+  // Conditionally render content based on authentication status
+  if (isAuthenticated) {
+    return (
+      <div>
+        ALL SET FOR AUTHENTICATED USERS
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        ALL SET FOR UNAUTHENTICATED USERS
+      </div>
+    );
+  }
+};
+
+export default SecurityCheck;
