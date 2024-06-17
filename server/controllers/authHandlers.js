@@ -34,49 +34,39 @@ exports.signupHandler = async (req, res) => {
 }
 
 exports.loginHandler = async (req, res) => {
-    const email = req.body.email;
-    const pass = req.body.password;
-    try {
-        const user = await User.findOne({ email });
-        if (!user) {
-            console.log("user not found");
-            return res.status(401).send('Invalid username or password');
+  const email = req.body.email;
+  const pass = req.body.password;
+  try {
+      const user = await User.findOne({ email });
+      if (!user) {
+          console.log("user not found");
+          return res.status(401).send('Invalid username or password');
+      }
+      const isPassValid = await bcrypt.compare(pass, user.password);
+      if (!isPassValid) {
+          console.log("invalid user or password");
+          return res.status(401).send('Invalid username or password');
+      }
+      
+      if(user.is_verified === false){
+          console.log("Email is not verified");
+          return res.status(403).send('Not verified credentials');
+      }
 
-        }
-        const isPassValid = await bcrypt.compare(pass, user.password);
-        if (!isPassValid) {
-            console.log("invalid user or password");
-            return res.status(401).send('Invalid username or password');
-
-        }
-        
-        if(user.is_verified === false){
-            console.log("Email is not verified");
-            return res.status(403).send('Not verified credentials');
-        }
-        const token = jwt.sign({id: user._id, email:user.email,name:user.firstName}, JWT_SECRET, { expiresIn:'5d' });
-        // const token = 'abc'
-
-        // req.session.user = user;
-        res.cookie('user_token', token, {
-          // httpOnly: true,
-          secure: process.env.NODE_ENV === 'production', // Set to true if serving over HTTPS
-          maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days in milliseconds
-          sameSite: 'strict' ,
-          // secure:true// Adjust according to your needs (e.g., 'lax', 'none' for cross-site)
-      });
-        res.status(200).send('Login successful');
-        console.log("succesfully logged in")
-        console.log(token)
-        
-            
-        
-        
-    } catch (error) {
-        console.error('Error logging in user:', error);
-        res.status(500).send('Failed to login');
-    }
+      // No need to set a JWT token, session will handle authentication
+      req.session.user = {
+        id:user._id,
+        name:user.firstName
+      };
+      // localStorage.setItem('ii',req.sessionId)
+      res.status(200).send('Login successful');
+      console.log("successfully logged in");
+  } catch (error) {
+      console.error('Error logging in user:', error);
+      res.status(500).send('Failed to login');
+  }
 };
+
 
 exports.signupHandlerOwner = async (req, res) => {
     //console.log(req.files); // Log req.files to see if files are being received
