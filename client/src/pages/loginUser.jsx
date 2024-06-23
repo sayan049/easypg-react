@@ -61,13 +61,15 @@ function LoginUser() {
         console.log("Response:",response.data);
         // navigate('/');
         // const token =getCookie('user_token'); 
+        const userData = response.data.user; // Extracting the user data from the response
+        const message = `Welcome ${userData.name}!`; 
         
-        const message =  "Succesfully logged in"
         
         // localStorage.setItem('token', token);
         localStorage.setItem('sId_message',message);
         navigate('/',{state:{message: message}});
         // Cookies.set('user', token);
+        console.log("succesfully logged in");
         window.location.reload();
       }else{
         console.error("Login failed",response.data);
