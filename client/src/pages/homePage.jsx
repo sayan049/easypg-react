@@ -9,7 +9,6 @@ import "../designs/UserProfile.css";
 
 import { useAuth } from "../contexts/AuthContext";
 
-
 function HomePage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,8 +17,7 @@ function HomePage() {
   // const [IsAuthenticated, setIsAuthenticated] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [logoutStatus, setLogoutStatus] = useState("");
-  const { userName ,isAuthenticated,handleLogout,logoutSuccess } = useAuth();
- 
+  const { userName, isAuthenticated, handleLogout, logoutSuccess } = useAuth();
 
   useEffect(() => {
     document.title = "Find your nearest paying guest";
@@ -71,9 +69,6 @@ function HomePage() {
     handleLogout();
   };
 
-  
-    
-
   return (
     <body>
       <section className="first-section">
@@ -97,7 +92,6 @@ function HomePage() {
                   <UserProfile />
 
                   <div className="dropdown-content">
-                   
                     <p className="">Dashboard</p>
                     <hr className="HR" />
                     <p className="logoutuser" onClick={handleLogoutClick}>
