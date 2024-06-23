@@ -50,12 +50,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/MailVerify" element={<MailVerify />} />
           <Route path="/MailVerifyOwner" element={<MailVerifyOwner/>}/>
           {/* Example of using ProtectedRoute for another route */}
-          {/* <Route path="/protected" element={
+          <Route path="/protected" element={
              <ProtectedRoute>
               <SecurityCheck/>
              </ProtectedRoute>
             
-          } /> */}
+          } />
         </Routes>
       </Router>
     </AuthProvider> {/* End of AuthProvider */}

@@ -1,45 +1,34 @@
 import React, { useEffect, useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 
 const UserProfile = () => {
   const [profileData, setProfileData] = useState(null);
+  const {userName} = useAuth();
+  const {isAuthenticated} = useAuth();
 
-  function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-  }
+ 
 
   useEffect(() => {
-    const token = getCookie('user_token'); // Access token from cookies
-    console.log('Token from cookies:', token); // Debugging log
-    if (token) {
+   
+    if (isAuthenticated) {
       try {
         // Decode token
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c =>
-          '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-        ).join(''));
-
-        const decodedToken = JSON.parse(jsonPayload);
-        const userId = decodedToken.id;
-        const userEmail = decodedToken.email;
-        const Username = decodedToken.name; // Make sure your token includes a 'name' field
+       
         
-        console.log('User ID:', userId);
-        console.log('User Email:', userEmail);
-        console.log('user name:', Username);
+        // console.log('User ID:', userId);
+        // console.log('User Email:', userEmail);
+        console.log('user name:', userName);
         
         // Generate initials based on the user's name
-        const nameParts = Username.split(' ');
+        const nameParts = userName.split(' ');
         const firstNameInitial = nameParts[0]?.charAt(0)?.toUpperCase() || '';
         const lastNameInitial = nameParts[1]?.charAt(0)?.toUpperCase() || '';
 
         // Generate a random background color
         const generateBackgroundColor = () => {
           let hash = 0;
-          for (let i = 0; i < Username.length; i++) {
-            hash = Username.charCodeAt(i) + ((hash << 5) - hash);
+          for (let i = 0; i < userName.length; i++) {
+            hash = userName.charCodeAt(i) + ((hash << 5) - hash);
           }
           let color = '#';
           for (let i = 0; i < 3; i++) {
@@ -60,7 +49,7 @@ const UserProfile = () => {
     } else {
       console.error('Token is not present in cookies');
     }
-  }, []);
+  }, [userName,isAuthenticated]);
 
   if (!profileData) {
     return null; 

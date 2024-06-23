@@ -2,10 +2,8 @@ const express = require('express');
 const router = express.Router();
 const authHandlers = require('../controllers/authHandlers');
 const upload = require('../middleware/upload');
-const verifyMail = require('../controllers/emailSender');
-// Assuming mailpath is correctly imported
 
-// Correctly import ensureAuthenticated middleware
+
 const ensureAuthenticated = require('../middleware/is-auth');
 
 router.post('/signup', authHandlers.signupHandler);
@@ -26,4 +24,16 @@ router.get('/protected', ensureAuthenticated, (req, res) => {
       res.json({ isAuthenticated: false });
     }
   });
+  router.get('/logout', (req, res) => {
+    
+    req.session.destroy(err => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send({ error: 'Failed to log out' });
+      }
+      res.clearCookie('connect.sid', { httpOnly: true });
+      res.send('Logged out successfully.');
+    });
+  });
+  
 module.exports = router;

@@ -179,7 +179,7 @@ exports.loginHandlerOwner = async (req,res)=>{
     console.log("succesfully logged in");
     console.log(token);
 
-    
+       
   } catch (error) {
       console.log("Error: ",error);
       res.status(404).send('Failed to log in');

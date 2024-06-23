@@ -39,7 +39,7 @@ app.use(session({
     cookie: {
         httpOnly: 'true', // Corrected to a string
         secure: process.env.NODE_ENV === 'production', // Set to true in production
-        maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days in milliseconds
+        maxAge: 10 * 24 * 60 * 60 * 1000, // 5 days in milliseconds
         sameSite: 'strict' // Consider adjusting for development
     }
 }));
