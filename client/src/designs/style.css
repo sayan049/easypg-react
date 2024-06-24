@@ -203,6 +203,8 @@ input[type="search"] {
     border-radius: 44px 0 0 44px;
     outline: none;
     border: none;
+    font-size: small;
+    line-height: initial;
 }
 
 input[type="submit"] {
@@ -213,6 +215,7 @@ input[type="submit"] {
     border: none;
     cursor: pointer;
     font-size: 20px;
+    line-height: initial;
 }
 
 

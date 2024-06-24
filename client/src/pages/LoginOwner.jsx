@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { loginOwnerUrl } from "../constant/urls";
-// import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -15,8 +15,25 @@ function LoginOwner() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  // const location = useLocation();
-  // const [message, setMessage] = useState("");
+  const location = useLocation();
+  const [message, setMessage] = useState("");
+  useEffect(() => {
+    // Check if the message should be displayed based on localStorage
+    const storedMessage = localStorage.getItem('loginMessageOwner');
+    if (storedMessage) {
+      setMessage(location.state?.message || "");
+    }
+
+    // Remove the message after 5 seconds
+    const timer = setTimeout(() => {
+      setMessage("");
+      localStorage.removeItem('loginMessageOwner'); 
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [location.state?.message]);
+
+ 
 
   const navigate = useNavigate();
   const togglePassword = () => {
@@ -92,6 +109,9 @@ function LoginOwner() {
           </div>
         </div>
         <div className="parent-col2">
+        <div style={{  position:"absolute",top:"9em",width:'32%'}}>
+              {message && <p style={{textAlign:"center", color:"red"}}>{message}</p>}
+              </div>
           <div className="col2O">
             <form className="loginOwnerform" onSubmit={loginHandlerOwner}>
               <input
@@ -104,7 +124,7 @@ function LoginOwner() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <div className="password-con">
+              <div className="password-connnn">
                 <input
                   type={isPasswordVisible ? "text" : "password"}
                   id="pass"
@@ -115,8 +135,8 @@ function LoginOwner() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <img
-                  id="ey"
+                <img 
+                  id="eynnn"
                   src={
                     isPasswordVisible
                       ? "../assets/openEye.png"
@@ -128,7 +148,7 @@ function LoginOwner() {
                       : "../assets/closeEye.png"
                   }
                   onClick={togglePassword}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: "pointer"}}
                 />
               </div>
 

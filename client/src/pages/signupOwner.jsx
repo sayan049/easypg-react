@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import '../designs/sign_up_for_owner.css';
 import { signupownerUrl } from '../constant/urls';
+import { useNavigate } from 'react-router-dom';
 
 function SignupOwner() {
   const [image, setImage] = useState(null);
@@ -9,6 +10,7 @@ function SignupOwner() {
   const maxLength = 5;
   const [imgArray, setImgArray] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
   const amenities = [
     { id: 'test1', label: 'A/C', imgSrc: './assets/air-conditioner 1.png' },
@@ -116,7 +118,18 @@ function SignupOwner() {
       const response = await axios.post(signupownerUrl, formDataToSend, {
         headers: { "Content-Type": 'multipart/form-data' }
       });
-      console.log("Response:", response.data);
+      
+      if (response.status === 201) {
+        console.log("Response:", response.data);
+        
+        // Redirect to login page upon successful signup
+        const a = "Please verify your email to log in"
+        localStorage.setItem('loginMessageOwner',a);
+        navigate('/LoginOwner',{state: {message:a}});
+        
+      } else {
+        console.error("Signup failed:", response.data);
+      }
     } catch (error) {
       console.error("Error creating user:", error.response ? error.response.data : error.message);
     }

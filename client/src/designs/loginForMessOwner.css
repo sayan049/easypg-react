@@ -85,11 +85,13 @@ body {
 .big {
     position: absolute;
     margin-top: -40px;
+    display: inline;
 
 }
 
 .small {
     position: absolute;
+    display: inline;
 }
 
 .parent-svg {
@@ -126,7 +128,7 @@ body {
 .e-text {
     background: rgba(17, 110, 123, 0.10);
 }
-.password-con{
+.password-connnn{
     width: 70%;
     height: 10%;
     /* box-sizing: border-box; */
@@ -146,12 +148,13 @@ body {
     box-sizing: border-box;
     
 }
-#ey{
+#eynnn{
     position: absolute;
     height: 15px;
     /* margin-right: 33px; */
     margin-left: -52px;
-    margin-top: 18px;
+    margin-top: 15px;
+    display: inline;
 
 }
 

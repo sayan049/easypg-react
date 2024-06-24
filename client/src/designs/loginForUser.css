@@ -308,6 +308,7 @@ body {
     /* margin-bottom: 19px; */
     margin-left: -3.4rem;
     /* margin-right: -2px;*/
+    display: inline;
 }
 
 .parentnotAccount {
