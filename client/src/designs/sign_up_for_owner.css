@@ -55,6 +55,7 @@
     display: flex;
     margin-right: 3px;
     align-items: center;
+    ;
 }
 
 .inputbox input {
@@ -70,9 +71,10 @@
     font-family: Montserrat;
     font-size: medium;
     font-style: normal;
-    /* font-weight: 600; */
+    
     line-height: normal;
     outline-color: #2CA4B5;
+    
 }
 
 .rightform {

@@ -68,6 +68,8 @@ input[type="first-name"] {
     background: rgba(17, 110, 123, 0.10);
     text-indent: 15px;
     font-size: medium;
+    font-weight: 100;
+    color: black;
 }
 
 input[type="last-name"] {
@@ -79,6 +81,8 @@ input[type="last-name"] {
     border: none;
     text-indent: 15px;
     font-size: medium;
+    font-weight: 100;
+    color: black;
 }
 
 .email {
@@ -94,6 +98,8 @@ input[type="last-name"] {
     border: none;
     text-indent: 15px;
     font-size: medium;
+    font-weight: 100;
+    color: black;
 }
 
 .address {
@@ -109,6 +115,8 @@ input[type="address"] {
     border: none;
     text-indent: 15px;
     font-size: medium;
+    font-weight: 100;
+    color: black;
 }
 
 input[type="pin"] {
@@ -120,6 +128,8 @@ input[type="pin"] {
     border: none;
     text-indent: 15px;
     font-size: medium;
+    font-weight: 100;
+    color: black;
 }
 
 .create-account {
@@ -138,7 +148,7 @@ input[type="pin"] {
     height: 40px;
     width: 80%;
     border-radius: 44px;
-    border: 2px solid #2CA4B5;
+    
     outline: black;
     background: rgba(17, 110, 123, 0.10);
 }
@@ -148,6 +158,8 @@ input[type="pin"] {
 .pass {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
+    
 }
 
 .pass img {
@@ -155,17 +167,22 @@ input[type="pin"] {
     width: 20px;
     object-fit: contain;
     cursor: pointer;
+    position: absolute;
+    margin-right: 15px;
+
 }
 
 .pass input {
-    border-radius: 44px 0 0 44px;
-    outline: none;
+    border-radius: 44px;
+    outline-color: #2CA4B5;
     border: none;
     height: 40px;
-    width: 80%;
+    width: 100%;
     background: none;
     text-indent: 15px;
     font-size: medium;
+    font-weight: 100;
+    color: black;
 }
 
 /* input[type="text"] {
@@ -187,11 +204,12 @@ input[type="pin"] {
     outline-color: #2CA4B5;
     border: none;
     display: flex;
-    gap: 5%;
+    gap: 2%;
     align-items: center;
+    justify-content: center;
     font-size: medium;
     color: rgba(23, 23, 23, 0.544);
-    font-weight: 600;
+    font-weight: 100;
 }
 
 .google-sign-up img {

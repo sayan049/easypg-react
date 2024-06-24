@@ -25,11 +25,15 @@ body {
 h2 {
     color: #2CA4B5;
     margin-left: 20%;
+    font-size: x-large;
+    font-weight: 400;
 }
 
 h3 {
     margin-left: 20%;
     color: #000000;
+    font-size: larger;
+    font-weight: 400;
 }
 
 #seeker {
