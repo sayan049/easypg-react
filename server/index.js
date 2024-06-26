@@ -1,66 +1,44 @@
+// index.js
 const express = require('express');
 const cors = require('cors');
-const session = require('express-session');
-const MongoDBStore = require('connect-mongodb-session')(session);
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const dotenv = require('dotenv');
+dotenv.config();
+
 const authRoutes = require('./routes/auth');
 const mailRoute = require('./routes/mailVerifierRoute');
 const mailVerifyOwner = require('./routes/mailVerifyOwner');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-
-const MONGODB_URI = 'mongodb+srv://easypg:PaCjM5ZdJnwjM9zW@cluster0.j3zo3x9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
-const corsOptions = {
-    origin: 'http://localhost:3000',
-    credentials: true // Enable credentials (cookies, authorization headers, etc.)
-};
+const connectDB = require('./config/mongoDB'); // Adjusted path
+const sessionConfig = require('./config/sessionStore'); // Adjusted path
 
 const app = express();
+
+const ORIGIN = process.env.ORIGIN || 'http://localhost:3000';
+const PORT = process.env.PORT || 8080;
+
+const corsOptions = {
+    origin: ORIGIN,
+    credentials: true
+};
+
 app.set('trust proxy', 1);
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
-// Store for session
-const store = new MongoDBStore({
-    uri: MONGODB_URI,
-    collection: 'sessions',
-    autoRemove: 'native'
-});
-
 // Middleware
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(session({
-    secret: "sit on my face", 
-    resave: false,
-    saveUninitialized: false,
-    store: store,
-    cookie: {
-        httpOnly: 'true', // Corrected to a string
-        secure: process.env.NODE_ENV === 'production', // Set to true in production
-        maxAge: 10 * 24 * 60 * 60 * 1000, // 5 days in milliseconds
-        sameSite: 'lax' ,// Consider adjusting for development
-        
-    }
-}));
-
-
+app.use(sessionConfig);
 app.use('/api', authRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/auth', authRoutes);
 app.use('/mail', mailRoute);
 app.use('/mailOwner', mailVerifyOwner);
 
-// Connection
-mongoose
-   .connect(MONGODB_URI)
-   .then(result => {
-        console.log('Connected to MongoDB');
-    })
-   .catch(err => {
-        console.log(err);
-    });
+// Connect to MongoDB
+connectDB();
 
 // Error handling
 app.use((err, req, res, next) => {
@@ -68,8 +46,6 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something broke!');
 });
 
-// Server
-const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`Server is running on port:\n http://localhost:${PORT}/`);
 });

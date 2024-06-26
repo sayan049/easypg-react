@@ -3,11 +3,10 @@ const PgOwner = require("../modules/pgProvider");
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const sendmail = require("../controllers/emailSender");
-const jwt = require("jsonwebtoken");
 const sendmailOwner = require("./emailSenderOwner");
 
 //jwt Secret
-const JWT_SECRET = "sit on my face";
+
 
 exports.signupHandler = async (req, res) => {
   const email = req.body.email;
