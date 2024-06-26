@@ -1,17 +1,19 @@
 const nodemailer = require('nodemailer');
-const User = require('../modules/user');
-const PgOwner = require('../modules/pgProvider');
+require('dotenv').config();
+
+const USER_EMAIL = process.env.USER_EMAIL;
+const USER_PASSWORD = process.env.USER_PASSWORD;
 
 async function sendmailOwner(name,email,userId){
     const transporter = nodemailer.createTransport({
         service:'gmail',
         auth:{
-            user:'projecteasypg@gmail.com',
-            pass:'recwdevnxhxsezuk'
+            user:USER_EMAIL,
+            pass:USER_PASSWORD
         }
     })
     const mailOptions = {
-        from:'projecteasypg@gmail.com',
+        from:USER_EMAIL,
         to:  email,
         subject:'Verification Email',
         html:'<h3>Hi, '+name+' Click <a href="http://localhost:3000/MailVerifyOwner?id='+userId+'">here</a> to verify you email </h3>'
@@ -24,13 +26,5 @@ async function sendmailOwner(name,email,userId){
     }
 
 }
-// verifying route email
-// exports.verifyMail = async(req,res)=>{
-//     try {
-//         const updateInfo = await User.updateOne ({_id : req.query.id},{$set : {is_verified:1}});
-//         console.log(updateInfo);
-//     } catch (error) {
-//         console.log("Error: ", error);
-//     }
-// }
+
 module.exports = sendmailOwner;
