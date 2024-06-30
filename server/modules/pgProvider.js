@@ -61,7 +61,14 @@ const pgOwnerSchema = new mongoose.Schema({
    is_verified_Owner:{
         type: Boolean,
         default: false
-   } 
+   } ,
+   googleId: { 
+    type: String,
+    unique: true 
+},
+image:{
+    type:String
+}
 });
 
 const PgOwner = mongoose.model('Pgowner', pgOwnerSchema);

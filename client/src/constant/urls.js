@@ -9,7 +9,7 @@ export const protectedUrl = `${baseUrl}/auth/protected`;
 export const logoutUrl = `${baseUrl}/auth/logout`;
 
 export const signupownerUrl = `${baseUrl}/auth/signupOwner`
-export const findMessUrl = `${baseUrl}/api/findMess`
+export const findMessUrl = `${baseUrl}/auth/findMess`
 export const loginOwnerUrl = `${baseUrl}/auth/loginOwner`
 
 export const baseurl =`${baseUrl}`;

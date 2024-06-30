@@ -79,6 +79,9 @@ function LoginUser() {
         console.log("Error sending JSON data:",error);
     }
   }
+  const loginwithgoogle = ()=>{
+    window.open("http://localhost:8080/auth/google/callback","_self")
+  }
 
   return (
     <body id="container">
@@ -139,7 +142,7 @@ function LoginUser() {
                 <br />
                 <div className="or">Or</div>
                 <br />
-                <div className="parentSignupGoogle">
+                <div className="parentSignupGoogle" onClick={loginwithgoogle}>
                   <div className="signupGoogle">
                     <img
                       className="googleimg"
