@@ -21,7 +21,7 @@ function Dropdown() {
     <li>
       <a href="#0" className='sb flex aligncentre justifyspace'>{text} <img  style={{height:"16px"}}  src="./assets/dropdoown.png" alt="" srcset=""/> </a>
       
-      <ul  style={ { visibility: desplay ? "visible": "hidden" }}>
+      <ul  style={ { display: desplay ? "block": "none" }}>
         {dropdownData.map((val)=>{
          return (<li><a href="#0"  onClick={() => changeText(val.name)}>{val.name}</a></li>);
         })}

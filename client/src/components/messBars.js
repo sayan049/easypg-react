@@ -11,11 +11,11 @@ function MessBars({ isWideScreen ,isChecked, checkFeatures }) {
     const fetchData = async () => {
       try {
         const res = await axios.get(findMessUrl);
-        const filteredData = res.data.filter(owner => 
+        const filteredData = res.data.filter(owner =>
           checkFeatures.every(feature => owner.facility[0].split(',').includes(feature))
       );
       
-       console.log(filteredData)
+     //  console.log(filteredData)
         setMessData(filteredData);
         
       } catch (err) {
@@ -36,7 +36,7 @@ function MessBars({ isWideScreen ,isChecked, checkFeatures }) {
         <div className="mess flex" key={owner._id}>
           <div><img src={`${baseurl}/uploads/${owner.profilePhoto}`} alt="" className='messimg' /></div>
           <div style={{ width: "100%", padding: "0px 25px" }}>
-            <div className="messname" style={{ fontSize: "x-large" }}>{owner.messName}</div>
+            <div className="messname" style={{ fontSize: '160%' }}>{owner.messName}</div>
             <div className="messaddress">{owner.address}</div>
             <div className="features">{owner.aboutMess}</div>
             <div className="twobtns">
