@@ -13,8 +13,8 @@ router.get("/findMess", authHandlers.findMess);
 //   res.json({ message: "This is a protected route", user: req.session.user });
 // });
 router.get("/check-session", (req, res,next) => {
-  if (req.session && req.session.user) {
-    res.json({ isAuthenticated: true, user: req.session.user });
+  if (req.session && req.session.user || req.session && req.session.passport && req.session.passport.user ) {
+    res.json({ isAuthenticated: true, user: req.session.passport.user });
     next();
   } else {
     res.status(401).json({ isAuthenticated: false });
