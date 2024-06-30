@@ -120,27 +120,25 @@
   * Make this absolute positioned
   * at the top left of the screen
   */
- #menu
- {
-   position: absolute;
-   width: 310px;
-   margin: -100px 0 0 -75px;
-   padding: 50px;
-   padding-top: 125px;
-   left: 63px;
-   /* overflow-y: auto; */
-   background: #ededed;
-   list-style-type: none;
-   -webkit-font-smoothing: antialiased;
-   /* to stop flickering of text in safari */
-   
-   transform-origin: 0% 0%;
-   transform: translate(-100%, 0);
-   
-   transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
-   /* max-height: calc(100vh - 100px); */
- }
- 
+  #menu {
+    height: 115vh;
+    position: absolute;
+    width: 30%;
+    /* margin: -100px 0 0 -75px; */
+    padding: 50px;
+    padding-top: 125px;
+    left: -14px;
+    bottom: 0p;
+    top: -154px;
+    /* overflow-y: auto; */
+    background: #ededed;
+    list-style-type: none;
+    -webkit-font-smoothing: antialiased;
+    transform-origin: 0% 0%;
+    transform: translate(-100%, 0);
+    transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
+    /* max-height: calc(100vh - 100px); */
+}
  #menu li
  {
    padding: 10px 0;
