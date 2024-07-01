@@ -12,14 +12,27 @@ router.get("/findMess", authHandlers.findMess);
 // router.get("/protected", ensureAuthenticated, (req, res) => {
 //   res.json({ message: "This is a protected route", user: req.session.user });
 // });
-router.get("/check-session", (req, res,next) => {
-  if (req.session && req.session.user || req.session && req.session.passport && req.session.passport.user ) {
-    res.json({ isAuthenticated: true, user: req.session.passport.user });
-    next();
+router.get("/check-session", (req, res) => {
+  let user = null;
+  let loginMethod = null;
+
+  if (req.session && req.session.user) {
+    
+    user = req.session.user;
+    loginMethod = 'local';
+  } else if (req.session && req.session.passport && req.session.passport.user) {
+    
+    user = req.session.passport.user;
+    loginMethod = 'google';
+  }
+
+  if (user) {
+    res.status(200).json({ isAuthenticated: true, user, loginMethod });
   } else {
     res.status(401).json({ isAuthenticated: false });
   }
 });
+
 router.get("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {

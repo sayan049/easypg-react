@@ -27,6 +27,7 @@ passport.use(
         const userSession = {
           id: existingUser._id,
           name: existingUser.firstName,
+          image:existingUser.image
         };
         return done(null, userSession);
       } else {
@@ -44,6 +45,7 @@ passport.use(
         const userSession = {
           id: newUser._id,
           name: newUser.firstName,
+          image:newUser.image
         };
         return done(null, userSession);
       }
