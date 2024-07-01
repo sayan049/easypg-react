@@ -6,13 +6,14 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [userName, setUserName] = useState(null); 
+  const [userName, setUserName] = useState(null);
+  const [userImage, setUserImage] = useState(null); 
   const [logoutSuccess, setLogoutSuccess] = useState(false);
 
   useEffect(() => {
     const checkSession = async () => {
       try {
-        setLoading(true); // Start loading
+        setLoading(true);
         const response = await fetch(`${baseurl}/auth/check-session`, {
           method: 'GET',
           credentials: 'include',
@@ -25,15 +26,22 @@ export const AuthProvider = ({ children }) => {
         console.log(data);
         setIsAuthenticated(data.isAuthenticated);
         if (data.isAuthenticated) {
-          setUserName(data.user.name); // Correctly accessing the user ID from the response
+          setUserName(data.user.name);
+          if (data.loginMethod === 'google') {
+            setUserImage(data.user.image); 
+          } else if (data.loginMethod === 'local') {
+            setUserImage(null); 
+          }
         } else {
-          setUserName(null); // Clear user ID if not authenticated
+          setUserName(null);
+          setUserImage(null); 
         }
       } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);
         setIsAuthenticated(false);
+        setUserImage(null);
       } finally {
-        setLoading(false); // Stop loading regardless of success or failure
+        setLoading(false); 
       }
     };
 
@@ -42,9 +50,9 @@ export const AuthProvider = ({ children }) => {
 
   const handleLogout = async () => {
     try {
-      setLoading(true); // Start loading
+      setLoading(true); 
       const response = await fetch(`${baseurl}/auth/logout`, {
-        method: 'GET', // Assuming your logout endpoint expects a POST request
+        method: 'GET',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json'
@@ -53,22 +61,21 @@ export const AuthProvider = ({ children }) => {
 
       if (!response.ok) throw new Error('Failed to log out');
 
-      
       setIsAuthenticated(false);
       setUserName(null);
+      setUserImage(null); 
       setLogoutSuccess(true);
       setTimeout(() => setLogoutSuccess(false), 3000);
-     
     } catch (error) {
       console.error('There has been a problem with your fetch operation:', error);
     } finally {
-      setLoading(false); // Stop loading regardless of success or failure
+      setLoading(false); 
     }
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userName, setIsAuthenticated, handleLogout,logoutSuccess }}>
-      {!loading? children : <div>Loading...</div>}
+    <AuthContext.Provider value={{ isAuthenticated, userName, userImage, setIsAuthenticated, handleLogout, logoutSuccess }}>
+      {!loading ? children : <div>Loading...</div>}
     </AuthContext.Provider>
   );
 };

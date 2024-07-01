@@ -3,28 +3,16 @@ import { useAuth } from '../contexts/AuthContext';
 
 const UserProfile = () => {
   const [profileData, setProfileData] = useState(null);
-  const {userName} = useAuth();
-  const {isAuthenticated} = useAuth();
-
- 
+  const { userName, userImage, isAuthenticated } = useAuth();
 
   useEffect(() => {
-   
     if (isAuthenticated) {
-      try {
-        // Decode token
-       
-        
-        // console.log('User ID:', userId);
-        // console.log('User Email:', userEmail);
-        console.log('user name:', userName);
-        
-        // Generate initials based on the user's name
+      if (!userImage) { 
         const nameParts = userName.split(' ');
         const firstNameInitial = nameParts[0]?.charAt(0)?.toUpperCase() || '';
         const lastNameInitial = nameParts[1]?.charAt(0)?.toUpperCase() || '';
 
-        // Generate a random background color
+       
         const generateBackgroundColor = () => {
           let hash = 0;
           for (let i = 0; i < userName.length; i++) {
@@ -38,26 +26,33 @@ const UserProfile = () => {
           return color;
         };
 
-        // Set the profile data state
+        
         setProfileData({
           backgroundColor: generateBackgroundColor(),
           initials: `${firstNameInitial}${lastNameInitial}`
         });
-      } catch (error) {
-        console.error('Error decoding or accessing token:', error);
+      } else {
+        
+        setProfileData({
+          imageUrl: userImage
+        });
       }
     } else {
-      console.error('Token is not present in cookies');
+      setProfileData(null); 
     }
-  }, [userName,isAuthenticated]);
+  }, [userName, userImage, isAuthenticated]);
 
   if (!profileData) {
-    return null; 
+    return null;
   }
 
   return (
     <div className="user-profile" style={{ backgroundColor: profileData.backgroundColor }}>
-      <span className="initials">{profileData.initials}</span>
+      {profileData.imageUrl ? (
+        <img src={profileData.imageUrl} alt="Profile" className="profile-image" />
+      ) : (
+        <div className="initials">{profileData.initials}</div>
+      )}
     </div>
   );
 };
