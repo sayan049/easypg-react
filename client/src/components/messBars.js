@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { baseurl, findMessUrl } from '../constant/urls';
 import "../designs/messfind.css";
+import '../designs/messbars.css'
 
 function MessBars({ isWideScreen ,isChecked, checkFeatures }) {
   const [messData, setMessData] = useState([]);
