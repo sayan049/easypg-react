@@ -17,7 +17,8 @@ function HomePage() {
   // const [IsAuthenticated, setIsAuthenticated] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [logoutStatus, setLogoutStatus] = useState("");
-  const { userName, isAuthenticated, handleLogout, logoutSuccess } = useAuth();
+  const { userName, IsAuthenticated, handleLogout, logoutSuccess,isOwnerAuthenticated,ownerName } = useAuth();
+ 
 
   useEffect(() => {
     document.title = "Find your nearest paying guest";
@@ -43,18 +44,30 @@ function HomePage() {
   }, [location.state?.message]);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (IsAuthenticated ) {
       try {
         // Decode token
 
         console.log("user name:", userName);
-      } catch (error) {
+      }
+       catch (error) {
         console.error("Error decoding or accessing token:", error);
       }
-    } else {
+    }else if(isOwnerAuthenticated){
+      try {
+        // Decode token
+
+        console.log("user name:", ownerName);
+       
+      }
+       catch (error) {
+        console.error("Error decoding or accessing token:", error);
+      }
+    }
+     else {
       console.error("Token is not present in cookies");
     }
-  }, [isAuthenticated, userName]);
+  }, [IsAuthenticated, userName,isOwnerAuthenticated,ownerName]);
   useEffect(() => {
     const storedLogoutStatus = localStorage.getItem("logoutStatus");
     if (storedLogoutStatus) {
@@ -83,7 +96,7 @@ function HomePage() {
               <div className="service">Service</div>
               <div className="contact_us">Contact us</div>
             </div>
-            {isAuthenticated ? (
+            {IsAuthenticated || isOwnerAuthenticated ? (
               <>
                 <div
                   className="imageProfile"

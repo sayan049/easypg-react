@@ -4,15 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated } = useAuth();
-  console.log(isAuthenticated)
+  const { IsAuthenticated,isOwnerAuthenticated} = useAuth();
+  console.log(IsAuthenticated)
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated ) {
+    if (IsAuthenticated || isOwnerAuthenticated ) {
       navigate('/'); // Redirect to another page, e.g., home page
     }
-  }, [isAuthenticated, navigate]);
+  }, [IsAuthenticated,isOwnerAuthenticated, navigate]);
 
   return <div>{children}</div>;
 };
