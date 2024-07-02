@@ -19,9 +19,9 @@ function Dropdown() {
     <nav onClick={updateDisplay} className='dropdownnav'>
   <ul style={{bottom:"-8px"}}>
     <li>
-      <a href="#0" className='sb flex aligncentre justifyspace'>{text} <img  style={{height:"16px"}}  src="./assets/dropdoown.png" alt="" srcset=""/> </a>
+      <a href="#0" className='sb flex aligncentre justifyspace' style={{ fontSize: 'smaller' }} >{text} <img  style={{height:"16px"}}  src="./assets/dropdoown.png" alt="" srcset=""/> </a>
       
-      <ul  style={ { display: desplay ? "block": "none" }}>
+      <ul  style={ { display: desplay ? "block": "none" , fontSize: 'smaller' }}>
         {dropdownData.map((val)=>{
          return (<li><a href="#0"  onClick={() => changeText(val.name)}>{val.name}</a></li>);
         })}

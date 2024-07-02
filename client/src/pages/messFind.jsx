@@ -65,7 +65,8 @@ const isWideScreen = useMediaQuery('(min-width:1481px)');
 console.log(isWideScreen);
 
 return (
-    <div style={{ padding: "0px 45px " }}>
+    <body style={{overflow:"hidden"}}>
+    <div style={{ padding: "0px 20px " }}>
         <Hamburger Slider={Slider} Typography={Typography} Box={Box} handleChanges={handleChanges} range={range} checkboxesData={checkboxesData}  isWideScreen={isWideScreen}/>
         <div className="leftCon inlineblock " style={{display : isWideScreen ? "inline-block" : "none", width : isWideScreen ? "20% !important":"110% !important"}} >
             <div className="priceFilter">
@@ -99,8 +100,8 @@ return (
                             <img className="checkimg" src={`${process.env.PUBLIC_URL}/assets/${data.logo}`} alt="" srcSet="" />
                         </div>
                         <input type="checkbox" className="checki" id={`test${index}`} onClick={featureChanges} value={data.title} />
-                        <label style={{ bottom: "4px" }} htmlFor={`test${index}`} />
-                        <div className="checkboxtxt flex aligncentre" style={{fontSize:"normal"}}>{data.title}</div>
+                        <label style={{ bottom: "4px", height:"25px" , width:"25px" }} htmlFor={`test${index}`} />
+                        <div className="checkboxtxt flex aligncentre" style={{fontSize:"medium"}}>{data.title}</div>
                     </div>
                 ))}
             </div>
@@ -133,6 +134,7 @@ return (
             </div>
         </div>
     </div>
+    </body>
 );
 }
 
