@@ -137,7 +137,7 @@ input[type="pin"] {
     background: #2CA4B5;
     border: none;
     height: 40px;
-    width: 80%;
+    width: 180%;
     text-align: center;
     font-size: medium;
     color: White;
@@ -196,7 +196,7 @@ input[type="pin"] {
     font-size: medium;
 } */
 
-.google-sign-up {
+/* .google-sign-up {
     width: 80%;
     height: 40px;
     border-radius: 44px;
@@ -215,7 +215,7 @@ input[type="pin"] {
 .google-sign-up img {
     height: 29px;
     width: 29px;
-}
+} */
 
 
 

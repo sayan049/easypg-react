@@ -79,9 +79,10 @@ function LoginUser() {
         console.log("Error sending JSON data:",error);
     }
   }
-  const loginwithgoogle = ()=>{
-    window.open("http://localhost:8080/auth/google/callback","_self")
-  }
+  const loginwithgoogle = () => {
+    window.location.href = 'http://localhost:8080/auth/google?state=' + encodeURIComponent(JSON.stringify({ type: 'student' }));
+  };
+  
 
   return (
     <body id="container">
@@ -151,7 +152,7 @@ function LoginUser() {
                       srcset=""
                     />
                     <div className="signupwithgoogleText">
-                      Sign up with Google Account
+                      Log in with Google 
                     </div>
                   </div>
                 </div>

@@ -66,6 +66,11 @@ function LoginOwner() {
     }
   };
 
+  const loginwithgoogleOwner = () => {
+  window.location.href = 'http://localhost:8080/auth/google-owner?state=' + encodeURIComponent(JSON.stringify({ type: 'owner' }));
+};
+
+
   return (
     <body>
       <div className="parent-to-all">
@@ -176,7 +181,7 @@ function LoginOwner() {
                   </Link>
                 </a>
               </div>
-              <div className="parent-google">
+              <div className="parent-google" onClick={loginwithgoogleOwner}>
                 <img src="../assets/google.png" alt="" />
                 <div className="logGoogle-text">Log in with Google</div>
               </div>
