@@ -15,8 +15,8 @@
  {
    display: block;
    position: relative;
-   top: 50px;
-   left: -30px;
+   top: 35px;
+   left: -10px;
    
    z-index: 1;
    
@@ -121,11 +121,11 @@
   * at the top left of the screen
   */
   #menu {
-    height: 115vh;
+    height: 116vh;
     position: absolute;
     width: 30%;
     /* margin: -100px 0 0 -75px; */
-    padding: 50px;
+    /* padding: 50px; */
     padding-top: 125px;
     left: -14px;
     bottom: 0p;
@@ -138,6 +138,8 @@
     transform: translate(-100%, 0);
     transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
     /* max-height: calc(100vh - 100px); */
+    display: flex;
+    justify-content: center;
 }
  #menu li
  {
