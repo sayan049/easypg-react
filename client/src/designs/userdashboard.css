@@ -1,0 +1,167 @@
+/* Existing CSS */
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@800&family=Montserrat:wght@500&family=Press+Start+2P&family=Urbanist:wght@600&family=Work+Sans:wght@800&display=swap');
+
+/* @import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@700&family=Montserrat:wght@300;800&family=Press+Start+2P&family=Urbanist:wght@200&family=Work+Sans:wght@200&display=swap');
+*/
+html,
+.dashboard-container {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100%;
+    font-family: Montserrat;
+    /* background-color: beige; */
+    display: flex;
+}
+.left-profile{
+    height: 100%;
+    width: 11%;
+    background-color: #8ed5df;
+    display: flex;
+    flex-direction: column;
+}
+.main-page{
+    height: 15%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.page-left{
+    color: #2CA4B5;
+    font-family: Montserrat;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+}
+.page-right{
+    color: #1B2093;
+    font-family: Montserrat;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+}
+.hr-left{
+    border:1.2px solid white
+}
+.profile-dashboard{
+    margin-left: 15px;
+    height: 8%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+.Dashboard-d{
+    height: 8%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin-left: 15px;
+}
+.profile-name{
+    margin-left: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    color: white;
+    cursor: pointer;
+}
+.down-arr{
+    height: 8px;
+    margin-top: 2px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+.dashboard-img{
+    height:28px;
+}
+.main-dashboard{
+    color: white;
+    margin-left: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* New CSS for the right side part */
+.right-content {
+    height: 100%;
+    width: 89%;
+    background-color: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.profile-details {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.profile-details h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.profile-details p {
+    font-size: 16px;
+    margin: 10px 0;
+}
+
+.profile-details strong {
+    font-weight: 700;
+}
+
+/* Graph container */
+.graph-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Additional styles */
+.line-chart {
+    max-width: 100%;
+    height: auto;
+}
+
+/* New styles for personal details layout */
+.personal-details {
+    width: 100%;
+}
+
+.details-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.details-row:last-child {
+    border-bottom: none;
+}
+
+.details-title {
+    font-weight: bold;
+}
+
+.details-value {
+    color: #555;
+}
+
+.details-edit {
+    color: #007bff;
+    cursor: pointer;
+}
+
+.details-verified {
+    color: green;
+    margin-left: 5px;
+}
