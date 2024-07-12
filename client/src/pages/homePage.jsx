@@ -105,7 +105,7 @@ function HomePage() {
                   <UserProfile />
 
                   <div className="dropdown-content">
-                    <p className="">Dashboard</p>
+                    <p className=""  > <Link  style={{fontSize:"16px"}} to="/UserDashboard">Profile</Link></p>
                     <hr className="HR" />
                     <p className="logoutuser" onClick={handleLogoutClick}>
                       Log Out
