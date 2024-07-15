@@ -7,7 +7,6 @@ const sendmailOwner = require("./emailSenderOwner");
 
 //jwt Secret
 
-
 exports.signupHandler = async (req, res) => {
   const email = req.body.email;
   // const name = req.body.Firstname;
@@ -22,6 +21,7 @@ exports.signupHandler = async (req, res) => {
     const newUser = await User.create({
       ...req.body,
       password: hashedPassword,
+      
     });
     console.log(newUser);
     console.log("---------------------------------------------------");
@@ -56,14 +56,30 @@ exports.loginHandler = async (req, res) => {
     // No need to set a JWT token, session will handle authentication
     req.session.user = {
       id: user._id,
-      name: user.firstName,
+      name: user.firstName +" "+ user.lastName,
+      type: "student",
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      address: user.address,
+      pin: user.pin,
+      is_verified:user.is_verified,
+      
     };
     // localStorage.setItem('ii',req.sessionId)
     res.status(200).send({
       message: "Login successful",
       user: {
         id: user._id,
-        name: user.firstName,
+        name: user.firstName +" "+ user.lastName,
+        type: "student",
+        firstName:user.firstName,
+        lastName:user.lastName,
+        email:user.email,
+        address:user.address,
+        pin:user.pin,
+        is_verified:user.is_verified,
+       
       },
     });
     console.log("successfully logged in");
@@ -130,6 +146,7 @@ exports.signupHandlerOwner = async (req, res) => {
       profilePhoto,
       messPhoto,
       facility,
+      
     });
     console.log(newUser);
     sendmailOwner(req.body.firstName, email, newUser._id);
@@ -171,13 +188,43 @@ exports.loginHandlerOwner = async (req, res) => {
     }
     req.session.user = {
       id: pgOwner._id,
-      name: pgOwner.firstName,
+      name: pgOwner.firstName+" "+pgOwner.lastName,
+      type: "owner",
+      firstName: pgOwner.firstName,
+      lastName:pgOwner.lastName,
+      email:pgOwner.email,
+      address:pgOwner.address,
+      mobile:pgOwner.mobileNo,
+      pin:pgOwner.pincode,
+      messName:pgOwner.messName,
+      bioMess:pgOwner.aboutMess,
+      location:pgOwner.location,
+      profilePhoto:pgOwner.profilePhoto,
+      messPhoto:pgOwner.messPhoto,
+      facility:pgOwner.facility,
+      is_verified_Owner:pgOwner.is_verified_Owner,
+     
     };
     res.status(200).send({
       message: "Login successful",
       user: {
         id: pgOwner._id,
-        name: pgOwner.firstName,
+        name: pgOwner.firstName+" "+pgOwner.lastName,
+        type: "owner",
+        firstName: pgOwner.firstName,
+        lastName:pgOwner.lastName,
+        email:pgOwner.email,
+        address:pgOwner.address,
+        mobile:pgOwner.mobileNo,
+        pin:pgOwner.pincode,
+        messName:pgOwner.messName,
+        bioMess:pgOwner.aboutMess,
+        location:pgOwner.location,
+        profilePhoto:pgOwner.profilePhoto,
+        messPhoto:pgOwner.messPhoto,
+        facility:pgOwner.facility,
+        is_verified_Owner:pgOwner.is_verified_Owner,
+       
       },
     });
     console.log("succesfully logged in");

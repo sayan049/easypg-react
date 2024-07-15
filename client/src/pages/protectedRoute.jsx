@@ -12,9 +12,11 @@ const ProtectedRoute = ({ children }) => {
     if (IsAuthenticated || isOwnerAuthenticated ) {
       navigate('/'); // Redirect to another page, e.g., home page
     }
+   
   }, [IsAuthenticated,isOwnerAuthenticated, navigate]);
-
+ 
   return <div>{children}</div>;
 };
 
 export default ProtectedRoute;
+ 

@@ -29,7 +29,9 @@ ChartJS.register(
 
 const UserDashboard = () => {
   const [currentView, setCurrentView] = useState('profile');
-  const { userName, IsAuthenticated,   isOwnerAuthenticated, ownerName } = useAuth();
+  const { userName, IsAuthenticated, isOwnerAuthenticated, ownerName, user, owner, loginMethod, type } = useAuth();
+  console.log(loginMethod)
+  console.log(type)
 
   const data = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -91,6 +93,151 @@ const UserDashboard = () => {
     setCurrentView('dashboard');
   };
 
+  const renderStudentProfile = () => (
+    <>
+      <div className="details-row">
+        <div className="details-title">Name</div>
+        <div className="details-value">{user?.name}</div>
+        <div className="details-edit">Edit</div>
+      </div>
+      <div className="details-row">
+        <div className="details-title">Email address</div>
+        <div className="details-value">{user?.email} <span className="details-verified">{user?.is_verified ? 'Verified' : 'Not Verified'}</span></div>
+        <div className="details-edit">Edit</div>
+      </div>
+      {loginMethod === 'local' && (
+        <>
+          <div className="details-row">
+            <div className="details-title">Address</div>
+            <div className="details-value">{user?.address}</div>
+            <div className="details-edit">Edit</div>
+          </div>
+          <div className="details-row">
+            <div className="details-title">PIN</div>
+            <div className="details-value">{user?.pin}</div>
+            <div className="details-edit">Edit</div>
+          </div>
+        </>
+      )}
+      {loginMethod === 'google' && (
+        <>
+          <div className="details-row">
+            <div className="details-title">Address</div>
+            <input className="details-value" placeholder="Add your address" />
+          </div>
+          <div className="details-row">
+            <div className="details-title">PIN</div>
+            <input className="details-value" placeholder="Add your PIN" />
+          </div>
+        </>
+      )}
+    </>
+  );
+
+  const renderOwnerProfile = () => (
+    <>
+      <div className="details-row">
+        <div className="details-title">Name</div>
+        <div className="details-value">{owner?.name}</div>
+        <div className="details-edit">Edit</div>
+      </div>
+      <div className="details-row">
+        <div className="details-title">Email address</div>
+        <div className="details-value">{owner?.email} <span className="details-verified">{owner?.is_verified_Owner ? 'Verified' : 'Not Verified'}</span></div>
+        <div className="details-edit">Edit</div>
+      </div>
+      {loginMethod === 'local' && (
+        <>
+          <div className="details-row">
+            <div className="details-title">Address</div>
+            <div className="details-value">{owner?.address}</div>
+            <div className="details-edit">Edit</div>
+          </div>
+          <div className="details-row">
+            <div className="details-title">Mobile No</div>
+            <div className="details-value">{owner?.mobile}</div>
+            <div className="details-edit">Edit</div>
+          </div>
+          <div className="details-row">
+            <div className="details-title">PIN</div>
+            <div className="details-value">{owner?.pin}</div>
+            <div className="details-edit">Edit</div>
+          </div>
+          <div className="details-row">
+            <div className="details-title">Mess Name</div>
+            <div className="details-value">{owner?.messName}</div>
+            <div className="details-edit">Edit</div>
+          </div>
+          <div className="details-row">
+            <div className="details-title">Bio Mess</div>
+            <div className="details-value">{owner?.bioMess}</div>
+            <div className="details-edit">Edit</div>
+          </div>
+          <div className="details-row">
+            <div className="details-title">Location</div>
+            <div className="details-value">{owner?.location}</div>
+            <div className="details-edit">Edit</div>
+          </div>
+          <div className="details-row">
+            <div className="details-title">Profile Photo</div>
+            <div className="details-value">{owner?.profilePhoto}</div>
+            <div className="details-edit">Edit</div>
+          </div>
+          <div className="details-row">
+            <div className="details-title">Mess Photo</div>
+            <div className="details-value">{owner?.messPhoto}</div>
+            <div className="details-edit">Edit</div>
+          </div>
+          <div className="details-row">
+            <div className="details-title">Facility</div>
+            <div className="details-value">{owner?.facility}</div>
+            <div className="details-edit">Edit</div>
+          </div>
+        </>
+      )}
+      {loginMethod === 'google' && (
+        <>
+          <div className="details-row">
+            <div className="details-title">Address</div>
+            <input className="details-value" defaultValue={owner?.address || ''} />
+          </div>
+          <div className="details-row">
+            <div className="details-title">Mobile No</div>
+            <input className="details-value" defaultValue={owner?.mobile || ''} />
+          </div>
+          <div className="details-row">
+            <div className="details-title">PIN</div>
+            <input className="details-value" defaultValue={owner?.pin || ''} />
+          </div>
+          <div className="details-row">
+            <div className="details-title">Mess Name</div>
+            <input className="details-value" defaultValue={owner?.messName || ''} />
+          </div>
+          <div className="details-row">
+            <div className="details-title">Bio Mess</div>
+            <input className="details-value" defaultValue={owner?.bioMess || ''} />
+          </div>
+          <div className="details-row">
+            <div className="details-title">Location</div>
+            <input className="details-value" defaultValue={owner?.location || ''} />
+          </div>
+          <div className="details-row">
+            <div className="details-title">Profile Photo</div>
+            <input className="details-value" defaultValue={owner?.profilePhoto || ''} />
+          </div>
+          <div className="details-row">
+            <div className="details-title">Mess Photo</div>
+            <input className="details-value" defaultValue={owner?.messPhoto || ''} />
+          </div>
+          <div className="details-row">
+            <div className="details-title">Facility</div>
+            <input className="details-value" defaultValue={owner?.facility || ''} />
+          </div>
+        </>
+      )}
+    </>
+  );
+
   return (
     <div className="dashboard-container">
       <div className='left-profile'>
@@ -120,53 +267,10 @@ const UserDashboard = () => {
         )}
         {currentView === 'profile' && (
           <div className='profile-details'>
-            <h2>Personal Details</h2>
+            <h2 className='h2-profile'>Personal Details</h2>
             <div className="personal-details">
-              <div className="details-row">
-                <div className="details-title">Name</div>
-                <div className="details-value">Patra Sayan</div>
-                <div className="details-edit">Edit</div>
-              </div>
-              <div className="details-row">
-                <div className="details-title">Display name</div>
-                <div className="details-value">Choose a display name</div>
-                <div className="details-edit">Edit</div>
-              </div>
-              <div className="details-row">
-                <div className="details-title">Email address</div>
-                <div className="details-value">sayanpatra017@gmail.com <span className="details-verified">Verified</span></div>
-                <div className="details-edit">Edit</div>
-              </div>
-              <div className="details-row">
-                <div className="details-title">Phone number</div>
-                <div className="details-value">Add your phone number</div>
-                <div className="details-edit">Edit</div>
-              </div>
-              <div className="details-row">
-                <div className="details-title">Date of birth</div>
-                <div className="details-value">Enter your date of birth</div>
-                <div className="details-edit">Edit</div>
-              </div>
-              <div className="details-row">
-                <div className="details-title">Nationality</div>
-                <div className="details-value">Select the country/region you're from</div>
-                <div className="details-edit">Edit</div>
-              </div>
-              <div className="details-row">
-                <div className="details-title">Gender</div>
-                <div className="details-value">Select your gender</div>
-                <div className="details-edit">Edit</div>
-              </div>
-              <div className="details-row">
-                <div className="details-title">Address</div>
-                <div className="details-value">Add your address</div>
-                <div className="details-edit">Edit</div>
-              </div>
-              <div className="details-row">
-                <div className="details-title">Passport details</div>
-                <div className="details-value">Not provided</div>
-                <div className="details-edit">Add passport</div>
-              </div>
+              {type === 'student' && renderStudentProfile()}
+              {type === 'owner' && renderOwnerProfile()}
             </div>
           </div>
         )}

@@ -17,6 +17,7 @@ import ProtectedRoute from "./pages/protectedRoute";
 import SecurityCheck from "./pages/securityCheck";
 import MailVerifyOwner from "./pages/mailVerifyOwner";
 import UserDashboard from "./pages/Dashboard";
+import IsAuth from "./pages/isAuth";
 
 // Create the root once and specify the container
 const root = createRoot(document.getElementById("root")); // Using createRoot directly
@@ -77,7 +78,11 @@ root.render(
               </ProtectedRoute>
             }
           />
-          <Route path="/UserDashboard" element={<UserDashboard/>}/>
+          <Route path="/UserDashboard" element={
+            <IsAuth>
+            <UserDashboard/>
+            </IsAuth>
+            }/>
         </Routes>
       </Router>
     </AuthProvider>
