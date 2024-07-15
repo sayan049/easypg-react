@@ -208,7 +208,7 @@ input[type="search"] {
 }
 
 input[type="submit"] {
-    padding: 18px 15px;
+    /* padding: 18px 15px; */
     background: rgba(255, 255, 255, 0.97);
     color: rgba(44, 164, 181, 0.70);
     border-radius: 0 44px 44px 0;

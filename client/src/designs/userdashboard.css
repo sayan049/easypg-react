@@ -83,6 +83,10 @@ html,
     font-weight: 500;
     cursor: pointer;
 }
+.h2-profile{
+    text-align: center;
+    color: #2CA4B5 ;
+}
 
 /* New CSS for the right side part */
 .right-content {

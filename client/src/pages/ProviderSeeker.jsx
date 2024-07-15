@@ -15,7 +15,7 @@ function ProviderSeeker() {
         <body>
     <div className="main-container">
         <div className="left-container">
-            <h2>Sign Up</h2>
+            <h2 className="h2-provider">Sign Up</h2>
             <h3>Who are you ?</h3>
             <button id="seeker"> <a className="seekera" href="./LoginUser">  <Link style={{textDecoration:"none",color:"white"}} to="/LoginUser">Mess Seeker</Link></a></button>
             <button id="provider"> <a className="seekera p" href="./LandingPage"><Link style={{textDecoration:"none",color:"#2CA4B5"}} to="/LandingPage">Mess Owner</Link></a></button>
