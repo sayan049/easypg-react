@@ -18,63 +18,87 @@ passport.use(
           ? JSON.parse(req.query.state).type
           : "student";
 
-        if (userType === "student") {
-          let existingUser = await User.findOne({
-            email: profile.emails[0].value,
-          });
+        const email = profile.emails[0]?.value;
+        const firstName = profile.name.givenName || profile.displayName;
+        const lastName = profile.name.familyName || " ";
+        const image = profile.photos[0]?.value;
 
-          if (existingUser) {
-            // Return an error if the email is already in use
-            console.log("used email")
-            return done(null, false, { message: "Email is already in use" });
+        // Validate required fields
+        if (!email || !firstName || !image) {
+          return done(new Error("Incomplete profile information from Google"), null);
+        }
+
+        if (userType === "student") {
+          let user = await User.findOne({ email });
+
+          if (user) {
+            // Existing student, create session
+            const userSession = {
+              id: user._id,
+              name: `${user.firstName} ${user.lastName}`,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              email: user.email,
+              image: user.image,
+              is_verified: user.is_verified,
+            };
+            return done(null, { userSession, type: "student" });
           } else {
+            // New student, save to database
             const newUser = new User({
               googleId: profile.id,
-              firstName: profile.name.givenName || profile.displayName,
-              lastName: profile.name.familyName || " ",
-              email: profile.emails[0].value,
-              image: profile.photos[0].value,
-              is_verified: true
+              firstName,
+              lastName,
+              email,
+              image,
+              is_verified: true,
             });
             await newUser.save();
             const userSession = {
               id: newUser._id,
-              name: newUser.firstName + " " + newUser.lastName,
+              name: `${newUser.firstName} ${newUser.lastName}`,
               firstName: newUser.firstName,
               lastName: newUser.lastName,
               email: newUser.email,
               image: newUser.image,
-              is_verified: newUser.is_verified
+              is_verified: newUser.is_verified,
             };
             return done(null, { userSession, type: "student" });
           }
         } else if (userType === "owner") {
-          let existingOwner = await PgOwner.findOne({
-            email: profile.emails[0].value,
-          });
+          let owner = await PgOwner.findOne({ email });
 
-          if (existingOwner) {
-            // Return an error if the email is already in use
-            console.log("used email owner")
-            return done(null, false, { message: "Email is already in use" });
+          if (owner) {
+            // Existing owner, create session
+            const ownerSession = {
+              id: owner._id,
+              name: `${owner.firstName} ${owner.lastName}`,
+              firstName: owner.firstName,
+              lastName: owner.lastName,
+              email: owner.email,
+              image: owner.image,
+              is_verified_Owner: owner.is_verified_Owner,
+            };
+            return done(null, { ownerSession, type: "owner" });
           } else {
+            // New owner, save to database
             const newOwner = new PgOwner({
               googleId: profile.id,
-              firstName: profile.name.givenName || profile.displayName,
-              lastName: profile.name.familyName || " ",
-              email: profile.emails[0].value,
-              image: profile.photos[0].value,
-              is_verified_Owner: true
+              firstName,
+              lastName,
+              email,
+              image,
+              is_verified_Owner: true,
             });
             await newOwner.save();
             const ownerSession = {
               id: newOwner._id,
-              name: newOwner.firstName + " " + newOwner.lastName,
+              name: `${newOwner.firstName} ${newOwner.lastName}`,
               firstName: newOwner.firstName,
               lastName: newOwner.lastName,
               email: newOwner.email,
               image: newOwner.image,
-              is_verified_Owner: newOwner.is_verified_Owner
+              is_verified_Owner: newOwner.is_verified_Owner,
             };
             return done(null, { ownerSession, type: "owner" });
           }
