@@ -11,20 +11,47 @@ function SignupOwner() {
   const [imgArray, setImgArray] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
+  //const [location, setLocation] = useState('');
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState(null);
 
   const amenities = [
     { id: 'test1', label: 'A/C', imgSrc: './assets/air-conditioner 1.png' },
     { id: 'test2', label: 'TV', imgSrc: './assets/screen 1.png' },
     { id: 'test3', label: 'Power Backup', imgSrc: './assets/power 1.png' },
     { id: 'test4', label: 'WiFi', imgSrc: './assets/wifi (1) 1.png' },
-    { id: 'test5', label: 'kitchen', imgSrc: './assets/restaurant 1.png' },
-    { id: 'test6', label: 'tank water', imgSrc: './assets/tank-water 1.png' },
+    { id: 'test5', label: 'Kitchen', imgSrc: './assets/restaurant 1.png' },
+    { id: 'test6', label: 'Tank Water', imgSrc: './assets/tank-water 1.png' },
     { id: 'test7', label: 'Double Bed', imgSrc: './assets/single-bed (1) 1.png' }
   ];
 
   useEffect(() => {
     document.title = "Sign up for owner";
+    
   }, []);
+
+  const mapmake=()=>{
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const loc = `${position.coords.latitude}, ${position.coords.longitude}`;
+         // setLocation(loc);
+         setFormData((prevData) => ({
+          ...prevData,
+          location: loc
+        }));
+        //  setLoading(false);
+        },
+        // (error) => {
+        //   setError('Error getting location: ' + error.message);
+        // //  setLoading(false);
+        // }
+      );
+    } else {
+     // setError('Geolocation is not supported by this browser.');
+   //   setLoading(false);
+    }
+  }
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -55,13 +82,13 @@ function SignupOwner() {
     }
   };
 
-  const handleFacility = (e) => {
+  const handleFacilityChange = (e) => {
     const { value, checked } = e.target;
     setFormData((prevData) => {
       const facilities = checked
         ? [...prevData.facility, value]
         : prevData.facility.filter((facility) => facility !== value);
-    
+
       return { ...prevData, facility: facilities };
     });
   };
@@ -118,15 +145,15 @@ function SignupOwner() {
       const response = await axios.post(signupownerUrl, formDataToSend, {
         headers: { "Content-Type": 'multipart/form-data' }
       });
-      
+
       if (response.status === 201) {
         console.log("Response:", response.data);
-        
+
         // Redirect to login page upon successful signup
-        const a = "Please verify your email to log in"
-        localStorage.setItem('loginMessageOwner',a);
-        navigate('/LoginOwner',{state: {message:a}});
-        
+        const a = "Please verify your email to log in";
+        localStorage.setItem('loginMessageOwner', a);
+        navigate('/LoginOwner', { state: { message: a } });
+
       } else {
         console.error("Signup failed:", response.data);
       }
@@ -138,16 +165,21 @@ function SignupOwner() {
   const toggleEye = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
+
   const isFormComplete = () => {
-    return formData.mobileNo && formData.address && formData.email && formData.firstName && formData.lastName && formData.pincode && formData.messName;
+    return formData.mobileNo && formData.address && formData.email && formData.firstName && formData.lastName && formData.pincode && formData.messName && formData.profilePhoto;
   };
+
+  // const handleLocationChange = (e) => {
+  //   setLocation(e.target.value);
+  // };
 
   return (
     <form className='bodystyle' onSubmit={handleSubmit} method='POST' encType="multipart/form-data">
       <div className="uppernav">
         <div className='flex aligncentre wid90'>
-          <div className="signupheader">sign up</div>
-          <div className="headertext">House owner</div>
+          <div className="signupheader">Sign Up</div>
+          <div className="headertext">House Owner</div>
         </div>
         <div className='flex alighncentre'>
           <div className="logo flex">
@@ -159,7 +191,7 @@ function SignupOwner() {
 
       <div className="formbody">
         <div className="leftform">
-          <div className="formheader">create a Account</div>
+          <div className="formheader">Create an Account</div>
           <div className="inputboxes grid">
             <div className="inputbox r1x">
               <input type="text" placeholder="First Name" name="firstName" value={formData.firstName} onChange={handleChange} />
@@ -187,8 +219,8 @@ function SignupOwner() {
         </div>
 
         <div className="rightform">
-          <div className="Ellipse3" id="">
-            <input type="file" accept="image/*" name="profilePhoto" id="file" onChange={loadfile} className='displaynone' />
+          <div className="Ellipse3">
+            <input type="file" accept="image/*" name="profilePhoto" id="file" onChange={loadfile} className='displaynone' required />
             <label htmlFor="file"><img src="./assets/upload 2.png" alt="" className='cursorpointer' /></label>
             {image ? <img id="output" alt='' className="Ellipse3 absolute z-1" src={URL.createObjectURL(image)} /> : <img id="output" alt='' className="Ellipse3 displaynone absolute z-1" />}
           </div>
@@ -198,7 +230,7 @@ function SignupOwner() {
 
       <div className="downform grid">
         <div className='flex'>
-          <div className="checkfacilitytxt">Check your Provide Facility</div>
+          <div className="checkfacilitytxt">Check your Provided Facility</div>
         </div>
         <div className="checkboxes grid checkboxgrid">
           {amenities.map(amenity => (
@@ -206,7 +238,7 @@ function SignupOwner() {
               <div className="checkboxicon">
                 <img src={amenity.imgSrc} alt={amenity.label} />
               </div>
-              <input type="checkbox" className="checki" id={amenity.id} onClick={handleFacility} value={amenity.label} />
+              <input type="checkbox" className="checki" id={amenity.id} onClick={handleFacilityChange} value={amenity.label} />
               <label htmlFor={amenity.id}></label>
               <div className="checkboxtxt">{amenity.label}</div>
             </div>
@@ -228,9 +260,11 @@ function SignupOwner() {
         </div>
         <div className='flex'>
           <div className="inputbox wid50">
-            <input type="text" placeholder="Using Map for Your Mess , Tap a Location Button" name="location" id="Location" value={formData.location} onChange={handleChange} />
+           
+              <input type="text" placeholder="Location (Latitude, Longitude)" name="location" id="Location" value={formData.location} onChange={handleChange} />
+           
           </div>
-          <img src="./assets/map-marker 1.png" alt="" className='map-maker' />
+          <img src="./assets/map-marker 1.png" alt="" style={{cursor: 'pointer'}} className='map-maker' onClick={mapmake} />
         </div>
 
         <div className='flex aligncentre wid90vw'>
@@ -265,7 +299,7 @@ function SignupOwner() {
         </div>
 
         <div className="terms flex justifycentre">
-          <button className="creataccountbtn cursorpointer" type="submit"  >Create Account</button>
+          <button className="creataccountbtn cursorpointer" type="submit" disabled={!isFormComplete()} style={{background: isFormComplete()?  '#2CA4B5' : 'grey'}}   >Create Account</button>
         </div>
       </div>
     </form>

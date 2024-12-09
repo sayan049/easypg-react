@@ -12,6 +12,7 @@ import LandingPage from "./pages/landingPage";
 import LoginOwner from "./pages/LoginOwner";
 import SignupOwner from "./pages/signupOwner";
 import MessFind from "./pages/messFind";
+import NewMessFind from "./pages/newMessFind";
 import MailVerify from "./pages/mailVerify";
 import ProtectedRoute from "./pages/protectedRoute";
 import SecurityCheck from "./pages/securityCheck";
@@ -66,6 +67,7 @@ root.render(
             }
           />
           <Route path="/MessFind" element={<MessFind />} />
+          <Route path="/newMessFind" element={<NewMessFind />} />
           <Route path="/MailVerify" element={<MailVerify />} />
           <Route path="/MailVerifyOwner" element={<MailVerifyOwner />} />
           <Route
