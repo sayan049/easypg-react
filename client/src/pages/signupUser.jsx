@@ -160,10 +160,7 @@ function SignUpForm() {
             <button className="create-account" type="submit" onClick={signuphandler}>
               Create Account
             </button>
-            <button className="google-sign-up">
-              <img src="./assets/googleIcon.png" alt="googleIcon" />
-              Signup with google
-            </button>
+           
           </div>
         </div>
       </div>

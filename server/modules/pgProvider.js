@@ -17,58 +17,82 @@ const pgOwnerSchema = new mongoose.Schema({
     },
     address: {
         type: String,
-        // required: true,
-        trim: true
+        required: function() {
+            return !this.googleId;
+        }
+        
     },
     password: {
         type: String,
-        required: true,
+        required: function() {
+            return !this.googleId;
+        }
     },
     mobileNo: {
         type: String,
-        // required: true,
-        trim: true
+        required: function() {
+            return !this.googleId;
+        }
     },
     pincode: {
         type: String,
-        // required: true,
-        trim: true
+        required: function() {
+            return !this.googleId;
+        }
     },
     messName: {
         type: String,
-        trim: true
+        required: function() {
+            return !this.googleId;
+        }
     },
     aboutMess: {
         type: String,
-        trim: true
+        required: function() {
+            return !this.googleId;
+        }
     },
     location: {
         type: String,
-        trim: true
+        required: function() {
+            return !this.googleId;
+        }
     },
     profilePhoto: {
         type: String,
-        trim: true
+        required: function() {
+            return !this.googleId;
+        }
     },
     messPhoto: [{
         type: String,
-        trim: true
+        required: function() {
+            return !this.googleId;
+        }
     }],
     facility: [{
         type: String,
-        trim: true
+        required: function() {
+            return !this.googleId;
+        }
     }],
    is_verified_Owner:{
         type: Boolean,
         default: false
    } ,
-   googleId: { 
+   googleId: {
     type: String,
-    unique: true 
-},
-image:{
-    type:String
-}
+    unique: true,
+    sparse: true, // Allow nulls and duplicates when not provided
+  },
+  image: {
+    type: String,
+  },
+  created_at: {
+    type: Date,
+    default:Date.now
+  },
+ 
 });
 
 const PgOwner = mongoose.model('Pgowner', pgOwnerSchema);
