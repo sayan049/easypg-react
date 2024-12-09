@@ -284,6 +284,7 @@ body {
     justify-content: center;
     align-items: center;
     margin-top: 15px;
+    cursor: pointer;
 }
 .logGoogle-text{
     margin-left: 10px;
