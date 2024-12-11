@@ -14,7 +14,7 @@ useEffect(() => {
     { logo: "tank-water 1.png", title: "tank water" },
     { logo: "wifi (1) 1.png", title: "WiFi" },
     { logo: "power 1.png", title: "Power Backup" },
-    { logo: "restaurant 1.png", title: "kitchen" },
+    { logo: "restaurant 1.png", title: "Kitchen" },
     { logo: "single-bed 1.png", title: "Single Bed" },
     { logo: "single-bed (1) 1.png", title: "Double Bed" },
   ];
@@ -27,6 +27,7 @@ useEffect(() => {
         } else {
             setCheckFestures(checkFeatures.filter((feature) => feature !== value));
         }
+        //console.log(checkFeatures);
     }
 
   return (
@@ -54,15 +55,17 @@ useEffect(() => {
         <div className="mt-6">
           <h3 className="font-medium">Select Your Need</h3>
           <div className="grid grid-cols-2 gap-2 mt-4">
-            {/* checkboxesData.map((facility, index) => (
+           { checkboxesData.map((facility, index) => (
               <label key={index} className="flex items-center text-sm">
                 <input
                   type="checkbox"
+                  onClick={featureChanges}
+                  value={facility.title}
                   className="mr-2 accent-blue-500"
                 />
-                {facility}
+                {facility.title}
               </label>
-            ))} */}
+            ))}
 
             {/* {checkboxesData.map((data, index) => (
               <div className="checkContainer flex aligncentre" key={index}>
@@ -125,7 +128,7 @@ useEffect(() => {
           style={{ overflowY: "auto", height: "84vh" }}
         >
           {/* messbars */}
-          <MessBars />
+          <MessBars checkFeatures={checkFeatures} />
           {/* // {[...Array(4)].map((_, index) => (
             // <div
             //   key={index}
