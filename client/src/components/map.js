@@ -72,7 +72,7 @@ function MapComponent({isChecked}) {
     // }, []); // Empty dependency array ensures it runs only once
 
     return (
-        <div id="map" style={{ height: '100vh', width: '35vw' , display: isChecked ? "block" : "none" }} >xyz</div>
+        <div id="map" style={{ height: '84vh', width: '35vw' , display: isChecked ? "block" : "none" }} >xyz</div>
     );
 }
 
