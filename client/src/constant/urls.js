@@ -1,4 +1,4 @@
-const baseUrl = 'https://easypg-react-server.vercel.app/'
+const baseUrl = 'https://localhost:8080'
 
 export const loginUrl = `${baseUrl}/auth/login`
 export const signupUrl = `${baseUrl}/auth/signup`
