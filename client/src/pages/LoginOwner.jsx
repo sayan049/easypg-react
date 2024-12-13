@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { loginOwnerUrl } from "../constant/urls";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { baseurl } from "../constant/urls";
 import axios from "axios";
 
 import "../designs/loginForMessOwner.css";
@@ -67,7 +68,7 @@ function LoginOwner() {
   };
 
   const loginwithgoogleOwner = () => {
-  window.location.href = 'http://localhost:8080/auth/google-owner?state=' + encodeURIComponent(JSON.stringify({ type: 'owner' }));
+  window.location.href =`${baseurl}/auth/google-owner?state=`+ encodeURIComponent(JSON.stringify({ type: 'owner' }));
 };
 
 
