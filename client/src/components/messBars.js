@@ -1,8 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { baseurl, findMessUrl } from '../constant/urls';
-import "../designs/messfind.css";
-import '../designs/messbars.css'
+// import "../designs/messfind.css";
+// import '../designs/messbars.css'
 
 function MessBars({ isChecked  ,checkFeatures} ) {
   const [messData, setMessData] = useState([]);
@@ -32,28 +32,12 @@ function MessBars({ isChecked  ,checkFeatures} ) {
   }
 
   return (
-    // <div className='messbody' style={{ display: isChecked ? "inline-block"  : "grid" }} >
-    //   {messData.map(owner => (
-    //     <div className="mess flex" key={owner._id}>
-    //       <div><img src={`${baseurl}/uploads/${owner.profilePhoto}`} alt="" className='messimg' /></div>
-    //       <div style={{ width: "100%", padding: "0px 25px" }}>
-    //         <div className="messname" style={{ fontSize: '160%' }}>{owner.messName}</div>
-    //         <div className="messaddress">{owner.address}</div>
-    //         <div className="features">{owner.aboutMess}</div>
-    //         <div className="twobtns">
-    //           <button className={isWideScreen ? "wide-button" : "narrow-button"}>View details</button>
-    //           <button className={isWideScreen ? "wide-button" : "narrow-button"}>Book now</button>
-    //         </div>
-    //       </div>
-    //     </div>
-    //   ))}
-    // </div>
-    <div  >
+    <div style={{ overflowY: "auto", height: "84vh" }}  >
     {messData.map(owner => (
       <div
         key={owner._id}
         className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md"
-        style={{height:"33%"}}
+        // style={{height:"33%"}}
       >
         <img
           src={`${baseurl}/uploads/${owner.profilePhoto}`}

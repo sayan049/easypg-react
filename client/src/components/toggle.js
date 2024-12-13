@@ -1,12 +1,12 @@
 import React from "react";
 import "../designs/messfind.css";
 
-const ToggleSwitch = ({isChecked,handleToggle}) => {
-  // const [isChecked, setIsChecked] = useState(true);
+const ToggleSwitch = ({isChecked,setIsChecked}) => {
 
-  // const handleToggle = () => {
-  //   setIsChecked(!isChecked);
-  // };
+
+  const handleToggle = () => {
+    setIsChecked(!isChecked);
+  };
 
   return (
     <div className={`toggle-container ${isChecked ? "checked" : ""} blue`}>
