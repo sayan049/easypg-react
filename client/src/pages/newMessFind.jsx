@@ -35,7 +35,7 @@ useEffect(() => {
     }
 
   return (
-    <div className="flex flex-col md:flex-row p-4 bg-gray-50 min-h-screen">
+    <div className="flex flex-col md:flex-row p-4 bg-gray-50 min-h-screen [overflow:hidden]">
       {/* Filter Section */}
       <div className="w-full md:w-1/4 bg-white p-4 shadow rounded-md">
         <h2 className="text-lg font-bold">Filter</h2>
