@@ -11,5 +11,6 @@ export const logoutUrl = `${baseUrl}/auth/logout`;
 export const signupownerUrl = `${baseUrl}/auth/signupOwner`
 export const findMessUrl = `${baseUrl}/auth/findMess`
 export const loginOwnerUrl = `${baseUrl}/auth/loginOwner`
-
+export const updateDetailsUrl= `${baseUrl}/auth/updateDetails`
+export const fetchDetailsUrl = `${baseUrl}/auth/get-details`
 export const baseurl =`${baseUrl}`;
