@@ -48,13 +48,31 @@ app.get("/auth/google-owner", passport.authenticate("google", {
     state: JSON.stringify({ type: 'owner' }) // Route for owner login
   }));
 
-app.get("/auth/google/callback", passport.authenticate("google", {
-  failureRedirect: `${ORIGIN}/LoginUser`,
-  successRedirect:`${ORIGIN}/`
-}), (req, res) => {
-  const userType = req.user.type;
-  res.redirect(`${ORIGIN}/dashboard-${userType}`);
-});
+  app.get("/auth/google/callback", (req, res, next) => {
+    passport.authenticate("google", (err, user, info) => {
+      if (err) {
+        console.error("Authentication Error:", err.message);
+        return res.redirect(`${ORIGIN}/ProviderSeeker?error=auth_failed`);
+      }
+  
+      if (!user) {
+        console.error("No user returned from Google OAuth");
+        return res.redirect(`${ORIGIN}/ProviderSeeker?error=auth_failed`);
+      }
+  
+      // Log in the user
+      req.logIn(user, (loginErr) => {
+        if (loginErr) {
+          console.error("Login Error:", loginErr.message);
+          return res.redirect(`${ORIGIN}/ProviderSeeker?error=login_failed`);
+        }
+  
+        // Successful authentication, redirect to home page
+        return res.redirect(`${ORIGIN}`);
+      });
+    })(req, res, next);
+  });
+  
 
 app.use('/auth', authRoutes);
 

@@ -218,7 +218,7 @@ const UserDashboard = () => {
   if (isLoading) {
     return <div>Loading...</div>; // Show loader while fetching data
   }
-
+console.log(data)
   return (
     <div className="flex h-screen">
       {/* Hamburger Menu Icon for Small Devices */}
@@ -284,6 +284,7 @@ const UserDashboard = () => {
               <strong>Email:</strong>{" "}
               {type === "student" ? user?.email : owner?.email}
             </p>
+            
 
             {/* Editable fields based on type (student or owner) */}
             {type === "student" ? (

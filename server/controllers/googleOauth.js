@@ -33,16 +33,23 @@ passport.use(
 
           if (user) {
             // Existing student, create session
-            const userSession = {
-              id: user._id,
-              name: `${user.firstName} ${user.lastName}`,
-              firstName: user.firstName,
-              lastName: user.lastName,
-              email: user.email,
-              image: user.image,
-              is_verified: user.is_verified,
-            };
-            return done(null, { userSession, type: "student" });
+            if (user.googleId) {
+              // Google ID exists, create session
+              const userSession = {
+                id: user._id,
+                name: `${user.firstName} ${user.lastName}`,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                image: user.image,
+                is_verified: user.is_verified,
+              };
+              return done(null, { userSession, type: "student" });
+            } else {
+              // Google ID is not linked, redirect to login page
+              return done(new Error("used email"),null);
+            }
+            
           } else {
             // New student, save to database
             const newUser = new User({
@@ -70,16 +77,23 @@ passport.use(
 
           if (owner) {
             // Existing owner, create session
-            const ownerSession = {
-              id: owner._id,
-              name: `${owner.firstName} ${owner.lastName}`,
-              firstName: owner.firstName,
-              lastName: owner.lastName,
-              email: owner.email,
-              image: owner.image,
-              is_verified_Owner: owner.is_verified_Owner,
-            };
-            return done(null, { ownerSession, type: "owner" });
+            if (owner.googleId) {
+              // Google ID exists, create session
+              const ownerSession = {
+                id: owner._id,
+                name: `${owner.firstName} ${owner.lastName}`,
+                firstName: owner.firstName,
+                lastName: owner.lastName,
+                email: owner.email,
+                image: owner.image,
+                is_verified_Owner: owner.is_verified_Owner,
+              };
+              return done(null, { ownerSession, type: "owner" });
+            }else {
+              // Google ID is not linked, redirect to login page
+              return done(new Error("used email owner"));
+            }
+            
           } else {
             // New owner, save to database
             const newOwner = new PgOwner({
