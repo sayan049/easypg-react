@@ -1,9 +1,12 @@
-function ensureAuthenticated(req, res, next) {
+module.exports = (req, res, next) => {
     if (req.session && req.session.user) {
-        next(); // Proceed to the protected route
-        console.log(req.session)
+      req.user = req.session.user;
+      next();
+    } else if (req.session && req.session.passport && req.session.passport.user) {
+      req.user = req.session.passport.user;
+      next();
     } else {
-        res.status(401).json({ message: 'Unauthorized: Access is denied' });
+      return res.status(401).json({ error: "Unauthorized" });
     }
-}
- module.exports = ensureAuthenticated;
+  };
+  
