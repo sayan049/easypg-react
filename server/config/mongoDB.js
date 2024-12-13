@@ -1,3 +1,5 @@
+/* This code snippet is a JavaScript file that sets up a connection to a MongoDB database using
+Mongoose. Here's a breakdown of what it does: */
 // config/db.js
 const mongoose = require("mongoose");
 require('dotenv').config();

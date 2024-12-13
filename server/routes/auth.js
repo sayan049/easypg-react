@@ -3,7 +3,7 @@ const router = express.Router();
 const authHandlers = require("../controllers/authHandlers");
 const upload = require("../middleware/upload");
 const ensureAuthenticated = require("../middleware/is-auth");
-
+const updateDetailshandler =require("../controllers/updateDetails")
 router.post("/signup", authHandlers.signupHandler);
 router.post("/login", authHandlers.loginHandler);
 router.post("/signupOwner", upload, authHandlers.signupHandlerOwner);
@@ -32,6 +32,8 @@ router.get("/check-session", (req, res) => {
     res.status(401).json({ isAuthenticated: false });
   }
 });
+router.post("/updateDetails",   updateDetailshandler.updateDetails);
+router.get('/get-details',updateDetailshandler.getDetails);
 
 router.get("/logout", (req, res) => {
   req.session.destroy((err) => {
