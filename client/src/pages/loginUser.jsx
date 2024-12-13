@@ -81,9 +81,8 @@ function LoginUser() {
     }
   }
   const loginwithgoogle = () => {
-    window.location.href = `${baseurl}auth/google?state=` + encodeURIComponent(JSON.stringify({ type: 'student' }));
+    window.location.href = `${baseurl}/uth/google?state=` + encodeURIComponent(JSON.stringify({ type: 'student' }));
   };
-  
 
   return (
     <body id="container">
