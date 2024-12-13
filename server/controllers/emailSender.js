@@ -16,7 +16,7 @@ async function sendmail(name,email,userId){
         from:USER_EMAIL,
         to:  email,
         subject:'Verification Email',
-        html:'<h3>Hi, '+name+' Click <a href="http://localhost:3000/MailVerify?id='+userId+'">here</a> to verify you email </h3>'
+        html:'<h3>Hi, '+name+' Click <a href="https://easypg-react-client.onrender.com/MailVerify?id='+userId+'">here</a> to verify you email </h3>'
     }
     try {
         const result = await transporter.sendMail(mailOptions);

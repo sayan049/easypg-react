@@ -8,6 +8,7 @@ import { loginUrl } from "../constant/urls";
 import { useLocation } from "react-router-dom";
 import {  useNavigate} from "react-router-dom";
 // import ProtectedRoute from "./protectedRoute";
+import { baseurl } from "../constant/urls";
 
 function LoginUser() {
   useEffect(() => {
@@ -80,7 +81,7 @@ function LoginUser() {
     }
   }
   const loginwithgoogle = () => {
-    window.location.href = 'http://localhost:8080/auth/google?state=' + encodeURIComponent(JSON.stringify({ type: 'student' }));
+    window.location.href = `${baseurl}/auth/google?state=` + encodeURIComponent(JSON.stringify({ type: 'student' }));
   };
   
 
