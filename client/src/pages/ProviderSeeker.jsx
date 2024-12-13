@@ -4,6 +4,14 @@ import {useEffect} from 'react';
 import "../designs/provider-seeker-page.css";
 import "../designs/footerstyle.css";
 
+const urlParams = new URLSearchParams(window.location.search);
+const error = urlParams.get("error");
+
+if (error === "auth_failed") {
+  alert("Google authentication failed. Please try again.");
+} else if (error === "login_failed") {
+  alert("Login failed. Please try again.");
+}
 
 function ProviderSeeker() {
     useEffect(() => {
