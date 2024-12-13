@@ -19,7 +19,7 @@ const ORIGIN = process.env.ORIGIN || 'https://easypg-react-client.onrender.com/'
 const PORT = process.env.PORT || 8080;
 
 const corsOptions = {
-  origin: ORIGIN,
+  origin: `https://easypg-react-client.onrender.com/`,
   credentials: true,
 };
 
