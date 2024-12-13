@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import '../designs/userdashboard.css';
 import { useAuth } from "../contexts/AuthContext";
 import UserProfile from "../components/UserProfile";
 
@@ -29,9 +28,11 @@ ChartJS.register(
 
 const UserDashboard = () => {
   const [currentView, setCurrentView] = useState('profile');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { userName, IsAuthenticated, isOwnerAuthenticated, ownerName, user, owner, loginMethod, type } = useAuth();
-  console.log(loginMethod)
-  console.log(type)
+  
+  const [profilePhoto, setProfilePhoto] = useState(null);  // To handle profile photo upload
+  const [messPhoto, setMessPhoto] = useState(null);  // To handle mess photo upload
 
   const data = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -85,193 +86,156 @@ const UserDashboard = () => {
     }
   };
 
-  const handleProfileClick = () => {
-    setCurrentView('profile');
+  const handleProfileClick = () => setCurrentView('profile');
+  const handleDashboardClick = () => setCurrentView('dashboard');
+
+  // Handle file change for profile and mess photo uploads
+  const handleProfilePhotoChange = (e) => {
+    const file = e.target.files[0];
+    setProfilePhoto(URL.createObjectURL(file));
   };
 
-  const handleDashboardClick = () => {
-    setCurrentView('dashboard');
+  const handleMessPhotoChange = (e) => {
+    const file = e.target.files[0];
+    setMessPhoto(URL.createObjectURL(file));
   };
-
-  const renderStudentProfile = () => (
-    <>
-      <div className="details-row">
-        <div className="details-title">Name</div>
-        <div className="details-value">{user?.name}</div>
-        <div className="details-edit">Edit</div>
-      </div>
-      <div className="details-row">
-        <div className="details-title">Email address</div>
-        <div className="details-value">{user?.email} <span className="details-verified">{user?.is_verified ? 'Verified' : 'Not Verified'}</span></div>
-        <div className="details-edit">Edit</div>
-      </div>
-      {loginMethod === 'local' && (
-        <>
-          <div className="details-row">
-            <div className="details-title">Address</div>
-            <div className="details-value">{user?.address}</div>
-            <div className="details-edit">Edit</div>
-          </div>
-          <div className="details-row">
-            <div className="details-title">PIN</div>
-            <div className="details-value">{user?.pin}</div>
-            <div className="details-edit">Edit</div>
-          </div>
-        </>
-      )}
-      {loginMethod === 'google' && (
-        <>
-          <div className="details-row">
-            <div className="details-title">Address</div>
-            <input className="details-value" placeholder="Add your address" />
-          </div>
-          <div className="details-row">
-            <div className="details-title">PIN</div>
-            <input className="details-value" placeholder="Add your PIN" />
-          </div>
-        </>
-      )}
-    </>
-  );
-
-  const renderOwnerProfile = () => (
-    <>
-      <div className="details-row">
-        <div className="details-title">Name</div>
-        <div className="details-value">{owner?.name}</div>
-        <div className="details-edit">Edit</div>
-      </div>
-      <div className="details-row">
-        <div className="details-title">Email address</div>
-        <div className="details-value">{owner?.email} <span className="details-verified">{owner?.is_verified_Owner ? 'Verified' : 'Not Verified'}</span></div>
-        <div className="details-edit">Edit</div>
-      </div>
-      {loginMethod === 'local' && (
-        <>
-          <div className="details-row">
-            <div className="details-title">Address</div>
-            <div className="details-value">{owner?.address}</div>
-            <div className="details-edit">Edit</div>
-          </div>
-          <div className="details-row">
-            <div className="details-title">Mobile No</div>
-            <div className="details-value">{owner?.mobile}</div>
-            <div className="details-edit">Edit</div>
-          </div>
-          <div className="details-row">
-            <div className="details-title">PIN</div>
-            <div className="details-value">{owner?.pin}</div>
-            <div className="details-edit">Edit</div>
-          </div>
-          <div className="details-row">
-            <div className="details-title">Mess Name</div>
-            <div className="details-value">{owner?.messName}</div>
-            <div className="details-edit">Edit</div>
-          </div>
-          <div className="details-row">
-            <div className="details-title">Bio Mess</div>
-            <div className="details-value">{owner?.bioMess}</div>
-            <div className="details-edit">Edit</div>
-          </div>
-          <div className="details-row">
-            <div className="details-title">Location</div>
-            <div className="details-value">{owner?.location}</div>
-            <div className="details-edit">Edit</div>
-          </div>
-          <div className="details-row">
-            <div className="details-title">Profile Photo</div>
-            <div className="details-value">{owner?.profilePhoto}</div>
-            <div className="details-edit">Edit</div>
-          </div>
-          <div className="details-row">
-            <div className="details-title">Mess Photo</div>
-            <div className="details-value">{owner?.messPhoto}</div>
-            <div className="details-edit">Edit</div>
-          </div>
-          <div className="details-row">
-            <div className="details-title">Facility</div>
-            <div className="details-value">{owner?.facility}</div>
-            <div className="details-edit">Edit</div>
-          </div>
-        </>
-      )}
-      {loginMethod === 'google' && (
-        <>
-          <div className="details-row">
-            <div className="details-title">Address</div>
-            <input className="details-value" defaultValue={owner?.address || ''} />
-          </div>
-          <div className="details-row">
-            <div className="details-title">Mobile No</div>
-            <input className="details-value" defaultValue={owner?.mobile || ''} />
-          </div>
-          <div className="details-row">
-            <div className="details-title">PIN</div>
-            <input className="details-value" defaultValue={owner?.pin || ''} />
-          </div>
-          <div className="details-row">
-            <div className="details-title">Mess Name</div>
-            <input className="details-value" defaultValue={owner?.messName || ''} />
-          </div>
-          <div className="details-row">
-            <div className="details-title">Bio Mess</div>
-            <input className="details-value" defaultValue={owner?.bioMess || ''} />
-          </div>
-          <div className="details-row">
-            <div className="details-title">Location</div>
-            <input className="details-value" defaultValue={owner?.location || ''} />
-          </div>
-          <div className="details-row">
-            <div className="details-title">Profile Photo</div>
-            <input className="details-value" defaultValue={owner?.profilePhoto || ''} />
-          </div>
-          <div className="details-row">
-            <div className="details-title">Mess Photo</div>
-            <input className="details-value" defaultValue={owner?.messPhoto || ''} />
-          </div>
-          <div className="details-row">
-            <div className="details-title">Facility</div>
-            <input className="details-value" defaultValue={owner?.facility || ''} />
-          </div>
-        </>
-      )}
-    </>
-  );
 
   return (
-    <div className="dashboard-container">
-      <div className='left-profile'>
-        <div className='main-page'>
-          <span className="page-left">Easy</span>
-          <span className="page-right">Pg</span>
-        </div>
-        <hr className='hr-left' />
-        <div className='profile-dashboard'>
-          {(IsAuthenticated || isOwnerAuthenticated) && <UserProfile />}
-          <div className='profile-name' onClick={handleProfileClick}>
-            {IsAuthenticated ? userName : isOwnerAuthenticated ? ownerName : ' '}
+    <div className="flex h-screen">
+      {/* Hamburger Menu Icon for Small Devices */}
+      <button
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+        className="md:hidden fixed top-4 left-4 z-50 bg-teal-500 p-2 rounded-full"
+      >
+        <img src="/assets/hamburger.svg" alt="Menu" className="h-6 w-6" />
+      </button>
+
+      {/* Sidebar */}
+      <div
+        className={`fixed md:static top-0 left-0 h-full bg-teal-300 w-2/3 md:w-1/6 transition-transform transform ${
+          isMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        } md:translate-x-0 z-40`}
+      >
+        <div className="flex flex-col items-center py-6">
+          <div className="text-teal-700 text-3xl font-bold">Easy<span className="text-blue-900">Pg</span></div>
+          <hr className="border-white w-full my-4" />
+          <div onClick={handleProfileClick} className="flex items-center cursor-pointer space-x-2">
+            {IsAuthenticated || isOwnerAuthenticated ? <UserProfile /> : null}
+            <span className="text-white font-medium">{IsAuthenticated ? userName : ownerName}</span>
           </div>
-          <img className='down-arr' src="assets/Vector 3.png" alt="" />
-        </div>
-        <hr className='hr-left' />
-        <div className='Dashboard-d' onClick={handleDashboardClick}>
-          <img className='dashboard-img' src="assets/dashboard.png" alt="" />
-          <div className='main-dashboard'>Dashboard</div>
+          <hr className="border-white w-full my-4" />
+          <div onClick={handleDashboardClick} className="flex items-center cursor-pointer space-x-2">
+            <img src="assets/dashboard.png" alt="Dashboard Icon" className="h-7" />
+            <span className="text-white font-medium">Dashboard</span>
+          </div>
         </div>
       </div>
-      <div className='right-content'>
+
+      {/* Main Content */}
+      <div className="flex-1 bg-gray-100 p-6">
         {currentView === 'dashboard' && (
-          <div className="graph-container">
-            <Line data={data} options={options} className="line-chart" />
+          <div className="bg-white p-6 rounded-lg shadow">
+            <Line data={data} options={options} />
           </div>
         )}
         {currentView === 'profile' && (
-          <div className='profile-details'>
-            <h2 className='h2-profile'>Personal Details</h2>
-            <div className="personal-details">
-              {type === 'student' && renderStudentProfile()}
-              {type === 'owner' && renderOwnerProfile()}
-            </div>
+          <div className="bg-white p-6 rounded-lg shadow">
+            {type === 'student' ? (
+              <div>
+                <h2 className="text-center text-teal-500 font-bold text-xl mb-4">Personal Details</h2>
+                <p><strong>Name:</strong> {user?.name}</p>
+                <p><strong>Email:</strong> {user?.email}</p>
+                {loginMethod === 'local' ? (
+                  <>
+                    <p><strong>Address:</strong> {user?.address}</p>
+                    <p><strong>Pin:</strong> {user?.pin}</p>
+                  </>
+                ) : loginMethod === 'google' ? (
+                  <>
+                    <div><strong>Address:</strong><input className="w-full mt-1 p-2 border border-gray-300 rounded" placeholder="Add your address" /></div>
+                    <div><strong>Pin:</strong><input className="w-full mt-1 p-2 border border-gray-300 rounded" placeholder="Add your PIN" /></div>
+                  </>
+                ) : null}
+                <p><strong>Login Method:</strong> {loginMethod}</p>
+              </div>
+            ) : (
+              <div>
+                <h2 className="text-center text-teal-500 font-bold text-xl mb-4">Owner Details</h2>
+                
+                <div className="flex justify-center mb-4">
+                  {/* Profile Photo */}
+                  {loginMethod === 'local' ? (
+                    <img 
+                      src={owner?.profilePhoto || '/assets/default-profile.png'} 
+                      alt="Profile" 
+                      className="w-24 h-24 rounded-full"
+                    />
+                  ) : (
+                    <div>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleProfilePhotoChange} 
+                        className="mb-2" 
+                      />
+                      {profilePhoto && (
+                        <img 
+                          src={profilePhoto} 
+                          alt="Profile Preview" 
+                          className="w-24 h-24 rounded-full"
+                        />
+                      )}
+                    </div>
+                  )}
+                </div>
+                
+                <p><strong>Name:</strong> {owner?.name}</p>
+                <p><strong>Email:</strong> {owner?.email}</p>
+                {loginMethod === 'local' ? (
+                  <>
+                    <p><strong>Address:</strong> {owner?.address}</p>
+                    <p><strong>Pin:</strong> {owner?.pin}</p>
+                    <p><strong>Mobile No:</strong> {owner?.mobileNo}</p>
+                    <p><strong>Facility:</strong> {owner?.facility}</p>
+                    <p><strong>Mess Name:</strong> {owner?.messName}</p>
+                    <p><strong>About Mess:</strong> {owner?.aboutMess}</p>
+                    <p><strong>Location:</strong> {owner?.location}</p>
+                    <img 
+                      src={owner?.messPhoto || '/assets/default-mess-photo.jpg'} 
+                      alt="Mess Photo" 
+                      className="w-32 h-32 object-cover mt-2"
+                    />
+                  </>
+                ) : loginMethod === 'google' ? (
+                  <>
+                    <div><strong>Address:</strong><input className="w-full mt-1 p-2 border border-gray-300 rounded" placeholder="Add your address" /></div>
+                    <div><strong>Pin:</strong><input className="w-full mt-1 p-2 border border-gray-300 rounded" placeholder="Add your PIN" /></div>
+                    <div><strong>Mobile No:</strong><input className="w-full mt-1 p-2 border border-gray-300 rounded" placeholder="Add your mobile number" /></div>
+                    <div><strong>Facility:</strong><input className="w-full mt-1 p-2 border border-gray-300 rounded" placeholder="Add facility details" /></div>
+                    <div><strong>Mess Name:</strong><input className="w-full mt-1 p-2 border border-gray-300 rounded" placeholder="Add mess name" /></div>
+                    <div><strong>About Mess:</strong><textarea className="w-full mt-1 p-2 border border-gray-300 rounded" placeholder="About your mess" /></div>
+                    <div><strong>Location:</strong><input className="w-full mt-1 p-2 border border-gray-300 rounded" placeholder="Add your location" /></div>
+                    <div>
+                      <strong>Mess Photo:</strong>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleMessPhotoChange} 
+                        className="mt-1 mb-2"
+                      />
+                      {messPhoto && (
+                        <img 
+                          src={messPhoto} 
+                          alt="Mess Photo Preview" 
+                          className="w-32 h-32 object-cover mt-2"
+                        />
+                      )}
+                    </div>
+                  </>
+                ) : null}
+                <p><strong>Login Method:</strong> {loginMethod}</p>
+              </div>
+            )}
           </div>
         )}
       </div>
