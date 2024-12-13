@@ -15,7 +15,7 @@ const sessionConfig = require('./config/sessionStore');
 
 const app = express();
 
-const ORIGIN = process.env.ORIGIN || 'http://localhost:3000';
+const ORIGIN = process.env.ORIGIN || 'https://easypg-react-client.onrender.com/';
 const PORT = process.env.PORT || 8080;
 
 const corsOptions = {
