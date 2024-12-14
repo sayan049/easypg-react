@@ -14,10 +14,9 @@ const connectDB = require('./config/mongoDB');
 const sessionConfig = require('./config/sessionStore');
 
 const app = express();
-// 
-// const ORIGIN = process.env.ORIGIN || 'https://easypg-react-client.onrender.com/';
+//
+ const ORIGIN =  'https://easypg-react-client.onrender.com';
 const PORT = process.env.PORT || 8080;
-
 const corsOptions = {
   origin: `https://easypg-react-client.onrender.com`,
   credentials: true,
