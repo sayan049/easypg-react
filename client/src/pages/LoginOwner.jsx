@@ -68,9 +68,8 @@ function LoginOwner() {
   };
 
   const loginwithgoogleOwner = () => {
-  window.location.href =`${baseurl}/auth/google-owner?state=`+ encodeURIComponent(JSON.stringify({ type: 'owner' }));
-};
-
+    window.location.href = `${baseurl}/auth/google-owner?state=` + encodeURIComponent(JSON.stringify({ type: 'owner' }));
+  };
 
   return (
     <body>
