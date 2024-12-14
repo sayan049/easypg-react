@@ -1,4 +1,4 @@
-const baseUrl = ' https://easypg-react.onrender.com'
+const baseUrl = 'https://easypg-react.onrender.com'
 
 export const loginUrl = `${baseUrl}/auth/login`
 export const signupUrl = `${baseUrl}/auth/signup`
