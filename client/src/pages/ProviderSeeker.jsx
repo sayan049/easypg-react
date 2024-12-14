@@ -12,6 +12,13 @@ if (error === "auth_failed") {
 } else if (error === "login_failed") {
   alert("Login failed. Please try again.");
 }
+// Assuming you're in the `ProviderSeeker` page component
+
+
+if (error) {
+  alert(`Authentication failed: ${error}`); // Show a user-friendly error message
+}
+
 
 function ProviderSeeker() {
     useEffect(() => {
