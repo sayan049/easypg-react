@@ -9,7 +9,7 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
-      callbackURL: "https://easypg-react-client.onrender.com/auth/google/callback",
+      callbackURL: "https://easypg-react.onrender.com/auth/google/callback",
       passReqToCallback: true, // Pass the request object to the callback
     },
     async (req, accessToken, refreshToken, profile, done) => {
