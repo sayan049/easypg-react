@@ -54,6 +54,7 @@ app.get("/auth/google-owner", passport.authenticate("google", {
         console.error("Authentication Error:", err.message);
         return res.redirect(`${ORIGIN}/ProviderSeeker?error=auth_failed`);
       }
+      console.log(user)
   
       if (!user) {
         console.error("No user returned from Google OAuth");
