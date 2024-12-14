@@ -14,15 +14,14 @@ const connectDB = require('./config/mongoDB');
 const sessionConfig = require('./config/sessionStore');
 
 const app = express();
-
-const ORIGIN = process.env.ORIGIN || 'https://easypg-react-client.onrender.com/';
+// 
+// const ORIGIN = process.env.ORIGIN || 'https://easypg-react-client.onrender.com/';
 const PORT = process.env.PORT || 8080;
 
 const corsOptions = {
-  origin: `https://easypg-react-client.onrender.com/`,
+  origin: `https://easypg-react-client.onrender.com`,
   credentials: true,
 };
-
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
