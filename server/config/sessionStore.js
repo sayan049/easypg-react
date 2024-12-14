@@ -17,16 +17,17 @@ store.on("error", function (error) {
 });
 
 const sessionConfig = session({
-  secret: SECRET,
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: false,
   store: store,
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 10 * 24 * 60 * 60 * 1000,
-    sameSite: "none",
+    secure: process.env.NODE_ENV === "production", // Enable secure cookies in production
+    maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", // Adjust for cross-origin
   },
 });
+
 
 module.exports = sessionConfig;

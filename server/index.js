@@ -1,4 +1,3 @@
-// index.js
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -14,13 +13,16 @@ const connectDB = require('./config/mongoDB');
 const sessionConfig = require('./config/sessionStore');
 
 const app = express();
-//
- const ORIGIN =  'https://easypg-react-client.onrender.com';
+
+const ORIGIN = process.env.ORIGIN || 'http://localhost:3000';
 const PORT = process.env.PORT || 8080;
+
 const corsOptions = {
-  origin: `https://easypg-react-client.onrender.com`,
+  origin: ORIGIN,
   credentials: true,
 };
+app.set('trust proxy', 1); // Trust the first proxy
+
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
@@ -70,7 +72,6 @@ app.get("/auth/google-owner", passport.authenticate("google", {
       });
     })(req, res, next);
   });
-  
 
 app.use('/auth', authRoutes);
 

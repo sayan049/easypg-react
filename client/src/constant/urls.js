@@ -1,4 +1,4 @@
-const baseUrl = 'https://easypg-react.onrender.com'
+const baseUrl = 'http://localhost:8080'
 
 export const loginUrl = `${baseUrl}/auth/login`
 export const signupUrl = `${baseUrl}/auth/signup`
@@ -13,4 +13,4 @@ export const findMessUrl = `${baseUrl}/auth/findMess`
 export const loginOwnerUrl = `${baseUrl}/auth/loginOwner`
 export const updateDetailsUrl= `${baseUrl}/auth/updateDetails`
 export const fetchDetailsUrl = `${baseUrl}/auth/get-details`
-export const baseurl =`${baseUrl}`;
+export const baseurl =`${baseUrl}`
