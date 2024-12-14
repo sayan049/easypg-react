@@ -48,7 +48,7 @@ app.get("/auth/google-owner", passport.authenticate("google", {
     state: JSON.stringify({ type: 'owner' }) // Route for owner login
   }));
 
-  app.get("https://easypg-react.onrender.com/auth/google/callback", (req, res, next) => {
+  app.get("/auth/google/callback", (req, res, next) => {
     passport.authenticate("google", (err, user, info) => {
       if (err) {
         console.error("Authentication Error:", err.message);
