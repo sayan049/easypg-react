@@ -27,7 +27,12 @@ export const AuthProvider = ({ children }) => {
           withCredentials: true,
         });
 
-        if (!response.ok) throw new Error('Network response was not ok');
+        // if (!response.ok) throw new Error('Network response was not ok');
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Error response:', response.status, errorText);
+          throw new Error('Network response was not ok');
+        }
 
         const data = await response.json();
         console.log(data)
