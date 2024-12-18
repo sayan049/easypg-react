@@ -44,12 +44,14 @@ const UserDashboard = () => {
   const [updatedUserDetails, setUpdatedUserDetails] = useState({
     address: user?.address || owner?.address || "",
     pin: user?.pin || "",
-    pincode: owner?.pincode || "", // Use 'pincode' for the owner's PIN
+    pincode: owner?.pincode || "",
     mobileNo: owner?.mobileNo || "",
-    facility: owner?.facility || "",
+    facility: owner?.facility ? owner.facility.split(",") : [],
     messName: owner?.messName || "",
     aboutMess: owner?.aboutMess || "",
     location: owner?.location || "",
+    profilePhoto: null,
+    messPhoto: null,
   });
 
   useEffect(() => {
