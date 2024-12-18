@@ -124,7 +124,7 @@ const UserDashboard = () => {
       const response = await fetch(url, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data"
         },
         body: JSON.stringify(payload),
       });
