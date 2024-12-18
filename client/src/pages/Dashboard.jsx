@@ -44,19 +44,19 @@ const UserDashboard = () => {
   const [updatedUserDetails, setUpdatedUserDetails] = useState({
     address: user?.address || owner?.address || "",
     pin: user?.pin || "",
-    pincode: owner?.pincode || "", // Use 'pincode' for the owner's PIN
+    pincode: owner?.pincode || "",
     mobileNo: owner?.mobileNo || "",
     facility: owner?.facility || "",
     messName: owner?.messName || "",
     aboutMess: owner?.aboutMess || "",
     location: owner?.location || "",
-    profilePhoto: owner?.profilePhoto || null, // Add profile photo state
-    messPhoto: owner?.messPhoto || null, // Add mess photo state
+    profilePhoto: owner?.profilePhoto || null,
+    messPhoto: owner?.messPhoto || null,
   });
 
   useEffect(() => {
     const fetchDetails = async () => {
-      setIsLoading(true); // Ensure loading starts
+      setIsLoading(true); 
       try {
         const userId = type === "student" ? user?.id : owner?.id;
         if (!userId) {
@@ -87,14 +87,14 @@ const UserDashboard = () => {
       } catch (error) {
         console.error("Error fetching details:", error);
       } finally {
-        setIsLoading(false); // Always stop loading
+        setIsLoading(false);
       }
     };
 
     if (currentView === "profile") {
       fetchDetails();
     } else {
-      setIsLoading(false); // Stop loading for other views
+      setIsLoading(false); 
     }
   }, [currentView, type, user, owner]);
 
@@ -124,7 +124,7 @@ const UserDashboard = () => {
       const response = await fetch(url, {
         method: "POST",
         headers: {
-          "Content-Type": "multipart/form-data"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(payload),
       });
@@ -148,6 +148,7 @@ const UserDashboard = () => {
       [field]: !prevState[field],
     }));
   };
+
   const handleFileChange = (e, field) => {
     const file = e.target.files[0];
     if (file) {
@@ -155,27 +156,16 @@ const UserDashboard = () => {
       fileReader.onloadend = () => {
         setUpdatedUserDetails((prevState) => ({
           ...prevState,
-          [field]: fileReader.result, // Store the base64 string of the file
+          [field]: fileReader.result, 
         }));
       };
-      fileReader.readAsDataURL(file); // Read the file as a Data URL
+      fileReader.readAsDataURL(file);
     }
   };
 
   const data = {
     labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
     ],
     datasets: [
       {
@@ -231,12 +221,11 @@ const UserDashboard = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>; // Show loader while fetching data
+    return <div>Loading...</div>;
   }
-console.log(data)
+
   return (
     <div className="flex h-screen">
-      {/* Hamburger Menu Icon for Small Devices */}
       <button
         onClick={() => setIsMenuOpen(!isMenuOpen)}
         className="md:hidden fixed top-4 left-4 z-50 bg-teal-500 p-2 rounded-full"
@@ -244,42 +233,26 @@ console.log(data)
         <img src="/assets/hamburger.svg" alt="Menu" className="h-6 w-6" />
       </button>
 
-      {/* Sidebar */}
       <div
-        className={`fixed md:static top-0 left-0 h-full bg-cyan-500 md:w-1/6 transition-transform ${
-          isMenuOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 z-40`}
+        className={`fixed md:static top-0 left-0 h-full bg-cyan-500 md:w-1/6 transition-transform ${isMenuOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 z-40`}
       >
         <div className="flex flex-col items-center py-6">
           <div className="text-teal-700 text-3xl font-bold">
             Easy<span className="text-blue-900">Pg</span>
           </div>
           <hr className="border-white w-full my-4" />
-          <div
-            onClick={() => setCurrentView("profile")}
-            className="flex items-center cursor-pointer space-x-2"
-          >
+          <div onClick={() => setCurrentView("profile")} className="flex items-center cursor-pointer space-x-2">
             {IsAuthenticated || isOwnerAuthenticated ? <UserProfile /> : null}
-            <span className="text-white font-medium">
-              {IsAuthenticated ? userName : ownerName}
-            </span>
+            <span className="text-white font-medium">{IsAuthenticated ? userName : ownerName}</span>
           </div>
           <hr className="border-white w-full my-4" />
-          <div
-            onClick={() => setCurrentView("dashboard")}
-            className="flex items-center cursor-pointer space-x-2"
-          >
-            <img
-              src="/assets/dashboard.png"
-              alt="Dashboard Icon"
-              className="h-7"
-            />
+          <div onClick={() => setCurrentView("dashboard")} className="flex items-center cursor-pointer space-x-2">
+            <img src="/assets/dashboard.png" alt="Dashboard Icon" className="h-7" />
             <span className="text-white font-medium">Dashboard</span>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 bg-gray-100 p-6 overflow-y-auto">
         {currentView === "dashboard" && (
           <div className="bg-white p-6 rounded-lg shadow">
@@ -288,27 +261,15 @@ console.log(data)
         )}
         {currentView === "profile" && (
           <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-center text-teal-500 font-bold text-xl mb-4">
-              Update Your Details
-            </h2>
-            <p>
-              <strong>Name:</strong>{" "}
-              {type === "student" ? user?.name : owner?.name}
-            </p>
-            <p>
-              <strong>Email:</strong>{" "}
-              {type === "student" ? user?.email : owner?.email}
-            </p>
-            
+            <h2 className="text-center text-teal-500 font-bold text-xl mb-4">Update Your Details</h2>
+            <p><strong>Name:</strong> {type === "student" ? user?.name : owner?.name}</p>
+            <p><strong>Email:</strong> {type === "student" ? user?.email : owner?.email}</p>
 
-            {/* Editable fields based on type (student or owner) */}
             {type === "student" ? (
               <>
-              
                 <div>
                   <strong>Address:</strong>
                   <div className="flex items-center">
-
                     <input
                       className="w-full mt-1 p-2 border border-gray-300 rounded"
                       name="address"
@@ -317,18 +278,11 @@ console.log(data)
                       disabled={!isEditable.address}
                       placeholder={user?.address || "Add your address"}
                     />
-                    <button
-                      type="button"
-                      onClick={() => toggleEdit("address")}
-                      className="ml-2 text-teal-500"
-                    >
+                    <button type="button" onClick={() => toggleEdit("address")} className="ml-2 text-teal-500">
                       {isEditable.address ? "Cancel" : "Edit"}
                     </button>
                   </div>
                 </div>
-
-
-
 
                 <div>
                   <strong>Pin:</strong>
@@ -341,11 +295,7 @@ console.log(data)
                       disabled={!isEditable.pin}
                       placeholder={user?.pin || "Add your PIN"}
                     />
-                    <button
-                      type="button"
-                      onClick={() => toggleEdit("pin")}
-                      className="ml-2 text-teal-500"
-                    >
+                    <button type="button" onClick={() => toggleEdit("pin")} className="ml-2 text-teal-500">
                       {isEditable.pin ? "Cancel" : "Edit"}
                     </button>
                   </div>
@@ -353,21 +303,13 @@ console.log(data)
               </>
             ) : (
               <>
-              
-              <div>
-              <strong>Profile Photo:</strong>
-              <input
-                type="file"
-                onChange={(e) => handleFileChange(e, "profilePhoto")}
-              />
-              {updatedUserDetails.profilePhoto && (
-                <img
-                  src={updatedUserDetails.profilePhoto}
-                  alt="Profile Preview"
-                  className="h-20 mt-2"
-                />
-              )}
-            </div>
+                <div>
+                  <strong>Profile Photo:</strong>
+                  <input type="file" onChange={(e) => handleFileChange(e, "profilePhoto")} />
+                  {updatedUserDetails.profilePhoto && (
+                    <img src={updatedUserDetails.profilePhoto} alt="Profile Preview" className="h-20 mt-2" />
+                  )}
+                </div>
 
                 <div>
                   <strong>Address:</strong>
@@ -380,35 +322,29 @@ console.log(data)
                       disabled={!isEditable.address}
                       placeholder={owner?.address || "Add address"}
                     />
-                    <button
-                      type="button"
-                      onClick={() => toggleEdit("address")}
-                      className="ml-2 text-teal-500"
-                    >
+                    <button type="button" onClick={() => toggleEdit("address")} className="ml-2 text-teal-500">
                       {isEditable.address ? "Cancel" : "Edit"}
                     </button>
                   </div>
                 </div>
+
                 <div>
                   <strong>Pin:</strong>
                   <div className="flex items-center">
                     <input
                       className="w-full mt-1 p-2 border border-gray-300 rounded"
-                      name="pincode" // Match the name with the backend field
-                      value={updatedUserDetails.pincode} // Bind to 'pincode'
+                      name="pincode"
+                      value={updatedUserDetails.pincode}
                       onChange={handleChange}
                       disabled={!isEditable.pincode}
                       placeholder={owner?.pincode || "Add PINCODE"}
                     />
-                    <button
-                      type="button"
-                      onClick={() => toggleEdit("pincode")}
-                      className="ml-2 text-teal-500"
-                    >
+                    <button type="button" onClick={() => toggleEdit("pincode")} className="ml-2 text-teal-500">
                       {isEditable.pincode ? "Cancel" : "Edit"}
                     </button>
                   </div>
                 </div>
+
                 <div>
                   <strong>Mobile No:</strong>
                   <div className="flex items-center">
@@ -420,15 +356,12 @@ console.log(data)
                       disabled={!isEditable.mobileNo}
                       placeholder={owner?.mobileNo || "Add mobile number"}
                     />
-                    <button
-                      type="button"
-                      onClick={() => toggleEdit("mobileNo")}
-                      className="ml-2 text-teal-500"
-                    >
+                    <button type="button" onClick={() => toggleEdit("mobileNo")} className="ml-2 text-teal-500">
                       {isEditable.mobileNo ? "Cancel" : "Edit"}
                     </button>
                   </div>
                 </div>
+
                 <div>
                   <strong>Facility:</strong>
                   <div className="flex items-center">
@@ -440,15 +373,12 @@ console.log(data)
                       disabled={!isEditable.facility}
                       placeholder={owner?.facility || "Add facility details"}
                     />
-                    <button
-                      type="button"
-                      onClick={() => toggleEdit("facility")}
-                      className="ml-2 text-teal-500"
-                    >
+                    <button type="button" onClick={() => toggleEdit("facility")} className="ml-2 text-teal-500">
                       {isEditable.facility ? "Cancel" : "Edit"}
                     </button>
                   </div>
                 </div>
+
                 <div>
                   <strong>Mess Name:</strong>
                   <div className="flex items-center">
@@ -460,15 +390,12 @@ console.log(data)
                       disabled={!isEditable.messName}
                       placeholder={owner?.messName || "Add mess name"}
                     />
-                    <button
-                      type="button"
-                      onClick={() => toggleEdit("messName")}
-                      className="ml-2 text-teal-500"
-                    >
+                    <button type="button" onClick={() => toggleEdit("messName")} className="ml-2 text-teal-500">
                       {isEditable.messName ? "Cancel" : "Edit"}
                     </button>
                   </div>
                 </div>
+
                 <div>
                   <strong>About Mess:</strong>
                   <div className="flex items-center">
@@ -478,17 +405,14 @@ console.log(data)
                       value={updatedUserDetails.aboutMess}
                       onChange={handleChange}
                       disabled={!isEditable.aboutMess}
-                      placeholder={owner?.aboutMess || "About your mess"}
+                      placeholder={owner?.aboutMess || "Add about mess"}
                     />
-                    <button
-                      type="button"
-                      onClick={() => toggleEdit("aboutMess")}
-                      className="ml-2 text-teal-500"
-                    >
+                    <button type="button" onClick={() => toggleEdit("aboutMess")} className="ml-2 text-teal-500">
                       {isEditable.aboutMess ? "Cancel" : "Edit"}
                     </button>
                   </div>
                 </div>
+
                 <div>
                   <strong>Location:</strong>
                   <div className="flex items-center">
@@ -498,43 +422,28 @@ console.log(data)
                       value={updatedUserDetails.location}
                       onChange={handleChange}
                       disabled={!isEditable.location}
-                      placeholder={owner?.location || "Add your location"}
+                      placeholder={owner?.location || "Add location"}
                     />
-                    <button
-                      type="button"
-                      onClick={() => toggleEdit("location")}
-                      className="ml-2 text-teal-500"
-                    >
+                    <button type="button" onClick={() => toggleEdit("location")} className="ml-2 text-teal-500">
                       {isEditable.location ? "Cancel" : "Edit"}
                     </button>
                   </div>
                 </div>
+
                 <div>
-              <strong>Mess Photo:</strong>
-              <input
-                type="file"
-                onChange={(e) => handleFileChange(e, "messPhoto")}
-              />
-              {updatedUserDetails.messPhoto && (
-                <img
-                  src={updatedUserDetails.messPhoto}
-                  alt="Mess Preview"
-                  className="h-20 mt-2"
-                />
-              )}
-            </div>
+                  <strong>Mess Photo:</strong>
+                  <input type="file" onChange={(e) => handleFileChange(e, "messPhoto")} />
+                  {updatedUserDetails.messPhoto && (
+                    <img src={updatedUserDetails.messPhoto} alt="Mess Preview" className="h-20 mt-2" />
+                  )}
+                </div>
               </>
             )}
-            {/* Save Changes Button */}
+
             {hasChanges && (
-              <div className="flex justify-center mt-4">
-                <button
-                  onClick={handleSaveChanges}
-                  className="bg-teal-500 text-white py-2 px-6 rounded-lg shadow hover:bg-teal-700 transition-all"
-                >
-                  Save Changes
-                </button>
-              </div>
+              <button onClick={handleSaveChanges} className="mt-4 bg-teal-500 text-white p-2 rounded">
+                Save Changes
+              </button>
             )}
           </div>
         )}
