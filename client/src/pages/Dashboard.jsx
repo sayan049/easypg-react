@@ -298,7 +298,7 @@ const handleSaveChanges = async () => {
                   <input type="file" 
                   name="profilePhoto"
                   onChange={(e) => handleFileChange(e, "profilePhoto")}
-                  value={updatedUserDetails.profilePhoto}
+                
                   disabled={!isEditable.profilePhoto}
                   />
                   {updatedUserDetails.profilePhoto && (
@@ -432,7 +432,7 @@ const handleSaveChanges = async () => {
                   <strong>Mess Photo:</strong>
                   <input type="file"
                   name="messPhoto"
-                  value={updatedUserDetails.messPhoto}
+                 
                    onChange={(e) => handleFileChange(e, "messPhoto")}
                    disabled={!isEditable.messPhoto}
                    
