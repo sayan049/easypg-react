@@ -45,7 +45,17 @@ function MessBars({ isChecked  ,checkFeatures} ) {
           alt="Mess"
           className="w-full md:[width:26%] object-cover rounded-md"
         />
-        <div className="md:ml-6 mt-4 md:mt-0"  style={{padding : isChecked? '16px':'0px'}}>
+        
+     <div
+  className="md:ml-6 mt-4 md:mt-0"
+  style={{
+    padding: isChecked ? '29px' : '0px',
+    borderRadius: isChecked ? '10px' : '0px',
+    boxShadow: isChecked
+      ? 'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px'
+      : 'none',
+  }}
+>
           <h3 className="font-medium text-lg">{owner.messName}, In Simhat</h3>
           <p className="text-sm text-gray-600 mt-2">
             Near MAKAUT University • 15 Km
