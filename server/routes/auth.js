@@ -33,7 +33,10 @@ router.get("/check-session", (req, res) => {
   }
 });
 
-router.post('/updateDetails', upload, updateDetailshandler.updateDetails);
+router.post('/updateDetails', upload.fields([
+  { name: "profilePhoto", maxCount: 1 },
+  { name: "messPhoto", maxCount: 10 },
+]), updateDetailshandler.updateDetails);
 router.get('/get-details', updateDetailshandler.getDetails);
 
 router.get("/logout", (req, res) => {
