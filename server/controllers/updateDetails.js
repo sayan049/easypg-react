@@ -3,7 +3,7 @@ const PgOwner = require("../modules/pgProvider");
 
 exports.updateDetails = async (req, res) => {
   const { type, userId, ...updateData } = req.body;
-  const { profilePhoto, messPhoto } = req.files; // Multer will handle the files here
+  // const { profilePhoto, messPhoto } = req.files; // Multer will handle the files here
 
   try {
     let updatedUser;
