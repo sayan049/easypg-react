@@ -134,6 +134,8 @@ const UserDashboard = () => {
 
   const handleSaveChanges = async () => {
     const formData = new FormData();
+  
+    // Append data and files
     Object.keys(updatedUserDetails).forEach((key) => {
       if (key === "profilePhoto" || key === "messPhoto") {
         const fileInput = document.querySelector(`input[name=${key}]`);
@@ -146,37 +148,31 @@ const UserDashboard = () => {
         formData.append(key, updatedUserDetails[key]);
       }
     });
-
+  
+    // Debug FormData contents
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+  
+    // Send request
     try {
-      const url = updateDetailsUrl;
-      const payload = {
-        ...updatedUserDetails,
-        userId: type === "student" ? user?.id : owner?.id,
-        type,
-      };
-
-      console.log("Payload being sent:", payload);
-
-      const response = await fetch(url, {
+      const response = await fetch(updateDetailsUrl, {
         method: "POST",
-        headers: {
-          "Content-Type": "multipart/form-data"
-        },
-        body: JSON.stringify(payload),
+        body: formData,
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to update details");
+  
+      const result = await response.json();
+      if (result.success) {
+        alert("Changes saved successfully!");
+      } else {
+        alert("Failed to save changes");
       }
-
-      const data = await response.json();
-      console.log("Update Response:", data);
-      alert("Changes saved successfully!");
-    }  catch (error) {
+    } catch (error) {
       console.error(error);
       alert("Failed to save changes");
     }
   };
+  
   const toggleEdit = (field) => {
     setIsEditable((prevState) => ({
       ...prevState,
