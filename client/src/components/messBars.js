@@ -45,7 +45,7 @@ function MessBars({ isChecked  ,checkFeatures} ) {
           alt="Mess"
           className="w-full md:[width:26%] object-cover rounded-md"
         />
-        <div className="md:ml-6 mt-4 md:mt-0">
+        <div className="md:ml-6 mt-4 md:mt-0"  style={{padding : isChecked? '16px':'0px'}}>
           <h3 className="font-medium text-lg">{owner.messName}, In Simhat</h3>
           <p className="text-sm text-gray-600 mt-2">
             Near MAKAUT University • 15 Km
