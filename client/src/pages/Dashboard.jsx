@@ -44,19 +44,17 @@ const UserDashboard = () => {
   const [updatedUserDetails, setUpdatedUserDetails] = useState({
     address: user?.address || owner?.address || "",
     pin: user?.pin || "",
-    pincode: owner?.pincode || "",
+    pincode: owner?.pincode || "", // Use 'pincode' for the owner's PIN
     mobileNo: owner?.mobileNo || "",
-    facility: owner?.facility ? owner.facility.split(",") : [],
+    facility: owner?.facility || "",
     messName: owner?.messName || "",
     aboutMess: owner?.aboutMess || "",
     location: owner?.location || "",
-    profilePhoto: null,
-    messPhoto: null,
   });
 
   useEffect(() => {
     const fetchDetails = async () => {
-      setIsLoading(true);
+      setIsLoading(true); // Ensure loading starts
       try {
         const userId = type === "student" ? user?.id : owner?.id;
         if (!userId) {
@@ -67,6 +65,8 @@ const UserDashboard = () => {
         const url = new URL(fetchDetailsUrl);
         url.searchParams.append("userId", userId);
         url.searchParams.append("type", type);
+
+        console.log("Fetching details with URL:", url.toString());
 
         const response = await fetch(url, {
           method: "GET",
@@ -80,22 +80,19 @@ const UserDashboard = () => {
         }
 
         const data = await response.json();
-        setUpdatedUserDetails((prev) => ({
-          ...prev,
-          ...data,
-          facility: data.facility ? data.facility.split(",") : [],
-        }));
+        setUpdatedUserDetails(data || {});
+        console.log("Fetched data:", data);
       } catch (error) {
         console.error("Error fetching details:", error);
       } finally {
-        setIsLoading(false);
+        setIsLoading(false); // Always stop loading
       }
     };
 
     if (currentView === "profile") {
       fetchDetails();
     } else {
-      setIsLoading(false);
+      setIsLoading(false); // Stop loading for other views
     }
   }, [currentView, type, user, owner]);
 
@@ -110,27 +107,7 @@ const UserDashboard = () => {
       return updatedDetails;
     });
   };
-  const handleCheckboxChange = (e) => {
-    const { name, checked } = e.target;
-    setUpdatedUserDetails((prevState) => {
-      const updatedFacility = checked
-        ? [...prevState.facility, name]
-        : prevState.facility.filter((item) => item !== name);
-      return {
-        ...prevState,
-        facility: updatedFacility,
-      };
-    });
-    setHasChanges(true);
-  };
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    setUpdatedUserDetails((prevState) => ({
-      ...prevState,
-      [name]: files[0],
-    }));
-    setHasChanges(true);
-  };
+
   const handleSaveChanges = async () => {
     try {
       const url = updateDetailsUrl;
@@ -169,7 +146,6 @@ const UserDashboard = () => {
       [field]: !prevState[field],
     }));
   };
-  const facilitiesOptions = ["Wi-Fi", "Double Bed", "Tank Water", "Kitchen", "TV","A/C","Power Backup",];
 
   const data = {
     labels: [
@@ -361,28 +337,7 @@ console.log(data)
                 </div>
               </>
             ) : (
-              <> 
-<div className="mt-4">
-                <div className="mb-4">
-                  <strong>Upload Profile Photo:</strong>
-                  <input
-                    type="file"
-                    name="profilePhoto"
-                    onChange={handleFileChange}
-                    className="mt-2"
-                  />
-                </div>
-                <div>
-                  <strong>Upload Mess Photo:</strong>
-                  <input
-                    type="file"
-                    name="messPhoto"
-                    onChange={handleFileChange}
-                    className="mt-2"
-                  />
-                </div>
-              </div>
-              
+              <>
                 <div>
                   <strong>Address:</strong>
                   <div className="flex items-center">
@@ -444,22 +399,25 @@ console.log(data)
                   </div>
                 </div>
                 <div>
-                <strong>Facilities:</strong>
-                <div className="grid grid-cols-2 gap-4 mt-2">
-                  {facilitiesOptions.map((facility) => (
-                    <label key={facility} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        name={facility}
-                        checked={updatedUserDetails.facility.includes(facility)}
-                        onChange={handleCheckboxChange}
-                        className="mr-2"
-                      />
-                      {facility}
-                    </label>
-                  ))}
+                  <strong>Facility:</strong>
+                  <div className="flex items-center">
+                    <input
+                      className="w-full mt-1 p-2 border border-gray-300 rounded"
+                      name="facility"
+                      value={updatedUserDetails.facility}
+                      onChange={handleChange}
+                      disabled={!isEditable.facility}
+                      placeholder={owner?.facility || "Add facility details"}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => toggleEdit("facility")}
+                      className="ml-2 text-teal-500"
+                    >
+                      {isEditable.facility ? "Cancel" : "Edit"}
+                    </button>
+                  </div>
                 </div>
-              </div>
                 <div>
                   <strong>Mess Name:</strong>
                   <div className="flex items-center">
