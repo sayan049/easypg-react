@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 8080;
 const corsOptions = {
   origin: ORIGIN,
   credentials: true,
-  methods: ['GET', 'POST'],
+  
   
 };
 app.set('trust proxy', 1); // Trust the first proxy
