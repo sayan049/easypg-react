@@ -133,43 +133,34 @@ const UserDashboard = () => {
   // };
 
   const handleSaveChanges = async () => {
-    // const formData = new FormData();
-  
-    // Append data and files
-    // Object.keys(updatedUserDetails).forEach((key) => {
-    //   if (key === "profilePhoto" || key === "messPhoto") {
-    //     const fileInput = document.querySelector(`input[name=${key}]`);
-    //     if (fileInput && fileInput.files.length > 0) {
-    //       Array.from(fileInput.files).forEach((file) => {
-    //         formData.append(key, file);
-    //       });
-    //     }
-    //   } else {
-    //     formData.append(key, updatedUserDetails[key]);
-    //   }
-    // });
-  
-    // // Debug FormData contents
-    // for (let pair of formData.entries()) {
-    //   console.log(pair[0], pair[1]);
-    // }
-  
-    // Send request
     try {
-      const response = await fetch(updateDetailsUrl, {
+      const url = updateDetailsUrl;
+      const payload = {
+        ...updatedUserDetails,
+        userId: type === "student" ? user?.id : owner?.id,
+        type,
+      };
+
+      console.log("Payload being sent:", payload);
+
+      const response = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" }
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
-  
-      const result = await response.json();
-      if (result.success) {
-        alert("Changes saved successfully!");
-      } else {
-        alert("Failed to save changes");
+
+      if (!response.ok) {
+        throw new Error("Failed to update details");
       }
+
+      const data = await response.json();
+      console.log("Update Response:", data);
+      alert("Changes saved successfully!");
     } catch (error) {
-      console.error(error);
-      alert("Failed to save changes");
+      console.error("Error saving changes:", error);
+      alert("Failed to save changes. Please try again.");
     }
   };
   
