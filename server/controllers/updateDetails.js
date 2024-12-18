@@ -3,19 +3,19 @@ const PgOwner = require("../modules/pgProvider");
 
 exports.updateDetails = async (req, res) => {
   const { type, userId, ...updateData } = req.body;
-  const { file } = req; // For profile or mess photo uploads
-  
+  const { profilePhoto, messPhotos } = req.files;  // Using req.files for multiple files
   try {
     let updatedUser;
 
+    // For Student Type
     if (type === "student") {
-      // Find the student (User) by ID
+      // Find student by ID
       updatedUser = await User.findById(userId);
       if (!updatedUser) {
-        return res.status(404).json({ error: "User not found" });
+        return res.status(404).json({ error: "Student not found" });
       }
 
-      // Allow updates only for address and pin
+      // Allow updates for address and pin only
       const allowedUpdates = ["address", "pin"];
       for (const key in updateData) {
         if (allowedUpdates.includes(key)) {
@@ -23,19 +23,19 @@ exports.updateDetails = async (req, res) => {
         }
       }
 
-      // Handle profile photo update if file is provided
-      if (file && file.path) {
-        updatedUser.profilePhoto = file.path;
+      // Handle profile photo update if file is uploaded
+      if (profilePhoto && profilePhoto[0]?.path) {
+        updatedUser.profilePhoto = profilePhoto[0].path;
       }
 
     } else if (type === "owner") {
-      // Find the owner (PgOwner) by ID
+      // Find owner by ID
       updatedUser = await PgOwner.findById(userId);
       if (!updatedUser) {
         return res.status(404).json({ error: "Owner not found" });
       }
 
-      // Allow updates for address, pincode, mobileNo, facility, messName, aboutMess, location
+      // Allow updates for multiple fields
       const allowedUpdates = ["address", "pincode", "mobileNo", "facility", "messName", "aboutMess", "location"];
       for (const key in updateData) {
         if (allowedUpdates.includes(key)) {
@@ -43,16 +43,23 @@ exports.updateDetails = async (req, res) => {
         }
       }
 
-      // Handle mess photo upload if file is provided (for the owner's mess)
-      if (file && file.path) {
-        updatedUser.messPhoto.push(file.path);
+      // Handle profile photo update
+      if (profilePhoto && profilePhoto[0]?.path) {
+        updatedUser.profilePhoto = profilePhoto[0].path;
+      }
+
+      // Handle mess photo update if multiple files are uploaded
+      if (messPhotos && messPhotos.length > 0) {
+        messPhotos.forEach(photo => {
+          updatedUser.messPhoto.push(photo.path);
+        });
       }
 
     } else {
       return res.status(400).json({ error: "Invalid user type" });
     }
 
-    // Save the updated document
+    // Save the updated user data
     await updatedUser.save();
 
     res.status(200).json({
@@ -66,11 +73,15 @@ exports.updateDetails = async (req, res) => {
   }
 };
 //fetching details
+
+
 exports.getDetails = async (req, res) => {
   const { userId, type } = req.query;
-  console.log(userId,type);
+  console.log(userId, type);
   try {
     let userDetails;
+
+    // Fetch user details based on the user type
     if (type === "student") {
       userDetails = await User.findById(userId);
     } else if (type === "owner") {
@@ -84,6 +95,7 @@ exports.getDetails = async (req, res) => {
     }
 
     res.status(200).json(userDetails);
+
   } catch (error) {
     console.error("Error fetching details:", error);
     res.status(500).json({ error: "Failed to fetch details" });
