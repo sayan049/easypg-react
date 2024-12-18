@@ -107,50 +107,58 @@ const UserDashboard = () => {
     });
 };
 
+const handleFileChange = (e, field) => {
+  const files = e.target.files;
+  if (files && files.length > 0) {
+    const file = files[0];
+    const fileReader = new FileReader();
+    fileReader.onloadend = () => {
+      setUpdatedUserDetails(prevState => ({
+        ...prevState,
+        [field]: fileReader.result, // Store the base64 result for previewing
+      }));
+    };
+    fileReader.readAsDataURL(file);
+  }
+};
+
 const handleSaveChanges = async () => {
   const formData = new FormData();
   Object.keys(updatedUserDetails).forEach(key => {
+    if (key === 'profilePhoto' || key === 'messPhoto') {
+      const fileInput = document.querySelector(`input[name=${key}]`);
+      if (fileInput && fileInput.files.length > 0) {
+        formData.append(key, fileInput.files[0]);
+      }
+    } else {
       formData.append(key, updatedUserDetails[key]);
+    }
   });
 
   // Send the form data to the backend
   try {
-      const response = await fetch(updateDetailsUrl, {
-          method: 'POST',
-          body: formData,
-      });
+    const response = await fetch(updateDetailsUrl, {
+      method: 'POST',
+      body: formData,
+    });
 
-      const result = await response.json();
-      if (result.success) {
-          alert('Changes saved successfully!');
-      } else {
-          alert('Failed to save changes');
-      }
-  } catch (error) {
-      console.error(error);
+    const result = await response.json();
+    if (result.success) {
+      alert('Changes saved successfully!');
+    } else {
       alert('Failed to save changes');
+    }
+  } catch (error) {
+    console.error(error);
+    alert('Failed to save changes');
   }
 };
 
-  const toggleEdit = (field) => {
-    setIsEditable((prevState) => ({
-      ...prevState,
-      [field]: !prevState[field],
-    }));
-  };
-
-  const handleFileChange = (e, field) => {
-    const files = e.target.files;
-    if (files) {
-        const fileReader = new FileReader();
-        fileReader.onloadend = () => {
-            setUpdatedUserDetails(prevState => ({
-                ...prevState,
-                [field]: fileReader.result,
-            }));
-        };
-        fileReader.readAsDataURL(files[0]);
-    }
+const toggleEdit = (field) => {
+  setIsEditable((prevState) => ({
+    ...prevState,
+    [field]: !prevState[field],
+  }));
 };
 
   const data = {
