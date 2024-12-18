@@ -1,5 +1,5 @@
 import React from 'react';
-import {Mao,GoogleApiWrapper} from '@react-google-maps/api';
+import {Map,GoogleApiWrapper} from '@react-google-maps/api';
 // import axios from 'axios';
 // import { findMessUrl } from '../constant/urls';
 // import L from 'leaflet';
