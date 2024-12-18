@@ -50,14 +50,14 @@ exports.updateDetails = async (req, res) => {
       }
 
       // Handle profile photo update if file is uploaded
-      if (profilePhoto && profilePhoto[0]?.path) {
-        updatedUser.profilePhoto = profilePhoto[0].path;
-      }
+      // if (profilePhoto && profilePhoto[0]?.path) {
+      //   updatedUser.profilePhoto = profilePhoto[0].path;
+      // }
 
-      // Handle mess photo update if multiple files are uploaded
-      if (messPhoto && messPhoto.length > 0) {
-        updatedUser.messPhoto = messPhoto.map((photo) => photo.path);
-      }
+      // // Handle mess photo update if multiple files are uploaded
+      // if (messPhoto && messPhoto.length > 0) {
+      //   updatedUser.messPhoto = messPhoto.map((photo) => photo.path);
+      // }
     } else {
       return res.status(400).json({ error: "Invalid user type" });
     }
