@@ -100,47 +100,37 @@ const UserDashboard = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUpdatedUserDetails((prevState) => {
-      const updatedDetails = {
-        ...prevState,
-        [name]: value,
-      };
-      setHasChanges(JSON.stringify(updatedDetails) !== JSON.stringify({ ...prevState }));
-      return updatedDetails;
+    setUpdatedUserDetails(prevState => {
+        const updatedDetails = { ...prevState, [name]: value };
+        setHasChanges(JSON.stringify(updatedDetails) !== JSON.stringify(prevState));
+        return updatedDetails;
     });
-  };
+};
 
-  const handleSaveChanges = async () => {
-    try {
-      const url = updateDetailsUrl;
-      const payload = {
-        ...updatedUserDetails,
-        userId: type === "student" ? user?.id : owner?.id,
-        type,
-      };
+const handleSaveChanges = async () => {
+  const formData = new FormData();
+  Object.keys(updatedUserDetails).forEach(key => {
+      formData.append(key, updatedUserDetails[key]);
+  });
 
-      console.log("Payload being sent:", payload);
-
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload),
+  // Send the form data to the backend
+  try {
+      const response = await fetch(updateDetailsUrl, {
+          method: 'POST',
+          body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to update details");
+      const result = await response.json();
+      if (result.success) {
+          alert('Changes saved successfully!');
+      } else {
+          alert('Failed to save changes');
       }
-
-      const data = await response.json();
-      console.log("Update Response:", data);
-      alert("Changes saved successfully!");
-    } catch (error) {
-      console.error("Error saving changes:", error);
-      alert("Failed to save changes. Please try again.");
-    }
-  };
+  } catch (error) {
+      console.error(error);
+      alert('Failed to save changes');
+  }
+};
 
   const toggleEdit = (field) => {
     setIsEditable((prevState) => ({
@@ -150,18 +140,18 @@ const UserDashboard = () => {
   };
 
   const handleFileChange = (e, field) => {
-    const file = e.target.files[0];
-    if (file) {
-      const fileReader = new FileReader();
-      fileReader.onloadend = () => {
-        setUpdatedUserDetails((prevState) => ({
-          ...prevState,
-          [field]: fileReader.result, 
-        }));
-      };
-      fileReader.readAsDataURL(file);
+    const files = e.target.files;
+    if (files) {
+        const fileReader = new FileReader();
+        fileReader.onloadend = () => {
+            setUpdatedUserDetails(prevState => ({
+                ...prevState,
+                [field]: fileReader.result,
+            }));
+        };
+        fileReader.readAsDataURL(files[0]);
     }
-  };
+};
 
   const data = {
     labels: [
