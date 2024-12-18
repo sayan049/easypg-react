@@ -50,8 +50,8 @@ const UserDashboard = () => {
     messName: owner?.messName || "",
     aboutMess: owner?.aboutMess || "",
     location: owner?.location || "",
-    profilePhoto: owner?.profilePhoto || null,
-    messPhoto: owner?.messPhoto || [],
+    // profilePhoto: owner?.profilePhoto || null,
+    // messPhoto: owner?.messPhoto || [],
   });
 
   useEffect(() => {
@@ -109,56 +109,56 @@ const UserDashboard = () => {
     });
   };
 
-  const handleFileChange = (e, field) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      const fileArray = Array.from(files);
-      if (field === "messPhoto") {
-        setUpdatedUserDetails((prevState) => ({
-          ...prevState,
-          messPhoto: fileArray.map((file) => URL.createObjectURL(file)), // Preview files
-        }));
-      } else {
-        const file = files[0];
-        const fileReader = new FileReader();
-        fileReader.onloadend = () => {
-          setUpdatedUserDetails((prevState) => ({
-            ...prevState,
-            [field]: fileReader.result,
-          }));
-        };
-        fileReader.readAsDataURL(file);
-      }
-    }
-  };
+  // const handleFileChange = (e, field) => {
+  //   const files = e.target.files;
+  //   if (files && files.length > 0) {
+  //     const fileArray = Array.from(files);
+  //     if (field === "messPhoto") {
+  //       setUpdatedUserDetails((prevState) => ({
+  //         ...prevState,
+  //         messPhoto: fileArray.map((file) => URL.createObjectURL(file)), // Preview files
+  //       }));
+  //     } else {
+  //       const file = files[0];
+  //       const fileReader = new FileReader();
+  //       fileReader.onloadend = () => {
+  //         setUpdatedUserDetails((prevState) => ({
+  //           ...prevState,
+  //           [field]: fileReader.result,
+  //         }));
+  //       };
+  //       fileReader.readAsDataURL(file);
+  //     }
+  //   }
+  // };
 
   const handleSaveChanges = async () => {
-    const formData = new FormData();
+    // const formData = new FormData();
   
     // Append data and files
-    Object.keys(updatedUserDetails).forEach((key) => {
-      if (key === "profilePhoto" || key === "messPhoto") {
-        const fileInput = document.querySelector(`input[name=${key}]`);
-        if (fileInput && fileInput.files.length > 0) {
-          Array.from(fileInput.files).forEach((file) => {
-            formData.append(key, file);
-          });
-        }
-      } else {
-        formData.append(key, updatedUserDetails[key]);
-      }
-    });
+    // Object.keys(updatedUserDetails).forEach((key) => {
+    //   if (key === "profilePhoto" || key === "messPhoto") {
+    //     const fileInput = document.querySelector(`input[name=${key}]`);
+    //     if (fileInput && fileInput.files.length > 0) {
+    //       Array.from(fileInput.files).forEach((file) => {
+    //         formData.append(key, file);
+    //       });
+    //     }
+    //   } else {
+    //     formData.append(key, updatedUserDetails[key]);
+    //   }
+    // });
   
-    // Debug FormData contents
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
+    // // Debug FormData contents
+    // for (let pair of formData.entries()) {
+    //   console.log(pair[0], pair[1]);
+    // }
   
     // Send request
     try {
       const response = await fetch(updateDetailsUrl, {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" }
       });
   
       const result = await response.json();
@@ -361,7 +361,7 @@ const UserDashboard = () => {
               </>
             ) : (
               <>
-                <div>
+                {/* <div>
                   <strong>Profile Photo:</strong>
                   <input
                     type="file"
@@ -383,7 +383,7 @@ const UserDashboard = () => {
                   >
                     {isEditable.address ? "Cancel" : "Edit"}
                   </button>
-                </div>
+                </div> */}
 
                 <div>
                   <strong>Address:</strong>
@@ -532,7 +532,7 @@ const UserDashboard = () => {
                   </div>
                 </div>
 
-                <div>
+                {/* <div>
                   <strong>Mess Photo:</strong>
                   <input
                     type="file"
@@ -557,7 +557,7 @@ const UserDashboard = () => {
                   >
                     {isEditable.messPhoto ? "Cancel" : "Edit"}
                   </button>
-                </div>
+                </div> */}
               </>
             )}
 
