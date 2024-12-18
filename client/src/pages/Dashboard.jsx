@@ -51,7 +51,7 @@ const UserDashboard = () => {
     aboutMess: owner?.aboutMess || "",
     location: owner?.location || "",
     profilePhoto: owner?.profilePhoto || null,
-    messPhoto: owner?.messPhoto || null,
+    messPhoto: owner?.messPhoto || [],
   });
 
   useEffect(() => {
