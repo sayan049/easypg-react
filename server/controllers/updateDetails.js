@@ -73,8 +73,7 @@ exports.updateDetails = async (req, res) => {
   }
 };
 //fetching details
-const User = require("../models/user");
-const PgOwner = require("../models/pgProvider");
+
 
 exports.getDetails = async (req, res) => {
   const { userId, type } = req.query;
