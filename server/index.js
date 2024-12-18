@@ -21,12 +21,12 @@ const corsOptions = {
   origin: ORIGIN,
   credentials: true,
   methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  
 };
 app.set('trust proxy', 1); // Trust the first proxy
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); 
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));

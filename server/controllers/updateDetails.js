@@ -3,8 +3,8 @@ const PgOwner = require("../modules/pgProvider");
 
 exports.updateDetails = async (req, res) => {
   const { type, userId, ...updateData } = req.body;
-  const { profilePhoto, messPhoto } = req.files;  // Multer will handle the files here
-  
+  const { profilePhoto, messPhoto } = req.files; // Multer will handle the files here
+
   try {
     let updatedUser;
 
@@ -27,7 +27,6 @@ exports.updateDetails = async (req, res) => {
       if (profilePhoto && profilePhoto[0]?.path) {
         updatedUser.profilePhoto = profilePhoto[0].path;
       }
-
     } else if (type === "owner") {
       updatedUser = await PgOwner.findById(userId);
       if (!updatedUser) {
@@ -36,8 +35,13 @@ exports.updateDetails = async (req, res) => {
 
       // Allow updates for multiple fields
       const allowedUpdates = [
-        "address", "pincode", "mobileNo", "facility", 
-        "messName", "aboutMess", "location"
+        "address",
+        "pincode",
+        "mobileNo",
+        "facility",
+        "messName",
+        "aboutMess",
+        "location",
       ];
       for (const key in updateData) {
         if (allowedUpdates.includes(key)) {
@@ -52,9 +56,8 @@ exports.updateDetails = async (req, res) => {
 
       // Handle mess photo update if multiple files are uploaded
       if (messPhoto && messPhoto.length > 0) {
-        updatedUser.messPhoto = messPhoto.map(photo => photo.path);
+        updatedUser.messPhoto = messPhoto.map((photo) => photo.path);
       }
-
     } else {
       return res.status(400).json({ error: "Invalid user type" });
     }
@@ -66,13 +69,11 @@ exports.updateDetails = async (req, res) => {
       message: "Details updated successfully",
       data: updatedUser,
     });
-
   } catch (error) {
     console.error("Error updating details:", error);
     res.status(500).json({ error: "An error occurred while updating details" });
   }
 };
-
 exports.getDetails = async (req, res) => {
   const { userId, type } = req.query;
   console.log(userId, type);

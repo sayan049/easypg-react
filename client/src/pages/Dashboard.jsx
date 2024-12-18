@@ -56,7 +56,7 @@ const UserDashboard = () => {
 
   useEffect(() => {
     const fetchDetails = async () => {
-      setIsLoading(true); 
+      setIsLoading(true);
       try {
         const userId = type === "student" ? user?.id : owner?.id;
         if (!userId) {
@@ -94,76 +94,98 @@ const UserDashboard = () => {
     if (currentView === "profile") {
       fetchDetails();
     } else {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   }, [currentView, type, user, owner]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUpdatedUserDetails(prevState => {
-        const updatedDetails = { ...prevState, [name]: value };
-        setHasChanges(JSON.stringify(updatedDetails) !== JSON.stringify(prevState));
-        return updatedDetails;
+    setUpdatedUserDetails((prevState) => {
+      const updatedDetails = { ...prevState, [name]: value };
+      setHasChanges(
+        JSON.stringify(updatedDetails) !== JSON.stringify(prevState)
+      );
+      return updatedDetails;
     });
-};
+  };
 
-const handleFileChange = (e, field) => {
-  const files = e.target.files;
-  if (files && files.length > 0) {
-    const file = files[0];
-    const fileReader = new FileReader();
-    fileReader.onloadend = () => {
-      setUpdatedUserDetails(prevState => ({
-        ...prevState,
-        [field]: fileReader.result, // Store the base64 result for previewing
-      }));
-    };
-    fileReader.readAsDataURL(file);
-  }
-};
-
-const handleSaveChanges = async () => {
-  const formData = new FormData();
-  Object.keys(updatedUserDetails).forEach(key => {
-    if (key === 'profilePhoto' || key === 'messPhoto') {
-      const fileInput = document.querySelector(`input[name=${key}]`);
-      if (fileInput && fileInput.files.length > 0) {
-        formData.append(key, fileInput.files[0]);
+  const handleFileChange = (e, field) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const fileArray = Array.from(files);
+      if (field === "messPhoto") {
+        setUpdatedUserDetails((prevState) => ({
+          ...prevState,
+          messPhoto: fileArray.map((file) => URL.createObjectURL(file)), // Preview files
+        }));
+      } else {
+        const file = files[0];
+        const fileReader = new FileReader();
+        fileReader.onloadend = () => {
+          setUpdatedUserDetails((prevState) => ({
+            ...prevState,
+            [field]: fileReader.result,
+          }));
+        };
+        fileReader.readAsDataURL(file);
       }
-    } else {
-      formData.append(key, updatedUserDetails[key]);
     }
-  });
+  };
 
-  // Send the form data to the backend
-  try {
-    const response = await fetch(updateDetailsUrl, {
-      method: 'POST',
-      body: formData,
+  const handleSaveChanges = async () => {
+    const formData = new FormData();
+    Object.keys(updatedUserDetails).forEach((key) => {
+      if (key === "profilePhoto" || key === "messPhoto") {
+        const fileInput = document.querySelector(`input[name=${key}]`);
+        if (fileInput && fileInput.files.length > 0) {
+          Array.from(fileInput.files).forEach((file) => {
+            formData.append(key, file);
+          });
+        }
+      } else {
+        formData.append(key, updatedUserDetails[key]);
+      }
     });
 
-    const result = await response.json();
-    if (result.success) {
-      alert('Changes saved successfully!');
-    } else {
-      alert('Failed to save changes');
-    }
-  } catch (error) {
-    console.error(error);
-    alert('Failed to save changes');
-  }
-};
+    try {
+      const response = await fetch(updateDetailsUrl, {
+        method: "POST",
+        body: formData,
+      });
 
-const toggleEdit = (field) => {
-  setIsEditable((prevState) => ({
-    ...prevState,
-    [field]: !prevState[field],
-  }));
-};
+      const result = await response.json();
+      if (result.success) {
+        alert("Changes saved successfully!");
+      } else {
+        alert("Failed to save changes");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Failed to save changes");
+    }
+  };
+
+  const toggleEdit = (field) => {
+    setIsEditable((prevState) => ({
+      ...prevState,
+      [field]: !prevState[field],
+    }));
+  };
 
   const data = {
     labels: [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ],
     datasets: [
       {
@@ -232,20 +254,34 @@ const toggleEdit = (field) => {
       </button>
 
       <div
-        className={`fixed md:static top-0 left-0 h-full bg-cyan-500 md:w-1/6 transition-transform ${isMenuOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 z-40`}
+        className={`fixed md:static top-0 left-0 h-full bg-cyan-500 md:w-1/6 transition-transform ${
+          isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0 z-40`}
       >
         <div className="flex flex-col items-center py-6">
           <div className="text-teal-700 text-3xl font-bold">
             Easy<span className="text-blue-900">Pg</span>
           </div>
           <hr className="border-white w-full my-4" />
-          <div onClick={() => setCurrentView("profile")} className="flex items-center cursor-pointer space-x-2">
+          <div
+            onClick={() => setCurrentView("profile")}
+            className="flex items-center cursor-pointer space-x-2"
+          >
             {IsAuthenticated || isOwnerAuthenticated ? <UserProfile /> : null}
-            <span className="text-white font-medium">{IsAuthenticated ? userName : ownerName}</span>
+            <span className="text-white font-medium">
+              {IsAuthenticated ? userName : ownerName}
+            </span>
           </div>
           <hr className="border-white w-full my-4" />
-          <div onClick={() => setCurrentView("dashboard")} className="flex items-center cursor-pointer space-x-2">
-            <img src="/assets/dashboard.png" alt="Dashboard Icon" className="h-7" />
+          <div
+            onClick={() => setCurrentView("dashboard")}
+            className="flex items-center cursor-pointer space-x-2"
+          >
+            <img
+              src="/assets/dashboard.png"
+              alt="Dashboard Icon"
+              className="h-7"
+            />
             <span className="text-white font-medium">Dashboard</span>
           </div>
         </div>
@@ -259,9 +295,17 @@ const toggleEdit = (field) => {
         )}
         {currentView === "profile" && (
           <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-center text-teal-500 font-bold text-xl mb-4">Update Your Details</h2>
-            <p><strong>Name:</strong> {type === "student" ? user?.name : owner?.name}</p>
-            <p><strong>Email:</strong> {type === "student" ? user?.email : owner?.email}</p>
+            <h2 className="text-center text-teal-500 font-bold text-xl mb-4">
+              Update Your Details
+            </h2>
+            <p>
+              <strong>Name:</strong>{" "}
+              {type === "student" ? user?.name : owner?.name}
+            </p>
+            <p>
+              <strong>Email:</strong>{" "}
+              {type === "student" ? user?.email : owner?.email}
+            </p>
 
             {type === "student" ? (
               <>
@@ -276,7 +320,11 @@ const toggleEdit = (field) => {
                       disabled={!isEditable.address}
                       placeholder={user?.address || "Add your address"}
                     />
-                    <button type="button" onClick={() => toggleEdit("address")} className="ml-2 text-teal-500">
+                    <button
+                      type="button"
+                      onClick={() => toggleEdit("address")}
+                      className="ml-2 text-teal-500"
+                    >
                       {isEditable.address ? "Cancel" : "Edit"}
                     </button>
                   </div>
@@ -293,7 +341,11 @@ const toggleEdit = (field) => {
                       disabled={!isEditable.pin}
                       placeholder={user?.pin || "Add your PIN"}
                     />
-                    <button type="button" onClick={() => toggleEdit("pin")} className="ml-2 text-teal-500">
+                    <button
+                      type="button"
+                      onClick={() => toggleEdit("pin")}
+                      className="ml-2 text-teal-500"
+                    >
                       {isEditable.pin ? "Cancel" : "Edit"}
                     </button>
                   </div>
@@ -303,18 +355,26 @@ const toggleEdit = (field) => {
               <>
                 <div>
                   <strong>Profile Photo:</strong>
-                  <input type="file" 
-                  name="profilePhoto"
-                  onChange={(e) => handleFileChange(e, "profilePhoto")}
-                
-                  disabled={!isEditable.profilePhoto}
+                  <input
+                    type="file"
+                    name="profilePhoto"
+                    onChange={(e) => handleFileChange(e, "profilePhoto")}
+                    disabled={!isEditable.profilePhoto}
                   />
                   {updatedUserDetails.profilePhoto && (
-                   <img src={updatedUserDetails.profilePhoto} alt="Profile Preview" className="h-20 mt-2" />
+                    <img
+                      src={updatedUserDetails.profilePhoto}
+                      alt="Profile Preview"
+                      className="h-20 mt-2"
+                    />
                   )}
-                   <button type="button" onClick={() => toggleEdit("profilePhoto")} className="ml-2 text-teal-500">
-                      {isEditable.address ? "Cancel" : "Edit"}
-                    </button>
+                  <button
+                    type="button"
+                    onClick={() => toggleEdit("profilePhoto")}
+                    className="ml-2 text-teal-500"
+                  >
+                    {isEditable.address ? "Cancel" : "Edit"}
+                  </button>
                 </div>
 
                 <div>
@@ -328,7 +388,11 @@ const toggleEdit = (field) => {
                       disabled={!isEditable.address}
                       placeholder={owner?.address || "Add address"}
                     />
-                    <button type="button" onClick={() => toggleEdit("address")} className="ml-2 text-teal-500">
+                    <button
+                      type="button"
+                      onClick={() => toggleEdit("address")}
+                      className="ml-2 text-teal-500"
+                    >
                       {isEditable.address ? "Cancel" : "Edit"}
                     </button>
                   </div>
@@ -345,7 +409,11 @@ const toggleEdit = (field) => {
                       disabled={!isEditable.pincode}
                       placeholder={owner?.pincode || "Add PINCODE"}
                     />
-                    <button type="button" onClick={() => toggleEdit("pincode")} className="ml-2 text-teal-500">
+                    <button
+                      type="button"
+                      onClick={() => toggleEdit("pincode")}
+                      className="ml-2 text-teal-500"
+                    >
                       {isEditable.pincode ? "Cancel" : "Edit"}
                     </button>
                   </div>
@@ -362,7 +430,11 @@ const toggleEdit = (field) => {
                       disabled={!isEditable.mobileNo}
                       placeholder={owner?.mobileNo || "Add mobile number"}
                     />
-                    <button type="button" onClick={() => toggleEdit("mobileNo")} className="ml-2 text-teal-500">
+                    <button
+                      type="button"
+                      onClick={() => toggleEdit("mobileNo")}
+                      className="ml-2 text-teal-500"
+                    >
                       {isEditable.mobileNo ? "Cancel" : "Edit"}
                     </button>
                   </div>
@@ -379,7 +451,11 @@ const toggleEdit = (field) => {
                       disabled={!isEditable.facility}
                       placeholder={owner?.facility || "Add facility details"}
                     />
-                    <button type="button" onClick={() => toggleEdit("facility")} className="ml-2 text-teal-500">
+                    <button
+                      type="button"
+                      onClick={() => toggleEdit("facility")}
+                      className="ml-2 text-teal-500"
+                    >
                       {isEditable.facility ? "Cancel" : "Edit"}
                     </button>
                   </div>
@@ -396,7 +472,11 @@ const toggleEdit = (field) => {
                       disabled={!isEditable.messName}
                       placeholder={owner?.messName || "Add mess name"}
                     />
-                    <button type="button" onClick={() => toggleEdit("messName")} className="ml-2 text-teal-500">
+                    <button
+                      type="button"
+                      onClick={() => toggleEdit("messName")}
+                      className="ml-2 text-teal-500"
+                    >
                       {isEditable.messName ? "Cancel" : "Edit"}
                     </button>
                   </div>
@@ -413,7 +493,11 @@ const toggleEdit = (field) => {
                       disabled={!isEditable.aboutMess}
                       placeholder={owner?.aboutMess || "Add about mess"}
                     />
-                    <button type="button" onClick={() => toggleEdit("aboutMess")} className="ml-2 text-teal-500">
+                    <button
+                      type="button"
+                      onClick={() => toggleEdit("aboutMess")}
+                      className="ml-2 text-teal-500"
+                    >
                       {isEditable.aboutMess ? "Cancel" : "Edit"}
                     </button>
                   </div>
@@ -430,7 +514,11 @@ const toggleEdit = (field) => {
                       disabled={!isEditable.location}
                       placeholder={owner?.location || "Add location"}
                     />
-                    <button type="button" onClick={() => toggleEdit("location")} className="ml-2 text-teal-500">
+                    <button
+                      type="button"
+                      onClick={() => toggleEdit("location")}
+                      className="ml-2 text-teal-500"
+                    >
                       {isEditable.location ? "Cancel" : "Edit"}
                     </button>
                   </div>
@@ -438,25 +526,38 @@ const toggleEdit = (field) => {
 
                 <div>
                   <strong>Mess Photo:</strong>
-                  <input type="file"
-                  name="messPhoto"
-                 
-                   onChange={(e) => handleFileChange(e, "messPhoto")}
-                   disabled={!isEditable.messPhoto}
-                   
-                   />
-                    <button type="button" onClick={() => toggleEdit("messPhoto")} className="ml-2 text-teal-500">
-                      {isEditable.location ? "Cancel" : "Edit"}
-                    </button>
-                  {updatedUserDetails.messPhoto && (
-                    <img src={updatedUserDetails.messPhoto} alt="Mess Preview" className="h-20 mt-2" />
-                  )}
+                  <input
+                    type="file"
+                    name="messPhoto"
+                    multiple // Allow multiple file selection
+                    onChange={(e) => handleFileChange(e, "messPhoto")}
+                    disabled={!isEditable.messPhoto}
+                  />
+                  {updatedUserDetails.messPhoto &&
+                    updatedUserDetails.messPhoto.map((photo, index) => (
+                      <img
+                        key={index}
+                        src={photo}
+                        alt={`Mess Preview ${index}`}
+                        className="h-20 mt-2"
+                      />
+                    ))}
+                  <button
+                    type="button"
+                    onClick={() => toggleEdit("messPhoto")}
+                    className="ml-2 text-teal-500"
+                  >
+                    {isEditable.messPhoto ? "Cancel" : "Edit"}
+                  </button>
                 </div>
               </>
             )}
 
             {hasChanges && (
-              <button onClick={handleSaveChanges} className="mt-4 bg-teal-500 text-white p-2 rounded">
+              <button
+                onClick={handleSaveChanges}
+                className="mt-4 bg-teal-500 text-white p-2 rounded"
+              >
                 Save Changes
               </button>
             )}
