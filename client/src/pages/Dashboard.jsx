@@ -148,23 +148,35 @@ const UserDashboard = () => {
     });
 
     try {
-      const response = await fetch(updateDetailsUrl, {
+      const url = updateDetailsUrl;
+      const payload = {
+        ...updatedUserDetails,
+        userId: type === "student" ? user?.id : owner?.id,
+        type,
+      };
+
+      console.log("Payload being sent:", payload);
+
+      const response = await fetch(url, {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
+        body: JSON.stringify(payload),
       });
 
-      const result = await response.json();
-      if (result.success) {
-        alert("Changes saved successfully!");
-      } else {
-        alert("Failed to save changes");
+      if (!response.ok) {
+        throw new Error("Failed to update details");
       }
-    } catch (error) {
+
+      const data = await response.json();
+      console.log("Update Response:", data);
+      alert("Changes saved successfully!");
+    }  catch (error) {
       console.error(error);
       alert("Failed to save changes");
     }
   };
-
   const toggleEdit = (field) => {
     setIsEditable((prevState) => ({
       ...prevState,
