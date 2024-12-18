@@ -314,7 +314,7 @@ const UserDashboard = () => {
                   {updatedUserDetails.profilePhoto && (
                    <img src={updatedUserDetails.profilePhoto} alt="Profile Preview" className="h-20 mt-2" />
                   )}
-                   <button type="button" onClick={() => toggleEdit("address")} className="ml-2 text-teal-500">
+                   <button type="button" onClick={() => toggleEdit("profilePhoto")} className="ml-2 text-teal-500">
                       {isEditable.address ? "Cancel" : "Edit"}
                     </button>
                 </div>
@@ -445,10 +445,9 @@ const UserDashboard = () => {
                   value={updatedUserDetails.messPhoto}
                    onChange={(e) => handleFileChange(e, "messPhoto")}
                    disabled={!isEditable.messPhoto}
-
                    
                    />
-                    <button type="button" onClick={() => toggleEdit("location")} className="ml-2 text-teal-500">
+                    <button type="button" onClick={() => toggleEdit("messPhoto")} className="ml-2 text-teal-500">
                       {isEditable.location ? "Cancel" : "Edit"}
                     </button>
                   {updatedUserDetails.messPhoto && (
