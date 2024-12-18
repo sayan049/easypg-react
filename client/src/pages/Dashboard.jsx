@@ -305,10 +305,18 @@ const UserDashboard = () => {
               <>
                 <div>
                   <strong>Profile Photo:</strong>
-                  <input type="file" onChange={(e) => handleFileChange(e, "profilePhoto")} />
+                  <input type="file" 
+                  name="profilePhoto"
+                  onChange={(e) => handleFileChange(e, "profilePhoto")}
+                  value={updatedUserDetails.profilePhoto}
+                  disabled={!isEditable.profilePhoto}
+                  />
                   {updatedUserDetails.profilePhoto && (
-                    <img src={updatedUserDetails.profilePhoto} alt="Profile Preview" className="h-20 mt-2" />
+                   <img src={updatedUserDetails.profilePhoto} alt="Profile Preview" className="h-20 mt-2" />
                   )}
+                   <button type="button" onClick={() => toggleEdit("address")} className="ml-2 text-teal-500">
+                      {isEditable.address ? "Cancel" : "Edit"}
+                    </button>
                 </div>
 
                 <div>
@@ -432,7 +440,17 @@ const UserDashboard = () => {
 
                 <div>
                   <strong>Mess Photo:</strong>
-                  <input type="file" onChange={(e) => handleFileChange(e, "messPhoto")} />
+                  <input type="file"
+                  name="messPhoto"
+                  value={updatedUserDetails.messPhoto}
+                   onChange={(e) => handleFileChange(e, "messPhoto")}
+                   disabled={!isEditable.messPhoto}
+
+                   
+                   />
+                    <button type="button" onClick={() => toggleEdit("location")} className="ml-2 text-teal-500">
+                      {isEditable.location ? "Cancel" : "Edit"}
+                    </button>
                   {updatedUserDetails.messPhoto && (
                     <img src={updatedUserDetails.messPhoto} alt="Mess Preview" className="h-20 mt-2" />
                   )}
