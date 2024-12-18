@@ -40,6 +40,7 @@ function MessBars({ isChecked  ,checkFeatures} ) {
         // style={{height:"33%"}}
       >
         <img
+           style={{display : isChecked? 'none':'block'}}
           src={`${baseurl}/uploads/${owner.profilePhoto}`}
           alt="Mess"
           className="w-full md:[width:26%] object-cover rounded-md"
