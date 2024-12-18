@@ -50,6 +50,8 @@ const UserDashboard = () => {
     messName: owner?.messName || "",
     aboutMess: owner?.aboutMess || "",
     location: owner?.location || "",
+    profilePhoto: owner?.profilePhoto || null, // Add profile photo state
+    messPhoto: owner?.messPhoto || null, // Add mess photo state
   });
 
   useEffect(() => {
@@ -145,6 +147,19 @@ const UserDashboard = () => {
       ...prevState,
       [field]: !prevState[field],
     }));
+  };
+  const handleFileChange = (e, field) => {
+    const file = e.target.files[0];
+    if (file) {
+      const fileReader = new FileReader();
+      fileReader.onloadend = () => {
+        setUpdatedUserDetails((prevState) => ({
+          ...prevState,
+          [field]: fileReader.result, // Store the base64 string of the file
+        }));
+      };
+      fileReader.readAsDataURL(file); // Read the file as a Data URL
+    }
   };
 
   const data = {
@@ -338,6 +353,22 @@ console.log(data)
               </>
             ) : (
               <>
+              
+              <div>
+              <strong>Profile Photo:</strong>
+              <input
+                type="file"
+                onChange={(e) => handleFileChange(e, "profilePhoto")}
+              />
+              {updatedUserDetails.profilePhoto && (
+                <img
+                  src={updatedUserDetails.profilePhoto}
+                  alt="Profile Preview"
+                  className="h-20 mt-2"
+                />
+              )}
+            </div>
+
                 <div>
                   <strong>Address:</strong>
                   <div className="flex items-center">
@@ -478,6 +509,20 @@ console.log(data)
                     </button>
                   </div>
                 </div>
+                <div>
+              <strong>Mess Photo:</strong>
+              <input
+                type="file"
+                onChange={(e) => handleFileChange(e, "messPhoto")}
+              />
+              {updatedUserDetails.messPhoto && (
+                <img
+                  src={updatedUserDetails.messPhoto}
+                  alt="Mess Preview"
+                  className="h-20 mt-2"
+                />
+              )}
+            </div>
               </>
             )}
             {/* Save Changes Button */}
