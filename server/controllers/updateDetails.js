@@ -3,13 +3,13 @@ const PgOwner = require("../modules/pgProvider");
 
 exports.updateDetails = async (req, res) => {
   const { type, userId, ...updateData } = req.body;
-  const { profilePhoto, messPhotos } = req.files;  // Using req.files for multiple files
+  const { profilePhoto, messPhoto } = req.files;  // Multer will handle the files here
+  
   try {
     let updatedUser;
 
-    // For Student Type
+    // Handle Student Type
     if (type === "student") {
-      // Find student by ID
       updatedUser = await User.findById(userId);
       if (!updatedUser) {
         return res.status(404).json({ error: "Student not found" });
@@ -29,30 +29,30 @@ exports.updateDetails = async (req, res) => {
       }
 
     } else if (type === "owner") {
-      // Find owner by ID
       updatedUser = await PgOwner.findById(userId);
       if (!updatedUser) {
         return res.status(404).json({ error: "Owner not found" });
       }
 
       // Allow updates for multiple fields
-      const allowedUpdates = ["address", "pincode", "mobileNo", "facility", "messName", "aboutMess", "location"];
+      const allowedUpdates = [
+        "address", "pincode", "mobileNo", "facility", 
+        "messName", "aboutMess", "location"
+      ];
       for (const key in updateData) {
         if (allowedUpdates.includes(key)) {
           updatedUser[key] = updateData[key];
         }
       }
 
-      // Handle profile photo update
+      // Handle profile photo update if file is uploaded
       if (profilePhoto && profilePhoto[0]?.path) {
         updatedUser.profilePhoto = profilePhoto[0].path;
       }
 
       // Handle mess photo update if multiple files are uploaded
-      if (messPhotos && messPhotos.length > 0) {
-        messPhotos.forEach(photo => {
-          updatedUser.messPhoto.push(photo.path);
-        });
+      if (messPhoto && messPhoto.length > 0) {
+        updatedUser.messPhoto = messPhoto.map(photo => photo.path);
       }
 
     } else {
@@ -72,8 +72,6 @@ exports.updateDetails = async (req, res) => {
     res.status(500).json({ error: "An error occurred while updating details" });
   }
 };
-//fetching details
-
 
 exports.getDetails = async (req, res) => {
   const { userId, type } = req.query;
