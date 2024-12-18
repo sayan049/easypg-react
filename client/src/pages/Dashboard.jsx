@@ -41,25 +41,15 @@ const UserDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isEditable, setIsEditable] = useState({});
   const [hasChanges, setHasChanges] = useState(false);
-  const amenities = [
-    { id: 'test1', label: 'A/C', imgSrc: './assets/air-conditioner 1.png' },
-    { id: 'test2', label: 'TV', imgSrc: './assets/screen 1.png' },
-    { id: 'test3', label: 'Power Backup', imgSrc: './assets/power 1.png' },
-    { id: 'test4', label: 'WiFi', imgSrc: './assets/wifi (1) 1.png' },
-    { id: 'test5', label: 'Kitchen', imgSrc: './assets/restaurant 1.png' },
-    { id: 'test6', label: 'Tank Water', imgSrc: './assets/tank-water 1.png' },
-    { id: 'test7', label: 'Double Bed', imgSrc: './assets/single-bed (1) 1.png' }
-  ];
   const [updatedUserDetails, setUpdatedUserDetails] = useState({
-    address: owner?.address || "",
-    pincode: owner?.pincode || "",
+    address: user?.address || owner?.address || "",
+    pin: user?.pin || "",
+    pincode: owner?.pincode || "", // Use 'pincode' for the owner's PIN
     mobileNo: owner?.mobileNo || "",
-    facility: owner?.facility || [],
+    facility: owner?.facility || "",
     messName: owner?.messName || "",
     aboutMess: owner?.aboutMess || "",
     location: owner?.location || "",
-    profilePhoto: owner?.profilePhoto || null,
-    messPhoto: owner?.messPhoto || [],
   });
 
   useEffect(() => {
@@ -108,81 +98,45 @@ const UserDashboard = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUpdatedUserDetails((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-    setHasChanges(true);
-  };
-  const handleCheckboxChange = (id) => {
     setUpdatedUserDetails((prevState) => {
-      const newFacilities = prevState.facility.includes(id)
-        ? prevState.facility.filter((facility) => facility !== id)
-        : [...prevState.facility, id];
-      return { ...prevState, facility: newFacilities };
-    });
-    setHasChanges(true);
-  };
-
-  const handleProfilePhotoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setUpdatedUserDetails((prevState) => ({
+      const updatedDetails = {
         ...prevState,
-        profilePhoto: file,
-      }));
-      setProfilePhotoPreview(URL.createObjectURL(file));
-      setHasChanges(true);
-    }
-  };
-
-  const handleMessPhotoChange = (e) => {
-    const files = Array.from(e.target.files);
-    const newPreviews = files.map((file) => ({
-      file,
-      preview: URL.createObjectURL(file),
-    }));
-    setUpdatedUserDetails((prevState) => ({
-      ...prevState,
-      messPhoto: [...prevState.messPhoto, ...files],
-    }));
-    setMessPhotoPreviews((prev) => [...prev, ...newPreviews]);
-    setHasChanges(true);
-  };
-
-  const removeMessPhoto = (index) => {
-    setUpdatedUserDetails((prevState) => ({
-      ...prevState,
-      messPhoto: prevState.messPhoto.filter((_, i) => i !== index),
-    }));
-    setMessPhotoPreviews((prev) => prev.filter((_, i) => i !== index));
-    setHasChanges(true);
+        [name]: value,
+      };
+      setHasChanges(JSON.stringify(updatedDetails) !== JSON.stringify({ ...prevState }));
+      return updatedDetails;
+    });
   };
 
   const handleSaveChanges = async () => {
     try {
-      const formData = new FormData();
-      Object.keys(updatedUserDetails).forEach((key) => {
-        if (key === "messPhoto") {
-          updatedUserDetails[key].forEach((file) => formData.append(key, file));
-        } else {
-          formData.append(key, updatedUserDetails[key]);
-        }
-      });
-      formData.append("userId", owner?.id);
-      formData.append("type", "owner");
+      const url = updateDetailsUrl;
+      const payload = {
+        ...updatedUserDetails,
+        userId: type === "student" ? user?.id : owner?.id,
+        type,
+      };
 
-      const response = await fetch(updateDetailsUrl, {
+      console.log("Payload being sent:", payload);
+
+      const response = await fetch(url, {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
 
-      if (!response.ok) throw new Error("Failed to update details");
+      if (!response.ok) {
+        throw new Error("Failed to update details");
+      }
 
+      const data = await response.json();
+      console.log("Update Response:", data);
       alert("Changes saved successfully!");
     } catch (error) {
       console.error("Error saving changes:", error);
-      alert("Failed to save changes.");
+      alert("Failed to save changes. Please try again.");
     }
   };
 
@@ -384,23 +338,6 @@ console.log(data)
               </>
             ) : (
               <>
-              <div>
-              <strong>Profile Photo:</strong>
-              <div className="flex items-center mt-2">
-                {profilePhotoPreview && (
-                  <img
-                    src={profilePhotoPreview}
-                    alt="Profile Preview"
-                    className="h-16 w-16 rounded-full mr-4"
-                  />
-                )}
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleProfilePhotoChange}
-                />
-              </div>
-            </div>
                 <div>
                   <strong>Address:</strong>
                   <div className="flex items-center">
@@ -461,24 +398,26 @@ console.log(data)
                     </button>
                   </div>
                 </div>
-                <div className="mt-4">
-              <strong>Amenities:</strong>
-              <div className="grid grid-cols-2 gap-2">
-                {amenities.map((amenity) => (
-                  <label key={amenity.id} className="flex items-center">
+                <div>
+                  <strong>Facility:</strong>
+                  <div className="flex items-center">
                     <input
-                      type="checkbox"
-                      checked={updatedUserDetails.facility.includes(
-                        amenity.id
-                      )}
-                      onChange={() => handleCheckboxChange(amenity.id)}
-                      className="mr-2"
+                      className="w-full mt-1 p-2 border border-gray-300 rounded"
+                      name="facility"
+                      value={updatedUserDetails.facility}
+                      onChange={handleChange}
+                      disabled={!isEditable.facility}
+                      placeholder={owner?.facility || "Add facility details"}
                     />
-                    {amenity.label}
-                  </label>
-                ))}
-              </div>
-            </div>
+                    <button
+                      type="button"
+                      onClick={() => toggleEdit("facility")}
+                      className="ml-2 text-teal-500"
+                    >
+                      {isEditable.facility ? "Cancel" : "Edit"}
+                    </button>
+                  </div>
+                </div>
                 <div>
                   <strong>Mess Name:</strong>
                   <div className="flex items-center">
@@ -539,33 +478,6 @@ console.log(data)
                     </button>
                   </div>
                 </div>
-                <div className="mt-4">
-              <strong>Mess Photos:</strong>
-              <div className="flex flex-wrap gap-4 mt-2">
-                {messPhotoPreviews.map((photo, index) => (
-                  <div key={index} className="relative">
-                    <img
-                      src={photo.preview}
-                      alt={`Mess Photo ${index + 1}`}
-                      className="h-20 w-20 object-cover rounded"
-                    />
-                    <button
-                      onClick={() => removeMessPhoto(index)}
-                      className="absolute top-0 right-0 text-red-500 text-lg"
-                    >
-                      &times;
-                    </button>
-                  </div>
-                ))}
-              </div>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleMessPhotoChange}
-                className="mt-2"
-              />
-            </div>
               </>
             )}
             {/* Save Changes Button */}
