@@ -229,7 +229,10 @@ const UserDashboard = () => {
 
   if (isLoading) {
     return <div>Loading...</div>;
-  }
+  }  
+  const profilePhotoUrl = updatedUserDetails.profilePhoto
+  ? `/uploads/${updatedUserDetails.profilePhoto}`
+  : "";
 
   return (
     <div className="flex h-screen">
@@ -350,7 +353,7 @@ const UserDashboard = () => {
                 />
                 {updatedUserDetails.profilePhoto && (
                   <img
-                    src={updatedUserDetails.profilePhoto}
+                    src={profilePhotoUrl}
                     alt="Profile"
                     className="h-20 mt-2"
                   />
