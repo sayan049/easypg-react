@@ -233,8 +233,8 @@ const UserDashboard = () => {
   if (isLoading) {
     return <div>Loading...</div>;
   }  
-  const profilePhotoUrl =`${baseurl}/uploads/${updatedUserDetails.profilePhoto}` 
- ;
+  const profilePhotoUrl =`${baseurl}/uploads/${updatedUserDetails.profilePhoto}` ;
+  const messPhotoUrls = updatedUserDetails.messPhoto.map(photo => `${baseurl}/uploads/${photo}`);
 
   return (
     <div className="flex h-screen">
@@ -519,15 +519,18 @@ const UserDashboard = () => {
                   multiple
                   onChange={(e) => handleFileChange(e, "messPhoto")}
                 />
-                {updatedUserDetails.messPhoto &&
-                  updatedUserDetails.messPhoto.map((photo, index) => (
-                    <img
-                      key={index}
-                      src={photo}
-                      alt={`Mess ${index}`}
-                      className="h-20 mt-2"
-                    />
-                  ))}
+             {messPhotoUrls && messPhotoUrls.length > 0 ? (
+        messPhotoUrls.map((photoUrl, index) => (
+          <img
+            key={index}
+            src={photoUrl}  // Full URL is now properly constructed
+            alt={`Mess ${index}`}
+            className="h-20 mt-2"
+          />
+        ))
+      ) : (
+        <p>No mess photos available.</p>
+      )}
               </div>
             </div>
               </>
