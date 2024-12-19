@@ -42,17 +42,19 @@ const UserDashboard = () => {
   const [isEditable, setIsEditable] = useState({});
   const [hasChanges, setHasChanges] = useState(false);
   const [updatedUserDetails, setUpdatedUserDetails] = useState({
-    address: user?.address || owner?.address || "",
-    pin: user?.pin || "",
-    pincode: owner?.pincode || "",
+    address: owner?.address || "",
+    pin: owner?.pincode || "",
     mobileNo: owner?.mobileNo || "",
     facility: owner?.facility || "",
     messName: owner?.messName || "",
     aboutMess: owner?.aboutMess || "",
     location: owner?.location || "",
-    // profilePhoto: owner?.profilePhoto || null,
-    // messPhoto: owner?.messPhoto || [],
+    profilePhoto: owner?.profilePhoto || "",
+    messPhoto: owner?.messPhoto || [],
   });
+
+  const [profilePhotoFile, setProfilePhotoFile] = useState(null);
+  const [messPhotoFiles, setMessPhotoFiles] = useState([]);
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -68,8 +70,6 @@ const UserDashboard = () => {
         url.searchParams.append("userId", userId);
         url.searchParams.append("type", type);
 
-        console.log("Fetching details with URL:", url.toString());
-
         const response = await fetch(url, {
           method: "GET",
           headers: {
@@ -83,7 +83,6 @@ const UserDashboard = () => {
 
         const data = await response.json();
         setUpdatedUserDetails(data || {});
-        console.log("Fetched data:", data);
       } catch (error) {
         console.error("Error fetching details:", error);
       } finally {
@@ -100,55 +99,45 @@ const UserDashboard = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUpdatedUserDetails((prevState) => {
-      const updatedDetails = { ...prevState, [name]: value };
-      setHasChanges(
-        JSON.stringify(updatedDetails) !== JSON.stringify(prevState)
-      );
-      return updatedDetails;
-    });
+    setUpdatedUserDetails((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+    setHasChanges(true);
   };
 
-  // const handleFileChange = (e, field) => {
-  //   const files = e.target.files;
-  //   if (files && files.length > 0) {
-  //     const fileArray = Array.from(files);
-  //     if (field === "messPhoto") {
-  //       setUpdatedUserDetails((prevState) => ({
-  //         ...prevState,
-  //         messPhoto: fileArray.map((file) => URL.createObjectURL(file)), // Preview files
-  //       }));
-  //     } else {
-  //       const file = files[0];
-  //       const fileReader = new FileReader();
-  //       fileReader.onloadend = () => {
-  //         setUpdatedUserDetails((prevState) => ({
-  //           ...prevState,
-  //           [field]: fileReader.result,
-  //         }));
-  //       };
-  //       fileReader.readAsDataURL(file);
-  //     }
-  //   }
-  // };
+  const handleFileChange = (e, field) => {
+    const files = Array.from(e.target.files);
+    if (field === "profilePhoto") {
+      setProfilePhotoFile(files[0]);
+    } else if (field === "messPhoto") {
+      setMessPhotoFiles(files);
+    }
+    setHasChanges(true);
+  };
 
   const handleSaveChanges = async () => {
+    const formData = new FormData();
+    formData.append("userId", type === "student" ? user?.id : owner?.id);
+    formData.append("type", type);
+    Object.keys(updatedUserDetails).forEach((key) => {
+      if (key !== "messPhoto" && key !== "profilePhoto") {
+        formData.append(key, updatedUserDetails[key]);
+      }
+    });
+
+    if (profilePhotoFile) {
+      formData.append("profilePhoto", profilePhotoFile);
+    }
+
+    messPhotoFiles.forEach((file, index) => {
+      formData.append(`messPhoto`, file);
+    });
+
     try {
-      const url = updateDetailsUrl;
-      const payload = {
-        ...updatedUserDetails,
-        userId: type === "student" ? user?.id : owner?.id,
-        type,
-      };
-
-      console.log("Payload being sent:", payload);
-
-      const response = await fetch(url, {
+      const response = await fetch(updateDetailsUrl, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+        body: formData,
       });
 
       if (!response.ok) {
@@ -156,7 +145,6 @@ const UserDashboard = () => {
       }
 
       const data = await response.json();
-      console.log("Update Response:", data);
       alert("Changes saved successfully!");
     } catch (error) {
       console.error("Error saving changes:", error);
@@ -352,29 +340,23 @@ const UserDashboard = () => {
               </>
             ) : (
               <>
-                {/* <div>
-                  <strong>Profile Photo:</strong>
-                  <input
-                    type="file"
-                    name="profilePhoto"
-                    onChange={(e) => handleFileChange(e, "profilePhoto")}
-                    disabled={!isEditable.profilePhoto}
+                <div>
+              <strong>Profile Photo:</strong>
+              <div>
+                <input
+                  type="file"
+                  name="profilePhoto"
+                  onChange={(e) => handleFileChange(e, "profilePhoto")}
+                />
+                {updatedUserDetails.profilePhoto && (
+                  <img
+                    src={updatedUserDetails.profilePhoto}
+                    alt="Profile"
+                    className="h-20 mt-2"
                   />
-                  {updatedUserDetails.profilePhoto && (
-                    <img
-                      src={updatedUserDetails.profilePhoto}
-                      alt="Profile Preview"
-                      className="h-20 mt-2"
-                    />
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => toggleEdit("profilePhoto")}
-                    className="ml-2 text-teal-500"
-                  >
-                    {isEditable.address ? "Cancel" : "Edit"}
-                  </button>
-                </div> */}
+                )}
+              </div>
+            </div>
 
                 <div>
                   <strong>Address:</strong>
@@ -523,32 +505,26 @@ const UserDashboard = () => {
                   </div>
                 </div>
 
-                {/* <div>
-                  <strong>Mess Photo:</strong>
-                  <input
-                    type="file"
-                    name="messPhoto"
-                    multiple // Allow multiple file selection
-                    onChange={(e) => handleFileChange(e, "messPhoto")}
-                    disabled={!isEditable.messPhoto}
-                  />
-                  {updatedUserDetails.messPhoto &&
-                    updatedUserDetails.messPhoto.map((photo, index) => (
-                      <img
-                        key={index}
-                        src={photo}
-                        alt={`Mess Preview ${index}`}
-                        className="h-20 mt-2"
-                      />
-                    ))}
-                  <button
-                    type="button"
-                    onClick={() => toggleEdit("messPhoto")}
-                    className="ml-2 text-teal-500"
-                  >
-                    {isEditable.messPhoto ? "Cancel" : "Edit"}
-                  </button>
-                </div> */}
+                <div>
+              <strong>Mess Photos:</strong>
+              <div>
+                <input
+                  type="file"
+                  name="messPhoto"
+                  multiple
+                  onChange={(e) => handleFileChange(e, "messPhoto")}
+                />
+                {updatedUserDetails.messPhoto &&
+                  updatedUserDetails.messPhoto.map((photo, index) => (
+                    <img
+                      key={index}
+                      src={photo}
+                      alt={`Mess ${index}`}
+                      className="h-20 mt-2"
+                    />
+                  ))}
+              </div>
+            </div>
               </>
             )}
 

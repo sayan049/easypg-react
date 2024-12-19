@@ -3,66 +3,49 @@ const PgOwner = require("../modules/pgProvider");
 
 exports.updateDetails = async (req, res) => {
   const { type, userId, ...updateData } = req.body;
-  // const { profilePhoto, messPhoto } = req.files; // Multer will handle the files here
+  const { profilePhoto, messPhoto } = req.files; // Extract files handled by multer
 
   try {
     let updatedUser;
 
-    // Handle Student Type
-    if (type === "student") {
-      updatedUser = await User.findById(userId);
-      if (!updatedUser) {
-        return res.status(404).json({ error: "Student not found" });
-      }
+    // Define allowed fields dynamically
+    const allowedFields = {
+      student: ["address", "pin"],
+      owner: ["address", "pincode", "mobileNo", "facility", "messName", "aboutMess", "location"]
+    };
 
-      // Allow updates for address and pin only
-      const allowedUpdates = ["address", "pin"];
-      for (const key in updateData) {
-        if (allowedUpdates.includes(key)) {
-          updatedUser[key] = updateData[key];
-        }
-      }
-
-      // Handle profile photo update if file is uploaded
-      if (profilePhoto && profilePhoto[0]?.path) {
-        updatedUser.profilePhoto = profilePhoto[0].path;
-      }
-    } else if (type === "owner") {
-      updatedUser = await PgOwner.findById(userId);
-      if (!updatedUser) {
-        return res.status(404).json({ error: "Owner not found" });
-      }
-
-      // Allow updates for multiple fields
-      const allowedUpdates = [
-        "address",
-        "pincode",
-        "mobileNo",
-        "facility",
-        "messName",
-        "aboutMess",
-        "location",
-      ];
-      for (const key in updateData) {
-        if (allowedUpdates.includes(key)) {
-          updatedUser[key] = updateData[key];
-        }
-      }
-
-      // Handle profile photo update if file is uploaded
-      // if (profilePhoto && profilePhoto[0]?.path) {
-      //   updatedUser.profilePhoto = profilePhoto[0].path;
-      // }
-
-      // // Handle mess photo update if multiple files are uploaded
-      // if (messPhoto && messPhoto.length > 0) {
-      //   updatedUser.messPhoto = messPhoto.map((photo) => photo.path);
-      // }
-    } else {
+    // Validate type
+    if (!allowedFields[type]) {
       return res.status(400).json({ error: "Invalid user type" });
     }
 
-    // Save the updated user data
+    // Fetch user by type
+    updatedUser = type === "student" 
+      ? await User.findById(userId) 
+      : await PgOwner.findById(userId);
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: `${type === "student" ? "Student" : "Owner"} not found` });
+    }
+
+    // Update fields
+    Object.keys(updateData).forEach((key) => {
+      if (allowedFields[type].includes(key)) {
+        updatedUser[key] = updateData[key];
+      }
+    });
+
+    // Update profile photo
+    if (profilePhoto && profilePhoto[0]?.path) {
+      updatedUser.profilePhoto = profilePhoto[0].path;
+    }
+
+    // Update mess photos (for owners only)
+    if (type === "owner" && messPhoto && messPhoto.length > 0) {
+      updatedUser.messPhoto = messPhoto.map((photo) => photo.path);
+    }
+
+    // Save updated data
     await updatedUser.save();
 
     res.status(200).json({
@@ -74,6 +57,7 @@ exports.updateDetails = async (req, res) => {
     res.status(500).json({ error: "An error occurred while updating details" });
   }
 };
+
 exports.getDetails = async (req, res) => {
   const { userId, type } = req.query;
   console.log(userId, type);
