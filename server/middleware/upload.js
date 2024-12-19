@@ -48,23 +48,24 @@ const multer = require('multer');
 const path = require('path');
 
 const storage = multer.diskStorage({
-    destination: path.join(__dirname, '../uploads/'),
+    destination: path.join(__dirname, '../uploads'), // Save in uploads folder
     filename: (req, file, cb) => {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+        const uniqueName = `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`;
+        cb(null, uniqueName);
     }
 });
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 1500000 }, // Limit file size to 1.5 MB
+    limits: { fileSize: 1500000 }, // 1.5 MB limit
     fileFilter: (req, file, cb) => {
         const filetypes = /jpeg|jpg|png|gif/;
         const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
         const mimetype = filetypes.test(file.mimetype);
         if (mimetype && extname) {
-            return cb(null, true);
+            cb(null, true);
         } else {
-            cb('Error: Images Only!');
+            cb('Error: Only images are allowed!');
         }
     }
 }).fields([
