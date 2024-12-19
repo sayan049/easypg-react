@@ -3,6 +3,7 @@ import { Line } from "react-chartjs-2";
 import { useAuth } from "../contexts/AuthContext";
 import UserProfile from "../components/UserProfile";
 import { fetchDetailsUrl, updateDetailsUrl } from "../constant/urls";
+import {baseurl} from "../constant/urls" 
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -14,7 +15,6 @@ import {
   Legend,
   Filler,
 } from "chart.js";
-
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -230,9 +230,8 @@ const UserDashboard = () => {
   if (isLoading) {
     return <div>Loading...</div>;
   }  
-  const profilePhotoUrl = updatedUserDetails.profilePhoto
-  ? `/uploads/${updatedUserDetails.profilePhoto}`
-  : "";
+  const profilePhotoUrl =`${baseurl}/uploads/${updatedUserDetails.profilePhoto}` 
+ ;
 
   return (
     <div className="flex h-screen">
