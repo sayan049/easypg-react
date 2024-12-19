@@ -65,24 +65,27 @@ const UserDashboard = () => {
           console.error("User ID is missing");
           return;
         }
-
+    
         const url = new URL(fetchDetailsUrl);
         url.searchParams.append("userId", userId);
         url.searchParams.append("type", type);
-
+    
         const response = await fetch(url, {
           method: "GET",
+          // Remove Content-Type for GET requests
           headers: {
-            "Content-Type": "application/json",
+            // No Content-Type header needed for GET requests
           },
-        });
-
+        }); 
+    
         if (!response.ok) {
           throw new Error("Failed to fetch details");
         }
-
+    
         const data = await response.json();
+        // Assuming the data contains image URLs or paths
         setUpdatedUserDetails(data || {});
+        console.log("fetched data:",data)
       } catch (error) {
         console.error("Error fetching details:", error);
       } finally {
