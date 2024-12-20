@@ -64,7 +64,7 @@ function MapComponent({ isChecked }) {
     width: '35vw',
     display: isChecked ? 'block' : 'none',
   };
-
+console.log(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
   const center = {
     lat: 22.958622435430872,
     lng: 88.54578601291212,
