@@ -31,18 +31,22 @@
 // module.exports = upload;
 const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const cloudinary = require('../cloudinary/cloudinaryConfig');
+const cloudinary = require('../cloudinary/cloudinaryConfig'); // Assuming cloudinary is configured properly
+
 // Set up Cloudinary storage
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
         folder: 'uploads', // Folder in Cloudinary
-        format: async (req, file) => 'jpg', // Force format (optional)
-        public_id: (req, file) => `${file.fieldname}-${Date.now()}`
+        format: async (req, file) => {
+            // Allow multiple formats (e.g., jpg, png, gif)
+            return file.mimetype.split('/')[1]; // Use the file's mime type to determine the format
+        },
+        public_id: (req, file) => `${file.fieldname}-${Date.now()}`, // Unique ID for each file
     }
 });
 
-// Configure Multer
+// Configure Multer with storage and file validation
 const upload = multer({
     storage: storage,
     limits: { fileSize: 1500000 }, // 1.5 MB limit
@@ -62,4 +66,5 @@ const upload = multer({
 ]);
 
 module.exports = upload;
+
 
