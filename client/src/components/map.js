@@ -107,14 +107,14 @@ const MapComponent = ({ isChecked }) => {
   const loadGoMapsApi = () => {
     return new Promise((resolve, reject) => {
       if (window.GoMaps) {
-        resolve(window.GoMaps);
+        resolve(window.GoMaps); // API already loaded
       } else {
         const script = document.createElement('script');
         script.src = 'https://www.gomaps.pro/api?key=AlzaSyS1FeRMB2-NR6AnmxMU6LPHyxRi5PcY2Pr'; // Replace with your GoMaps.pro API key
         script.async = true;
         script.defer = true;
         script.onload = () => resolve(window.GoMaps);
-        script.onerror = reject;
+        script.onerror = () => reject('Error loading GoMaps.pro API');
         document.head.appendChild(script);
       }
     });
@@ -129,7 +129,7 @@ const MapComponent = ({ isChecked }) => {
         setIsApiLoaded(true);
       })
       .catch((error) => {
-        console.error('Error loading GoMaps.pro API:', error);
+        console.error(error);
       });
   }, [isChecked]);
 
