@@ -72,7 +72,7 @@ function MapComponent({ isChecked }) {
 
   return (
     <div id="map" style={mapContainerStyle}>
-      <LoadScript googleMapsApiKey="AIzaSyAlJ2p7ePie8E9JH4TeouoayKAvathIGr0">
+      <LoadScript googleMapsApiKey="AlzaSyB6Q90sn5X-YQ6yZo5WISSDuD8xfMMazuE">
         <GoogleMap
           mapContainerStyle={{
             width: '100%',
