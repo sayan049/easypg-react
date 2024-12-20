@@ -3,7 +3,7 @@ import { Line } from "react-chartjs-2";
 import { useAuth } from "../contexts/AuthContext";
 import UserProfile from "../components/UserProfile";
 import { fetchDetailsUrl, updateDetailsUrl } from "../constant/urls";
-import {baseurl} from "../constant/urls" 
+import { baseurl } from "../constant/urls";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -65,27 +65,27 @@ const UserDashboard = () => {
           console.error("User ID is missing");
           return;
         }
-    
+
         const url = new URL(fetchDetailsUrl);
         url.searchParams.append("userId", userId);
         url.searchParams.append("type", type);
-    
+
         const response = await fetch(url, {
           method: "GET",
           // Remove Content-Type for GET requests
           headers: {
             // No Content-Type header needed for GET requests
           },
-        }); 
-    
+        });
+
         if (!response.ok) {
           throw new Error("Failed to fetch details");
         }
-    
+
         const data = await response.json();
         // Assuming the data contains image URLs or paths
         setUpdatedUserDetails(data || {});
-        console.log("fetched data:",data)
+        console.log("fetched data:", data);
       } catch (error) {
         console.error("Error fetching details:", error);
       } finally {
@@ -154,7 +154,7 @@ const UserDashboard = () => {
       alert("Failed to save changes. Please try again.");
     }
   };
-  
+
   const toggleEdit = (field) => {
     setIsEditable((prevState) => ({
       ...prevState,
@@ -232,9 +232,16 @@ const UserDashboard = () => {
 
   if (isLoading) {
     return <div>Loading...</div>;
-  }  
-  const profilePhotoUrl =`${baseurl}/uploads/${updatedUserDetails.profilePhoto}` ;
-  const messPhotoUrls = updatedUserDetails.messPhoto.map(photo => `${baseurl}/uploads/${photo}`);
+  }
+  // Updated logic for profilePhotoUrl
+  const profilePhotoUrl = updatedUserDetails.profilePhoto
+    ? updatedUserDetails.profilePhoto // Direct Cloudinary URL from the database
+    : "/assets/default-profile.png"; // Fallback to a local default image
+
+  // Updated logic for messPhotoUrls
+  const messPhotoUrls = updatedUserDetails.messPhoto.length
+    ? updatedUserDetails.messPhoto // Array of Cloudinary URLs from the database
+    : [];
 
   return (
     <div className="flex h-screen">
@@ -346,22 +353,22 @@ const UserDashboard = () => {
             ) : (
               <>
                 <div>
-              <strong>Profile Photo:</strong>
-              <div>
-                <input
-                  type="file"
-                  name="profilePhoto"
-                  onChange={(e) => handleFileChange(e, "profilePhoto")}
-                />
-                {updatedUserDetails.profilePhoto && (
-                  <img
-                    src={profilePhotoUrl}
-                    alt="Profile"
-                    className="h-20 mt-2"
-                  />
-                )}
-              </div>
-            </div>
+                  <strong>Profile Photo:</strong>
+                  <div>
+                    <input
+                      type="file"
+                      name="profilePhoto"
+                      onChange={(e) => handleFileChange(e, "profilePhoto")}
+                    />
+                    {updatedUserDetails.profilePhoto && (
+                      <img
+                        src={profilePhotoUrl}
+                        alt="Profile"
+                        className="h-20 mt-2"
+                      />
+                    )}
+                  </div>
+                </div>
 
                 <div>
                   <strong>Address:</strong>
@@ -511,28 +518,33 @@ const UserDashboard = () => {
                 </div>
 
                 <div>
-              <strong>Mess Photos:</strong>
-              <div>
-                <input
-                  type="file"
-                  name="messPhoto"
-                  multiple
-                  onChange={(e) => handleFileChange(e, "messPhoto")}
-                />
-             {messPhotoUrls && messPhotoUrls.length > 0 ? (
-        messPhotoUrls.map((photoUrl, index) => (
-          <img
-            key={index}
-            src={photoUrl}  // Full URL is now properly constructed
-            alt={`Mess ${index}`}
-            className="h-20 mt-2"
-          />
-        ))
-      ) : (
-        <p>No mess photos available.</p>
-      )}
-              </div>
-            </div>
+                  <strong>Mess Photos:</strong>
+                  <div>
+                    <input
+                      type="file"
+                      name="messPhoto"
+                      multiple
+                      onChange={(e) => handleFileChange(e, "messPhoto")}
+                    />
+                    {/* Render photos if available, else display fallback text */}
+                    {messPhotoUrls && messPhotoUrls.length > 0 ? (
+                      <div className="flex flex-wrap mt-2 space-x-4">
+                        {messPhotoUrls.map((photoUrl, index) => (
+                          <img
+                            key={index}
+                            src={photoUrl} // Use the Cloudinary URL from the database
+                            alt={`Mess ${index + 1}`}
+                            className="h-20 w-20 object-cover rounded"
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="mt-2 text-gray-500">
+                        No mess photos available.
+                      </p>
+                    )}
+                  </div>
+                </div>
               </>
             )}
 
