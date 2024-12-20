@@ -16,12 +16,11 @@ const app = express();
 
 const ORIGIN =  'https://easypg-react-client.onrender.com';
 const PORT = process.env.PORT || 8080;
-
 const corsOptions = {
   origin: ORIGIN,
   credentials: true,
-  
-  
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 };
 app.set('trust proxy', 1); // Trust the first proxy
 
