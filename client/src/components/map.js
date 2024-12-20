@@ -91,51 +91,52 @@
 // }
 
 // export default MapComponent;
-import React from 'react';
-import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import React, { useEffect, useRef } from 'react';
 
 const MapComponent = ({ isChecked }) => {
+  // Container style for the map
   const mapContainerStyle = {
     height: '84vh',
     width: '35vw',
-    display: isChecked ? 'block' : 'none',
+    display: isChecked ? 'block' : 'none',  // Only show the map when isChecked is true
   };
 
-  const center = {
-    lat: 22.958622435430872,
-    lng: 88.54578601291212,
-  };
+  // Reference for the map container
+  const mapRef = useRef(null);
 
-  // Use `useJsApiLoader` to load the API
-  const { isLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: 'AlzaSyS1FeRMB2-NR6AnmxMU6LPHyxRi5PcY2Pr', // Replace with your valid API key
-  });
+  useEffect(() => {
+    if (!window.GoMaps) {
+      console.error('GoMaps.pro API not loaded');
+      return;
+    }
 
-  if (loadError) {
-    return <div>Error loading Google Maps API</div>;
-  }
+    // Initialize GoMaps.pro Map
+    const map = new window.GoMaps.Map(mapRef.current, {
+      center: { lat: 22.958622435430872, lng: 88.54578601291212 }, // Your center coordinates
+      zoom: 15,
+      apiKey: 'AlzaSyS1FeRMB2-NR6AnmxMU6LPHyxRi5PcY2Pr',  // Replace with your GoMaps.pro API key
+    });
 
-  if (!isLoaded) {
-    return <div>Loading Map...</div>;
-  }
+    // Optionally, you can add markers or other features here using GoMaps.pro API
+    const marker = new window.GoMaps.Marker({
+      position: { lat: 22.958622435430872, lng: 88.54578601291212 },
+      map: map,
+      title: 'Your Location',
+    });
+
+    // Cleanup function to remove map instance
+    return () => {
+      if (map) {
+        map.destroy();
+      }
+    };
+  }, []);  // Empty array ensures this effect runs once on mount
 
   return (
     <div style={mapContainerStyle}>
-      <GoogleMap
-        mapContainerStyle={{
-          width: '100%',
-          height: '100%',
-          borderRadius: '10px',
-          boxShadow: 'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px',
-        }}
-        center={center}
-        zoom={15}
-      >
-        {/* Add additional markers, layers, or componentsere */}
-      </GoogleMap>
+      <div ref={mapRef} style={{ width: '100%', height: '100%' }}></div>
     </div>
   );
 };
 
 export default MapComponent;
-
