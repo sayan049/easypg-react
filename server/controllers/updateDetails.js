@@ -49,9 +49,9 @@ exports.updateDetails = async (req, res) => {
             if (profilePhoto && profilePhoto[0]) {
                 const result = await cloudinary.uploader.upload(profilePhoto[0].path);
                 updatedUser.profilePhoto = result.secure_url; // Save Cloudinary URL
-                console.log(updatedUser.profilePhoto);
+               
             }
-
+            console.log(updatedUser.profilePhoto);
             // Upload mess photos to Cloudinary
             if (messPhoto && messPhoto.length > 0) {
                 const messPhotoUrls = [];
@@ -60,8 +60,9 @@ exports.updateDetails = async (req, res) => {
                     messPhotoUrls.push(result.secure_url); // Save Cloudinary URLs
                 }
                 updatedUser.messPhoto = messPhotoUrls;
-                console.log(updatedUser.messPhoto);
+               
             }
+            console.log(updatedUser.messPhoto);
         } else {
             return res.status(400).json({ error: "Invalid user type" });
         }
