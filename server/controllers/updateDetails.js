@@ -1,15 +1,11 @@
-const cloudinary = require('cloudinary').v2;
+const cloudinary = require('../cloudinary/cloudinaryConfig');
 const User = require("../modules/user");
 const PgOwner = require("../modules/pgProvider");
 const dotenv = require('dotenv');
 dotenv.config();
 
 // Configure Cloudinary
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+
 
 exports.updateDetails = async (req, res) => {
     const { type, userId, ...updateData } = req.body;
