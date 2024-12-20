@@ -7,7 +7,7 @@ dotenv.config();
 exports.updateDetails = async (req, res) => {
     const { type, userId, ...updateData } = req.body;
     const { profilePhoto, messPhoto } = req.files;
-    console.log(type, userId, updateData);
+ 
 
     try {
         let updatedUser;
@@ -49,7 +49,7 @@ exports.updateDetails = async (req, res) => {
             if (profilePhoto && profilePhoto[0]) {
                 const result = await cloudinary.uploader.upload(profilePhoto[0].path);
                 updatedUser.profilePhoto = result.secure_url; // Save Cloudinary URL
-               
+               console.log(result);
             }
             console.log(updatedUser.profilePhoto);
             // Upload mess photos to Cloudinary
@@ -60,7 +60,7 @@ exports.updateDetails = async (req, res) => {
                     messPhotoUrls.push(result.secure_url); // Save Cloudinary URLs
                 }
                 updatedUser.messPhoto = messPhotoUrls;
-               
+                console.log(result);
             }
             console.log(updatedUser.messPhoto);
         } else {
