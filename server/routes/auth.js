@@ -33,7 +33,7 @@ router.get("/check-session", (req, res) => {
   }
 });
 
-router.post('/updateDetails',upload, updateDetailshandler.updateDetails);
+router.post('/updateDetails', updateDetailshandler.updateDetails,upload);
 router.get('/get-details', updateDetailshandler.getDetails);
 
 router.get("/logout", (req, res) => {
