@@ -58,9 +58,10 @@ exports.updateDetails = async (req, res) => {
                 for (const photo of messPhoto) {
                     const result = await cloudinary.uploader.upload(photo.path);
                     messPhotoUrls.push(result.secure_url); // Save Cloudinary URLs
+                    console.log(result);
                 }
                 updatedUser.messPhoto = messPhotoUrls;
-                console.log(result);
+                
             }
             console.log(updatedUser.messPhoto);
         } else {
