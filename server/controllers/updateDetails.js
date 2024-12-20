@@ -1,67 +1,85 @@
+const cloudinary = require('cloudinary').v2;
 const User = require("../modules/user");
 const PgOwner = require("../modules/pgProvider");
-const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config();
+
+// Configure Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
 exports.updateDetails = async (req, res) => {
-  const { type, userId, ...updateData } = req.body;
-  const { profilePhoto, messPhoto } = req.files; // Multer handles files
+    const { type, userId, ...updateData } = req.body;
+    const { profilePhoto, messPhoto } = req.files;
 
-  try {
-      let updatedUser;
+    try {
+        let updatedUser;
 
-      if (type === "student") {
-          updatedUser = await User.findById(userId);
-          if (!updatedUser) {
-              return res.status(404).json({ error: "Student not found" });
-          }
+        if (type === "student") {
+            updatedUser = await User.findById(userId);
+            if (!updatedUser) {
+                return res.status(404).json({ error: "Student not found" });
+            }
 
-          // Update allowed fields
-          const allowedUpdates = ["address", "pin"];
-          for (const key in updateData) {
-              if (allowedUpdates.includes(key)) {
-                  updatedUser[key] = updateData[key];
-              }
-          }
+            // Update allowed fields
+            const allowedUpdates = ["address", "pin"];
+            for (const key in updateData) {
+                if (allowedUpdates.includes(key)) {
+                    updatedUser[key] = updateData[key];
+                }
+            }
 
-          // Save only the filename for profile photo
-          if (profilePhoto && profilePhoto[0]?.filename) {
-              updatedUser.profilePhoto = profilePhoto[0].filename;  // Store only the filename
-          }
-      } else if (type === "owner") {
-          updatedUser = await PgOwner.findById(userId);
-          if (!updatedUser) {
-              return res.status(404).json({ error: "Owner not found" });
-          }
+            // Upload profile photo to Cloudinary
+            if (profilePhoto && profilePhoto[0]) {
+                const result = await cloudinary.uploader.upload(profilePhoto[0].path);
+                updatedUser.profilePhoto = result.secure_url; // Save Cloudinary URL
+            }
+        } else if (type === "owner") {
+            updatedUser = await PgOwner.findById(userId);
+            if (!updatedUser) {
+                return res.status(404).json({ error: "Owner not found" });
+            }
 
-          // Update allowed fields
-          const allowedUpdates = ["address", "pincode", "mobileNo", "facility", "messName", "aboutMess", "location"];
-          for (const key in updateData) {
-              if (allowedUpdates.includes(key)) {
-                  updatedUser[key] = updateData[key];
-              }
-          }
+            // Update allowed fields
+            const allowedUpdates = ["address", "pincode", "mobileNo", "facility", "messName", "aboutMess", "location"];
+            for (const key in updateData) {
+                if (allowedUpdates.includes(key)) {
+                    updatedUser[key] = updateData[key];
+                }
+            }
 
-          // Save only the filename for profile photo
-          if (profilePhoto && profilePhoto[0]?.filename) {
-              updatedUser.profilePhoto = profilePhoto[0].filename;  // Store only the filename
-          }
+            // Upload profile photo to Cloudinary
+            if (profilePhoto && profilePhoto[0]) {
+                const result = await cloudinary.uploader.upload(profilePhoto[0].path);
+                updatedUser.profilePhoto = result.secure_url; // Save Cloudinary URL
+            }
 
-          // Save filenames for mess photos
-          if (messPhoto && messPhoto.length > 0) {
-              updatedUser.messPhoto = messPhoto.map(photo => photo.filename); // Store only filenames
-          }
-      } else {
-          return res.status(400).json({ error: "Invalid user type" });
-      }
+            // Upload mess photos to Cloudinary
+            if (messPhoto && messPhoto.length > 0) {
+                const messPhotoUrls = [];
+                for (const photo of messPhoto) {
+                    const result = await cloudinary.uploader.upload(photo.path);
+                    messPhotoUrls.push(result.secure_url); // Save Cloudinary URLs
+                }
+                updatedUser.messPhoto = messPhotoUrls;
+            }
+        } else {
+            return res.status(400).json({ error: "Invalid user type" });
+        }
 
-      // Save the updated user data
-      await updatedUser.save();
+        // Save updated user data
+        await updatedUser.save();
 
-      res.status(200).json({ message: "Details updated successfully", data: updatedUser });
-  } catch (error) {
-      console.error("Error updating details:", error);
-      res.status(500).json({ error: "An error occurred while updating details" });
-  }
+        res.status(200).json({ message: "Details updated successfully", data: updatedUser });
+    } catch (error) {
+        console.error("Error updating details:", error);
+        res.status(500).json({ error: "An error occurred while updating details" });
+    }
 };
+
 
 exports.getDetails = async (req, res) => {
   const { userId, type } = req.query;

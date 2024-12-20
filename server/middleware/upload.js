@@ -1,39 +1,27 @@
+
 // const multer = require('multer');
 // const path = require('path');
-// const fs = require('fs');
-
-// // Ensure uploads directory exists
-// const uploadDir = path.join(__dirname, '../uploads');
-// if (!fs.existsSync(uploadDir)) {
-//     fs.mkdirSync(uploadDir, { recursive: true });
-// }
 
 // const storage = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         cb(null, uploadDir);
-//     },
+//     destination: path.join(__dirname, '../uploads'), // Save in uploads folder
 //     filename: (req, file, cb) => {
-//         cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname));
+//         const uniqueName = `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`;
+//         cb(null, uniqueName);
 //     }
 // });
 
-// function checkFileType(file, cb) {
-//     const filetypes = /jpeg|jpg|png|gif/;
-//     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-//     const mimetype = filetypes.test(file.mimetype);
-
-//     if (mimetype && extname) {
-//         return cb(null, true);
-//     } else {
-//         cb('Error: Images Only!');
-//     }
-// }
-
 // const upload = multer({
 //     storage: storage,
-//     limits: { fileSize: 1000000 },
+//     limits: { fileSize: 1500000 }, // 1.5 MB limit
 //     fileFilter: (req, file, cb) => {
-//         checkFileType(file, cb);
+//         const filetypes = /jpeg|jpg|png|gif/;
+//         const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+//         const mimetype = filetypes.test(file.mimetype);
+//         if (mimetype && extname) {
+//             cb(null, true);
+//         } else {
+//             cb('Error: Only images are allowed!');
+//         }
 //     }
 // }).fields([
 //     { name: 'profilePhoto', maxCount: 1 },
@@ -41,20 +29,20 @@
 // ]);
 
 // module.exports = upload;
-
-
-//server/middleware/upload.js
 const multer = require('multer');
-const path = require('path');
-
-const storage = multer.diskStorage({
-    destination: path.join(__dirname, '../uploads'), // Save in uploads folder
-    filename: (req, file, cb) => {
-        const uniqueName = `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`;
-        cb(null, uniqueName);
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('../cloudinary/cloudinaryConfig');
+// Set up Cloudinary storage
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'uploads', // Folder in Cloudinary
+        format: async (req, file) => 'jpg', // Force format (optional)
+        public_id: (req, file) => `${file.fieldname}-${Date.now()}`
     }
 });
 
+// Configure Multer
 const upload = multer({
     storage: storage,
     limits: { fileSize: 1500000 }, // 1.5 MB limit
@@ -74,3 +62,4 @@ const upload = multer({
 ]);
 
 module.exports = upload;
+
