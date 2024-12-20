@@ -91,46 +91,66 @@
 // }
 
 // export default MapComponent;
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const MapComponent = ({ isChecked }) => {
-  // Container style for the map
   const mapContainerStyle = {
     height: '84vh',
     width: '35vw',
-    display: isChecked ? 'block' : 'none',  // Only show the map when isChecked is true
+    display: isChecked ? 'block' : 'none', // Only show the map when isChecked is true
   };
 
-  // Reference for the map container
   const mapRef = useRef(null);
+  const [isApiLoaded, setIsApiLoaded] = useState(false);
+
+  // Function to load the GoMaps.pro script
+  const loadGoMapsApi = () => {
+    return new Promise((resolve, reject) => {
+      if (window.GoMaps) {
+        resolve(window.GoMaps);
+      } else {
+        const script = document.createElement('script');
+        script.src = 'https://www.gomaps.pro/api?key=AlzaSyS1FeRMB2-NR6AnmxMU6LPHyxRi5PcY2Pr'; // Replace with your GoMaps.pro API key
+        script.async = true;
+        script.defer = true;
+        script.onload = () => resolve(window.GoMaps);
+        script.onerror = reject;
+        document.head.appendChild(script);
+      }
+    });
+  };
 
   useEffect(() => {
-    if (!window.GoMaps) {
-      console.error('GoMaps.pro API not loaded');
-      return;
+    if (!isChecked) return; // If the map is not visible, do not load the API
+
+    // Load GoMaps.pro API when map is visible
+    loadGoMapsApi()
+      .then(() => {
+        setIsApiLoaded(true);
+      })
+      .catch((error) => {
+        console.error('Error loading GoMaps.pro API:', error);
+      });
+  }, [isChecked]);
+
+  useEffect(() => {
+    if (!isApiLoaded) return; // Don't initialize the map if the API is not loaded
+
+    // Initialize the GoMaps.pro map
+    if (mapRef.current && window.GoMaps) {
+      const map = new window.GoMaps.Map(mapRef.current, {
+        center: { lat: 22.958622435430872, lng: 88.54578601291212 }, // Your center coordinates
+        zoom: 15,
+      });
+
+      // Optionally, add markers
+      new window.GoMaps.Marker({
+        position: { lat: 22.958622435430872, lng: 88.54578601291212 },
+        map: map,
+        title: 'Your Location',
+      });
     }
-
-    // Initialize GoMaps.pro Map
-    const map = new window.GoMaps.Map(mapRef.current, {
-      center: { lat: 22.958622435430872, lng: 88.54578601291212 }, // Your center coordinates
-      zoom: 15,
-      apiKey: 'AlzaSyS1FeRMB2-NR6AnmxMU6LPHyxRi5PcY2Pr',  // Replace with your GoMaps.pro API key
-    });
-
-    // Optionally, you can add markers or other features here using GoMaps.pro API
-    const marker = new window.GoMaps.Marker({
-      position: { lat: 22.958622435430872, lng: 88.54578601291212 },
-      map: map,
-      title: 'Your Location',
-    });
-
-    // Cleanup function to remove map instance
-    return () => {
-      if (map) {
-        map.destroy();
-      }
-    };
-  }, []);  // Empty array ensures this effect runs once on mount
+  }, [isApiLoaded]);
 
   return (
     <div style={mapContainerStyle}>
