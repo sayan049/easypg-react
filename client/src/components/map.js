@@ -55,46 +55,10 @@
 // export default GoogleApiWrapper({
 //     apiKey: 'AIzaSyAlJ2p7ePie8E9JH4TeouoayKAvathIGr0', 
 //   })(MapComponent);
-// import React from 'react';
-// import { GoogleMap, LoadScript } from '@react-google-maps/api';
-
-// function MapComponent({ isChecked }) {
-//   const mapContainerStyle = {
-//     height: '84vh',
-//     width: '35vw',
-//     display: isChecked ? 'block' : 'none',
-//   };
-
-//   const center = {
-//     lat: 22.958622435430872,
-//     lng: 88.54578601291212,
-//   };
-
-//   return (
-//     <div id="map" style={mapContainerStyle}>
-//       <LoadScript googleMapsApiKey="AIzaSyAlJ2p7ePie8E9JH4TeouoayKAvathIGr0">
-//         <GoogleMap
-//           mapContainerStyle={{
-//             width: '100%',
-//             height: '100%',
-//             borderRadius: '10px',  // Your custom styles here
-//             boxShadow: 'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px', // Box shadow
-//           }}
-//           center={center}
-//           zoom={15}
-//         >
-//           {/* You can add markers or other features here */}
-//         </GoogleMap>
-//       </LoadScript>
-//     </div>
-//   );
-// }
-
-// export default MapComponent;
 import React from 'react';
-import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import { GoogleMap, LoadScript } from '@react-google-maps/api';
 
-const MapComponent = ({ isChecked }) => {
+function MapComponent({ isChecked }) {
   const mapContainerStyle = {
     height: '84vh',
     width: '35vw',
@@ -106,36 +70,95 @@ const MapComponent = ({ isChecked }) => {
     lng: 88.54578601291212,
   };
 
-  // Use `useJsApiLoader` to load the API
-  const { isLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: 'AlzaSyS1FeRMB2-NR6AnmxMU6LPHyxRi5PcY2Pr', // Replace with your valid API key
-  });
-
-  if (loadError) {
-    return <div>Error loading Google Maps API</div>;
-  }
-
-  if (!isLoaded) {
-    return <div>Loading Map...</div>;
-  }
-
   return (
-    <div style={mapContainerStyle}>
-      <GoogleMap
-        mapContainerStyle={{
-          width: '100%',
-          height: '100%',
-          borderRadius: '10px',
-          boxShadow: 'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px',
-        }}
-        center={center}
-        zoom={15}
-      >
-        {/* Add additional markers, layers, or componentsere */}
-      </GoogleMap>
+    <div id="map" style={mapContainerStyle}>
+      <LoadScript googleMapsApiKey="AIzaSyAlJ2p7ePie8E9JH4TeouoayKAvathIGr0">
+        <GoogleMap
+          mapContainerStyle={{
+            width: '100%',
+            height: '100%',
+            borderRadius: '10px',  // Your custom styles here
+            boxShadow: 'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px', // Box shadow
+          }}
+          center={center}
+          zoom={15}
+        >
+          {/* You can add markers or other features here */}
+        </GoogleMap>
+      </LoadScript>
     </div>
   );
-};
+}
 
 export default MapComponent;
+// import React, { useEffect, useRef, useState } from 'react';
 
+// const MapComponent = ({ isChecked }) => {
+//   const mapContainerStyle = {
+//     height: '84vh',
+//     width: '35vw',
+//     display: isChecked ? 'block' : 'none', // Only show the map when isChecked is true
+//   };
+
+//   const mapRef = useRef(null);
+//   const [isApiLoaded, setIsApiLoaded] = useState(false);
+
+//   // Function to load the GoMaps.pro script
+//   const loadGoMapsApi = () => {
+//     return new Promise((resolve, reject) => {
+//       if (window.GoMaps) {
+//         resolve(window.GoMaps); // API already loaded
+//       } else {
+//        // Inside MapComponent
+// const script = document.createElement('script');
+// script.src = 'https://www.gomaps.pro/api?key=AlzaSyS1FeRMB2-NR6AnmxMU6LPHyxRi5PcY2Pr'; // API URL
+// script.async = true;
+// script.defer = true;
+// script.onload = () => resolve(window.GoMaps);
+// script.onerror = () => reject('Error loading GoMaps.pro API');
+// document.head.appendChild(script);
+
+//       }
+//     });
+//   };
+
+//   useEffect(() => {
+//     if (!isChecked) return; // If the map is not visible, do not load the API
+
+//     // Load GoMaps.pro API when map is visible
+//     loadGoMapsApi()
+//       .then(() => {
+//         setIsApiLoaded(true);
+//       })
+//       .catch((error) => {
+//         console.error(error);
+//       });
+//   }, [isChecked]);
+
+//   useEffect(() => {
+//     if (!isApiLoaded) return; // Don't initialize the map if the API is not loaded
+
+//     // Initialize the GoMaps.pro map
+//     if (mapRef.current && window.GoMaps) {
+//       const map = new window.GoMaps.Map(mapRef.current, {
+//         center: { lat: 22.958622435430872, lng: 88.54578601291212 }, // Your center coordinates
+//         zoom: 15,
+//       });
+
+//       // Optionally, add markers
+//       new window.GoMaps.Marker({
+//         position: { lat: 22.958622435430872, lng: 88.54578601291212 },
+//         map: map,
+//         title: 'Your Location',
+//       });
+//     }
+//   }, [isApiLoaded]);
+
+//   return (
+//     <div style={mapContainerStyle}>
+//       <div ref={mapRef} style={{ width: '100%', height: '100%' }}></div>
+//     </div>
+//   );
+// };
+
+// export default MapComponent;
