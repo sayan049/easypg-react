@@ -94,7 +94,7 @@
 import React from 'react';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 
-function MapComponent({ isChecked }) {
+const MapComponent = ({ isChecked }) => {
   const mapContainerStyle = {
     height: '84vh',
     width: '35vw',
@@ -106,16 +106,17 @@ function MapComponent({ isChecked }) {
     lng: 88.54578601291212,
   };
 
+  // Use `useJsApiLoader` to load the API
   const { isLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: 'AlzaSyS1FeRMB2-NR6AnmxMU6LPHyxRi5PcY2Pr', // Replace with your valid API key AIzaSyAlJ2p7ePie8E9JH4TeouoayKAvathIGr0
+    googleMapsApiKey: 'AlzaSyS1FeRMB2-NR6AnmxMU6LPHyxRi5PcY2Pr', // Replace with your valid API key
   });
 
   if (loadError) {
-    return <div>Error loading maps</div>;
+    return <div>Error loading Google Maps API</div>;
   }
 
   if (!isLoaded) {
-    return <div>Loading...</div>;
+    return <div>Loading Map...</div>;
   }
 
   return (
@@ -130,10 +131,11 @@ function MapComponent({ isChecked }) {
         center={center}
         zoom={15}
       >
-        {/* Add markers or additional features here */}
+        {/* Add additional markers, layers, or componentsere */}
       </GoogleMap>
     </div>
   );
-}
+};
 
 export default MapComponent;
+
