@@ -4,13 +4,10 @@ const PgOwner = require("../modules/pgProvider");
 const dotenv = require('dotenv');
 dotenv.config();
 
-// Configure Cloudinary
-
-
 exports.updateDetails = async (req, res) => {
     const { type, userId, ...updateData } = req.body;
     const { profilePhoto, messPhoto } = req.files;
-    console.log(type,userId,updateData);
+    console.log(type, userId, updateData);
 
     try {
         let updatedUser;
@@ -76,6 +73,7 @@ exports.updateDetails = async (req, res) => {
         res.status(500).json({ error: "An error occurred while updating details" });
     }
 };
+
 
 
 exports.getDetails = async (req, res) => {
