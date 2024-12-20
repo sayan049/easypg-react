@@ -141,9 +141,7 @@ const UserDashboard = () => {
       const response = await fetch(updateDetailsUrl, {
         method: "POST",
         body: formData,
-        headers:{},
-        credentials: 'include', 
-        mode:'cors',
+     
       });
 
       if (!response.ok) {
