@@ -55,8 +55,44 @@
 // export default GoogleApiWrapper({
 //     apiKey: 'AIzaSyAlJ2p7ePie8E9JH4TeouoayKAvathIGr0', 
 //   })(MapComponent);
+// import React from 'react';
+// import { GoogleMap, LoadScript } from '@react-google-maps/api';
+
+// function MapComponent({ isChecked }) {
+//   const mapContainerStyle = {
+//     height: '84vh',
+//     width: '35vw',
+//     display: isChecked ? 'block' : 'none',
+//   };
+
+//   const center = {
+//     lat: 22.958622435430872,
+//     lng: 88.54578601291212,
+//   };
+
+//   return (
+//     <div id="map" style={mapContainerStyle}>
+//       <LoadScript googleMapsApiKey="AIzaSyAlJ2p7ePie8E9JH4TeouoayKAvathIGr0">
+//         <GoogleMap
+//           mapContainerStyle={{
+//             width: '100%',
+//             height: '100%',
+//             borderRadius: '10px',  // Your custom styles here
+//             boxShadow: 'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px', // Box shadow
+//           }}
+//           center={center}
+//           zoom={15}
+//         >
+//           {/* You can add markers or other features here */}
+//         </GoogleMap>
+//       </LoadScript>
+//     </div>
+//   );
+// }
+
+// export default MapComponent;
 import React from 'react';
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 
 function MapComponent({ isChecked }) {
   const mapContainerStyle = {
@@ -70,22 +106,32 @@ function MapComponent({ isChecked }) {
     lng: 88.54578601291212,
   };
 
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: 'AlzaSyS1FeRMB2-NR6AnmxMU6LPHyxRi5PcY2Pr', // Replace with your valid API key AIzaSyAlJ2p7ePie8E9JH4TeouoayKAvathIGr0
+  });
+
+  if (loadError) {
+    return <div>Error loading maps</div>;
+  }
+
+  if (!isLoaded) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div id="map" style={mapContainerStyle}>
-      <LoadScript googleMapsApiKey="AIzaSyAlJ2p7ePie8E9JH4TeouoayKAvathIGr0">
-        <GoogleMap
-          mapContainerStyle={{
-            width: '100%',
-            height: '100%',
-            borderRadius: '10px',  // Your custom styles here
-            boxShadow: 'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px', // Box shadow
-          }}
-          center={center}
-          zoom={15}
-        >
-          {/* You can add markers or other features here */}
-        </GoogleMap>
-      </LoadScript>
+    <div style={mapContainerStyle}>
+      <GoogleMap
+        mapContainerStyle={{
+          width: '100%',
+          height: '100%',
+          borderRadius: '10px',
+          boxShadow: 'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px',
+        }}
+        center={center}
+        zoom={15}
+      >
+        {/* Add markers or additional features here */}
+      </GoogleMap>
     </div>
   );
 }
