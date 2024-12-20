@@ -109,13 +109,15 @@ const MapComponent = ({ isChecked }) => {
       if (window.GoMaps) {
         resolve(window.GoMaps); // API already loaded
       } else {
-        const script = document.createElement('script');
-        script.src = 'https://www.gomaps.pro/geolocation/v1/geolocate?key=AlzaSyS1FeRMB2-NR6AnmxMU6LPHyxRi5PcY2Pr'; // Replace with your GoMaps.pro API key
-        script.async = true;
-        script.defer = true;
-        script.onload = () => resolve(window.GoMaps);
-        script.onerror = () => reject('Error loading GoMaps.pro API');
-        document.head.appendChild(script);
+       // Inside MapComponent
+const script = document.createElement('script');
+script.src = 'https://www.gomaps.pro/api?key=AlzaSyS1FeRMB2-NR6AnmxMU6LPHyxRi5PcY2Pr'; // API URL
+script.async = true;
+script.defer = true;
+script.onload = () => resolve(window.GoMaps);
+script.onerror = () => reject('Error loading GoMaps.pro API');
+document.head.appendChild(script);
+
       }
     });
   };
