@@ -131,7 +131,7 @@ const MapComponent = ({ isChecked }) => {
         center={center}
         zoom={15}
       >
-        {/* Add additional markers, layers, or components here */}
+        {/* Add additional markers, layers, or componentsere */}
       </GoogleMap>
     </div>
   );
