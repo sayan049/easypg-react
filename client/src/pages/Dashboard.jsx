@@ -3,7 +3,7 @@ import { Line } from "react-chartjs-2";
 import { useAuth } from "../contexts/AuthContext";
 import UserProfile from "../components/UserProfile";
 import { fetchDetailsUrl, updateDetailsUrl } from "../constant/urls";
-import { baseurl } from "../constant/urls";
+// import { baseurl } from "../constant/urls";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -141,9 +141,7 @@ const UserDashboard = () => {
       const response = await fetch(updateDetailsUrl, {
         method: "POST",
         body: formData,
-        headers:{},
-        credentials: 'include', 
-        mode:'cors',
+     
       });
 
       if (!response.ok) {
