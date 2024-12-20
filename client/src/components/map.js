@@ -107,7 +107,7 @@ function MapComponent({ isChecked }) {
   };
 
   const { isLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: 'AIzaSyAlJ2p7ePie8E9JH4TeouoayKAvathIGr0', // Replace with your valid API key
+    googleMapsApiKey: 'AlzaSyS1FeRMB2-NR6AnmxMU6LPHyxRi5PcY2Pr', // Replace with your valid API key AIzaSyAlJ2p7ePie8E9JH4TeouoayKAvathIGr0
   });
 
   if (loadError) {
