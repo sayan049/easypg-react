@@ -122,6 +122,7 @@ exports.signupHandlerOwner = async (req, res) => {
     // const profilePhoto = req.files.profilePhoto
     //   ? req.files.profilePhoto[0].filename
     //   : null;
+    const profilePhoto =[];
       if (profilePhoto && profilePhoto[0]) {
                     const result = await cloudinary.uploader.upload(profilePhoto[0].path);
                     profilePhoto = result.secure_url; // Save Cloudinary URL
