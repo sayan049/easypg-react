@@ -35,21 +35,11 @@
 // }
 
 // export default MapComponent;
-
-import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
-
-// Fix for default marker icon
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerShadow from 'leaflet/dist/images/marker-shadow.png';
-
-let DefaultIcon = L.icon({
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
-L.Marker.prototype.options.icon = DefaultIcon;
+import React, { useEffect } from 'react';
+import 'ol/ol.css';
+import { Map, View } from 'ol';
+import TileLayer from 'ol/layer/Tile';
+import OSM from 'ol/source/OSM';
 
 function MapComponent({ isChecked }) {
   const mapContainerStyle = {
@@ -58,28 +48,15 @@ function MapComponent({ isChecked }) {
     display: isChecked ? 'block' : 'none',
   };
 
-  const center = [22.958622435430872, 88.54578601291212];
+  useEffect(() => {
+    new Map({
+      target: 'map',
+      layers: [new TileLayer({ source: new OSM() })],
+      view: new View({ center: [9866767, 2618506], zoom: 15, projection: 'EPSG:3857' }),
+    });
+  }, []);
 
-  return (
-    <div id="map" style={mapContainerStyle}>
-      <MapContainer
-        center={center}
-        zoom={15}
-        style={{
-          width: '100%',
-          height: '100%',
-          borderRadius: '10px',
-          boxShadow: 'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px',
-        }}
-      >
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        <Marker position={center}>
-          <Popup>A marker at your location!</Popup>
-        </Marker>
-      </MapContainer>
-    </div>
-  );
+  return <div id="map" style={mapContainerStyle}></div>;
 }
 
 export default MapComponent;
-
