@@ -16,7 +16,7 @@ function MessBars({ isChecked, checkFeatures, coords }) {
       console.log('Invalid location:', location); // Handle invalid location
     }
   };
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -43,7 +43,13 @@ function MessBars({ isChecked, checkFeatures, coords }) {
         <div
           key={owner._id}
           className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md"
-          onClick={() => clickCords(owner.location)} // Handle click to update coordinates
+           onClick={() => {
+            if (owner.location) {
+              clickCords(owner.location); // Only call clickCords if location is available
+            } else {
+              console.log('Location missing for', owner.messName);
+            }
+          }}
         >
           <img
             style={{ display: isChecked ? 'none' : 'block' }}
