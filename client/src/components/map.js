@@ -40,6 +40,13 @@ import 'ol/ol.css';
 import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
+import { fromLonLat } from 'ol/proj';
+import Feature from 'ol/Feature';
+import Point from 'ol/geom/Point';
+import VectorSource from 'ol/source/Vector';
+import VectorLayer from 'ol/layer/Vector';
+import Style from 'ol/style/Style';
+import Icon from 'ol/style/Icon';
 
 function MapComponent({ isChecked }) {
   const mapContainerStyle = {
@@ -49,10 +56,40 @@ function MapComponent({ isChecked }) {
   };
 
   useEffect(() => {
+    const centerCoordinates = fromLonLat([88.54578601291212, 22.958622435430872]);
+
+    // Create a marker feature
+    const marker = new Feature({
+      geometry: new Point(centerCoordinates),
+    });
+
+    // Style for the marker
+    const markerStyle = new Style({
+      image: new Icon({
+        anchor: [0.5, 1],
+        src: 'https://openlayers.org/en/latest/examples/data/icon.png', // Replace with your custom icon if needed
+      }),
+    });
+    marker.setStyle(markerStyle);
+
+    // Vector layer for the marker
+    const vectorLayer = new VectorLayer({
+      source: new VectorSource({
+        features: [marker],
+      }),
+    });
+
+    // Initialize map
     new Map({
       target: 'map',
-      layers: [new TileLayer({ source: new OSM() })],
-      view: new View({ center: [9866767, 2618506], zoom: 10, projection: 'EPSG:3857' }),
+      layers: [
+        new TileLayer({ source: new OSM() }),
+        vectorLayer, // Add the marker layer
+      ],
+      view: new View({
+        center: centerCoordinates,
+        zoom: 15,
+      }),
     });
   }, []);
 
