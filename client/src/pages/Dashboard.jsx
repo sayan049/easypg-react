@@ -240,9 +240,11 @@ const UserDashboard = () => {
     : "/assets/default-profile.png"; // Fallback to a local default image
 
   // Updated logic for messPhotoUrls
-  const messPhotoUrls = updatedUserDetails.messPhoto.length
-    ? updatedUserDetails.messPhoto // Array of Cloudinary URLs from the database
-    : [];
+  // Updated logic for messPhotoUrls
+const messPhotoUrls = Array.isArray(updatedUserDetails.messPhoto) 
+? updatedUserDetails.messPhoto 
+: [];
+
 
   return (
     <div className="flex h-screen">
