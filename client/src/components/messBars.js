@@ -53,7 +53,7 @@ function MessBars({ isChecked, checkFeatures, coords }) {
         >
           <img
             style={{ display: isChecked ? 'none' : 'block' }}
-            src={`${baseurl}/uploads/${owner.profilePhoto}`}
+            src={owner.profilePhoto}
             alt="Mess"
             className="w-full md:[width:26%] object-cover rounded-md"
           />
