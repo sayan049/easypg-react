@@ -4,9 +4,14 @@ import { baseurl, findMessUrl } from '../constant/urls';
 // import "../designs/messfind.css";
 // import '../designs/messbars.css'
 
-function MessBars({ isChecked  ,checkFeatures} ) {
+function MessBars({ isChecked  ,checkFeatures, coords } ) {
   const [messData, setMessData] = useState([]);
   const [error, setError] = useState(null);
+  const clickCords=(location)=>{
+    const [lat, lng] = location.split(',').map(coord => parseFloat(coord.trim()));
+    coords({lat,lng});
+    console.log(coords);
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -16,7 +21,7 @@ function MessBars({ isChecked  ,checkFeatures} ) {
         const filteredData = res.data.filter(owner =>
           checkFeatures.every(feature => owner.facility?.[0]?.split(',').includes(feature))
       );
-      console.log(filteredData)
+      console.log(filteredData);
         setMessData(filteredData);
         
       } catch (err) {
@@ -37,6 +42,7 @@ function MessBars({ isChecked  ,checkFeatures} ) {
       <div
         key={owner._id}
         className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md"
+        onClick={()=>clickCords(owner.location)}
         // style={{height:"33%"}}
       >
         <img
