@@ -105,6 +105,7 @@ exports.signupHandlerOwner = async (req, res) => {
     location,
     facility,
   } = req.body;
+  const { profilePhoto, messPhoto } = req.files;
 
   try {
     const existingUser = await PgOwner.findOne({ email });
@@ -120,9 +121,9 @@ exports.signupHandlerOwner = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const profilePhoto = req.files.profilePhoto
-      ? req.files.profilePhoto[0].filename
-      : null;
+    // const profilePhoto = req.files.profilePhoto
+    //   ? req.files.profilePhoto[0].filename
+    //   : null;
    
       if (profilePhoto && profilePhoto[0]) {
                     const result = await cloudinary.uploader.upload(profilePhoto[0].path);
@@ -130,14 +131,14 @@ exports.signupHandlerOwner = async (req, res) => {
                   
                 }
     // console.log("mhm  "+ typeof [req.files.messPhoto.map(file => file.filename)]);
-    let messPhoto = [];
+    // let messPhoto = [];
 
-    if (req.files && req.files.messPhoto) {
-      req.files.messPhoto.map((file) => {
-        console.log(file.filename + "\n");
-        messPhoto.push(file.filename);
-      });
-    }
+    // if (req.files && req.files.messPhoto) {
+    //   req.files.messPhoto.map((file) => {
+    //     console.log(file.filename + "\n");
+    //     messPhoto.push(file.filename);
+    //   });
+    // }
         if (messPhoto && messPhoto.length > 0) {
                     const messPhotoUrls = [];
                     for (const photo of messPhoto) {
