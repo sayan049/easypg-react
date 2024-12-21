@@ -8,6 +8,11 @@ const NewMessFind = () => {
 const [price, setPrice] = useState(1500);
 const [checkFeatures,setCheckFestures]=useState([]);
 const [isChecked, setIsChecked] = useState(false);
+const [coordinates, setCoordinates] = useState({ lat: 0, lng: 0 });
+
+const handleCoordinatesChange = (newCoords) => {
+  setCoordinates(newCoords);
+};
 
 useEffect(() => {
     console.log('CheckFeatures updated:', checkFeatures);
@@ -101,7 +106,7 @@ useEffect(() => {
         >
           {/* messbars */}
          <div style={{display: isChecked ? "flex" : "block"}}> 
-          <MessBars checkFeatures={checkFeatures} isChecked={isChecked} style={{ overflowY: "auto", height: "84vh" }} />
+          <MessBars checkFeatures={checkFeatures} isChecked={isChecked} style={{ overflowY: "auto", height: "84vh" }} coords={handleCoordinatesChange} />
           <Map isChecked={isChecked}/>
          </div>
         </div>
