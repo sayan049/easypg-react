@@ -48,7 +48,7 @@ import VectorLayer from 'ol/layer/Vector';
 import Style from 'ol/style/Style';
 import Icon from 'ol/style/Icon';
 
-function MapComponent({ isChecked }) {
+function MapComponent({ isChecked,coordinates }) {
   const mapContainerStyle = {
     height: '84vh',
     width: '35vw',
@@ -56,7 +56,7 @@ function MapComponent({ isChecked }) {
   };
 
   useEffect(() => {
-    const centerCoordinates = fromLonLat([88.54578601291212, 22.958622435430872]);
+    const centerCoordinates = fromLonLat(coordinates);
 
     // Create a marker feature
     const marker = new Feature({
