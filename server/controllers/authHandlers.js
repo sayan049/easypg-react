@@ -1,5 +1,6 @@
 const User = require("../modules/user");
 const PgOwner = require("../modules/pgProvider");
+const cloudinary = require('../cloudinary/cloudinaryConfig');
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const sendmail = require("../controllers/emailSender");
