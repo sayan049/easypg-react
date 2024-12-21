@@ -7,11 +7,16 @@ function MessBars({ isChecked, checkFeatures, coords }) {
   const [error, setError] = useState(null);
 
   const clickCords = (location) => {
-    const [lat, lng] = location.split(',').map(coord => parseFloat(coord.trim()));
-    coords({ lat, lng }); // Call the parent function to update coordinates
-    console.log('Coordinates clicked:', { lat, lng });
+    // Check if location is a valid string
+    if (typeof location === 'string' && location.includes(',')) {
+      const [lat, lng] = location.split(',').map(coord => parseFloat(coord.trim()));
+      coords({ lat, lng });
+      console.log('Coordinates clicked:', { lat, lng });
+    } else {
+      console.log('Invalid location:', location); // Handle invalid location
+    }
   };
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
