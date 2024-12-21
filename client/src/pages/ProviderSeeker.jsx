@@ -38,7 +38,7 @@ function ProviderSeeker() {
             </Link>
             <Link
               to="/LandingPage"
-              className="border-2 border-cyan-500 text-cyan-500 px-6 py-3 rounded-full shadow hover:bg-cyan-500 hover:text-white"
+              className="border-3 border-cyan-500 text-cyan-500 px-6 py-3 rounded-full shadow hover:bg-cyan-500 hover:text-white"
             >
               Mess Owner
             </Link>
