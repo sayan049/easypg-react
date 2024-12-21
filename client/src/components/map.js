@@ -56,7 +56,9 @@ function MapComponent({ isChecked,coordinates }) {
   };
 
   useEffect(() => {
-    const centerCoordinates = fromLonLat(coordinates);
+    const { lat, lng } = coordinates||['',''];
+    const centerCoordinates = fromLonLat([lng, lat]);
+  
 
     // Create a marker feature
     const marker = new Feature({
