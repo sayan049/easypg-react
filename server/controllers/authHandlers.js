@@ -105,8 +105,7 @@ exports.signupHandlerOwner = async (req, res) => {
     location,
     facility,
   } = req.body;
-  const { profilePhoto, messPhoto } = req.files;
-
+ let {profilePhoto, messPhoto } = req.files;
   try {
     const existingUser = await PgOwner.findOne({ email });
     if (existingUser) {
