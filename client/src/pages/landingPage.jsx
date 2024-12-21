@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import Footer from '../components/footer';
 
 function LandingPage() {
   useEffect(() => {
@@ -7,7 +8,8 @@ function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen w-full">
+  <div>
+  <div className="min-h-screen w-full">
       {/* Section 1 */}
       <div className="bg-[#09E1FF] flex flex-col items-center justify-center h-[65vh]">
         <div className="text-5xl font-bold flex space-x-1">
@@ -82,47 +84,10 @@ function LandingPage() {
           <button className="bg-[#2CA4B5] text-white font-bold py-2 px-6 rounded-lg">Submit</button>
         </div>
       </div>
-
-      {/* Footer */}
-      <div className="bg-white py-8">
-        <div className="max-w-screen-lg mx-auto flex flex-wrap md:flex-nowrap justify-around">
-          <div className="w-full  md:w-1/4 mb-6 md:mb-0">
-            <ul>
-              <li className="text-xl font-bold mb-2">Easy <span className="text-[#2CA4B5]">Pg</span></li>
-              <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus nobis sequi expedita possimus vel reprehenderit nulla, atque reiciendis ex fugit quod. Dicta, consectetur? Tempora sunt delectus aperiam sed soluta atque.</li>
-            </ul>
-          </div>
-          <div className="w-full md:w-1/4 mb-6 md:mb-0">
-            <ul>
-              <li className="text-lg font-bold mb-2">Company</li>
-              <li>Careers</li>
-              <li>About Us</li>
-              <li>For Partners</li>
-              <li>Terms</li>
-              <li>Privacy Policy</li>
-              <li>Contact Us</li>
-            </ul>
-          </div>
-          <div className="w-full md:w-1/4 mb-6 md:mb-0">
-            <ul>
-              <li className="text-lg font-bold mb-2">SUPPORT</li>
-              <li>FAQ</li>
-              <li>Contact Us</li>
-            </ul>
-          </div>
-          <div className="w-full md:w-1/4 mb-6 md:mb-0">
-            <ul>
-              <li className="text-lg font-bold mb-2">QUICK LINK</li>
-              <li>Terms</li>
-              <li>Privacy Policy</li>
-            </ul>
-          </div>
-        </div>
-        <div className="text-center mt-8">
-          copyright 2024 - All Right Reserved by <span className="font-bold text-[#2CA4B5]">Easypg.pv.ltd</span>
-        </div>
       </div>
-    </div>
+      <Footer/>
+      </div>
+      
   );
 }
 
