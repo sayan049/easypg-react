@@ -1,57 +1,46 @@
-import React from 'react';
+import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 
-const Footer = () => {
-  return (
-    <footer className="bg-gray-900 text-gray-300 py-8">
-      <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {/* Logo Section */}
-        <div>
-          <h2 className="text-white text-2xl font-bold">MessMate.in</h2>
-        </div>
-
-        {/* Service Area Section */}
-        <div>
-          <h3 className="text-white text-lg font-semibold mb-4">Our Service Area</h3>
-          <ul className="space-y-2">
-            {[
-              'Kolkata', 'Howrah', 'Durgapur', 'Siliguri', 'Asansol', 'Bardhaman', 'Midnapore',
-              'Malda', 'Kalyani', 'Cooch Behar', 'Hooghly', 'Purulia', 'Bankura', 'Birbhum',
-              'Murshidabad', 'North 24 Parganas', 'South 24 Parganas', 'Nadia',
-            ].map((area) => (
-              <li key={area}>{area}</li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Quick Links Section */}
-        <div>
-          <h3 className="text-white text-lg font-semibold mb-4">Quick Links</h3>
-          <ul className="space-y-2">
-            {['Home', 'Features', 'About Us', 'Services', 'Contact'].map((link) => (
-              <li key={link}>{link}</li>
-            ))}
-          </ul>
-          <h3 className="text-white text-lg font-semibold mt-8 mb-4">FAQs</h3>
-          <p>For quick answers, visit our FAQs page.</p>
-        </div>
-
-        {/* Social Media Links Section */}
-        <div>
-          <h3 className="text-white text-lg font-semibold mb-4">Social Media Links</h3>
-          <ul className="space-y-2">
-            {['Instagram', 'Facebook', 'LinkedIn'].map((platform) => (
-              <li key={platform}>{platform}</li>
-            ))}
-          </ul>
-        </div>
+function Footer (){
+    return(
+    <footer className="bg-cyan-400 text-white py-10 text-xs">
+    <div className="container mx-auto grid grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-8 px-4">
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Easy <span className="font-bold">Pg</span></h3>
+        {/* <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus nobis
+          sequi expedita possimus vel reprehenderit nulla, atque reiciendis ex fugit quod.
+        </p> */}
       </div>
-
-      {/* Copyright Section */}
-      <div className="mt-8 text-center border-t border-gray-700 pt-4">
-        <p className="text-sm">Copyright &copy; 2024 MessMate. All rights reserved.</p>
+      <div>
+        <h2 className="text-lg font-semibold mb-4">Company</h2>
+        <ul className="space-y-2">
+          {['Careers', 'About Us', 'For Partners', 'Terms', 'Privacy Policy', 'Contact Us'].map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
       </div>
-    </footer>
-  );
-};
+      <div>
+        <h2 className="text-lg font-semibold mb-4">Support</h2>
+        <ul className="space-y-2">
+          {['FAQe', 'Contact Us'].map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h2 className="text-lg font-semibold mb-4">Quick Link</h2>
+        <ul className="space-y-2">
+          {['Terms', 'Privacy Policy'].map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+    <div className="text-center mt-8">
+      <p className="text-sm">Copyright 2024 - All Right Reserved by <span className="font-bold">Easypg.pv.ltd</span></p>
+    </div>
+  </footer>
 
-export default Footer;
+)}
+export default Footer
