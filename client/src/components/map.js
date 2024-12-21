@@ -56,7 +56,7 @@ function MapComponent({ isChecked,coordinates }) {
   };
 
   useEffect(() => {
-    const { lat, lng } = coordinates||['',''];
+    const { lat, lng } = coordinates||['22.958728205898435','88.54533799778382'];
     const centerCoordinates = fromLonLat([lng, lat]);
     console.log(centerCoordinates);
 
