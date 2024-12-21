@@ -107,7 +107,7 @@ useEffect(() => {
           {/* messbars */}
          <div style={{display: isChecked ? "flex" : "block"}}> 
           <MessBars checkFeatures={checkFeatures} isChecked={isChecked} style={{ overflowY: "auto", height: "84vh" }} coords={handleCoordinatesChange} />
-          <Map isChecked={isChecked}/>
+          <Map isChecked={isChecked} coordinates={coordinates}/>
          </div>
         </div>
       </div>
