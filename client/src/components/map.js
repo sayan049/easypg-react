@@ -52,7 +52,7 @@ function MapComponent({ isChecked }) {
     new Map({
       target: 'map',
       layers: [new TileLayer({ source: new OSM() })],
-      view: new View({ center: [9866767, 2618506], zoom: 15, projection: 'EPSG:3857' }),
+      view: new View({ center: [9866767, 2618506], zoom: 10, projection: 'EPSG:3857' }),
     });
   }, []);
 
