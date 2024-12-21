@@ -119,10 +119,10 @@ exports.signupHandlerOwner = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // const profilePhoto = req.files.profilePhoto
-    //   ? req.files.profilePhoto[0].filename
-    //   : null;
-    const profilePhoto =[];
+    const profilePhoto = req.files.profilePhoto
+      ? req.files.profilePhoto[0].filename
+      : null;
+   
       if (profilePhoto && profilePhoto[0]) {
                     const result = await cloudinary.uploader.upload(profilePhoto[0].path);
                     profilePhoto = result.secure_url; // Save Cloudinary URL
@@ -131,12 +131,12 @@ exports.signupHandlerOwner = async (req, res) => {
     // console.log("mhm  "+ typeof [req.files.messPhoto.map(file => file.filename)]);
     let messPhoto = [];
 
-    // if (req.files && req.files.messPhoto) {
-    //   req.files.messPhoto.map((file) => {
-    //     console.log(file.filename + "\n");
-    //     messPhoto.push(file.filename);
-    //   });
-    // }
+    if (req.files && req.files.messPhoto) {
+      req.files.messPhoto.map((file) => {
+        console.log(file.filename + "\n");
+        messPhoto.push(file.filename);
+      });
+    }
         if (messPhoto && messPhoto.length > 0) {
                     const messPhotoUrls = [];
                     for (const photo of messPhoto) {
