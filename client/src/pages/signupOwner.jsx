@@ -56,18 +56,23 @@ function SignupOwner() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async (position) => {
         const { latitude, longitude } = position.coords;
-        const apiKey = "AIzaSyAlJ2p7ePie8E9JH4TeouoayKAvathIGr0";
+        const apiKey = "YOUR_GOOGLE_MAPS_API_KEY";
         const response = await fetch(
           `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`
         );
         const data = await response.json();
         const address = data.results[0]?.formatted_address || "Location not found";
-        setLocation(address);
+  
+        setFormData((prevData) => ({
+          ...prevData,
+          location: address,
+        }));
       });
     } else {
       alert("Geolocation is not supported by this browser.");
     }
   };
+  
 
   const [formData, setFormData] = useState({
     firstName: '',
