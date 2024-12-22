@@ -15,6 +15,10 @@ function SignUpForm() {
   const [password, setPassword] = useState("");
   const [pin, setPin] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+  const [isFormFilled, setIsFormFilled] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Disable button after first click
 
   const navigate = useNavigate();
 
@@ -23,13 +27,19 @@ function SignUpForm() {
   };
 
   const signupHandler = async () => {
+    if (isButtonDisabled) return; // Prevents multiple submissions while waiting
+
     const jsonData = { firstName, lastName, email, address, password, pin };
     try {
+      setIsSubmitting(true); // Disable button during submission
+      setIsButtonDisabled(true); // Disable button immediately
+
       const response = await axios.post(signupUrl, jsonData, {
         headers: {
           "Content-Type": "application/json",
         },
       });
+
       if (response.status === 201) {
         const message = "Please verify your email to log in";
         localStorage.setItem("loginMessage", message);
@@ -39,8 +49,22 @@ function SignUpForm() {
       }
     } catch (error) {
       console.error("Error sending JSON data:", error);
+    } finally {
+      // Re-enable the button after 5 seconds
+      setTimeout(() => {
+        setIsButtonDisabled(false); // Re-enable the button
+        setIsSubmitting(false); // Set submitting to false after 5 seconds
+      }, 5000);
     }
   };
+
+  useEffect(() => {
+    setIsFormFilled(
+      firstName && lastName && email && address && password && pin
+    );
+  }, [firstName, lastName, email, address, password, pin]);
+
+  const isFormValid = isFormFilled && isChecked;
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
@@ -132,12 +156,33 @@ function SignUpForm() {
               />
             </div>
 
+            {/* Terms and Conditions Checkbox */}
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="terms"
+                checked={isChecked}
+                onChange={() => setIsChecked(!isChecked)}
+                className="h-4 w-4 border-gray-300 rounded"
+                disabled={!isFormFilled} // Disable checkbox until the form is filled
+              />
+              <label htmlFor="terms" className="text-sm text-gray-600">
+                Check all the Terms & Condition and Privacy Policy
+              </label>
+            </div>
+
+            {/* Create Account Button */}
             <button
               type="button"
               onClick={signupHandler}
-              className="w-full bg-[#2ca4b5] text-white py-2 rounded-full font-semibold hover:bg-[#238b96] transition tracking-wide"
+              disabled={!isFormValid || isButtonDisabled || isSubmitting}
+              className={`w-full py-2 rounded-full font-semibold transition tracking-wide ${
+                isFormValid && !isSubmitting
+                  ? "bg-[#2ca4b5] text-white hover:bg-[#238b96]"
+                  : "bg-gray-300 text-gray-600 cursor-not-allowed"
+              }`}
             >
-              Create Account
+              {isSubmitting ? "Submitting..." : "Create Account"}
             </button>
           </form>
 
@@ -156,8 +201,8 @@ function SignUpForm() {
         <h1 className="text-xl font-bold absolute top-6 right-6">
           Mess <span className="text-blue-200">Mate</span>
         </h1>
-          {/* Ellipse Image Below Mess Mate Text */}
-          <img
+        {/* Ellipse Image Below Mess Mate Text */}
+        <img
           src="/assets/Ellipse.png"
           alt="Ellipse"
           className="absolute top-[5rem] right-6 max-w-[42%]"
@@ -184,8 +229,6 @@ function SignUpForm() {
         >
           Log In
         </Link>
-
-      
 
         {/* Bottom Ellipse Image at Left Bottom Corner */}
         <img
