@@ -51,8 +51,8 @@ function SignupOwner() {
   //    // setError('Geolocation is not supported by this browser.');
   //  //   setLoading(false);
   //   }
-   }
-  const MapComponent = () => {
+   
+ 
     const [location, setLocation] = useState("");
   
     const mapMake = () => {
