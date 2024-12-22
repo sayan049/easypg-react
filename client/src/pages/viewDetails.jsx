@@ -1,10 +1,13 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 
 const ViewDetails = () => {
+  const location=useLocation();
+  const {owner}=location.state || {};
   return (
     <div className="max-w-5xl mx-auto bg-white shadow-md rounded-lg overflow-hidden my-8">
       {/* Image Section */}
-      <div className="relative">
+      {/* <div className="relative">
         <img
           src="https://via.placeholder.com/1024x300"
           alt="Room"
@@ -13,7 +16,23 @@ const ViewDetails = () => {
         <button className="absolute top-2 right-2 bg-black text-white px-3 py-1 text-sm rounded">
           View all photos
         </button>
-      </div>
+      </div> */}
+      <div className="relative  overflow-hidden">
+  <div className="h-full overflow-x-scroll flex space-x-2">
+    {Array.isArray(owner.messPhoto)&&(owner.messPhoto).map((element,index) => {
+      <img
+      src={element}
+      alt={`Room${index}`}
+      className="w-full h-64 object-cover rounded"
+    />
+    })}
+   
+  </div>
+  <button className="absolute top-2 right-2 bg-black text-white px-3 py-1 text-sm rounded">
+    View all photos
+  </button>
+</div>
+
 
       {/* Content Section */}
       <div className="p-6">
