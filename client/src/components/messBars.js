@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { baseurl, findMessUrl } from '../constant/urls';
+import { Link } from 'react-router-dom';
 
 function MessBars({ isChecked, checkFeatures, coords }) {
   const [messData, setMessData] = useState([]);
@@ -82,6 +83,7 @@ function MessBars({ isChecked, checkFeatures, coords }) {
             <div className="flex gap-4 mt-4">
               <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
                 View Details
+                <Link to='viewDetails'></Link>
               </button>
               <button className="bg-green-500 text-white px-4 py-2 rounded-md">
                 Book Now
