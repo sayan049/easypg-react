@@ -11,7 +11,7 @@ function SignupOwner() {
   const [imgArray, setImgArray] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
-  //const [location, setLocation] = useState('');
+  const [location, setLocation] = useState('');
   // const [loading, setLoading] = useState(true);
   // const [error, setError] = useState(null);
 
@@ -30,28 +30,57 @@ function SignupOwner() {
     
   }, []);
 
-  const mapmake=()=>{
+  // const mapmake=()=>{
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => {
+  //         const loc = `${position.coords.latitude}, ${position.coords.longitude}`;
+  //        // setLocation(loc);
+  //        setFormData((prevData) => ({
+  //         ...prevData,
+  //         location: loc
+  //       }));
+  //       //  setLoading(false);z
+  //       },
+  //       // (error) => {
+  //       //   setError('Error getting location: ' + error.message);
+  //       // //  setLoading(false);
+  //       // }
+  //     );
+  //   } else {
+  //    // setError('Geolocation is not supported by this browser.');
+  //  //   setLoading(false);
+  //   }
+  // }
+  const mapMake = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const loc = `${position.coords.latitude}, ${position.coords.longitude}`;
-         // setLocation(loc);
-         setFormData((prevData) => ({
-          ...prevData,
-          location: loc
-        }));
-        //  setLoading(false);
-        },
-        // (error) => {
-        //   setError('Error getting location: ' + error.message);
-        // //  setLoading(false);
-        // }
-      );
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
+  
+        try {
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.Google_apiKey}`
+          );
+          const data = await response.json();
+  
+          const address =
+            data.results[0]?.formatted_address ||
+            `${latitude}, ${longitude}`;
+            
+          setFormData((prevData) => ({
+            ...prevData,
+            location: address,
+          }));
+        } catch (error) {
+          console.error("Error fetching location:", error);
+        }
+      });
     } else {
-     // setError('Geolocation is not supported by this browser.');
-   //   setLoading(false);
+      alert("Geolocation is not supported by this browser.");
     }
-  }
+  };
+  
+  
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -261,10 +290,16 @@ function SignupOwner() {
         <div className='flex'>
           <div className="inputbox wid50">
            
-              <input type="text" placeholder="Location (Latitude, Longitude)" name="location" id="Location" value={formData.location} onChange={handleChange} />
+              <input type="text" placeholder="Location (Latitude, Longitude)" name="location" id="Location" value={formData.location} onChange={handleChange} readOnly required />
            
           </div>
-          <img src="./assets/map-marker 1.png" alt="" style={{cursor: 'pointer'}} className='map-maker' onClick={mapmake} />
+          <img
+        src="./assets/map-marker 1.png"
+        alt="Map Marker"
+        style={{ cursor: "pointer" }}
+        className="map-maker"
+        onClick={mapMake}
+      />
         </div>
 
         <div className='flex aligncentre wid90vw'>
