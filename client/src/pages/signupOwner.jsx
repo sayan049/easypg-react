@@ -11,7 +11,7 @@ function SignupOwner() {
   const [imgArray, setImgArray] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
-  //const [location, setLocation] = useState('');
+  const [location, setLocation] = useState('');
   // const [loading, setLoading] = useState(true);
   // const [error, setError] = useState(null);
 
@@ -40,7 +40,7 @@ function SignupOwner() {
   //         ...prevData,
   //         location: loc
   //       }));
-  //       //  setLoading(false);
+  //       //  setLoading(false);z
   //       },
   //       // (error) => {
   //       //   setError('Error getting location: ' + error.message);
@@ -51,26 +51,23 @@ function SignupOwner() {
   //    // setError('Geolocation is not supported by this browser.');
   //  //   setLoading(false);
   //   }
-   
- 
-    const [location, setLocation] = useState("");
-  
-    const mapMake = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async (position) => {
-          const { latitude, longitude } = position.coords;
-          const apiKey = "YOUR_GOOGLE_MAPS_API_KEY";
-          const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyAlJ2p7ePie8E9JH4TeouoayKAvathIGr0`
-          );
-          const data = await response.json();
-          const address = data.results[0]?.formatted_address || "Location not found";
-          setLocation(address);
-        });
-      } else {
-        alert("Geolocation is not supported by this browser.");
-      }
-    };
+  // }
+  const mapMake = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
+        const apiKey = "AIzaSyAlJ2p7ePie8E9JH4TeouoayKAvathIGr0";
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`
+        );
+        const data = await response.json();
+        const address = data.results[0]?.formatted_address || "Location not found";
+        setLocation(address);
+      });
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  };
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -280,7 +277,7 @@ function SignupOwner() {
         <div className='flex'>
           <div className="inputbox wid50">
            
-              <input type="text" placeholder="Location (Latitude, Longitude)" name="location" id="Location" value={formData.location} onChange={handleChange} readOnly />
+              <input type="text" placeholder="Location (Latitude, Longitude)" name="location" id="Location" value={formData.location} onChange={handleChange} />
            
           </div>
           <img
