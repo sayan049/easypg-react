@@ -57,21 +57,30 @@ function SignupOwner() {
       navigator.geolocation.getCurrentPosition(async (position) => {
         const { latitude, longitude } = position.coords;
         const apiKey = "AIzaSyAlJ2p7ePie8E9JH4TeouoayKAvathIGr0";
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`
-        );
-        const data = await response.json();
-        const address = data.results[0]?.formatted_address || "Location not found";
-        console.log("fuck  "+address);
-        setFormData((prevData) => ({
-          ...prevData,
-          location: address,
-        }));
+  
+        try {
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`
+          );
+          const data = await response.json();
+  
+          const address =
+            data.results[0]?.formatted_address ||
+            `Lat: ${latitude}, Lng: ${longitude}`;
+            
+          setFormData((prevData) => ({
+            ...prevData,
+            location: address,
+          }));
+        } catch (error) {
+          console.error("Error fetching location:", error);
+        }
       });
     } else {
       alert("Geolocation is not supported by this browser.");
     }
   };
+  
   
 
   const [formData, setFormData] = useState({
