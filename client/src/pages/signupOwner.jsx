@@ -291,7 +291,7 @@ function SignupOwner() {
         <div className='flex'>
           <div className="inputbox wid50">
            
-              <input type="text" placeholder="Location (Latitude, Longitude)" name="location" id="Location" value={formData.location} onChange={handleChange} />
+              <input type="text" placeholder="Location (Latitude, Longitude)" name="location" id="Location" value={formData.location} onChange={handleChange} readOnly />
            
           </div>
           <img
