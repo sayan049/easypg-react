@@ -1,10 +1,13 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { baseurl, findMessUrl } from '../constant/urls';
+import { useNavigate } from 'react-router-dom';
+
 
 function MessBars({ isChecked, checkFeatures, coords }) {
   const [messData, setMessData] = useState([]);
   const [error, setError] = useState(null);
+  const navigate=useNavigate();
 
   const clickCords = (location) => {
     // Check if location is a valid string
@@ -16,6 +19,10 @@ function MessBars({ isChecked, checkFeatures, coords }) {
       console.log('Invalid location:', location); // Handle invalid location
     }
   };
+
+  const clickNavi=(owner)=>{
+    navigate('/viewDetails',{state:{owner}});
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -80,7 +87,7 @@ function MessBars({ isChecked, checkFeatures, coords }) {
               <span>price : 2.5k/Month</span>
             </div>
             <div className="flex gap-4 mt-4">
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
+              <button className="bg-blue-500 text-white px-4 py-2 rounded-md" onClick={()=>clickNavi(owner)}>
                 View Details
               </button>
               <button className="bg-green-500 text-white px-4 py-2 rounded-md">

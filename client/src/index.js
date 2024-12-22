@@ -19,6 +19,7 @@ import SecurityCheck from "./pages/securityCheck";
 import MailVerifyOwner from "./pages/mailVerifyOwner";
 import UserDashboard from "./pages/Dashboard";
 import IsAuth from "./pages/isAuth";
+import ViewDetails from "./pages/viewDetails";
 
 // Create the root once and specify the container
 const root = createRoot(document.getElementById("root")); // Using createRoot directly
@@ -47,7 +48,7 @@ root.render(
             path="/LoginUser"
             element={
 
-              
+
               <ProtectedRoute>
                 <LoginUser />
               </ProtectedRoute>
@@ -84,9 +85,14 @@ root.render(
           />
           <Route path="/UserDashboard" element={
             <IsAuth>
-            <UserDashboard/>
+              <UserDashboard />
             </IsAuth>
-            }/>
+          } />
+          <Route path="/ViewDetails" element={
+
+            <ViewDetails />
+
+          } />
         </Routes>
       </Router>
     </AuthProvider>
