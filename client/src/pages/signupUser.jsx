@@ -1,16 +1,13 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import "../designs/signuppagestyle.css";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { signupUrl } from "../constant/urls";
-import { useNavigate } from 'react-router-dom';
-
 
 function SignUpForm() {
   useEffect(() => {
-    document.title = "Student signup";
+    document.title = "Student Signup";
   }, []);
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -18,176 +15,184 @@ function SignUpForm() {
   const [password, setPassword] = useState("");
   const [pin, setPin] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
   const navigate = useNavigate();
+
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
-  const signuphandler = async ()=>{
-    console.log("clicked");
-
-    const jsonData = {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      address: address, 
-      password: password,
-      pin: pin,
-    };
+  const signupHandler = async () => {
+    const jsonData = { firstName, lastName, email, address, password, pin };
     try {
       const response = await axios.post(signupUrl, jsonData, {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
-
       if (response.status === 201) {
-        console.log("Response:", response.data);
-        
-        // Redirect to login page upon successful signup
-        const a = "Please verify your email to log in"
-        localStorage.setItem('loginMessage',a);
-        navigate('/LoginUser',{state: {message:a}});
-        
+        const message = "Please verify your email to log in";
+        localStorage.setItem("loginMessage", message);
+        navigate("/LoginUser", { state: { message } });
       } else {
         console.error("Signup failed:", response.data);
       }
     } catch (error) {
       console.error("Error sending JSON data:", error);
     }
-  }
-  const handleFirstNameChange = (e) => {
-    setFirstName(e.target.value);
   };
 
-  const handleLastNameChange = (e) => {
-    setLastName(e.target.value);
-  };
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const handleAddressChange = (e) => {
-    setAddress(e.target.value);
-  };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const handlePinChange = (e) => {
-    setPin(e.target.value);
-  };
-  //redirecting
-  
-  
   return (
-    <div id="Maincontainer">
-      <div className="form-container">
-        Sign Up <span className="fs">User</span>
-        <div className="leftcontainer">
-          <div className="create-account-grid">
-            <div className="CA">Create Account</div>
-            <div className="first-name">
+    <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
+      {/* Left Section */}
+      <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6">
+        <div className="w-full max-w-lg p-8">
+          {/* Header Section */}
+          <div className="lg:absolute lg:top-6 lg:left-6 flex flex-col items-center lg:items-start space-y-2 lg:space-y-0">
+            <h1 className="text-3xl sm:text-4xl font-bold text-[#2ca4b5]">Sign Up</h1>
+            <h2 className="text-sm sm:text-lg font-normal text-center lg:text-left">
+              User
+            </h2>
+          </div>
+
+          {/* Create Account Text */}
+          <h1 className="text-center text-lg font-semibold text-gray-700 mb-4 mt-4 lg:mt-0">
+            Create Account
+          </h1>
+
+          <form className="space-y-4" autoComplete="off">
+            {/* Hidden field trick to disable autofill */}
+            <input type="text" name="hidden" style={{ display: "none" }} autoComplete="off" />
+            
+            <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
               <input
-                type="first-name"
-                id="first-name"
+                type="text"
+                name="first_name"
                 placeholder="First Name"
                 value={firstName}
-                onChange={handleFirstNameChange}
+                onChange={(e) => setFirstName(e.target.value)}
+                className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+                autoComplete="off"
               />
-            </div>
-            <div className="last-name">
               <input
-                type="last-name"
-                id="last-name"
+                type="text"
+                name="last_name"
                 placeholder="Last Name"
                 value={lastName}
-                onChange={handleLastNameChange}
+                onChange={(e) => setLastName(e.target.value)}
+                className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+                autoComplete="off"
               />
             </div>
-            <div className="email">
-              <input
-                type="email"
-                name="email"
-                id="email"
-                placeholder="example@email.com"
-                value={email}
-                onChange={handleEmailChange}
-              />
-            </div>
-            <div className="address">
-              <input
-                type="address"
-                id="address"
-                placeholder="Enter Your Address"
-                value={address}
-                onChange={handleAddressChange}
-              />
-            </div>
-            <div className="pass-container">
-              <div className="pass">
+            <input
+              type="email"
+              name="email"
+              placeholder="example@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+              autoComplete="off"
+            />
+            <input
+              type="text"
+              name="address"
+              placeholder="Write your Address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+              autoComplete="off"
+            />
+            <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
+              <div className="relative flex-1">
                 <input
                   type={isPasswordVisible ? "text" : "password"}
                   name="password"
-                  id="password"
                   placeholder="Password"
                   value={password}
-                  onChange={handlePasswordChange}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+                  autoComplete="new-password"
                 />
-                <img
-                  src={
-                    isPasswordVisible
-                      ? "./assets/openEye.png"
-                      : "./assets/closeEye.png"
-                  }
-                  alt={isPasswordVisible ? "openEye" : "closeEye"}
+                <button
+                  type="button"
                   onClick={togglePasswordVisibility}
-                  style={{ cursor: "pointer" }}
-                />
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"
+                >
+                  {isPasswordVisible ? "👁️" : "🙈"}
+                </button>
               </div>
-            </div>
-
-            <div className="pin">
               <input
-                type="pin"
+                type="text"
                 name="pin"
-                id="pin"
                 placeholder="Pin Code"
                 value={pin}
-                onChange={handlePinChange}
+                onChange={(e) => setPin(e.target.value)}
+                className="flex-1 rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+                autoComplete="off"
               />
             </div>
-            <button className="create-account" type="submit" onClick={signuphandler}>
+
+            <button
+              type="button"
+              onClick={signupHandler}
+              className="w-full bg-[#2ca4b5] text-white py-2 rounded-full font-semibold hover:bg-[#238b96] transition tracking-wide"
+            >
               Create Account
             </button>
-           
-          </div>
+          </form>
+
+          <p className="text-center text-sm text-gray-600 mt-4">
+            Do you have an account?{" "}
+            <Link to="/LoginUser" className="text-blue-500 hover:underline">
+              Log in
+            </Link>
+          </p>
         </div>
       </div>
-      <div className="rightcontainer">
-        <div className="easy-pg">
-          Easy <span>Pg</span>
-        </div>
-        <div className="try">
-          <div className="ellipse">
-            <img src="./assets/ellipse-2.png" alt="upper-ellipse" />
-          </div>
-          <div className="mid-text">Find Your Nearest Mess</div>
-        </div>
 
-        <div className="login-button">
-          <button>
-            <Link
-              style={{ textDecoration: "none", color: "white" }}
-              to="/LoginUser"
-            >
-              Log In
-            </Link>
-          </button>
-        </div>
-        <div className="bottom-ellipse">
-          <img src="./assets/bottom-ellipse.png" alt="bottom-ellipse" />
-        </div>
+      {/* Right Section */}
+      <div className="hidden lg:flex lg:w-4/12 flex-col justify-center items-center bg-new-gradient text-white p-12 relative">
+        {/* Mess Mate Text */}
+        <h1 className="text-xl font-bold absolute top-6 right-6">
+          Mess <span className="text-blue-200">Mate</span>
+        </h1>
+          {/* Ellipse Image Below Mess Mate Text */}
+          <img
+          src="/assets/Ellipse.png"
+          alt="Ellipse"
+          className="absolute top-[5rem] right-6 max-w-[42%]"
+          style={{ paddingTop: "10px" }}
+        />
+
+        {/* Find Your Nearest Mess Text with Gradient */}
+        <p
+          className="mt-2 text-lg font-bold text-[35px] text-center"
+          style={{
+            WebkitTextFillColor: "#0000",
+            background: "linear-gradient(121deg, #2ca4b5 2.49%, #006d7b 59.71%)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+          }}
+        >
+          Find Your Nearest Mess
+        </p>
+
+        {/* Log In Button */}
+        <Link
+          to="/LoginUser"
+          className="mt-6 bg-[#2ca4b5] text-white font-bold py-2 px-6 rounded-full hover:bg-[#238b96] transition w-[12rem] text-center"
+        >
+          Log In
+        </Link>
+
+      
+
+        {/* Bottom Ellipse Image at Left Bottom Corner */}
+        <img
+          src="/assets/bottom-ellipse.png"
+          alt="Bottom Ellipse"
+          className="absolute bottom-6 left-6 max-w-[25%]"
+        />
       </div>
     </div>
   );
