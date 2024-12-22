@@ -56,11 +56,10 @@ function SignupOwner() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async (position) => {
         const { latitude, longitude } = position.coords;
-        const apiKey = "AIzaSyAlJ2p7ePie8E9JH4TeouoayKAvathIGr0";
   
         try {
           const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.Google_apiKey}`
           );
           const data = await response.json();
   
@@ -291,7 +290,7 @@ function SignupOwner() {
         <div className='flex'>
           <div className="inputbox wid50">
            
-              <input type="text" placeholder="Location (Latitude, Longitude)" name="location" id="Location" value={formData.location} onChange={handleChange} readOnly />
+              <input type="text" placeholder="Location (Latitude, Longitude)" name="location" id="Location" value={formData.location} onChange={handleChange} readOnly required />
            
           </div>
           <img
