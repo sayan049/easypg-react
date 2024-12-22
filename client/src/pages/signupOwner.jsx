@@ -66,7 +66,7 @@ function SignupOwner() {
   
           const address =
             data.results[0]?.formatted_address ||
-            `${latitude},${longitude}`;
+            `${latitude}, ${longitude}`;
             
           setFormData((prevData) => ({
             ...prevData,
