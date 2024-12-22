@@ -17,7 +17,7 @@ const ViewDetails = () => {
           View all photos
         </button>
       </div> */}
-      <div className="relative  overflow-hidden">
+      <div className="relative h-64  overflow-hidden">
   <div className="h-full overflow-x-scroll flex space-x-2">
     {/* {Array.isArray(owner.messPhoto)&&(owner.messPhoto).map((element,index) => {
       <img
