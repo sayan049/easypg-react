@@ -19,13 +19,21 @@ const ViewDetails = () => {
       </div> */}
       <div className="relative  overflow-hidden">
   <div className="h-full overflow-x-scroll flex space-x-2">
-    {Array.isArray(owner.messPhoto)&&(owner.messPhoto).map((element,index) => {
+    {/* {Array.isArray(owner.messPhoto)&&(owner.messPhoto).map((element,index) => {
       <img
       src={element}
       alt={`Room${index}`}
       className="w-full h-64 object-cover rounded"
     />
-    })}
+    })} */}
+    {Array.isArray(owner.messPhoto) && owner.messPhoto.map((element, index) => (
+            <img
+              key={index}
+              src={element}
+              alt={`Room ${index + 1}`}
+              className="w-full h-64 object-cover rounded"
+            />
+          ))}
    
   </div>
   <button className="absolute top-2 right-2 bg-black text-white px-3 py-1 text-sm rounded">
