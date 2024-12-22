@@ -46,9 +46,9 @@ const ViewDetails = () => {
         {/* Title and Location */}
         <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
           <div>
-            <h1 className="text-xl font-bold">MUKUL BHABAN (Raju Da Mess)</h1>
+            <h1 className="text-xl font-bold">{owner.messName}</h1>
             <p className="text-sm text-gray-600">
-              Hamirghata, Simna, West Bengal 741249
+             {owner.address}
             </p>
           </div>
           <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
@@ -58,7 +58,7 @@ const ViewDetails = () => {
 
         {/* Safety Notice */}
         <p className="bg-yellow-100 text-yellow-800 text-sm p-3 rounded mb-4">
-          Safe and sanitized with daily temperature checks of our staff.
+          {owner.aboutMess}
         </p>
 
         {/* Amenities */}
