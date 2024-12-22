@@ -63,12 +63,12 @@ const ViewDetails = () => {
 
         {/* Amenities */}
         <div className="flex flex-wrap gap-4 mb-6">
-          {Array.isArray(owner.facility) && owner.facility.map(element=>{
+          {Array.isArray(owner.facility) && owner.facility.map(element=>(
             <div className="flex items-center space-x-2">
             <span className="text-blue-500">&#x1F6BF;</span>
             <p>{element}</p>
           </div>
-          })}
+          ))}
           {/* <div className="flex items-center space-x-2">
             <span className="text-blue-500">&#x1F373;</span>
             <p>Kitchen</p>
