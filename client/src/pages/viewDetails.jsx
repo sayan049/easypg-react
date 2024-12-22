@@ -58,16 +58,18 @@ const ViewDetails = () => {
 
         {/* Safety Notice */}
         <p className="bg-yellow-100 text-yellow-800 text-sm p-3 rounded mb-4">
-          {owner.aboutMess}
+          Safe and sanitized with daily temperature checks of our staff.
         </p>
 
         {/* Amenities */}
         <div className="flex flex-wrap gap-4 mb-6">
-          <div className="flex items-center space-x-2">
+          {Array.isArray(owner.facility) && owner.facility.map(element=>{
+            <div className="flex items-center space-x-2">
             <span className="text-blue-500">&#x1F6BF;</span>
-            <p>Free WiFi</p>
+            <p>{element}</p>
           </div>
-          <div className="flex items-center space-x-2">
+          })}
+          {/* <div className="flex items-center space-x-2">
             <span className="text-blue-500">&#x1F373;</span>
             <p>Kitchen</p>
           </div>
@@ -78,14 +80,14 @@ const ViewDetails = () => {
           <div className="flex items-center space-x-2">
             <span className="text-blue-500">&#x26A1;</span>
             <p>Power Backup</p>
-          </div>
+          </div> */}
         </div>
 
         {/* About Section */}
         <div className="mb-6">
           <h2 className="text-lg font-semibold">About this Mess</h2>
           <p className="text-gray-700">
-            Budget stay with comfortable bed and clean washroom.
+          {owner.aboutMess}
           </p>
         </div>
 
