@@ -20,8 +20,8 @@ function MessBars({ isChecked, checkFeatures, coords }) {
     }
   };
 
-  const clickNavi=()=>{
-    navigate('/viewDetails');
+  const clickNavi=(owner)=>{
+    navigate('/viewDetails',{state:{owner}});
   }
 
   useEffect(() => {
@@ -87,7 +87,7 @@ function MessBars({ isChecked, checkFeatures, coords }) {
               <span>price : 2.5k/Month</span>
             </div>
             <div className="flex gap-4 mt-4">
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-md" onClick={clickNavi}>
+              <button className="bg-blue-500 text-white px-4 py-2 rounded-md" onClick={()=>clickNavi(owner)}>
                 View Details
               </button>
               <button className="bg-green-500 text-white px-4 py-2 rounded-md">
