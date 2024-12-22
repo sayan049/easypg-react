@@ -62,7 +62,7 @@ function SignupOwner() {
         );
         const data = await response.json();
         const address = data.results[0]?.formatted_address || "Location not found";
-  
+        console.log("fuck  "+address);
         setFormData((prevData) => ({
           ...prevData,
           location: address,
