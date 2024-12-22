@@ -6,26 +6,10 @@ const ViewDetails = () => {
   const {owner}=location.state || {};
   return (
     <div className="max-w-5xl mx-auto bg-white shadow-md rounded-lg overflow-hidden my-8">
-      {/* Image Section */}
-      {/* <div className="relative">
-        <img
-          src="https://via.placeholder.com/1024x300"
-          alt="Room"
-          className="w-full h-64 object-cover"
-        />
-        <button className="absolute top-2 right-2 bg-black text-white px-3 py-1 text-sm rounded">
-          View all photos
-        </button>
-      </div> */}
-      <div className="relative h-64  overflow-hidden">
+      
+      {/* <div className="relative h-64  overflow-hidden">
   <div className="h-full overflow-x-scroll flex space-x-2">
-    {/* {Array.isArray(owner.messPhoto)&&(owner.messPhoto).map((element,index) => {
-      <img
-      src={element}
-      alt={`Room${index}`}
-      className="w-full h-64 object-cover rounded"
-    />
-    })} */}
+   
     {Array.isArray(owner.messPhoto) && owner.messPhoto.map((element, index) => (
             <img
               key={index}
@@ -37,6 +21,21 @@ const ViewDetails = () => {
    
   </div>
   <button className="absolute top-2 right-2 bg-black text-white px-3 py-1 text-sm rounded">
+    View all photos
+  </button>
+</div> */}
+<div className="relative h-64 overflow-hidden rounded-lg shadow-lg mb-6">
+  <div className="h-full overflow-x-scroll flex space-x-2 p-2">
+    {Array.isArray(owner.messPhoto) && owner.messPhoto.map((element, index) => (
+      <img
+        key={index}
+        src={element}
+        alt={`Room ${index + 1}`}
+        className="w-full h-64 object-cover rounded-lg shadow-md"
+      />
+    ))}
+  </div>
+  <button className="absolute top-2 right-2 bg-black text-white px-3 py-1 text-sm rounded shadow-md">
     View all photos
   </button>
 </div>
