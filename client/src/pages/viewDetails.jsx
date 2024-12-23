@@ -6,9 +6,9 @@ const ViewDetails = () => {
   const location=useLocation();
   const {owner}=location.state || {};
   const locationArray = owner.location.split(',');
-  const lng=parseFloat(locationArray[0]);
-  const lat= parseFloat(locationArray[1]);
-const coordinates = {lng,lat};
+  const lat = parseFloat(locationArray[0]);
+  const lng = parseFloat(locationArray[1]);
+  const coordinates = { lat, lng }; // Create coordinates object
   return (
     <div className="max-w-5xl mx-auto bg-white shadow-md rounded-lg overflow-hidden my-8">
       
