@@ -71,7 +71,6 @@
 // }
 
 // export default MapDirection;
-
 import { Map, View } from 'ol';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
@@ -84,6 +83,7 @@ import OSM from 'ol/source/OSM';
 import VectorSource from 'ol/source/Vector';
 import Icon from 'ol/style/Icon';
 import Style from 'ol/style/Style';
+import Stroke from 'ol/style/Stroke';
 import React, { useEffect, useState } from 'react';
 
 function MapDirection({ coordinates }) {
@@ -93,9 +93,10 @@ function MapDirection({ coordinates }) {
   useEffect(() => {
     if (!coordinates || !coordinates.lat || !coordinates.lng) return;
 
-    // Initial map setup
+    // Convert coordinates to OpenLayers projection
     const centerCoordinates = fromLonLat([coordinates.lng, coordinates.lat]);
 
+    // Create marker for the provided coordinates
     const marker = new Feature({
       geometry: new Point(centerCoordinates),
     });
@@ -118,7 +119,10 @@ function MapDirection({ coordinates }) {
 
     const initialMap = new Map({
       target: 'map',
-      layers: [new TileLayer({ source: new OSM() }), vectorLayer],
+      layers: [
+        new TileLayer({ source: new OSM() }),
+        vectorLayer,
+      ],
       view: new View({
         center: centerCoordinates,
         zoom: 15,
@@ -167,13 +171,13 @@ function MapDirection({ coordinates }) {
 
         map.addLayer(userVectorLayer);
 
-        // Draw a line between the coordinates and the user's location
+        // Draw a line between the provided coordinates and the user's location
         const line = new Feature({
           geometry: new LineString([userCoordinates, fromLonLat([coordinates.lng, coordinates.lat])]),
         });
 
         const lineStyle = new Style({
-          stroke: new ol.style.Stroke({
+          stroke: new Stroke({
             color: '#ffcc33',
             width: 2,
           }),
