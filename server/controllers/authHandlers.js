@@ -24,7 +24,7 @@ exports.signupHandler = async (req, res) => {
       password: hashedPassword,
       
     });
-    console.log(newUser);
+    //console.log(newUser);
     console.log("---------------------------------------------------");
     res.status(201).json(newUser);
     sendmail(req.body.firstName, email, newUser._id);
