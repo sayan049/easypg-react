@@ -9,7 +9,7 @@ const ViewDetails = () => {
   const lat = parseFloat(locationArray[0].trim()); // Latitude
   const lng = parseFloat(locationArray[1].trim()); // Longitude
   const coordinates = { lat, lng }; // Coordinates object
-  console.log("hey"+coordinates);
+  console.log("hey"+coordinates+" "+owner.location+" "+owner.location.split(','));
   return (
     <div className="max-w-5xl mx-auto bg-white shadow-md rounded-lg overflow-hidden my-8">
       
