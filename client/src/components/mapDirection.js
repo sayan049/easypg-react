@@ -65,7 +65,7 @@ function MapDirection({ isChecked, coordinates }) {
     };
   }, [coordinates]); // Re-run effect when coordinates change
 
-  return <div id="map" style={mapContainerStyle} className="bg-gray-300 h-64 flex items-center justify-center" ></div>;
+  return <div id="map" style={mapContainerStyle} className="h-64 flex items-center justify-center" ></div>;
 }
 
 export default MapDirection;
