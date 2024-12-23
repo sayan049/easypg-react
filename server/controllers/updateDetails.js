@@ -2,6 +2,7 @@ const cloudinary = require('../cloudinary/cloudinaryConfig');
 const User = require("../modules/user");
 const PgOwner = require("../modules/pgProvider");
 const dotenv = require('dotenv');
+
 dotenv.config();
 
 exports.updateDetails = async (req, res) => {
