@@ -6,9 +6,12 @@ const ViewDetails = () => {
   const location=useLocation();
   const {owner}=location.state || {};
   const locationArray = owner.location ? owner.location.split(',') : [];
-  const lat = parseFloat(locationArray[0].trim()); // Latitude
-  const lng = parseFloat(locationArray[1].trim()); // Longitude
-  const coordinates = { lat, lng }; // Coordinates object
+
+  // Ensure both latitude and longitude are valid numbers
+  const lat = locationArray.length > 0 ? parseFloat(locationArray[0].trim()) : 0; // Latitude
+  const lng = locationArray.length > 1 ? parseFloat(locationArray[1].trim()) : 0; // Longitude
+  
+  const coordinates = { lat, lng };
   console.log("hey"+coordinates+" "+owner.location+" "+owner.location.split(','));
   return (
     <div className="max-w-5xl mx-auto bg-white shadow-md rounded-lg overflow-hidden my-8">
