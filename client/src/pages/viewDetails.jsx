@@ -5,7 +5,7 @@ import MapDirection from "../components/mapDirection";
 const ViewDetails = () => {
   const location=useLocation();
   const {owner}=location.state || {};
-  const locationArray = owner.location.split(',');
+  const locationArray = owner.location ? owner.location.split(',') : [];
   const lat = parseFloat(locationArray[0].trim()); // Latitude
   const lng = parseFloat(locationArray[1].trim()); // Longitude
   const coordinates = { lat, lng }; // Coordinates object
