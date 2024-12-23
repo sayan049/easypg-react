@@ -5,11 +5,11 @@ import MapDirection from "../components/mapDirection";
 const ViewDetails = () => {
   const location=useLocation();
   const {owner}=location.state || {};
-  const locationArray = owner?.location ?  owner.location.split(',') : [];
+  const locationArray =  owner.hasOwnProperty('location') ?  owner.location.split(',') : ['0','0'];
 
   // Ensure both latitude and longitude are valid numbers
-  const lat = locationArray.length > 0 ? parseFloat(locationArray[0].trim()) : 0; // Latitude
-  const lng = locationArray.length > 1 ? parseFloat(locationArray[1].trim()) : 0; // Longitude
+  const lat =  parseFloat(locationArray[0].trim()) ; // Latitude
+  const lng = parseFloat(locationArray[1].trim()) ; // Longitude
   
   const coordinates = { lat, lng };
   console.log("hey"+coordinates+" "+owner.location+" "+owner.location.split(','));
