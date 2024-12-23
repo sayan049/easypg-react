@@ -8,7 +8,7 @@ const ViewDetails = () => {
   const locationArray = owner.location.split(',');
   const lng=parseFloat(locationArray[0]);
   const lat= parseFloat(locationArray[1]);
-const coordinates = {lng,lat};
+const coordinates = {lat,lng};
   return (
     <div className="max-w-5xl mx-auto bg-white shadow-md rounded-lg overflow-hidden my-8">
       
