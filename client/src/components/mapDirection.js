@@ -24,7 +24,7 @@ function MapDirection({ isChecked, coordinates }) {
     // Ensure coordinates are numbers
     const { lat, lng } = coordinates;
     const centerCoordinates = fromLonLat([lng, lat]);
-    console.log("fuck"+centerCoordinates);
+    console.log("fuck"+coordinates);
     // Create a marker feature
     const marker = new Feature({
       geometry: new Point(centerCoordinates),
