@@ -1,9 +1,11 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
+import MapDirection from "../components/mapDirection";
 
 const ViewDetails = () => {
   const location=useLocation();
   const {owner}=location.state || {};
+  const coordinates=owner.location.split(',');
   return (
     <div className="max-w-5xl mx-auto bg-white shadow-md rounded-lg overflow-hidden my-8">
       
@@ -169,9 +171,11 @@ const ViewDetails = () => {
         {/* Map Section */}
         <div className="mb-6">
           <h2 className="text-lg font-semibold mb-4">What's nearby?</h2>
-          <div className="bg-gray-300 h-64 flex items-center justify-center">
+          {/* <div className="bg-gray-300 h-64 flex items-center justify-center">
             <p className="text-gray-700">Map Location</p>
-          </div>
+          </div> */}
+          <MapDirection coordinates={coordinates}/>
+
         </div>
       </div>
 
