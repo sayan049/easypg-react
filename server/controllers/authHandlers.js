@@ -165,7 +165,7 @@ exports.signupHandlerOwner = async (req, res) => {
       facility,
       
     });
-    console.log(newUser+" xxx"+ newUser.profilePhoto);
+    //console.log(newUser+" xxx"+ newUser.profilePhoto);
     sendmailOwner(req.body.firstName, email, newUser._id);
     return res.status(201).json(newUser);
   } catch (error) {
