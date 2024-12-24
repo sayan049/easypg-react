@@ -51,7 +51,7 @@ function MapDirection({ coordinates }) {
     const markerStyle = new Style({
       image: new Icon({
         anchor: [0.5, 1],
-        src: 'https://openlayers.org/en/latest/examples/data/icon.png',
+        src: 'assets/placeholder.png',
       }),
     });
 
