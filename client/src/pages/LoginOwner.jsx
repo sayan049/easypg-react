@@ -18,6 +18,10 @@ function LoginOwner() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const location = useLocation();
   const [message, setMessage] = useState("");
+  const [isChecked, setIsChecked] = useState(false);
+  const [isFormFilled, setIsFormFilled] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Disable button after first click
   useEffect(() => {
     // Check if the message should be displayed based on localStorage
     const storedMessage = localStorage.getItem("loginMessageOwner");
@@ -35,9 +39,11 @@ function LoginOwner() {
   }, [location.state?.message]);
 
   const navigate = useNavigate();
-  const togglePassword = () => {
+
+  const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
+
   const loginHandlerOwner = async (event) => {
     event.preventDefault();
     console.log("clicked");
@@ -46,6 +52,8 @@ function LoginOwner() {
       password: password,
     };
     try {
+      setIsSubmitting(true); // Disable button during submission
+      setIsButtonDisabled(true); // Disable button immediately
       const response = await axios.post(loginOwnerUrl, jsonData, {
         withCredentials: true,
         headers: { "Content-Type": "application/json" },
@@ -64,166 +72,196 @@ function LoginOwner() {
       }
     } catch (error) {
       console.log("Error sending JSON data:", error);
+    } finally {
+      // Re-enable the button after 5 seconds
+      setTimeout(() => {
+        setIsButtonDisabled(false); // Re-enable the button
+        setIsSubmitting(false); // Set submitting to false after 5 seconds
+      }, 5000);
     }
   };
 
   const loginwithgoogleOwner = () => {
-    window.location.href = `${baseurl}/auth/google-owner?state=` + encodeURIComponent(JSON.stringify({ type: 'owner' }));
+    window.location.href =
+      `${baseurl}/auth/google-owner?state=` +
+      encodeURIComponent(JSON.stringify({ type: "owner" }));
   };
+  useEffect(() => {
+    setIsFormFilled(email && password);
+  }, [email, password]);
+  const isFormValid = isFormFilled && isChecked;
 
   return (
-    <body>
-      <div className="parent-to-all">
-        <div className="col0O"></div>
-        <div className="col1O">
-          <div className="parentleft">
-            <div className="title">Log in</div>
-            <div className="business">
-              <span className="business-text">Grow your Business</span>
-              <span className="parent-svg">
-                <svg
-                  className="big"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="36"
-                  height="51"
-                  viewBox="0 0 36 51"
-                  fill="none"
-                >
-                  <path
-                    d="M35.6606 0.254675L15.2146 50.8656L0.213996 41.7642L35.6606 0.254675Z"
-                    fill="#2CA4B5"
-                  />
-                </svg>
-                <svg
-                  className="small"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="31"
-                  height="38"
-                  viewBox="0 0 31 38"
-                  fill="none"
-                >
-                  <path
-                    d="M0.388577 37.121L14.2029 0.232107L30.8504 12.1469L0.388577 37.121Z"
-                    fill="#2CA4B5"
-                  />
-                </svg>
-              </span>
-            </div>
+    <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
+      {/* Left Section */}
+      <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6 flex-col">
+        <div className="w-full max-w-lg p-8">
+          {/* Header Section */}
+          <div className="lg:absolute lg:top-6 lg:left-6 flex flex-col lg:flex-row items-center mb-2rem lg:items-start justify-center lg:space-x-2 space-y-2 lg:space-y-0 lg:items-center">
+            <h1 className="text-3xl sm:text-4xl font-bold text-[#2ca4b5] mobile-login-title">
+              Log in
+            </h1>
+            <h2 className="text-sm sm:text-lg font-normal text-center lg:text-left">
+              Owner
+            </h2>
           </div>
-        </div>
-        <div className="parent-col2">
-          <div style={{ position: "absolute", top: "9em", width: "32%" }}>
-            {message && (
-              <p style={{ textAlign: "center", color: "red" }}>{message}</p>
-            )}
-          </div>
-          <div className="col2O">
-            <form className="loginOwnerform" onSubmit={loginHandlerOwner}>
-              <input
-                type="text"
-                name="email"
-                id="e"
-                className="pad e-text"
-                placeholder="Email"
-                autocomplete="off"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <div className="password-connnn">
+
+          {/* Create Account Text */}
+          <h1 className="text-center text-lg font-semibold text-gray-700 mb-4 mt-12 lg:mt-0">
+            Grow your Business
+          </h1>
+
+          <form
+            className="space-y-4"
+            autoComplete="off"
+            onSubmit={loginHandlerOwner}
+          >
+            {/* Hidden field trick to disable autofill */}
+            <input
+              type="text"
+              name="hidden"
+              style={{ display: "none" }}
+              autoComplete="off"
+            />
+
+            <input
+              type="email"
+              name="email"
+              placeholder="example@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+              autoComplete="off"
+            />
+
+            <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
+              <div className="relative flex-1">
                 <input
                   type={isPasswordVisible ? "text" : "password"}
-                  id="pass"
                   name="password"
-                  className="p-text"
                   placeholder="Password"
-                  autocomplete="off"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+                  autoComplete="new-password"
                 />
-                <img
-                  id="eynnn"
-                  src={
-                    isPasswordVisible
-                      ? "../assets/openEye.png"
-                      : "../assets/closeEye.png"
-                  }
-                  alt={
-                    isPasswordVisible
-                      ? "../assets/openEye.png"
-                      : "../assets/closeEye.png"
-                  }
-                  onClick={togglePassword}
-                  style={{ cursor: "pointer" }}
-                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"
+                >
+                  {isPasswordVisible ? "🙈" : "👁️"}
+                </button>
               </div>
+            </div>
+            <div className="flex items-center justify-between mt-4">
+              {/* Remember Me Checkbox */}
+              <label className="flex items-center space-x-2">
+                <input type="checkbox" className="h-4 w-4  border-gray-300 " />
+                <span className="text-sm lg:text-sm text-gray-600 whitespace-nowrap">
+                  Remember me
+                </span>
+              </label>
 
-              <div className="parent-mid">
-                <div className="parent-check">
-                  <input
-                    type="checkbox"
-                    className="checkcheck"
-                    name="check"
-                    id="c"
-                  />
-                  <label for="c" className="chk"></label>
-                  <span>Remember Me</span>{" "}
-                </div>
-                <div className="forgot">Forget Password?</div>
-              </div>
-              <button className="pad log-text" type="submit">
-                Log in
-              </button>
-              <div className="Parent-not">
-                <span>Don't have any EasyPg account? </span>
-                <a className="under" href="signupMessOwner">
-                  <Link style={{ textDecoration: "none" }} to="/signupOwner">
-                    Sign Up
-                  </Link>
-                </a>
-              </div>
-              <div className="parent-google" onClick={loginwithgoogleOwner}>
-                <img src="../assets/google.png" alt="" />
-                <div className="logGoogle-text">Log in with Google</div>
-              </div>
-            </form>
-          </div>
-          <div className="parent-copy">
-            <div className="parent-com">
-              <span className="copyright">
-                {" "}
-                copyright 2024 - All Right Reserved by{" "}
-              </span>{" "}
-              <span className="company"> Easypg.pv.ltd</span>
+              {/* Forgot Password Link */}
+              <a
+                href="/forgot-password"
+                className="text-sm lg:text-sm text-[#2ca4b5] hover:underline whitespace-nowrap"
+              >
+                Forgot Password?
+              </a>
             </div>
-          </div>
-        </div>
-        <div className="col3O">
-          <div className="logo-title">
-            <div className="parent-name-business">
-              <div className="name">
-                <span className="font one">Easy</span>
-                <span className="font two">Pg</span>
-              </div>
-              <div className="font col3-business">Business</div>
+
+            {/* Terms and Conditions Checkbox */}
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="terms"
+                checked={isChecked}
+                onChange={() => setIsChecked(!isChecked)}
+                className="h-4 w-4 border-gray-300 rounded"
+                disabled={!isFormFilled} // Disable checkbox until the form is filled
+              />
+              <label htmlFor="terms" className="text-sm text-gray-600">
+                I accept the Terms and Conditions
+              </label>
             </div>
-          </div>
-          <div className="parent-lower">
-            <div className="grow-with-us-margin"></div>
-            <div className="grow-business-parent">
-              <div className="size ">Grow</div>
-              <div className="size ">Your</div>
-              <div className="size ">Business</div>
-              <div className="size ">With Us</div>
+
+            {/* Create Account Button */}
+            <button
+              type="submit"
+              disabled={!isFormValid || isButtonDisabled || isSubmitting}
+              className={`w-full py-2 rounded-full font-semibold transition tracking-wide ${
+                isFormValid && !isSubmitting
+                  ? "bg-[#2ca4b5] text-white hover:bg-[#238b96]"
+                  : "bg-gray-300 text-gray-600 cursor-not-allowed"
+              }`}
+            >
+              {isSubmitting ? "Logging in..." : "Log in"}
+            </button>
+            <div className="flex items-center justify-center text-gray-600 font-bold">
+              Or
             </div>
-            <div className="parent-col-3">
-              <div className="lower-col1 height-col"></div>
-              <div className="lower-col2 height-col"></div>
-              <div className="lower-col3 height-col"></div>
-            </div>
-          </div>
+            {/* google button */}
+            <button
+              type="button"
+              onClick={loginwithgoogleOwner}
+              className="w-full  flex items-center justify-center  py-2 rounded-full hover:bg-[#0511121a] bg-[#116e7b1a]"
+            >
+              <img
+                src="../assets/googleicon.png"
+                alt="Google"
+                className="w-6 h-6 mr-2 text-gray-600"
+              />
+              <p> Log in with Google</p>
+            </button>
+            <p className="text-center text-sm text-gray-600 mt-4">
+              Don't have an account?{" "}
+              <Link
+                to="/signupOwner"
+                className="text-[#2ca4b5] hover:underline"
+              >
+                Sign up
+              </Link>
+            </p>
+          </form>
         </div>
       </div>
-    </body>
+
+      {/* Right Section */}
+      <div className="hidden lg:flex lg:w-4/12 flex-col justify-center items-center bg-login-owner text-white p-12 relative overflow-hidden">
+        {/* Mess Mate Text */}
+        <h1 className="text-xl font-bold absolute top-6 right-6">
+          Mess <span className="">Mate</span>
+        </h1>
+        <h1 className="text-[13px] text-black  absolute top-11 right-[4.6rem]">
+          Business
+        </h1>
+
+        {/* Find Your Nearest Mess Text with Gradient */}
+        <div
+          className="mt-2 text-5xl font-extrabold text-left flex flex-col mb-80 mr-16"
+          style={{
+            WebkitTextFillColor: "#0000",
+            background:
+              "linear-gradient(121deg, #2ca4b5 2.49%, #006d7b 59.71%)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+          }}
+        >
+          <p>Grow Your</p>
+          <p>Business</p>
+          <p>With US</p>
+        </div>
+       
+  <div className="h-[20rem] w-[3.5rem] bg-column-owner absolute transform rotate-[150deg] rounded-full top-[34rem] right-[0rem]"></div>
+
+
+
+        <div  className="h-[23rem] w-[3.5rem] bg-column-owner absolute transform rotate-[150deg] rounded-full top-[22.5rem] right-[2rem]"></div>
+        <div  className="h-[25.5rem] w-[3.5rem] bg-column-owner absolute transform rotate-[150deg] rounded-full top-[18rem] right-[0rem]"></div>
+      </div>
+    </div>
   );
 }
 

@@ -145,9 +145,26 @@ function LoginUser() {
                   onClick={togglePasswordVisibility}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"
                 >
-                  {isPasswordVisible ? "👁️" : "🙈"}
+                  {isPasswordVisible ? "🙈" : "👁️"}
                 </button>
               </div>
+            </div>
+            <div className="flex items-center justify-between mt-4">
+              {/* Remember Me Checkbox */}
+              <label className="flex items-center space-x-2">
+                <input type="checkbox" className="h-4 w-4  border-gray-600 " />
+                <span className="text-sm lg:text-sm text-gray-600 whitespace-nowrap">
+                  Remember me
+                </span>
+              </label>
+
+              {/* Forgot Password Link */}
+              <a
+                href="/forgot-password"
+                className="text-sm lg:text-sm text-[#2ca4b5] hover:underline whitespace-nowrap"
+              >
+                Forgot Password?
+              </a>
             </div>
 
             {/* Terms and Conditions Checkbox */}
@@ -197,7 +214,7 @@ function LoginUser() {
 
           <p className="text-center text-sm text-gray-600 mt-4">
             Don't have an account?{" "}
-            <Link to="/signupforUser" className="text-blue-500 hover:underline">
+            <Link to="/signupforUser" className="text-[#2ca4b5] hover:underline">
               Sign up
             </Link>
           </p>
@@ -233,6 +250,7 @@ function LoginUser() {
           <p>Nearest</p>
           <p>Mess</p>
         </div>
+      
       </div>
     </div>
   );
