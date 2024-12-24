@@ -31,24 +31,24 @@ function SignupOwner() {
     document.title = "Sign up for owner";
   }, []);
 
-  const mapMake = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setLocation(`${latitude}, ${longitude}`);
-        },
-        (error) => {
-          console.error('Error fetching location:', error);
-          setLocation(''); // Optionally set a default or error message
-        }
-      );
-    } else {
-      alert("Geolocation is not supported by this browser.");
-      setLocation(''); // Set default if geolocation is not supported
-    }
-  };
-  
+const mapMake = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setLocation(`${latitude}, ${longitude}`);
+      },
+      (error) => {
+        console.error('Error fetching location:', error);
+        setLocation(''); // Optionally set a default or error message
+      }
+    );
+  } else {
+    alert("Geolocation is not supported by this browser.");
+    setLocation(''); // Set default if geolocation is not supported
+  }
+};
+
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -173,6 +173,7 @@ function SignupOwner() {
   };
 
   const isFormComplete = () => {
+    console.log(formData); // Log the form data to check if all fields are filled
     return (
       formData.mobileNo &&
       formData.address &&
@@ -185,10 +186,10 @@ function SignupOwner() {
       formData.aboutMess &&
       formData.profilePhoto &&
       formData.messPhoto.length > 0 &&
-      formData.location // Ensure location is filled
+      formData.location
     );
   };
-  
+console.log(isFormComplete());  
   
   return (
     <div className="relative bg-custom-gradient">
