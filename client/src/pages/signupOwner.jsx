@@ -397,7 +397,7 @@ console.log(isFormComplete());
       <div className="mb-4 flex items-center">
         <input
           type="text"
-          value={location}
+          value={formData.location}
           onChange={(e) => setLocation(e.target.value)}
           className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
           placeholder="Location (Latitude, Longitude)"
