@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation,useEffect } from "react-router-dom";
 import MapDirection from "../components/mapDirection";
 import Footer from "../components/footer"
 
@@ -16,6 +16,10 @@ const ViewDetails = () => {
 
   const coordinates = { lat, lng };
   console.log("Coordinates:", coordinates, "Owner Location:", owner?.location);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
 
   return (
     <>
@@ -31,7 +35,7 @@ const ViewDetails = () => {
               key={index}
               src={element}
               alt={`Room ${index + 1}`}
-              className="w-full h-64 object-cover rounded-lg shadow-md"
+              className="w-full h-64 object-cover shadow-md"
             />
           ))}
         </div>
