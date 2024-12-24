@@ -33,14 +33,22 @@ function SignupOwner() {
 
   const mapMake = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        const { latitude, longitude } = position.coords;
-        setLocation(`${latitude}, ${longitude}`);
-      });
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLocation(`${latitude}, ${longitude}`);
+        },
+        (error) => {
+          console.error('Error fetching location:', error);
+          setLocation(''); // Optionally set a default or error message
+        }
+      );
     } else {
       alert("Geolocation is not supported by this browser.");
+      setLocation(''); // Set default if geolocation is not supported
     }
   };
+  
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -172,13 +180,15 @@ function SignupOwner() {
       formData.firstName &&
       formData.lastName &&
       formData.pincode &&
-      formData.facility.length > 0 && // Ensure at least one facility is selected
+      formData.facility.length > 0 &&
       formData.messName &&
       formData.aboutMess &&
       formData.profilePhoto &&
-      formData.messPhoto.length > 0
+      formData.messPhoto.length > 0 &&
+      formData.location // Ensure location is filled
     );
   };
+  
   
   return (
     <div className="relative bg-custom-gradient">
