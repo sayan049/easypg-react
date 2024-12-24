@@ -217,7 +217,7 @@ function MapDirection({ coordinates }) {
     const destination = [coordinates.lng, coordinates.lat];
 
     // Fetch route from OpenRouteService API
-    const apiKey = 'YOUR_OPENROUTESERVICE_API_KEY';
+    const apiKey = '5b3ce3597851110001cf62483ec4421b358c42e18305abb679cb5689';
     const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${userLocation[0]},${userLocation[1]}&end=${destination[0]},${destination[1]}`;
     const response = await fetch(url);
     const data = await response.json();
