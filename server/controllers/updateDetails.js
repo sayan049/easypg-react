@@ -2,6 +2,7 @@ const cloudinary = require('../cloudinary/cloudinaryConfig');
 const User = require("../modules/user");
 const PgOwner = require("../modules/pgProvider");
 const dotenv = require('dotenv');
+
 dotenv.config();
 
 exports.updateDetails = async (req, res) => {
@@ -49,21 +50,21 @@ exports.updateDetails = async (req, res) => {
             if (profilePhoto && profilePhoto[0]) {
                 const result = await cloudinary.uploader.upload(profilePhoto[0].path);
                 updatedUser.profilePhoto = result.secure_url; // Save Cloudinary URL
-               console.log(result);
+              // console.log(result);
             }
-            console.log(updatedUser.profilePhoto);
+           // console.log(updatedUser.profilePhoto);
             // Upload mess photos to Cloudinary
             if (messPhoto && messPhoto.length > 0) {
                 const messPhotoUrls = [];
                 for (const photo of messPhoto) {
                     const result = await cloudinary.uploader.upload(photo.path);
                     messPhotoUrls.push(result.secure_url); // Save Cloudinary URLs
-                    console.log(result);
+                    //console.log(result);
                 }
                 updatedUser.messPhoto = messPhotoUrls;
                 
             }
-            console.log(updatedUser.messPhoto);
+           // console.log(updatedUser.messPhoto);
         } else {
             return res.status(400).json({ error: "Invalid user type" });
         }
