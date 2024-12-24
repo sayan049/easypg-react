@@ -18,8 +18,9 @@ const ViewDetails = () => {
   console.log("Coordinates:", coordinates, "Owner Location:", owner?.location);
 
   return (
-    <div className="max-w-5xl mx-auto bg-white shadow-md rounded-lg overflow-hidden my-8">
-      <div className="relative h-64 overflow-hidden rounded-lg shadow-lg mb-6">
+    <>
+
+<div className="relative h-64 overflow-hidden rounded-lg shadow-lg mb-6">
         <div className="h-full overflow-x-scroll flex space-x-2 p-2">
           {Array.isArray(owner?.messPhoto) && owner.messPhoto.map((element, index) => (
             <img
@@ -34,6 +35,9 @@ const ViewDetails = () => {
           View all photos
         </button>
       </div>
+
+    <div className="max-w-5xl mx-auto bg-white shadow-md rounded-lg overflow-hidden my-8">
+      
 
       {/* Content Section */}
       <div className="p-6">
@@ -158,6 +162,7 @@ const ViewDetails = () => {
       <Footer/>
 
     </div>
+    </>
   );
 };
 
