@@ -331,7 +331,7 @@ console.log(isFormComplete());
                 onClick={toggleEye}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-lg"
               >
-                {isPasswordVisible ? "👁️" : "🙈"}
+                {isPasswordVisible ? "🙈" : "👁️"}
               </span>
             </div>
             <div className="mb-4 w-full">
