@@ -202,7 +202,7 @@ function SignupOwner() {
 console.log(isFormComplete());  
   
   return (
-    <div className="relative bg-custom-gradient">
+    <div className="relative md:bg-custom-gradient bg-mobile-owner" >
     {/* Header text */}
     <div
   className="flex flex-col items-center w-full text-center  pt-8
