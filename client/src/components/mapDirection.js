@@ -11,6 +11,7 @@ import OSM from 'ol/source/OSM';
 import VectorSource from 'ol/source/Vector';
 import Icon from 'ol/style/Icon';
 import Style from 'ol/style/Style';
+import Stroke from 'ol/style/Stroke';
 
 function MapDirection({ coordinates }) {
   const [map, setMap] = useState(null);
@@ -74,11 +75,12 @@ function MapDirection({ coordinates }) {
       });
 
       const routeStyle = new Style({
-        stroke: new ol.style.Stroke({
+        stroke: new Stroke({
           color: '#ff0000',
           width: 2,
         }),
       });
+      
       routeFeature.setStyle(routeStyle);
 
       vectorLayer.getSource().clear(); // Clear previous layers
