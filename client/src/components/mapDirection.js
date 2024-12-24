@@ -96,7 +96,7 @@ function MapDirection({ coordinates }) {
 
       const routeStyle = new Style({
         stroke: new Stroke({
-          color: '#ff0000',
+          color: '#397be6',
           width: 3,
         }),
       });
