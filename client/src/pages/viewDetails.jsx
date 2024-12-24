@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import MapDirection from "../components/mapDirection";
+import Footer from "../components/footer"
 
 const ViewDetails = () => {
   const location = useLocation();
@@ -15,17 +16,26 @@ const ViewDetails = () => {
 
   const coordinates = { lat, lng };
   console.log("Coordinates:", coordinates, "Owner Location:", owner?.location);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
 
   return (
-    <div className="max-w-5xl mx-auto bg-white shadow-md rounded-lg overflow-hidden my-8">
-      <div className="relative h-64 overflow-hidden rounded-lg shadow-lg mb-6">
-        <div className="h-full overflow-x-scroll flex space-x-2 p-2">
+    <>
+
+    <div className="flex">
+      <h1 className="m-2">EasyPg</h1>
+    </div>
+
+    <div className="relative h-64  shadow-lg mb-6">
+        <div className="h-full overflow-x-scroll flex space-x-2 overflow-y-hidden">
           {Array.isArray(owner?.messPhoto) && owner.messPhoto.map((element, index) => (
             <img
               key={index}
               src={element}
               alt={`Room ${index + 1}`}
-              className="w-full h-64 object-cover rounded-lg shadow-md"
+              className="w-full h-64 object-cover shadow-md"
             />
           ))}
         </div>
@@ -33,6 +43,8 @@ const ViewDetails = () => {
           View all photos
         </button>
       </div>
+    <div className="max-w-[80rem] mx-auto bg-white shadow-md rounded-lg overflow-hidden my-8">
+      
 
       {/* Content Section */}
       <div className="p-6">
@@ -135,7 +147,7 @@ const ViewDetails = () => {
       </div>
 
       {/* Footer Section */}
-      <footer className="bg-gray-800 text-white text-sm p-6">
+      {/* <footer className="bg-gray-800 text-white text-sm p-6">
         <div className="flex flex-wrap justify-between">
           <div>
             <h3 className="font-semibold">Easy Pg</h3>
@@ -153,8 +165,11 @@ const ViewDetails = () => {
             </ul>
           </div>
         </div>
-      </footer>
+      </footer> */}
+      <Footer/>
+
     </div>
+    </>
   );
 };
 

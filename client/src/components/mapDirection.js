@@ -121,7 +121,7 @@ function MapDirection({ coordinates }) {
         image: new Icon({
           anchor: [0.5, 1],
           src: 'assets/location.png',  // Set the icon for the user
-          scale: 0.05,  // Adjust the scale if needed
+          scale: 0.06,  // Adjust the scale if needed
         }),
       });
 
