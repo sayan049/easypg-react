@@ -39,7 +39,7 @@ const ViewDetails = () => {
           View all photos
         </button>
       </div>
-    <div className="max-w-5xl mx-auto bg-white shadow-md rounded-lg overflow-hidden my-8">
+    <div className="max-w-[70rem] mx-auto bg-white shadow-md rounded-lg overflow-hidden my-8">
       
 
       {/* Content Section */}
