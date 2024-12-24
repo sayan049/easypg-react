@@ -1,6 +1,8 @@
+import React, { useEffect, useState } from 'react';
 import { Map, View } from 'ol';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
+import LineString from 'ol/geom/LineString';
 import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
 import 'ol/ol.css';
@@ -9,222 +11,150 @@ import OSM from 'ol/source/OSM';
 import VectorSource from 'ol/source/Vector';
 import Icon from 'ol/style/Icon';
 import Style from 'ol/style/Style';
-import React, { useEffect } from 'react';
+import Stroke from 'ol/style/Stroke';
 
-function MapDirection({ isChecked, coordinates }) {
-  const mapContainerStyle = {
-    // height: '84vh',
-    // width: '35vw',
-    // display: isChecked ? 'block' : 'none',
-  };
+function MapDirection({ coordinates }) {
+  const [map, setMap] = useState(null);
+  const [vectorLayer, setVectorLayer] = useState(null);
 
   useEffect(() => {
-    if (!coordinates || !coordinates.lat || !coordinates.lng) return;
+    if (!coordinates || !coordinates.lat || !coordinates.lng) {
+      console.error("No coordinates provided");
+      return;
+    }
 
-    // Ensure coordinates are numbers
-    const { lat, lng } = coordinates;
-    const centerCoordinates = fromLonLat([lng, lat]);
-    console.log("fuck"+coordinates+" "+lng+" "+lat+" "+centerCoordinates);
-    // Create a marker feature
-    const marker = new Feature({
-      geometry: new Point(centerCoordinates),
-    });
+    const centerCoordinates = fromLonLat([coordinates.lng, coordinates.lat]);
 
-    // Style for the marker
-    const markerStyle = new Style({
-      image: new Icon({
-        anchor: [0.5, 1],
-        src: 'https://openlayers.org/en/latest/examples/data/icon.png', // Replace with your custom icon if needed
-      }),
-    });
-    marker.setStyle(markerStyle);
-
-    // Vector layer for the marker
-    const vectorLayer = new VectorLayer({
-      source: new VectorSource({
-        features: [marker],
-      }),
-    });
-
-    // Initialize map
-    const map = new Map({
+    const mapInstance = new Map({
       target: 'map',
-      layers: [
-        new TileLayer({ source: new OSM() }),
-        vectorLayer, // Add the marker layer
-      ],
+      layers: [new TileLayer({ source: new OSM() })],
       view: new View({
         center: centerCoordinates,
         zoom: 15,
       }),
     });
 
-    // Cleanup function to destroy the map when the component unmounts
-    return () => {
-      map.setTarget(null); // This will destroy the map
-    };
-  }, [coordinates]); // Re-run effect when coordinates change
+    const vectorLayerInstance = new VectorLayer({
+      source: new VectorSource(),
+    });
 
-  return <>
-           <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-300 m-2.5 ">
-            Click Me
-           </button>
-          <div id="map"  className="h-64 flex items-center justify-center" ></div>;
-         </> 
+    mapInstance.addLayer(vectorLayerInstance);
+    setMap(mapInstance);
+    setVectorLayer(vectorLayerInstance);
+
+    // Add initial marker for the backend-provided coordinates
+    const marker = new Feature({
+      geometry: new Point(centerCoordinates),
+    });
+
+    const coordinatesMarkerStyle = new Style({
+      image: new Icon({
+        anchor: [0.5, 1],
+        src: 'assets/placeholder.png',  // Set the icon for coordinates (destination)
+        scale: 0.06,  // Adjust the scale if needed
+      }),
+    });
+
+    marker.setStyle(coordinatesMarkerStyle);
+    vectorLayerInstance.getSource().addFeature(marker);
+
+    return () => {
+      mapInstance.setTarget(null);
+    };
+  }, [coordinates]);
+
+  const handleGetDirections = async () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser.');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const userLocation = [position.coords.longitude, position.coords.latitude];
+      const destination = [coordinates.lng, coordinates.lat];
+
+      // Fetch route from OpenRouteService API
+      const apiKey = '5b3ce3597851110001cf62483ec4421b358c42e18305abb679cb5689';
+      const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${userLocation[0]},${userLocation[1]}&end=${destination[0]},${destination[1]}`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (!data || !data.features || !data.features.length) {
+        alert('No route found!');
+        return;
+      }
+
+      const routeCoordinates = data.features[0].geometry.coordinates.map((coord) =>
+        fromLonLat(coord)
+      );
+
+      const routeFeature = new Feature({
+        geometry: new LineString(routeCoordinates),
+      });
+
+      const routeStyle = new Style({
+        stroke: new Stroke({
+          color: '#397be6',
+          width: 3,
+        }),
+      });
+
+      routeFeature.setStyle(routeStyle);
+
+      // Clear previous features and add new ones
+      vectorLayer.getSource().clear();
+
+      // Add the route to the map
+      vectorLayer.getSource().addFeature(routeFeature);
+
+      // Add markers for start and end points
+      const userMarker = new Feature({
+        geometry: new Point(fromLonLat(userLocation)),
+      });
+
+      const destinationMarker = new Feature({
+        geometry: new Point(fromLonLat(destination)),
+      });
+
+      // User marker with location.png
+      const userMarkerStyle = new Style({
+        image: new Icon({
+          anchor: [0.5, 1],
+          src: 'assets/location.png',  // Set the icon for the user
+          scale: 0.05,  // Adjust the scale if needed
+        }),
+      });
+
+      // Destination marker with placeholder.png
+      const destinationMarkerStyle = new Style({
+        image: new Icon({
+          anchor: [0.5, 1],
+          src: 'assets/placeholder.png',  // Set the icon for destination (coordinates)
+          scale: 0.06,  // Adjust the scale if needed
+        }),
+      });
+
+      userMarker.setStyle(userMarkerStyle);
+      destinationMarker.setStyle(destinationMarkerStyle);
+
+      vectorLayer.getSource().addFeatures([userMarker, destinationMarker]);
+
+      // Center the map to fit the route
+      map.getView().fit(routeFeature.getGeometry().getExtent(), { padding: [50, 50, 50, 50] });
+    });
+  };
+
+  return (
+    <>
+      <button
+        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-300 m-2.5"
+        onClick={handleGetDirections}
+      >
+        Get Directions
+      </button>
+      <div id="map" className="h-64 flex items-center justify-center"></div>
+    </>
+  );
 }
 
 export default MapDirection;
-// import { Map, View } from 'ol';
-// import Feature from 'ol/Feature';
-// import Point from 'ol/geom/Point';
-// import LineString from 'ol/geom/LineString';
-// import TileLayer from 'ol/layer/Tile';
-// import VectorLayer from 'ol/layer/Vector';
-// import 'ol/ol.css';
-// import { fromLonLat } from 'ol/proj';
-// import OSM from 'ol/source/OSM';
-// import VectorSource from 'ol/source/Vector';
-// import Icon from 'ol/style/Icon';
-// import Style from 'ol/style/Style';
-// import Stroke from 'ol/style/Stroke';
-// import React, { useEffect, useState } from 'react';
-
-// function MapDirection({ coordinates }) {
-//   const [userLocation, setUserLocation] = useState(null);
-//   const [map, setMap] = useState(null);
-
-//   useEffect(() => {
-//     if (!coordinates || !coordinates.lat || !coordinates.lng) return;
-
-//     // Convert coordinates to OpenLayers projection
-//     const centerCoordinates = fromLonLat([coordinates.lng, coordinates.lat]);
-
-//     // Create marker for the provided coordinates
-//     const marker = new Feature({
-//       geometry: new Point(centerCoordinates),
-//     });
-
-//     const markerStyle = new Style({
-//       image: new Icon({
-//         anchor: [0.5, 1],
-//         src: 'https://openlayers.org/en/latest/examples/data/icon.png',
-//       }),
-//     });
-//     marker.setStyle(markerStyle);
-
-//     const vectorSource = new VectorSource({
-//       features: [marker],
-//     });
-
-//     const vectorLayer = new VectorLayer({
-//       source: vectorSource,
-//     });
-
-//     const initialMap = new Map({
-//       target: 'map',
-//       layers: [
-//         new TileLayer({ source: new OSM() }),
-//         vectorLayer,
-//       ],
-//       view: new View({
-//         center: centerCoordinates,
-//         zoom: 15,
-//       }),
-//     });
-
-//     setMap(initialMap);
-
-//     return () => {
-//       initialMap.setTarget(null); // Cleanup map
-//     };
-//   }, [coordinates]);
-
-//   const handleFetchLocation = () => {
-//     if (!navigator.geolocation) {
-//       alert('Geolocation is not supported by your browser.');
-//       return;
-//     }
-
-//     navigator.geolocation.getCurrentPosition(
-//       (position) => {
-//         const { latitude, longitude } = position.coords;
-//         const userCoordinates = fromLonLat([longitude, latitude]);
-//         setUserLocation({ lat: latitude, lng: longitude });
-
-//         // Add user marker to the map
-//         const userMarker = new Feature({
-//           geometry: new Point(userCoordinates),
-//         });
-
-//         const userMarkerStyle = new Style({
-//           image: new Icon({
-//             anchor: [0.5, 1],
-//             src: 'https://openlayers.org/en/latest/examples/data/icon.png',
-//           }),
-//         });
-//         userMarker.setStyle(userMarkerStyle);
-
-//         const userVectorSource = new VectorSource({
-//           features: [userMarker],
-//         });
-
-//         const userVectorLayer = new VectorLayer({
-//           source: userVectorSource,
-//         });
-
-//         map.addLayer(userVectorLayer);
-
-//         // Draw a line between the provided coordinates and the user's location
-//         const line = new Feature({
-//           geometry: new LineString([userCoordinates, fromLonLat([coordinates.lng, coordinates.lat])]),
-//         });
-
-//         const lineStyle = new Style({
-//           stroke: new Stroke({
-//             color: '#ffcc33',
-//             width: 2,
-//           }),
-//         });
-//         line.setStyle(lineStyle);
-
-//         const lineVectorSource = new VectorSource({
-//           features: [line],
-//         });
-
-//         const lineVectorLayer = new VectorLayer({
-//           source: lineVectorSource,
-//         });
-
-//         map.addLayer(lineVectorLayer);
-//       },
-//       (error) => {
-//         alert(`Error fetching location: ${error.message}`);
-//       }
-//     );
-//   };
-
-//   return (
-//     <div style={{ position: 'relative' }}>
-//       <div id="map" style={{ height: '400px', width: '100%' }}></div>
-//       <button
-//         onClick={handleFetchLocation}
-//         style={{
-//           position: 'absolute',
-//           top: '10px',
-//           left: '10px',
-//           padding: '10px 20px',
-//           backgroundColor: '#007BFF',
-//           color: '#fff',
-//           border: 'none',
-//           borderRadius: '5px',
-//           cursor: 'pointer',
-//         }}
-//       >
-//         Click Me
-//       </button>
-//     </div>
-//   );
-// }
-
-// export default MapDirection;
-
