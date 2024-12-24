@@ -11,7 +11,6 @@ import LoginUser from "./pages/loginUser";
 import LandingPage from "./pages/landingPage";
 import LoginOwner from "./pages/LoginOwner";
 import SignupOwner from "./pages/signupOwner";
-import MessFind from "./pages/messFind";
 import NewMessFind from "./pages/newMessFind";
 import MailVerify from "./pages/mailVerify";
 import ProtectedRoute from "./pages/protectedRoute";
