@@ -86,11 +86,11 @@ const amenities = [
         {/* Facility Filters */}
 <div className="mt-6">
   <h3 className="font-medium">Select Your Need</h3>
-  <div className="grid grid-cols-2 gap-4 mt-4">
+  <div className="flex flex-col gap-4 mt-4">
     {amenities.map((facility, index) => (
       <label
         key={facility.id}
-        className="flex items-center text-sm bg-gray-100 p-2 rounded shadow"
+        className="flex items-center text-sm  p-2 rounded "
       >
         <input
           type="checkbox"
