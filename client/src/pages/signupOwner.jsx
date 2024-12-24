@@ -14,7 +14,7 @@ function SignupOwner() {
   const [imgArray, setImgArray] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
-  const [location, setLocation] = useState("");
+  // const [location, setLocation] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
   
   const amenities = [
