@@ -145,10 +145,10 @@ const ViewDetails = () => {
             <h3 className="font-semibold">Quick Links</h3>
             <ul>
               <li>
-                <a href="#" className="hover:underline">Terms</a>
+                <a href="" className="hover:underline">Terms</a>
               </li>
               <li>
-                <a href="#" className="hover:underline">Privacy Policy</a>
+                <a href="" className="hover:underline">Privacy Policy</a>
               </li>
             </ul>
           </div>
