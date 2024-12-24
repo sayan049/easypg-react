@@ -1,57 +1,36 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import '../designs/sign_up_for_owner.css';
-import { signupownerUrl } from '../constant/urls';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { signupownerUrl } from "../constant/urls";
+import { useNavigate } from "react-router-dom";
+import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+
 
 function SignupOwner() {
   const [image, setImage] = useState(null);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const maxLength = 5;
+  const maxLength = 10;
   const [imgArray, setImgArray] = useState([]);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
-  const [location, setLocation] = useState('');
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(null);
-
+  const [location, setLocation] = useState("");
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  
   const amenities = [
-    { id: 'test1', label: 'A/C', imgSrc: './assets/air-conditioner 1.png' },
-    { id: 'test2', label: 'TV', imgSrc: './assets/screen 1.png' },
-    { id: 'test3', label: 'Power Backup', imgSrc: './assets/power 1.png' },
-    { id: 'test4', label: 'WiFi', imgSrc: './assets/wifi (1) 1.png' },
-    { id: 'test5', label: 'Kitchen', imgSrc: './assets/restaurant 1.png' },
-    { id: 'test6', label: 'Tank Water', imgSrc: './assets/tank-water 1.png' },
-    { id: 'test7', label: 'Double Bed', imgSrc: './assets/single-bed (1) 1.png' }
+    { id: "test1", label: "A/C", icon: "💨" },
+    { id: "test2", label: "TV", icon: "📺" },
+    { id: "test3", label: "Power Backup", icon: "🔋" },
+    { id: "test4", label: "WiFi", icon: "📶" },
+    { id: "test5", label: "Kitchen", icon: "🍴" },
+    { id: "test6", label: "Tank Water", icon: "💧" },
+    { id: "test7", label: "Double Bed", icon: "🛏️" },
   ];
 
   useEffect(() => {
     document.title = "Sign up for owner";
-    
   }, []);
 
-  // const mapmake=()=>{
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(
-  //       (position) => {
-  //         const loc = `${position.coords.latitude}, ${position.coords.longitude}`;
-  //        // setLocation(loc);
-  //        setFormData((prevData) => ({
-  //         ...prevData,
-  //         location: loc
-  //       }));
-  //       //  setLoading(false);z
-  //       },
-  //       // (error) => {
-  //       //   setError('Error getting location: ' + error.message);
-  //       // //  setLoading(false);
-  //       // }
-  //     );
-  //   } else {
-  //    // setError('Geolocation is not supported by this browser.');
-  //  //   setLoading(false);
-  //   }
-  // }
   const mapMake = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async (position) => {
@@ -79,23 +58,22 @@ function SignupOwner() {
       alert("Geolocation is not supported by this browser.");
     }
   };
-  
-  
+
 
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    address: '',
-    password: '',
-    pincode: '',
-    mobileNo: '',
-    messName: '',
-    aboutMess: '',
-    location: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    address: "",
+    password: "",
+    pincode: "",
+    mobileNo: "",
+    messName: "",
+    aboutMess: "",
+    location: "",
     profilePhoto: null,
     messPhoto: [],
-    facility: []
+    facility: [],
   });
 
   const handleChange = (e) => {
@@ -126,28 +104,34 @@ function SignupOwner() {
     setImgArray((prevArray) => prevArray.filter((_, i) => i !== index));
     setFormData((prevFormData) => ({
       ...prevFormData,
-      messPhoto: prevFormData.messPhoto.filter((_, i) => i !== index)
+      messPhoto: prevFormData.messPhoto.filter((_, i) => i !== index),
     }));
-    setErrorMessage('');
+    setErrorMessage("");
   };
 
   const imgUpload = (event) => {
     const filesArr = Array.from(event.target.files);
     const newMessPhotos = [];
-
+    if (imgArray.length + filesArr.length > maxLength) {
+      setErrorMessage(`You can only upload up to ${maxLength} images.`);
+      return;
+    }
     filesArr.forEach((file) => {
-      if (!file.type.match('image.*')) {
-        setErrorMessage('Only image files are allowed.');
+      if (!file.type.match("image.*")) {
+        setErrorMessage("Only image files are allowed.");
         return;
       }
       if (imgArray.length >= maxLength) {
-        setErrorMessage('Maximum number of images reached.');
+        setErrorMessage("Maximum number of images reached.");
         return;
       }
 
       const reader = new FileReader();
       reader.onload = () => {
-        setImgArray((prevArray) => [...prevArray, { src: reader.result, name: file.name }]);
+        setImgArray((prevArray) => [
+          ...prevArray,
+          { src: reader.result, name: file.name },
+        ]);
       };
       reader.readAsDataURL(file);
       newMessPhotos.push(file);
@@ -155,7 +139,7 @@ function SignupOwner() {
 
     setFormData((prevFormData) => ({
       ...prevFormData,
-      messPhoto: [...prevFormData.messPhoto, ...newMessPhotos]
+      messPhoto: [...prevFormData.messPhoto, ...newMessPhotos],
     }));
   };
 
@@ -164,30 +148,33 @@ function SignupOwner() {
     try {
       const formDataToSend = new FormData();
       for (const key in formData) {
-        if (key === 'messPhoto') {
-          formData.messPhoto.forEach((file) => formDataToSend.append(key, file));
+        if (key === "messPhoto") {
+          formData.messPhoto.forEach((file) =>
+            formDataToSend.append(key, file)
+          );
         } else {
           formDataToSend.append(key, formData[key]);
         }
       }
 
       const response = await axios.post(signupownerUrl, formDataToSend, {
-        headers: { "Content-Type": 'multipart/form-data' }
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (response.status === 201) {
         console.log("Response:", response.data);
 
-        // Redirect to login page upon successful signup
         const a = "Please verify your email to log in";
-        localStorage.setItem('loginMessageOwner', a);
-        navigate('/LoginOwner', { state: { message: a } });
-
+        localStorage.setItem("loginMessageOwner", a);
+        navigate("/LoginOwner", { state: { message: a } });
       } else {
         console.error("Signup failed:", response.data);
       }
     } catch (error) {
-      console.error("Error creating user:", error.response ? error.response.data : error.message);
+      console.error(
+        "Error creating user:",
+        error.response ? error.response.data : error.message
+      );
     }
   };
 
@@ -196,148 +183,332 @@ function SignupOwner() {
   };
 
   const isFormComplete = () => {
-    return formData.mobileNo && formData.address && formData.email && formData.firstName && formData.lastName && formData.pincode && formData.messName && formData.profilePhoto;
+    console.log(formData); // Log the form data to check if all fields are filled
+    return (
+      formData.mobileNo &&
+      formData.address &&
+      formData.email &&
+      formData.firstName &&
+      formData.lastName &&
+      formData.pincode &&
+      formData.facility.length > 0 &&
+      formData.messName &&
+      formData.aboutMess &&
+      formData.profilePhoto &&
+      formData.messPhoto.length > 0 &&
+      formData.location
+    );
   };
-
-  // const handleLocationChange = (e) => {
-  //   setLocation(e.target.value);
-  // };
-
+console.log(isFormComplete());  
+  
   return (
-    <form className='bodystyle' onSubmit={handleSubmit} method='POST' encType="multipart/form-data">
-      <div className="uppernav">
-        <div className='flex aligncentre wid90'>
-          <div className="signupheader">Sign Up</div>
-          <div className="headertext">House Owner</div>
-        </div>
-        <div className='flex alighncentre'>
-          <div className="logo flex">
-            <div className='blue'>Easy</div>
-            <div className='purple'>Pg</div>
-          </div>
-        </div>
+    <div className="relative bg-custom-gradient">
+    {/* Header text */}
+    <div
+  className="flex flex-col items-center w-full text-center  pt-8
+             md:flex-row md:items-start md:text-left 
+             md:justify-start md:items-center md:px-16"
+>
+  <span className="text-[#2CA4B5]  sm:text-3xl font-bold">Sign Up</span>
+  <span className="text-black lg:block sm:mt-1 mx-1">Owner</span>
+</div>
+    <form
+      className=" px-8 md:px-16 rounded-lg shadow-md pb-8"
+      onSubmit={handleSubmit}
+      method="POST"
+      encType="multipart/form-data"
+    >
+     
+     <div className="sm:mt-2 sm:text-3xl md:mt-16 md:mb-4 text-center md:text-left md:text-4xl md:font-semibold ">
+
+        Create Account
       </div>
 
-      <div className="formbody">
-        <div className="leftform">
-          <div className="formheader">Create an Account</div>
-          <div className="inputboxes grid">
-            <div className="inputbox r1x">
-              <input type="text" placeholder="First Name" name="firstName" value={formData.firstName} onChange={handleChange} />
-            </div>
-            <div className="inputbox r1x">
-              <input type="text" placeholder="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} />
-            </div>
-            <div className="inputbox r2x">
-              <input type="text" placeholder="Email Address" name="email" value={formData.email} onChange={handleChange} />
-            </div>
-            <div className="inputbox r3x">
-              <input type="text" placeholder="Address" name="address" value={formData.address} onChange={handleChange} />
-            </div>
-            <div className="inputbox r4x">
-              <input type={isPasswordVisible ? "text" : "password"} name="password" placeholder="Password" value={formData.password} onChange={handleChange} />
-              <img src={isPasswordVisible ? "./assets/openEye.png" : "./assets/closeEye.png"} alt="eye" id="eyeicon" onClick={toggleEye} />
-            </div>
-            <div className="inputbox r4x">
-              <input type="text" placeholder="Pincode" name="pincode" value={formData.pincode} onChange={handleChange} />
-            </div>
-            <div className="inputbox r5x">
-              <input type="text" placeholder="Mobile No." name="mobileNo" value={formData.mobileNo} onChange={handleChange} />
-            </div>
-          </div>
-        </div>
-
-        <div className="rightform">
-          <div className="Ellipse3">
-            <input type="file" accept="image/*" name="profilePhoto" id="file" onChange={loadfile} className='displaynone' required />
-            <label htmlFor="file"><img src="./assets/upload 2.png" alt="" className='cursorpointer' /></label>
-            {image ? <img id="output" alt='' className="Ellipse3 absolute z-1" src={URL.createObjectURL(image)} /> : <img id="output" alt='' className="Ellipse3 displaynone absolute z-1" />}
-          </div>
-          <div className="uploadtxt">Upload Your Profile Photo</div>
-        </div>
-      </div>
-
-      <div className="downform grid">
-        <div className='flex'>
-          <div className="checkfacilitytxt">Check your Provided Facility</div>
-        </div>
-        <div className="checkboxes grid checkboxgrid">
-          {amenities.map(amenity => (
-            <div key={amenity.id}>
-              <div className="checkboxicon">
-                <img src={amenity.imgSrc} alt={amenity.label} />
+      <div className="flex flex-wrap flex-row-reverse ">
+        {/* Profile Photo Section */}
+        <div className="w-full md:w-1/2 flex flex-col items-center justify-center mt-4 md:mt-0">
+          <div className="mb-4 text-center">
+            <input
+              type="file"
+              accept="image/*"
+              name="profilePhoto"
+              id="file"
+              onChange={loadfile}
+              className="hidden"
+            />
+            {image ? (
+              <img
+                src={URL.createObjectURL(image)}
+                alt="Profile"
+                className="w-48 h-48 rounded-full object-cover mx-auto mt-4 border-4 border-[#2ca4b5]"
+              />
+            ) : (
+              <div className="w-48 h-48 rounded-full bg-[#AAF5FF] mx-auto mt-4 flex items-center justify-center">
+                <img
+                  src="/assets/homeAvatar.png" // Path to your default image
+                  alt="Default"
+                  className="w-20 h-20 object-cover"
+                />
               </div>
-              <input type="checkbox" className="checki" id={amenity.id} onClick={handleFacilityChange} value={amenity.label} />
-              <label htmlFor={amenity.id}></label>
-              <div className="checkboxtxt">{amenity.label}</div>
-            </div>
-          ))}
+            )}
+
+            <label
+              htmlFor="file"
+              className="cursor-pointer text-xl text-blue-600 text-white"
+            >
+              ➕
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              name="profilePhoto"
+              id="file"
+              onChange={loadfile}
+              className="hidden"
+            />
+
+            <div className="mt-2 text-gray-600">Upload Your Profile Photo</div>
+          </div>
         </div>
 
-        <div className="inputbox wid30">
-          <input type="text" placeholder="Mess Name" id="MessName" name="messName" value={formData.messName} onChange={handleChange} />
-        </div>
-        <div className="inputbox h90">
-          <input
-            type="text"
-            placeholder="About Your Mess"
-            name="aboutMess"
-            id="AboutMess"
-            value={formData.aboutMess}
-            onChange={handleChange}
-          />
-        </div>
-        <div className='flex'>
-          <div className="inputbox wid50">
-           
-              <input type="text" placeholder="Location (Latitude, Longitude)" name="location" id="Location" value={formData.location} onChange={handleChange} readOnly required />
-           
+        <div className="w-full md:w-1/2">
+        <div className="flex flex-col md:flex-row gap-0 md:gap-4">
+
+            <div className="mb-4 w-full">
+              <input
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a] "
+                placeholder="First Name"
+              />
+            </div>
+            <div className="mb-4 w-full">
+              <input
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+                placeholder="Last Name"
+              />
+            </div>
           </div>
-          <img
-        src="./assets/map-marker 1.png"
-        alt="Map Marker"
-        style={{ cursor: "pointer" }}
-        className="map-maker"
-        onClick={mapMake}
+
+          <div className="mb-4 w-full">
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+              placeholder="Email"
+            />
+          </div>
+          <div className="mb-4 w-full">
+            <input
+              type="text"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+              placeholder="Address"
+            />
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-0 md:gap-4">
+            <div className="mb-4 w-full relative">
+              <input
+                type={isPasswordVisible ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+                placeholder="Password"
+              />
+              <span
+                onClick={toggleEye}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-lg"
+              >
+                {isPasswordVisible ? "👁️" : "🙈"}
+              </span>
+            </div>
+            <div className="mb-4 w-full">
+              <input
+                type="text"
+                name="pincode"
+                value={formData.pincode}
+                onChange={handleChange}
+                className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+                placeholder="Pincode"
+              />
+            </div>
+          </div>
+
+          <div className="mb-4 w-full">
+            <input
+              type="text"
+              name="mobileNo"
+              value={formData.mobileNo}
+              onChange={handleChange}
+              className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+              placeholder="Mobile No."
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Remaining form fields and facilities section */}
+      <div className="mb-6">
+  <div className="bg-[#116e7b1a] w-full sm:w-[24.5%] flex justify-center items-center rounded-[44px] h-[45px] text-[#2CA4B5]">
+    Check your facilities
+  </div>
+  <div className="grid grid-cols-2 gap-4 p-4">
+  {amenities.map((amenity) => (
+    <div key={amenity.id} className="flex items-center">
+      <input
+        type="checkbox"
+        value={amenity.label} // Value should be the label or ID
+        checked={formData.facility.includes(amenity.label)} // Check if this facility is selected
+        onChange={handleFacilityChange}
+        className="mr-2"
       />
-        </div>
+      <span>
+        {amenity.icon} {amenity.label}
+      </span>
+    </div>
+  ))}
+</div>
 
-        <div className='flex aligncentre wid90vw'>
-          <div className="uploadphoto wid80">
-            <div className="upload__box flex justifycentre flexcolumn">
-              {errorMessage && <p className='errormsg'>{errorMessage}</p>}
-              <div className="upload__btn-box flex justifycentre aligncentre nowrap width100 overflowauto">
-                <div className="upload__img-wrap inlineblock">
-                  {imgArray.map((img, index) => (
-                    <div key={index} className="upload__img-box">
-                      <img src={img.src} alt={img.name} className="img-bg" />
-                      <div className="upload__img-close" onClick={() => removeImage(index)}></div>
-                    </div>
-                  ))}
-                </div>
-                <div className="img-bg1">
-                  <label className="upload__btn" htmlFor="upload__inputfile"><img src="./assets/upload 1.png" alt="" className='cursorpointer' />
-                    <input type="file" multiple name='messPhoto' className="upload__inputfile displaynone" id="upload__inputfile" onChange={imgUpload} /></label>
-                </div>
-              </div>
-              <div className="uploadmesstxt">Upload Your Room Photo</div>
-              <div className="uploadphotowarning">Maximum 1.5 MB Ratio Photo Support</div>
-            </div>
-          </div>
-        </div>
+</div>
 
-        <div className="terms flex justifycentre">
-          <input type="checkbox" className="checki" id="test9" disabled={!isFormComplete()} />
-          <label htmlFor="test9"></label>
-          <div className="termstxt">Check all </div><div className="termstxt blue">Terms & Condition </div><div className="termstxt">and Privacy</div>
-          <div className="termstxt blue">Policy</div>
-        </div>
-
-        <div className="terms flex justifycentre">
-          <button className="creataccountbtn cursorpointer" type="submit" disabled={!isFormComplete()} style={{background: isFormComplete()?  '#2CA4B5' : 'grey'}}   >Create Account</button>
+      {/* Mess Name and About Mess */}
+      <div className="mb-4">
+        <input
+          type="text"
+          name="messName"
+          value={formData.messName}
+          onChange={handleChange}
+          className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+          placeholder="Mess Name"
+        />
+      </div>
+      <div className="mb-4">
+        <textarea
+          name="aboutMess"
+          value={formData.aboutMess}
+          onChange={handleChange}
+          className="w-full rounded-2xl p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+          placeholder="About your Mess"
+          rows="4"
+        ></textarea>
+      </div>
+      <div className="mb-4 flex items-center">
+        <input
+          type="text"
+          value={formData.location}
+          onChange={handleChange}
+          className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+          placeholder="Location (Latitude, Longitude)"
+          readOnly required
+        />
+        <div
+          onClick={mapMake}
+          className="ml-2 cursor-pointer text-2xl text-green-600"
+        >
+           <FontAwesomeIcon icon={faMapMarkerAlt} />
         </div>
       </div>
+
+      {/* Mess Photos Upload */}
+      <div className="mb-4">
+      {errorMessage && <p className="text-red-600 mt-2">{errorMessage}</p>}
+
+      <div className="">
+        {/* Hidden file input */}
+        <input
+          type="file"
+          accept="image/*"
+          name="messPhotos"
+          onChange={imgUpload}
+          multiple
+          className="hidden"
+          id="fileInput"
+        />
+
+        {/* Display an upload icon and text when no image is selected */}
+        {!imgArray.length && (
+          <div
+            className="inset-0 text-center cursor-pointer"
+            onClick={() => document.getElementById('fileInput').click()}
+          >
+            <div className="w-full h-auto p-6 rounded-lg border-2 border-dashed border-black bg-transparent text-transparent flex flex-col justify-center items-center">
+              <img src="/assets/upload 1.png" alt="Upload" className="w-8 h-8" />
+              <p className="text-black text-[25px]">Upload your mess photos</p>
+              <p className="text-sm text-black">Maximum 5MB per photo, supported formats only</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Display selected images */}
+      {imgArray.length > 0 && (
+        <div className="w-full h-auto p-6 rounded-lg border-2 border-dashed border-black bg-transparent">
+          <div className="flex gap-1 flex-wrap">
+            {imgArray.map((img, index) => (
+              <div key={index} className="relative">
+                <img
+                  src={img.src}
+                  alt={img.name}
+                  className="w-24 h-24 object-cover rounded-lg cursor-pointer"
+                  onClick={() => document.getElementById('fileInput').click()} // Trigger file input on image click
+                />
+                <button
+                  type="button"
+                  className="absolute top-0 right-0 text-lg"
+                  onClick={() => removeImage(index)}
+                >
+                  ✖
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+
+
+      {/* Terms and Conditions */}
+      <div className="flex items-center justify-center mb-6">
+        <input
+          type="checkbox"
+          id="terms"
+          checked={termsAccepted}
+          onChange={() => setTermsAccepted(!termsAccepted)}
+          disabled={!isFormComplete() }
+          className="mr-2"
+        />
+        <label htmlFor="terms" className="text-gray-600">
+          I accept the Terms and Conditions
+        </label>
+      </div>
+
+      {/* Submit Button */}
+      <div className="w-full flex justify-center items-center">
+      <button
+        type="submit"
+        className={`w-1/2 p-3 rounded-full text-white ${
+          isFormComplete() && termsAccepted
+            ? "bg-[#2ca4b5]"
+            : "bg-gray-400 cursor-not-allowed"
+        }`}
+        disabled={!isFormComplete() || !termsAccepted}
+      >
+        Create Account
+      </button></div>
     </form>
+    </div>
   );
 }
 
