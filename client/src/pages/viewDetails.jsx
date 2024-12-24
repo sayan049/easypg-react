@@ -21,7 +21,7 @@ const ViewDetails = () => {
     <>
 
 <div className="relative h-64 overflow-hidden rounded-lg shadow-lg mb-6">
-        <div className="h-full overflow-x-scroll flex space-x-2 p-2">
+        <div className="h-full flex space-x-2 p-2">
           {Array.isArray(owner?.messPhoto) && owner.messPhoto.map((element, index) => (
             <img
               key={index}
