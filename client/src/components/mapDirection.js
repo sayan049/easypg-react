@@ -121,7 +121,7 @@ function MapDirection({ coordinates }) {
       const markerStyle = new Style({
         image: new Icon({
           anchor: [0.5, 1],
-          src: 'assets/placeholder.png',
+          src: 'assets/location.png',
           scale: 0.05,  // Adjust this value to scale down the icon (0.1 = 10% of original size)
         }),
       });
