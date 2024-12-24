@@ -486,6 +486,7 @@ console.log(isFormComplete());
           id="terms"
           checked={termsAccepted}
           onChange={() => setTermsAccepted(!termsAccepted)}
+          disabled={!isFormComplete() }
           className="mr-2"
         />
         <label htmlFor="terms" className="text-gray-600">
