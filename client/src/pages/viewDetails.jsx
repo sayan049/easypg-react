@@ -127,7 +127,9 @@ const ViewDetails = () => {
 
         {/* Map Section */}
         <div className="mb-6">
-          <h2 className="text-lg font-semibold mb-4">What's nearby?</h2>
+          <h2 className="text-lg font-semibold mb-4">What's nearby?</h2> 
+          
+
           <MapDirection coordinates={coordinates} />
         </div>
       </div>
