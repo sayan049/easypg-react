@@ -1,6 +1,7 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import MapDirection from "../components/mapDirection";
+import Footer from "../components/footer"
 
 const ViewDetails = () => {
   const location = useLocation();
@@ -135,7 +136,7 @@ const ViewDetails = () => {
       </div>
 
       {/* Footer Section */}
-      <footer className="bg-gray-800 text-white text-sm p-6">
+      {/* <footer className="bg-gray-800 text-white text-sm p-6">
         <div className="flex flex-wrap justify-between">
           <div>
             <h3 className="font-semibold">Easy Pg</h3>
@@ -153,7 +154,9 @@ const ViewDetails = () => {
             </ul>
           </div>
         </div>
-      </footer>
+      </footer> */}
+      <Footer/>
+
     </div>
   );
 };
