@@ -65,9 +65,12 @@ function MapDirection({ isChecked, coordinates }) {
     };
   }, [coordinates]); // Re-run effect when coordinates change
 
-  return <div id="map"  className="h-64 flex items-center justify-center" >
-    
-  </div>;
+  return <>
+           <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-300 m-2.5 ">
+            Click Me
+           </button>
+          <div id="map"  className="h-64 flex items-center justify-center" ></div>;
+         </> 
 }
 
 export default MapDirection;
