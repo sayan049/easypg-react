@@ -31,23 +31,33 @@ function SignupOwner() {
     document.title = "Sign up for owner";
   }, []);
 
-const mapMake = () => {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
+  const mapMake = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
         const { latitude, longitude } = position.coords;
-        setLocation(`${latitude}, ${longitude}`);
-      },
-      (error) => {
-        console.error('Error fetching location:', error);
-        setLocation(''); // Optionally set a default or error message
-      }
-    );
-  } else {
-    alert("Geolocation is not supported by this browser.");
-    setLocation(''); // Set default if geolocation is not supported
-  }
-};
+  
+        try {
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.Google_apiKey}`
+          );
+          const data = await response.json();
+  
+          const address =
+            data.results[0]?.formatted_address ||
+            `${latitude}, ${longitude}`;
+            
+          setFormData((prevData) => ({
+            ...prevData,
+            location: address,
+          }));
+        } catch (error) {
+          console.error("Error fetching location:", error);
+        }
+      });
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  };
 
 
   const [formData, setFormData] = useState({
@@ -398,9 +408,10 @@ console.log(isFormComplete());
         <input
           type="text"
           value={formData.location}
-          onChange={(e) => setLocation(e.target.value)}
+          onChange={handleChange}
           className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
           placeholder="Location (Latitude, Longitude)"
+          readOnly required
         />
         <div
           onClick={mapMake}
