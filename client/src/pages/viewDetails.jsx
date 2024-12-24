@@ -21,7 +21,7 @@ const ViewDetails = () => {
     <>
 
     <div className="flex">
-      <h1 className="m-10">EasyPg</h1>
+      <h1 className="m-4">EasyPg</h1>
     </div>
 
     <div className="relative h-64  rounded-lg shadow-lg mb-6">
