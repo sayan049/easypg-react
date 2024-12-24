@@ -52,7 +52,7 @@ function MapDirection({ coordinates }) {
       image: new Icon({
         anchor: [0.5, 1],
         src: 'assets/placeholder.png',
-        scale: 0.05,  // Adjust this value to scale down the icon (0.1 = 10% of original size)
+        scale: 0.06,  // Adjust this value to scale down the icon (0.1 = 10% of original size)
       }),
     });
     
