@@ -76,11 +76,14 @@ const amenities = [
                 />
                 {facility.title}
               </label>
-            ))} 
-          </div>
-        </div>
-      </div>*/}
+            ))}
+            
 
+            
+          </div>
+        </div> */}
+
+        {/* Facility Filters */}
 <div className="mt-6">
   <h3 className="font-medium">Select Your Need</h3>
   <div className="grid grid-cols-2 gap-4 mt-4">
@@ -102,6 +105,9 @@ const amenities = [
   </div>
 </div>
 
+
+
+      </div>
 
       {/* Listings Section */}
       <div className="w-full md:w-3/4 mt-6 md:mt-0 md:ml-6">
