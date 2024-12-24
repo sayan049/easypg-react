@@ -66,7 +66,7 @@ function MapDirection({ isChecked, coordinates }) {
   }, [coordinates]); // Re-run effect when coordinates change
 
   return <div id="map"  className="h-64 flex items-center justify-center" >
-    <button>click me</button>
+    
   </div>;
 }
 
