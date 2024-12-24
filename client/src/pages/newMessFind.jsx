@@ -18,15 +18,16 @@ useEffect(() => {
     console.log('CheckFeatures updated:', checkFeatures);
 }, [checkFeatures])
 
-  const checkboxesData = [
-    { logo: "air-conditioner 1.png", title: "A/C" },
-    { logo: "tank-water 1.png", title: "tank water" },
-    { logo: "wifi (1) 1.png", title: "WiFi" },
-    { logo: "power 1.png", title: "Power Backup" },
-    { logo: "restaurant 1.png", title: "Kitchen" },
-    { logo: "single-bed 1.png", title: "Single Bed" },
-    { logo: "single-bed (1) 1.png", title: "Double Bed" },
-  ];
+const amenities = [
+  { id: "test1", label: "A/C", icon: "💨" },
+  { id: "test2", label: "TV", icon: "📺" },
+  { id: "test3", label: "Power Backup", icon: "🔋" },
+  { id: "test4", label: "WiFi", icon: "📶" },
+  { id: "test5", label: "Kitchen", icon: "🍴" },
+  { id: "test6", label: "Tank Water", icon: "💧" },
+  { id: "test7", label: "Double Bed", icon: "🛏️" },
+];
+
 
       const featureChanges=(e)=>{
         const {value,checked}=e.target;
@@ -62,7 +63,7 @@ useEffect(() => {
         </div>
 
         {/* Facility Filters */}
-        <div className="mt-6">
+        {/* <div className="mt-6">
           <h3 className="font-medium">Select Your Need</h3>
           <div className="grid grid-cols-2 gap-4 mt-4">
            { checkboxesData.map((facility, index) => (
@@ -75,7 +76,27 @@ useEffect(() => {
                 />
                 {facility.title}
               </label>
-            ))}
+            ))} */}
+            <div className="mt-6">
+  <h3 className="font-medium">Select Your Need</h3>
+  <div className="grid grid-cols-2 gap-4 mt-4">
+    {amenities.map((facility, index) => (
+      <label
+        key={facility.id}
+        className="flex items-center text-sm bg-gray-100 p-2 rounded shadow"
+      >
+        <input
+          type="checkbox"
+          onClick={featureChanges}
+          value={facility.label}
+          className="mr-2 accent-blue-500"
+        />
+        <span className="text-lg mr-2">{facility.icon}</span>
+        {facility.label}
+      </label>
+    ))}
+  </div>
+</div>
             
 
             
