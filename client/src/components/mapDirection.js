@@ -52,8 +52,10 @@ function MapDirection({ coordinates }) {
       image: new Icon({
         anchor: [0.5, 1],
         src: 'assets/placeholder.png',
+        scale: 0.1,  // Adjust this value to scale down the icon (0.1 = 10% of original size)
       }),
     });
+    
 
     marker.setStyle(markerStyle);
     vectorLayerInstance.getSource().addFeature(marker);
@@ -120,8 +122,10 @@ function MapDirection({ coordinates }) {
         image: new Icon({
           anchor: [0.5, 1],
           src: 'assets/placeholder.png',
+          scale: 0.1,  // Adjust this value to scale down the icon (0.1 = 10% of original size)
         }),
       });
+      
 
       userMarker.setStyle(markerStyle);
       destinationMarker.setStyle(markerStyle);
