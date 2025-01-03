@@ -6,6 +6,7 @@ const ensureAuthenticated = require("../middleware/is-auth");
 const updateDetailshandler =require("../controllers/updateDetails")
 const forgotPasswordUser = require("../controllers/forgotPasswordUser")
 const resetPasswordUser = require("../controllers/resetPasswordUser")
+const jwt = require('jsonwebtoken');
 router.post("/signup", authHandlers.signupHandler);
 router.post("/login", authHandlers.loginHandler);
 router.post("/signupOwner", upload, authHandlers.signupHandlerOwner);
@@ -51,7 +52,7 @@ router.get("/logout", (req, res) => {
 });
 router.post("/user/forgot-password", forgotPasswordUser);
 // Assuming you're using Express.js
-const jwt = require('jsonwebtoken');
+
 
 router.get('/LoginUser/user/reset-password/:resetToken', (req, res) => {
     const resetToken = req.params.resetToken;
