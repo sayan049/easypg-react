@@ -153,12 +153,16 @@ const NewMessFind = () => {
             <Toggle isChecked={isChecked} setIsChecked={setIsChecked} />
             <span>Map View</span>
             <Dropdown />
-            <button
+            {/* <button
               className="bg-blue-500 text-white px-4 py-2 rounded shadow md:hidden"
               onClick={() => setFilterModalOpen(true)}
             >
               Filters
-            </button>
+            </button> */}
+            <img
+            src="/assets/filter 1.png"
+            onClick={() => setFilterModalOpen(true)}
+            />
           </div>
         </div>
         {/* Listings */}
