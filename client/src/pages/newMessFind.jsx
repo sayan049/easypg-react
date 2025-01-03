@@ -45,12 +45,11 @@ const FilterModal = ({ isOpen, onClose, price, setPrice, amenities, featureChang
 
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded shadow"
-            onClick={onClose}
           >
             Apply Filters
           </button>
 
-          
+
         </div>
         {/* Close Button */}
         <div className="mt-6 flex justify-end">
