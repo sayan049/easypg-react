@@ -57,7 +57,8 @@ router.post("/user/forgot-password", forgotPasswordUser);
 router.get('https://easypg-react.onrender.com/LoginUser/user/reset-password/:resetToken', (req, res) => {
     const resetToken = req.params.resetToken;
     console.log("Reset password route hit!");
-
+    res.redirect("https://easypg-react-client.onrender.com")
+    res.send("fuck you")
     jwt.verify(resetToken, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
             return res.status(400).json({ message: 'Invalid or expired token' });
