@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation,useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { loginUrl, forgotPasswordUserUrl, resetPasswordUserUrl,tokenVerifyUserUrl, baseurl } from "../constant/urls";
 
@@ -23,34 +23,51 @@ function LoginUser() {
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
   
-  const [resetToken, setResetToken] = useState(""); // Added state for reset token
-  const [tokenValid, setTokenValid] = useState(null); // Added state for token validity
-  const [newPassword, setNewPassword] = useState(""); // Added state for new password
-  const [confirmPassword, setConfirmPassword] = useState(""); // Added state for confirm password
+  const [resetToken, setResetToken] = useState(""); // State for reset token
+  const [tokenValid, setTokenValid] = useState(null); // State for token validity
+  const [newPassword, setNewPassword] = useState(""); // State for new password
+  const [confirmPassword, setConfirmPassword] = useState(""); // State for confirm password
   const [resetPasswordError, setResetPasswordError] = useState(""); // Error state for reset password
-
+  const [loading, setLoading] = useState(true);
+  const [searchParams] = useSearchParams();
+  
   useEffect(() => {
-    const storedMessage = localStorage.getItem("loginMessage");
-    if (storedMessage) {
-      setMessage(location.state?.message || "");
-    }
-
-    const timer = setTimeout(() => {
-      setMessage("");
-      localStorage.removeItem("loginMessage");
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, [location.state?.message]);
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const tokenFromUrl = params.get("resetToken");
+    const tokenFromUrl = searchParams.get("resetToken");
     if (tokenFromUrl) {
       setResetToken(tokenFromUrl);
-      verifyResetToken(tokenFromUrl); // Verify the token
+      verifyResetToken(tokenFromUrl);
+    } else {
+      setLoading(false); // Stop loading if no token
     }
-  }, [location.search]);
+  }, [searchParams]);
+  
+  
+
+  // useEffect(() => {
+  //   const params = new URLSearchParams(location.search);
+  //   const tokenFromUrl = params.get("resetToken");
+  
+  //   if (tokenFromUrl) {
+  //     setResetToken(tokenFromUrl);
+  //     verifyResetToken(tokenFromUrl);
+  //   } else {
+  //     setLoading(false); // Stop loading if no token
+  //   }
+  // }, [location.search]);
+  
+  const verifyResetToken = async (token) => {
+    try {
+      const response = await axios.get(`${tokenVerifyUserUrl}/${token}`);
+      setTokenValid(response.status === 200);
+    } catch (error) {
+      console.error("Error verifying reset token:", error);
+      setTokenValid(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
 
 
   const togglePasswordVisibility = () => {
@@ -113,20 +130,7 @@ function LoginUser() {
       setForgotPasswordMessage("Error sending email. Please try again.");
     }
   };
-  const verifyResetToken = async (token) => {
-    try {
-      const url = tokenVerifyUserUrl.replace(':resetToken', token);
-      const response = await axios.get(url);
-  
-      if (response.data && response.data.resetUrl) {
-        window.location.href = response.data.resetUrl; // Redirect to the reset password page
-      } else {
-        setTokenValid(false);
-      }
-    } catch (error) {
-      setTokenValid(false);
-    }
-  };
+
   
   
   // Function to submit the reset password
