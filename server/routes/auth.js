@@ -5,6 +5,7 @@ const upload = require("../middleware/upload");
 const ensureAuthenticated = require("../middleware/is-auth");
 const updateDetailshandler =require("../controllers/updateDetails")
 const forgotPasswordUser = require("../controllers/forgotPasswordUser")
+const resetPasswordUser = require("../controllers/resetPasswordUser")
 router.post("/signup", authHandlers.signupHandler);
 router.post("/login", authHandlers.loginHandler);
 router.post("/signupOwner", upload, authHandlers.signupHandlerOwner);
@@ -49,5 +50,6 @@ router.get("/logout", (req, res) => {
   });
 });
 router.post("/user/forgot-password", forgotPasswordUser);
+router.post("/user/reset-password",resetPasswordUser);
 
 module.exports = router;

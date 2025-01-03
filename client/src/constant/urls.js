@@ -14,4 +14,5 @@ export const loginOwnerUrl = `${baseUrl}/auth/loginOwner`;
 export const updateDetailsUrl= `${baseUrl}/auth/updateDetails`;
 export const fetchDetailsUrl = `${baseUrl}/auth/get-details`;
 export const forgotPasswordUserUrl = `${baseUrl}/auth/user/forgot-password`;
+export const resetPasswordUserUrl = `${baseUrl}/auth/user/reset-password`;
 export const baseurl =`${baseUrl}`;

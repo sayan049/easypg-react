@@ -49,8 +49,7 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default:Date.now
   },
-  resetToken: { type: String }, // Field to store the reset token
-  resetTokenExpiry: { type: Date }, // Field to store the expiry time
+ 
 
 });
 
