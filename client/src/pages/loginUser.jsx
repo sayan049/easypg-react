@@ -142,12 +142,13 @@ function LoginUser() {
     }
 
     try {
-      const response = await axios.post(resetPasswordUserUrl, { token: resetToken, password: newPassword });
+      const response = await axios.post(resetPasswordUserUrl, { token: resetToken, password: newPassword }, {headers: { "Content-Type": "application/json" }});
+     
       if (response.status === 200) {
         alert("Password successfully reset! Redirecting to login...");
         navigate("/LoginUser");  // Redirect to login page
       } else {
-        setResetPasswordError("Error resetting password. Please try again.");
+        setResetPasswordError("Error resetting password. Please try again....");
       }
     } catch (error) {
       setResetPasswordError("Error resetting password. Please try again.");
