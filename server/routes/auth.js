@@ -51,7 +51,7 @@ router.get("/logout", (req, res) => {
 });
 router.post("/user/forgot-password", forgotPasswordUser);
 // Assuming you're using Express.js
-router.get("LoginUser/user/reset-password/:resetToken", async (req, res) => {
+router.get("/LoginUser/user/reset-password/:resetToken", async (req, res) => {
   const { resetToken } = req.params;
 
   try {

@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { loginUrl, forgotPasswordUserUrl, resetPasswordUserUrl,tokenVerifyUserUrl, baseurl } from "../constant/urls";
 
+
 function LoginUser() {
   useEffect(() => {
     document.title = "Student login";
@@ -112,18 +113,18 @@ function LoginUser() {
       setForgotPasswordMessage("Error sending email. Please try again.");
     }
   };
-
   const submitResetPassword = async () => {
     if (!resetToken || !newPassword || newPassword !== confirmPassword) {
       setResetPasswordError("Passwords do not match or invalid token.");
       return;
     }
-
+  
     try {
       const response = await axios.post(resetPasswordUserUrl, { token: resetToken, password: newPassword });
       if (response.status === 200) {
         setForgotPasswordMessage("Password successfully updated!");
-        setTimeout(() => navigate("/LoginUser"), 3000);
+        setResetPasswordError(""); // Clear any previous errors
+        setTimeout(() => navigate("/LoginUser"), 3000); // Redirect after success
       } else {
         setForgotPasswordMessage("Error resetting password. Please try again.");
       }
@@ -131,10 +132,11 @@ function LoginUser() {
       setForgotPasswordMessage("Error resetting password. Please try again.");
     }
   };
+  
 
   const verifyResetToken = async (token) => {
     try {
-      const response = await axios.get(`${tokenVerifyUserUrl}/${token}`);
+      const response = await axios.get(`${tokenVerifyUserUrl.replace(':resetToken', token)}`);
       if (response.status === 200) {
         setTokenValid(true);
       } else {
