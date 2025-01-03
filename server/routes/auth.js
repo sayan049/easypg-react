@@ -4,11 +4,13 @@ const authHandlers = require("../controllers/authHandlers");
 const upload = require("../middleware/upload");
 const ensureAuthenticated = require("../middleware/is-auth");
 const updateDetailshandler =require("../controllers/updateDetails")
+const forgotPasswordUser = require("../controllers/forgotPasswordUser")
 router.post("/signup", authHandlers.signupHandler);
 router.post("/login", authHandlers.loginHandler);
 router.post("/signupOwner", upload, authHandlers.signupHandlerOwner);
 router.post("/loginOwner", authHandlers.loginHandlerOwner);
 router.get("/findMess", authHandlers.findMess); 
+
 // router.get("/protected", ensureAuthenticated, (req, res) => {
 //   res.json({ message: "This is a protected route", user: req.session.user });
 // });
@@ -46,5 +48,6 @@ router.get("/logout", (req, res) => {
     res.send("Logged out successfully.");
   });
 });
+router.post("/user/forgot-password", forgotPasswordUser);
 
 module.exports = router;
