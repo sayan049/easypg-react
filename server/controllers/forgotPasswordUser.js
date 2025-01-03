@@ -40,7 +40,7 @@ const forgotPasswordUser = async (req, res) => {
     });
 
     // Construct reset URL for the user
-    const resetUrl = `${req.protocol}://easypg-react-client.onrender.com/LoginUser/user/reset-password/${resetToken}`;
+    const resetUrl = `${req.protocol}://${req.get("host")}/LoginUser/user/reset-password/${resetToken}`;
 
     const mailOptions = {
       from: USER_EMAIL,

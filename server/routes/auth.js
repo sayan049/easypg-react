@@ -56,6 +56,7 @@ router.post("/user/forgot-password", forgotPasswordUser);
 
 router.get('/LoginUser/user/reset-password/:resetToken', (req, res) => {
     const resetToken = req.params.resetToken;
+    console.log("Reset password route hit!");
 
     jwt.verify(resetToken, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
@@ -63,6 +64,7 @@ router.get('/LoginUser/user/reset-password/:resetToken', (req, res) => {
         }
 
         // Token is valid, proceed with resetting password
+        res.redirect("https://easypg-react-client.onrender.com")
     });
 });
 
