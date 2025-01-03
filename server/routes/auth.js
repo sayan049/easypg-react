@@ -53,7 +53,7 @@ router.post("/user/forgot-password", forgotPasswordUser);
 // Assuming you're using Express.js
 const jwt = require('jsonwebtoken');
 
-app.get('/LoginUser/user/reset-password/:resetToken', (req, res) => {
+router.get('/LoginUser/user/reset-password/:resetToken', (req, res) => {
     const resetToken = req.params.resetToken;
 
     jwt.verify(resetToken, process.env.JWT_SECRET, (err, decoded) => {
