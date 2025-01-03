@@ -49,7 +49,7 @@ function MessBars({ isChecked, checkFeatures, coords }) {
       {messData.map(owner => (
         <div
           key={owner._id}
-          className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md"
+          className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md sm:mt-[5px]"
            onClick={() => {
             if (owner.location) {
               clickCords(owner.location); // Only call clickCords if location is available
