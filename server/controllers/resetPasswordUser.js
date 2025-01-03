@@ -3,8 +3,8 @@ const bcrypt = require("bcryptjs");
 const User = require("../modules/user");
 
 const resetPasswordUser = async (req, res) => {
-  const { token, newPassword } = req.body;
-  console.log(newPassword);
+  const { token, password } = req.body;
+  console.log(password);
   console.log(token);
 
   try {
@@ -24,7 +24,7 @@ const resetPasswordUser = async (req, res) => {
     // Hash the new password
    
     
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Update the password in the database
     user.password = hashedPassword;
