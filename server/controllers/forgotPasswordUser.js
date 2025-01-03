@@ -22,7 +22,9 @@ const forgotPasswordUser = async (req, res) => {
     if (!user.is_verified) {
       return res.status(403).json({ message: "User account is not verified." });
     }
-
+    if (user.googleId) {
+      return res.status(400).json({ message: "You cannot reset your password because you signed up with Google." });
+    }
     // Generate a reset token with JWT (expires in 1 hour)
     const resetToken = jwt.sign(
       { userId: user._id, email: user.email },
