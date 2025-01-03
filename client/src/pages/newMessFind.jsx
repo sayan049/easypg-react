@@ -129,11 +129,11 @@ const NewMessFind = () => {
             ))}
 
             <button
-            className="bg-blue-500 text-white px-4 py-2 rounded shadow"
+            className="bg-blue-500 text-white px-4 py-2 rounded shadow w-1/2 left-1/4 relative"
           >
             Apply Filters
           </button>
-          
+
           </div>
         </div>
       </div>
