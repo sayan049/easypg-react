@@ -187,6 +187,7 @@ function MessBars({ isChecked, checkFeatures, coords }) {
           style={{
             maxHeight: '300px', // Limits height for large screens
             borderRadius: isChecked ? '10px' : '0px',
+            display: isChecked ? 'none' : 'block'
           }}
         />
       </div>
@@ -195,7 +196,8 @@ function MessBars({ isChecked, checkFeatures, coords }) {
       <div
         className="flex-grow md:ml-6 mt-4 md:mt-0"
         style={{
-          padding: isChecked ? '20px' : '0px',
+          padding: isChecked ? '29px' : '0px',
+          borderRadius: isChecked ? '10px' : '0px',
           boxShadow: isChecked
             ? 'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px'
             : 'none',
