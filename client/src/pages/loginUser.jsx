@@ -115,30 +115,19 @@ function LoginUser() {
   };
   const verifyResetToken = async (token) => {
     try {
-      // Call the backend to verify the token
-      const response = await axios.get(tokenVerifyUserUrl.replace(':resetToken', token), {
-        // Optionally, you can add headers if necessary, e.g., authorization
-        method: "GET",
-          // Remove Content-Type for GET requests
-          headers: {
-            // No Content-Type header needed for GET requests
-          },
-        withCredentials: true
-
-      });
+      const url = tokenVerifyUserUrl.replace(':resetToken', token);
+      const response = await axios.get(url);
   
-      // If the request succeeds and you don't receive a 200, this means the token is invalid
-      if (response.status === 200) {
-        // The backend will redirect if the token is valid, so we don't need to check the status code here
-        setTokenValid(true);
+      if (response.data && response.data.resetUrl) {
+        window.location.href = response.data.resetUrl; // Redirect to the reset password page
       } else {
         setTokenValid(false);
       }
     } catch (error) {
-      // If there's any error or the token is invalid, the backend will return an error
       setTokenValid(false);
     }
   };
+  
   
   // Function to submit the reset password
   const submitResetPassword = async () => {

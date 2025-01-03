@@ -56,20 +56,21 @@ router.post("/user/forgot-password", forgotPasswordUser);
 
 router.get('/LoginUser/user/reset-password/:resetToken', (req, res) => {
   const resetToken = req.params.resetToken;
-  console.log("Reset password route hit!");
 
   // Verify the token
   jwt.verify(resetToken, process.env.JWT_SECRET, (err, decoded) => {
-      if (err) {
-          // If the token is invalid or expired, redirect to an error page or show an error message
-          return res.status(400).json({ message: 'Invalid or expired token' });
-      }
+    if (err) {
+      return res.status(400).json({ message: 'Invalid or expired token' });
+    }
 
-      // If the token is valid, redirect the user to the frontend (e.g., to the login page with the modal for password reset)
-      // Send the resetToken so frontend can handle it
-      res.redirect(`https://easypg-react-client.onrender.com/LoginUser?resetToken=${resetToken}`);
+    // Send the URL to the frontend instead of redirecting
+    return res.json({
+      message: 'Token is valid',
+      resetUrl: `https://easypg-react-client.onrender.com/LoginUser?resetToken=${resetToken}`,
+    });
   });
 });
+
 
 
 router.post("/user/reset-password",resetPasswordUser);
