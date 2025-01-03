@@ -57,7 +57,8 @@ function LoginUser() {
   
   const verifyResetToken = async (token) => {
     try {
-      const response = await axios.get(`${tokenVerifyUserUrl}/${token}`);
+      const response = await axios.get(tokenVerifyUserUrl.replace(':resetToken', token));
+
       setTokenValid(response.status === 200);
     } catch (error) {
       console.error("Error verifying reset token:", error);
