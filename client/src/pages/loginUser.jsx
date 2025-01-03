@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import { loginUrl,forgotPasswordUserUrl,resetPasswordUserUrl, baseurl } from "../constant/urls";
+import { loginUrl, forgotPasswordUserUrl, resetPasswordUserUrl,tokenVerifyUserUrl, baseurl } from "../constant/urls";
 
 function LoginUser() {
   useEffect(() => {
@@ -16,13 +16,17 @@ function LoginUser() {
   const location = useLocation();
   const [isChecked, setIsChecked] = useState(false);
   const [isFormFilled, setIsFormFilled] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Disable button after first click
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
-  const [isResetPassword, setIsResetPassword] = useState(false);  // New state to track reset form
-  const [token, setToken] = useState(null);  // Store token for password reset
+  const [isResetPassword, setIsResetPassword] = useState(false);
+  const [resetToken, setResetToken] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [tokenValid, setTokenValid] = useState(null);
+  const [resetPasswordError, setResetPasswordError] = useState("");
 
   useEffect(() => {
     const storedMessage = localStorage.getItem("loginMessage");
@@ -38,6 +42,16 @@ function LoginUser() {
     return () => clearTimeout(timer);
   }, [location.state?.message]);
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tokenFromUrl = params.get("token");
+    if (tokenFromUrl) {
+      setIsResetPassword(true);
+      setResetToken(tokenFromUrl);
+      verifyResetToken(tokenFromUrl);
+    }
+  }, [location.search]);
+
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
@@ -47,8 +61,8 @@ function LoginUser() {
     const jsonData = { email, password };
 
     try {
-      setIsSubmitting(true); // Disable button during submission
-      setIsButtonDisabled(true); // Disable button immediately
+      setIsSubmitting(true);
+      setIsButtonDisabled(true);
 
       const response = await axios.post(loginUrl, jsonData, {
         withCredentials: true,
@@ -56,41 +70,27 @@ function LoginUser() {
       });
 
       if (response.status === 200) {
-        console.log("Response:", response.data);
-        // navigate('/');
-        // const token =getCookie('user_token');
-        const userData = response.data.user; // Extracting the user data from the response
+        const userData = response.data.user;
         const message = `Welcome ${userData.name}!`;
 
-        // localStorage.setItem('token', token);
         localStorage.setItem("sId_message", message);
         navigate("/", { state: { message: message } });
-        // Cookies.set('user', token);
-        console.log("succesfully logged in");
         window.location.reload();
-        console.error("Login failed", response.data);
       }
     } catch (error) {
       console.log("Error sending JSON data:", error);
     } finally {
-      // Re-enable the button after 5 seconds
       setTimeout(() => {
-        setIsButtonDisabled(false); // Re-enable the button
-        setIsSubmitting(false); // Set submitting to false after 5 seconds
+        setIsButtonDisabled(false);
+        setIsSubmitting(false);
       }, 5000);
     }
   };
 
   const loginwithgoogle = () => {
-    window.location.href =
-      `${baseurl}/auth/google?state=` +
-      encodeURIComponent(JSON.stringify({ type: "student" }));
+    window.location.href = `${baseurl}/auth/google?state=` + encodeURIComponent(JSON.stringify({ type: "student" }));
   };
-  useEffect(() => {
-    setIsFormFilled(email && password);
-  }, [email, password]);
-  const isFormValid = isFormFilled && isChecked;
-  //forgot password
+
   const openForgotPassword = () => {
     setIsForgotPasswordOpen(true);
   };
@@ -99,6 +99,7 @@ function LoginUser() {
     setIsForgotPasswordOpen(false);
     setForgotPasswordMessage("");
   };
+
   const submitForgotPassword = async () => {
     try {
       const response = await axios.post(forgotPasswordUserUrl, { email: forgotEmail });
@@ -111,25 +112,18 @@ function LoginUser() {
       setForgotPasswordMessage("Error sending email. Please try again.");
     }
   };
-  //reset password
-  useEffect(() => {
-    // Check if there is a token in the URL for reset password
-    const params = new URLSearchParams(location.search);
-    const resetToken = params.get("token");
-    if (resetToken) {
-      setIsResetPassword(true);
-      setToken(resetToken);
-    }
-  }, [location.search]);
 
   const submitResetPassword = async () => {
-    if (!token || !password) return;
+    if (!resetToken || !newPassword || newPassword !== confirmPassword) {
+      setResetPasswordError("Passwords do not match or invalid token.");
+      return;
+    }
 
     try {
-      const response = await axios.post(resetPasswordUserUrl, { token, password });
+      const response = await axios.post(resetPasswordUserUrl, { token: resetToken, password: newPassword });
       if (response.status === 200) {
         setForgotPasswordMessage("Password successfully updated!");
-        // Redirect to login or another page
+        setTimeout(() => navigate("/LoginUser"), 3000);
       } else {
         setForgotPasswordMessage("Error resetting password. Please try again.");
       }
@@ -137,6 +131,25 @@ function LoginUser() {
       setForgotPasswordMessage("Error resetting password. Please try again.");
     }
   };
+
+  const verifyResetToken = async (token) => {
+    try {
+      const response = await axios.get(`${tokenVerifyUserUrl}/${token}`);
+      if (response.status === 200) {
+        setTokenValid(true);
+      } else {
+        setTokenValid(false);
+      }
+    } catch (error) {
+      setTokenValid(false);
+    }
+  };
+  useEffect(() => {
+    setIsFormFilled(email && password);
+  }, [email, password]);
+  const isFormValid = isFormFilled && isChecked;
+  //forgot password
+
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
@@ -305,58 +318,65 @@ function LoginUser() {
         </div>
       
       </div>
-     {isForgotPasswordOpen || isResetPassword ? (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-lg font-bold">{isResetPassword ? "Reset Password" : "Forgot Password"}</h2>
-
-            {isResetPassword ? (
-              <>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter new password"
-                  className="w-full px-4 py-2 rounded-full mt-4 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
-                />
-                <button
-                  onClick={submitResetPassword}
-                  disabled={!password}
-                  className={`w-full bg-[#2ca4b5] text-white py-2 rounded-full mt-4 ${!password ? 'bg-gray-300 cursor-not-allowed' : ''}`}
-                >
-                  Reset Password
-                </button>
-              </>
-            ) : (
-              <>
-                <input
-                  type="email"
-                  value={forgotEmail}
-                  onChange={(e) => setForgotEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="w-full px-4 py-2 rounded-full mt-4 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
-                />
-                <button
-                  onClick={submitForgotPassword}
-                  disabled={!forgotEmail}
-                  className={`w-full bg-[#2ca4b5] text-white py-2 rounded-full mt-4 ${!forgotEmail ? 'bg-gray-300 cursor-not-allowed' : ''}`}
-                >
-                  Send Reset Email
-                </button>
-              </>
-            )}
+      {isForgotPasswordOpen && (
+        <div className="fixed top-0 left-0 z-50 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white rounded-lg shadow-xl w-96 p-6">
+            <h2 className="text-xl font-semibold mb-4">Forgot Password</h2>
+            <input
+              type="email"
+              value={forgotEmail}
+              onChange={(e) => setForgotEmail(e.target.value)}
+              placeholder="Enter your email"
+              className="w-full rounded-full px-4 py-2 mb-4"
+            />
+            <button
+              onClick={submitForgotPassword}
+              className="w-full py-2 rounded-full bg-[#2ca4b5] text-white"
+            >
+              Send Reset Link
+            </button>
+            <p className="text-center text-sm text-gray-600 mt-2">{forgotPasswordMessage}</p>
             <button
               onClick={closeForgotPassword}
-              className="w-full bg-gray-300 text-black py-2 rounded-full mt-2"
+              className="mt-4 text-red-500 hover:underline"
             >
-              Cancel
+              Close
             </button>
-            {forgotPasswordMessage && (
-              <p className="text-center mt-4 text-sm">{forgotPasswordMessage}</p>
-            )}
           </div>
         </div>
-      ) : null}
+      )}
+
+      {/* Reset Password Form */}
+      {isResetPassword && tokenValid && (
+        <div className="fixed top-0 left-0 z-50 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white rounded-lg shadow-xl w-96 p-6">
+            <h2 className="text-xl font-semibold mb-4">Reset Password</h2>
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="New Password"
+              className="w-full rounded-full px-4 py-2 mb-4"
+            />
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm Password"
+              className="w-full rounded-full px-4 py-2 mb-4"
+            />
+            {resetPasswordError && (
+              <p className="text-red-500 text-sm mb-4">{resetPasswordError}</p>
+            )}
+            <button
+              onClick={submitResetPassword}
+              className="w-full py-2 rounded-full bg-[#2ca4b5] text-white"
+            >
+              Reset Password
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
