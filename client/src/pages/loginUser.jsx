@@ -140,14 +140,15 @@ function LoginUser() {
       setResetPasswordError("Passwords do not match or invalid token.");
       return;
     }
-
+console.log(newPassword)
+console.log(confirmPassword)
     try {
       const response = await axios.post(resetPasswordUserUrl, { token: resetToken, password: newPassword });
       if (response.status === 200) {
         alert("Password successfully reset! Redirecting to login...");
         navigate("/LoginUser");  // Redirect to login page
       } else {
-        setResetPasswordError("Error resetting password. Please try again.");
+        setResetPasswordError("Error resetting password. Please try again....");
       }
     } catch (error) {
       setResetPasswordError("Error resetting password. Please try again.");
