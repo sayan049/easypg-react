@@ -143,7 +143,7 @@ function LoginUser() {
 
     try {
       const response = await axios.post(resetPasswordUserUrl, { token: resetToken, password: newPassword }, {headers: { "Content-Type": "application/json" }});
-     
+     console.log("response:",response)
       if (response.status === 200) {
         alert("Password successfully reset! Redirecting to login...");
         navigate("/LoginUser");  // Redirect to login page
