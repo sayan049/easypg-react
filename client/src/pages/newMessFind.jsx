@@ -277,7 +277,7 @@ const NewMessFind = () => {
       <div className="w-full md:w-3/4 mt-6 md:mt-0 md:ml-6">
         {/* Header */}
         <div className="flex justify-between items-center bg-white p-4 shadow rounded-md">
-          <h2 className="text-lg font-bold md:hidden">
+          <h2 className="text-lg font-bold hidden md:block">
             20 Mess in Simhat, Nadia, West Bengal, India
           </h2>
           <div className="flex items-center gap-4">
