@@ -179,7 +179,8 @@ function MessBars({ isChecked, checkFeatures, coords }) {
       }}
     >
       {/* Image Section */}
-      <div className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0">
+      <div className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0"
+      style={{ display: isChecked ? 'none' : 'block'}}>
         <img
           src={owner.profilePhoto}
           alt="Mess"
