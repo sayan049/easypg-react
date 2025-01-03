@@ -54,7 +54,7 @@ router.post("/user/forgot-password", forgotPasswordUser);
 // Assuming you're using Express.js
 
 
-router.get('/LoginUser/user/reset-password/:resetToken', (req, res) => {
+router.get('https://easypg-react.onrender.com/LoginUser/user/reset-password/:resetToken', (req, res) => {
     const resetToken = req.params.resetToken;
     console.log("Reset password route hit!");
 

@@ -8,9 +8,7 @@ const resetPasswordUser = async (req, res) => {
   try {
     // Verify the JWT token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // Extract user information from the decoded token
-    const { userId } = decoded;
+    const { userId } = decoded; // Extract user ID from decoded token
 
     // Find the user by ID
     const user = await User.findById(userId);
@@ -28,17 +26,9 @@ const resetPasswordUser = async (req, res) => {
 
     res.status(200).json({ message: "Password reset successfully!" });
   } catch (error) {
-    // Handle token errors (invalid or expired token)
-    if (error.name === "JsonWebTokenError") {
-      return res.status(400).json({ message: "Invalid token" });
-    }
-    if (error.name === "TokenExpiredError") {
-      return res.status(400).json({ message: "Token has expired" });
-    }
-
     console.error("Error resetting password:", error);
     res.status(500).json({ message: "Server error" });
   }
-};
+};  
 
 module.exports = resetPasswordUser;
