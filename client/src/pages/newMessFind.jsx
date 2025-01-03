@@ -48,7 +48,7 @@ const FilterModal = ({ isOpen, onClose, price, setPrice, amenities, featureChang
         <div className="mt-6 flex justify-end">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded shadow"
-            onClick={onClose}
+            onClick={onApplyFilters}
           >
             Apply Filters
           </button>
@@ -64,6 +64,7 @@ const NewMessFind = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [coordinates, setCoordinates] = useState({ lat: 0, lng: 0 });
   const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [tempCheckFeatures, setTempCheckFeatures] = useState([]);
 
   const handleCoordinatesChange = (newCoords) => {
     setCoordinates(newCoords);
@@ -86,10 +87,16 @@ const NewMessFind = () => {
   const featureChanges = (e) => {
     const { value, checked } = e.target;
     if (checked) {
-      setCheckFestures([...checkFeatures, value]);
+      setTempCheckFeatures([...tempCheckFeatures, value]);
     } else {
-      setCheckFestures(checkFeatures.filter((feature) => feature !== value));
+      setTempCheckFeatures(tempCheckFeatures.filter((feature) => feature !== value));
     }
+  };
+
+  const onApplyFilters = () => {
+    setCheckFestures(tempCheckFeatures);  // Update the main state with tempCheckFeatures
+    console.log("Applied filters: ", tempCheckFeatures); // Handle sending the checkFeatures data
+    setFilterModalOpen(false); // Close modal after applying
   };
 
   return (
@@ -130,6 +137,7 @@ const NewMessFind = () => {
 
             <button
             className="bg-blue-500 text-white px-4 py-2 rounded shadow w-1/2 left-1/4 relative"
+            onClick={onApplyFilters}
           >
             Apply Filters
           </button>
