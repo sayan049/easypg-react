@@ -15,5 +15,6 @@ export const updateDetailsUrl= `${baseUrl}/auth/updateDetails`;
 export const fetchDetailsUrl = `${baseUrl}/auth/get-details`;
 export const forgotPasswordUserUrl = `${baseUrl}/auth/user/forgot-password`;
 export const resetPasswordUserUrl = `${baseUrl}/auth/user/reset-password`;
-export const tokenVerifyUserUrl = `${baseUrl}/auth/LoginUser/user/reset-password/:resetToken`;
+export const tokenVerifyUserUrl = `${baseUrl}/auth/LoginUser/user/reset-password/${resetToken}`;
+
 export const baseurl =`${baseUrl}`;
