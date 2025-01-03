@@ -50,6 +50,30 @@ router.get("/logout", (req, res) => {
   });
 });
 router.post("/user/forgot-password", forgotPasswordUser);
+// Assuming you're using Express.js
+router.get("LoginUser/user/reset-password/:resetToken", async (req, res) => {
+  const { resetToken } = req.params;
+
+  try {
+    // Verify the JWT token in the URL
+    const decoded = jwt.verify(resetToken, process.env.JWT_SECRET);
+    const { userId } = decoded;
+
+    // Proceed to render a reset password form
+    // You can render a page or return a response containing the reset token
+    // Example using JSON response
+    res.status(200).json({ message: "Token is valid", resetToken });
+  } catch (error) {
+    if (error.name === "JsonWebTokenError") {
+      return res.status(400).json({ message: "Invalid token" });
+    }
+    if (error.name === "TokenExpiredError") {
+      return res.status(400).json({ message: "Token has expired" });
+    }
+    res.status(500).json({ message: "Error verifying token" });
+  }
+});
+
 router.post("/user/reset-password",resetPasswordUser);
 
 module.exports = router;
