@@ -6,6 +6,7 @@ const ensureAuthenticated = require("../middleware/is-auth");
 const updateDetailshandler =require("../controllers/updateDetails")
 const forgotPasswordUser = require("../controllers/forgotPasswordUser")
 const resetPasswordUser = require("../controllers/resetPasswordUser")
+const jwt = require('jsonwebtoken');
 router.post("/signup", authHandlers.signupHandler);
 router.post("/login", authHandlers.loginHandler);
 router.post("/signupOwner", upload, authHandlers.signupHandlerOwner);
@@ -51,19 +52,26 @@ router.get("/logout", (req, res) => {
 });
 router.post("/user/forgot-password", forgotPasswordUser);
 // Assuming you're using Express.js
-const jwt = require('jsonwebtoken');
+
 
 router.get('/LoginUser/user/reset-password/:resetToken', (req, res) => {
-    const resetToken = req.params.resetToken;
+  const resetToken = req.params.resetToken;
 
-    jwt.verify(resetToken, process.env.JWT_SECRET, (err, decoded) => {
-        if (err) {
-            return res.status(400).json({ message: 'Invalid or expired token' });
-        }
+  // Verify the token
+  jwt.verify(resetToken, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(400).json({ message: 'Invalid or expired token' });
+    }
 
-        // Token is valid, proceed with resetting password
+    // Send the URL to the frontend instead of redirecting
+    return res.json({
+      message: 'Token is valid',
+      resetUrl: `https://easypg-react-client.onrender.com/LoginUser?resetToken=${resetToken}`,
     });
+  });
 });
+
+
 
 router.post("/user/reset-password",resetPasswordUser);
 

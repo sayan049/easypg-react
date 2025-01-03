@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation,useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { loginUrl, forgotPasswordUserUrl, resetPasswordUserUrl,tokenVerifyUserUrl, baseurl } from "../constant/urls";
 
@@ -22,36 +22,54 @@ function LoginUser() {
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
-  const [isResetPassword, setIsResetPassword] = useState(false);
-  const [resetToken, setResetToken] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [tokenValid, setTokenValid] = useState(null);
-  const [resetPasswordError, setResetPasswordError] = useState("");
-
+  
+  const [resetToken, setResetToken] = useState(""); // State for reset token
+  const [tokenValid, setTokenValid] = useState(null); // State for token validity
+  const [newPassword, setNewPassword] = useState(""); // State for new password
+  const [confirmPassword, setConfirmPassword] = useState(""); // State for confirm password
+  const [resetPasswordError, setResetPasswordError] = useState(""); // Error state for reset password
+  const [loading, setLoading] = useState(true);
+  const [searchParams] = useSearchParams();
+  
   useEffect(() => {
-    const storedMessage = localStorage.getItem("loginMessage");
-    if (storedMessage) {
-      setMessage(location.state?.message || "");
-    }
-
-    const timer = setTimeout(() => {
-      setMessage("");
-      localStorage.removeItem("loginMessage");
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, [location.state?.message]);
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const tokenFromUrl = params.get("token");
+    const tokenFromUrl = searchParams.get("resetToken");
     if (tokenFromUrl) {
-      setIsResetPassword(true);
       setResetToken(tokenFromUrl);
       verifyResetToken(tokenFromUrl);
+    } else {
+      setLoading(false); // Stop loading if no token
     }
-  }, [location.search]);
+  }, [searchParams]);
+  
+  
+
+  // useEffect(() => {
+  //   const params = new URLSearchParams(location.search);
+  //   const tokenFromUrl = params.get("resetToken");
+  
+  //   if (tokenFromUrl) {
+  //     setResetToken(tokenFromUrl);
+  //     verifyResetToken(tokenFromUrl);
+  //   } else {
+  //     setLoading(false); // Stop loading if no token
+  //   }
+  // }, [location.search]);
+  
+  const verifyResetToken = async (token) => {
+    try {
+      const response = await axios.get(tokenVerifyUserUrl.replace(':resetToken', token));
+
+      setTokenValid(response.status === 200);
+    } catch (error) {
+      console.error("Error verifying reset token:", error);
+      setTokenValid(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
+
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
@@ -113,44 +131,34 @@ function LoginUser() {
       setForgotPasswordMessage("Error sending email. Please try again.");
     }
   };
+
+  
+  
+  // Function to submit the reset password
   const submitResetPassword = async () => {
     if (!resetToken || !newPassword || newPassword !== confirmPassword) {
       setResetPasswordError("Passwords do not match or invalid token.");
       return;
     }
-  
+
     try {
       const response = await axios.post(resetPasswordUserUrl, { token: resetToken, password: newPassword });
       if (response.status === 200) {
-        setForgotPasswordMessage("Password successfully updated!");
-        setResetPasswordError(""); // Clear any previous errors
-        setTimeout(() => navigate("/LoginUser"), 3000); // Redirect after success
+        alert("Password successfully reset! Redirecting to login...");
+        navigate("/LoginUser");  // Redirect to login page
       } else {
-        setForgotPasswordMessage("Error resetting password. Please try again.");
+        setResetPasswordError("Error resetting password. Please try again.");
       }
     } catch (error) {
-      setForgotPasswordMessage("Error resetting password. Please try again.");
+      setResetPasswordError("Error resetting password. Please try again.");
     }
   };
-  
 
-  const verifyResetToken = async (token) => {
-    try {
-      const response = await axios.get(`${tokenVerifyUserUrl.replace(':resetToken', token)}`);
-      if (response.status === 200) {
-        setTokenValid(true);
-      } else {
-        setTokenValid(false);
-      }
-    } catch (error) {
-      setTokenValid(false);
-    }
-  };
   useEffect(() => {
     setIsFormFilled(email && password);
   }, [email, password]);
+
   const isFormValid = isFormFilled && isChecked;
-  //forgot password
 
 
   return (
@@ -272,7 +280,7 @@ function LoginUser() {
               className="w-full  flex items-center justify-center  py-2 rounded-full hover:bg-[#0511121a] bg-[#116e7b1a]"
             >
               <img
-                src="../assets/googleicon.png"
+                src="./assets/googleicon.png"
                 alt="Google"
                 className="w-6 h-6 mr-2 text-gray-600"
               />
@@ -349,7 +357,7 @@ function LoginUser() {
       )}
 
       {/* Reset Password Form */}
-      {isResetPassword && tokenValid && (
+      {resetToken && tokenValid && (
         <div className="fixed top-0 left-0 z-50 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white rounded-lg shadow-xl w-96 p-6">
             <h2 className="text-xl font-semibold mb-4">Reset Password</h2>
@@ -367,13 +375,8 @@ function LoginUser() {
               placeholder="Confirm Password"
               className="w-full rounded-full px-4 py-2 mb-4"
             />
-            {resetPasswordError && (
-              <p className="text-red-500 text-sm mb-4">{resetPasswordError}</p>
-            )}
-            <button
-              onClick={submitResetPassword}
-              className="w-full py-2 rounded-full bg-[#2ca4b5] text-white"
-            >
+            {resetPasswordError && <p className="text-red-500 text-sm mb-4">{resetPasswordError}</p>}
+            <button onClick={submitResetPassword} className="w-full py-2 rounded-full bg-[#2ca4b5] text-white">
               Reset Password
             </button>
           </div>
