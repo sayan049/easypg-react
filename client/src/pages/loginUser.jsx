@@ -22,12 +22,12 @@ function LoginUser() {
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
-  // const [isResetPassword, setIsResetPassword] = useState(false);
-  const [resetToken, setResetToken] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [tokenValid, setTokenValid] = useState(null);
-  const [resetPasswordError, setResetPasswordError] = useState("");
+  
+  const [resetToken, setResetToken] = useState(""); // Added state for reset token
+  const [tokenValid, setTokenValid] = useState(null); // Added state for token validity
+  const [newPassword, setNewPassword] = useState(""); // Added state for new password
+  const [confirmPassword, setConfirmPassword] = useState(""); // Added state for confirm password
+  const [resetPasswordError, setResetPasswordError] = useState(""); // Error state for reset password
 
   useEffect(() => {
     const storedMessage = localStorage.getItem("loginMessage");
@@ -48,9 +48,10 @@ function LoginUser() {
     const tokenFromUrl = params.get("resetToken");
     if (tokenFromUrl) {
       setResetToken(tokenFromUrl);
-      verifyResetToken(tokenFromUrl);
+      verifyResetToken(tokenFromUrl); // Verify the token
     }
   }, [location.search]);
+
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
@@ -114,17 +115,25 @@ function LoginUser() {
   };
   const verifyResetToken = async (token) => {
     try {
-      const response = await axios.get(`${tokenVerifyUserUrl.replace(':resetToken', token)}`);
+      // Call the backend to verify the token
+      const response = await axios.get(tokenVerifyUserUrl.replace(':resetToken', token), {
+        // Optionally, you can add headers if necessary, e.g., authorization
+        withCredentials: true
+      });
+  
+      // If the request succeeds and you don't receive a 200, this means the token is invalid
       if (response.status === 200) {
-        setTokenValid(true);  // Token is valid
+        // The backend will redirect if the token is valid, so we don't need to check the status code here
+        setTokenValid(true);
       } else {
-        setTokenValid(false);  // Token is invalid
+        setTokenValid(false);
       }
     } catch (error) {
-      setTokenValid(false);  // Token is invalid or expired
+      // If there's any error or the token is invalid, the backend will return an error
+      setTokenValid(false);
     }
   };
-
+  
   // Function to submit the reset password
   const submitResetPassword = async () => {
     if (!resetToken || !newPassword || newPassword !== confirmPassword) {
@@ -144,11 +153,12 @@ function LoginUser() {
       setResetPasswordError("Error resetting password. Please try again.");
     }
   };
+
   useEffect(() => {
     setIsFormFilled(email && password);
   }, [email, password]);
+
   const isFormValid = isFormFilled && isChecked;
-  //forgot password
 
 
   return (
