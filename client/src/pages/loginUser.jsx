@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import { loginUrl,forgotPasswordUserUrl, baseurl } from "../constant/urls";
+import { loginUrl,forgotPasswordUserUrl,resetPasswordUserUrl, baseurl } from "../constant/urls";
 
 function LoginUser() {
   useEffect(() => {
@@ -21,6 +21,8 @@ function LoginUser() {
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
+  const [isResetPassword, setIsResetPassword] = useState(false);  // New state to track reset form
+  const [token, setToken] = useState(null);  // Store token for password reset
 
   useEffect(() => {
     const storedMessage = localStorage.getItem("loginMessage");
@@ -102,9 +104,37 @@ function LoginUser() {
       const response = await axios.post(forgotPasswordUserUrl, { email: forgotEmail });
       if (response.status === 200) {
         setForgotPasswordMessage("Password reset email sent!");
+      } else {
+        setForgotPasswordMessage("Error sending email. Please try again.");
       }
     } catch (error) {
       setForgotPasswordMessage("Error sending email. Please try again.");
+    }
+  };
+  //reset password
+  useEffect(() => {
+    // Check if there is a token in the URL for reset password
+    const params = new URLSearchParams(location.search);
+    const resetToken = params.get("token");
+    if (resetToken) {
+      setIsResetPassword(true);
+      setToken(resetToken);
+    }
+  }, [location.search]);
+
+  const submitResetPassword = async () => {
+    if (!token || !password) return;
+
+    try {
+      const response = await axios.post(resetPasswordUserUrl, { token, password });
+      if (response.status === 200) {
+        setForgotPasswordMessage("Password successfully updated!");
+        // Redirect to login or another page
+      } else {
+        setForgotPasswordMessage("Error resetting password. Please try again.");
+      }
+    } catch (error) {
+      setForgotPasswordMessage("Error resetting password. Please try again.");
     }
   };
 
@@ -275,36 +305,58 @@ function LoginUser() {
         </div>
       
       </div>
-      {isForgotPasswordOpen && (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-lg font-bold">Forgot Password</h2>
-        <input
-          type="email"
-          value={forgotEmail}
-          onChange={(e) => setForgotEmail(e.target.value)}
-          placeholder="Enter your email"
-          className="w-full px-4 py-2 rounded-full mt-4 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
-        />
-        <button
-          onClick={submitForgotPassword}
-          disabled={!forgotEmail} // Disable button if no email is entered
-          className={`w-full bg-[#2ca4b5] text-white py-2 rounded-full mt-4 ${!forgotEmail ? 'bg-gray-300 cursor-not-allowed' : ''}`}
-        >
-          Send Reset Email
-        </button>
-        <button
-          onClick={closeForgotPassword}
-          className="w-full bg-gray-300 text-black py-2 rounded-full mt-2"
-        >
-          Cancel
-        </button>
-        {forgotPasswordMessage && (
-          <p className="text-center mt-4 text-sm">{forgotPasswordMessage}</p>
-        )}
-      </div>
-    </div>
-  )}
+     {isForgotPasswordOpen || isResetPassword ? (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-lg font-bold">{isResetPassword ? "Reset Password" : "Forgot Password"}</h2>
+
+            {isResetPassword ? (
+              <>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter new password"
+                  className="w-full px-4 py-2 rounded-full mt-4 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+                />
+                <button
+                  onClick={submitResetPassword}
+                  disabled={!password}
+                  className={`w-full bg-[#2ca4b5] text-white py-2 rounded-full mt-4 ${!password ? 'bg-gray-300 cursor-not-allowed' : ''}`}
+                >
+                  Reset Password
+                </button>
+              </>
+            ) : (
+              <>
+                <input
+                  type="email"
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  className="w-full px-4 py-2 rounded-full mt-4 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+                />
+                <button
+                  onClick={submitForgotPassword}
+                  disabled={!forgotEmail}
+                  className={`w-full bg-[#2ca4b5] text-white py-2 rounded-full mt-4 ${!forgotEmail ? 'bg-gray-300 cursor-not-allowed' : ''}`}
+                >
+                  Send Reset Email
+                </button>
+              </>
+            )}
+            <button
+              onClick={closeForgotPassword}
+              className="w-full bg-gray-300 text-black py-2 rounded-full mt-2"
+            >
+              Cancel
+            </button>
+            {forgotPasswordMessage && (
+              <p className="text-center mt-4 text-sm">{forgotPasswordMessage}</p>
+            )}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
