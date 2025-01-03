@@ -4,7 +4,7 @@ import Dropdown from "../components/dropdown";
 import Toggle from "../components/toggle";
 import Map from "../components/map";
 
-const FilterModal = ({ isOpen, onClose, price, setPrice, amenities, featureChanges }) => {
+const FilterModal = ({ isOpen, onClose, price, setPrice, amenities, featureChanges, onApplyFilters }) => {
   if (!isOpen) return null;
 
   return (
@@ -41,14 +41,12 @@ const FilterModal = ({ isOpen, onClose, price, setPrice, amenities, featureChang
               {facility.label}
             </label>
           ))}
-
-
         </div>
-        {/* Close Button */}
+        {/* Apply Filters Button */}
         <div className="mt-6 flex justify-end">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded shadow"
-            onClick={onApplyFilters}
+            onClick={onApplyFilters} // Call onApplyFilters when button is clicked
           >
             Apply Filters
           </button>
@@ -134,14 +132,12 @@ const NewMessFind = () => {
                 {facility.label}
               </label>
             ))}
-
             <button
-            className="bg-blue-500 text-white px-4 py-2 rounded shadow w-1/2 left-1/4 relative"
-            onClick={onApplyFilters}
-          >
-            Apply Filters
-          </button>
-
+              className="bg-blue-500 text-white px-4 py-2 rounded shadow w-1/2 left-1/4 relative"
+              onClick={onApplyFilters}
+            >
+              Apply Filters
+            </button>
           </div>
         </div>
       </div>
@@ -167,9 +163,9 @@ const NewMessFind = () => {
         </div>
         {/* Listings */}
         <div className="mt-6 flex flex-col gap-6">
-        <div className="text-lg font-bold md:hidden">
+          <div className="text-lg font-bold md:hidden">
             20 Mess in Simhat, Nadia, West Bengal, India
-        </div>
+          </div>
           <div style={{ display: isChecked ? "flex" : "block" }}>
             <MessBars
               checkFeatures={checkFeatures}
@@ -190,13 +186,10 @@ const NewMessFind = () => {
         setPrice={setPrice}
         amenities={amenities}
         featureChanges={featureChanges}
+        onApplyFilters={onApplyFilters} // Pass onApplyFilters function as a prop
       />
-
-           
-
     </div>
   );
 };
 
 export default NewMessFind;
-
