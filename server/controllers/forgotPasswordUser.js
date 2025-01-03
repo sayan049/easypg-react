@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
-const User = require("../modules/User"); // Adjust path to your User model
+const User = require("../modules/user"); // Adjust path to your User model
 
 const forgotPasswordUser = async (req, res) => {
     const { email } = req.body;
