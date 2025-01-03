@@ -45,10 +45,10 @@ function SignUpForm() {
         localStorage.setItem("loginMessage", message);
         navigate("/LoginUser", { state: { message } });
       } else {
-        return error("Signup failed:", response.data);
+return console.error("Signup failed:", response.data);
       }
     } catch (error) {
-     return console.error("Error sending JSON data:", error);
+  return  console.error("Error sending JSON data:", error);
     } finally {
       // Re-enable the button after 5 seconds
       setTimeout(() => {
