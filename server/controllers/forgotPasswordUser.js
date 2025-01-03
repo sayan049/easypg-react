@@ -1,6 +1,10 @@
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const User = require("../modules/user"); // Adjust path to your User model
+require('dotenv').config();
+
+const USER_EMAIL = process.env.USER_EMAIL;
+const USER_PASSWORD = process.env.USER_PASSWORD;
 
 const forgotPasswordUser = async (req, res) => {
     const { email } = req.body;
@@ -25,7 +29,7 @@ const forgotPasswordUser = async (req, res) => {
   
       // Set up email transport
       const transporter = nodemailer.createTransport({
-        service: "Gmail",
+        service: "gmail",
         auth: {
             user: USER_EMAIL,
             pass: USER_PASSWORD
@@ -35,6 +39,7 @@ const forgotPasswordUser = async (req, res) => {
       // Construct reset URL for the user
       const resetUrl = `${req.protocol}://${req.get("host")}/user/reset-password/${resetToken}`;
       const mailOptions = {
+        from:USER_EMAIL,
         to: email,
         subject: "User Password Reset",
         html: `<p>You requested a password reset. Click <a href="${resetUrl}">here</a> to reset your password.</p>`,
