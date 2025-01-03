@@ -13,6 +13,7 @@ import Icon from 'ol/style/Icon';
 import Style from 'ol/style/Style';
 import Stroke from 'ol/style/Stroke';
 
+
 function MapDirection({ coordinates }) {
   const [map, setMap] = useState(null);
   const [vectorLayer, setVectorLayer] = useState(null);
@@ -74,7 +75,11 @@ function MapDirection({ coordinates }) {
       const destination = [coordinates.lng, coordinates.lat];
 
       // Fetch route from OpenRouteService API
-      const apiKey =  process.env.Google_ap_api_key;
+      const apiKey =   process.env.REACT_APP_GOOGLE_API_KEY;
+      if (!apiKey) {
+        console.error('API key is missing. Check your .env file.');
+        return;
+      }
       const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${userLocation[0]},${userLocation[1]}&end=${destination[0]},${destination[1]}`;
       const response = await fetch(url);
       const data = await response.json();
