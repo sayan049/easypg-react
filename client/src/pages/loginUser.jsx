@@ -118,7 +118,13 @@ function LoginUser() {
       // Call the backend to verify the token
       const response = await axios.get(tokenVerifyUserUrl.replace(':resetToken', token), {
         // Optionally, you can add headers if necessary, e.g., authorization
+        method: "GET",
+          // Remove Content-Type for GET requests
+          headers: {
+            // No Content-Type header needed for GET requests
+          },
         withCredentials: true
+
       });
   
       // If the request succeeds and you don't receive a 200, this means the token is invalid
