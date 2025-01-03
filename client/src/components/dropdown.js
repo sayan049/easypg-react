@@ -1,5 +1,5 @@
 import React,{useState} from 'react'
-import "../designs/messfind.css"
+// import "../designs/messfind.css"
 function Dropdown() {
     const [text,setText]=useState("Sort By")
     const [desplay,setDisplay]=useState(true)
@@ -17,7 +17,7 @@ function Dropdown() {
     ]
   return (
     <nav onClick={updateDisplay} className='dropdownnav'>
-  <ul style={{bottom:"-8px"}}>
+  <ul /*style={{bottom:"-8px"}}*/>
     <li>
       <a href="#0" className='sb flex aligncentre justifyspace' style={{ fontSize: 'smaller' }} >{text} <img  style={{height:"16px"}}  src="./assets/dropdoown.png" alt="" srcset=""/> </a>
       
