@@ -50,6 +50,21 @@ router.get("/logout", (req, res) => {
   });
 });
 router.post("/user/forgot-password", forgotPasswordUser);
+// Assuming you're using Express.js
+const jwt = require('jsonwebtoken');
+
+router.get('/LoginUser/user/reset-password/:resetToken', (req, res) => {
+    const resetToken = req.params.resetToken;
+
+    jwt.verify(resetToken, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(400).json({ message: 'Invalid or expired token' });
+        }
+
+        // Token is valid, proceed with resetting password
+    });
+});
+
 router.post("/user/reset-password",resetPasswordUser);
 
 module.exports = router;
