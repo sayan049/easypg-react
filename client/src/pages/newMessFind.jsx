@@ -41,6 +41,8 @@ const FilterModal = ({ isOpen, onClose, price, setPrice, amenities, featureChang
               {facility.label}
             </label>
           ))}
+
+
         </div>
         {/* Close Button */}
         <div className="mt-6 flex justify-end">
@@ -125,12 +127,19 @@ const NewMessFind = () => {
                 {facility.label}
               </label>
             ))}
+
+            <button
+            className="bg-blue-500 text-white px-4 py-2 rounded shadow w-1/2 left-1/4 relative"
+          >
+            Apply Filters
+          </button>
+
           </div>
         </div>
       </div>
 
       {/* Listings Section */}
-      <div className="w-full md:w-3/4 mt-6 md:mt-0 md:ml-6">
+      <div className="w-full md:w-3/4 md:mt-0 md:ml-6">
         {/* Header */}
         <div className="flex justify-between items-center bg-white p-4 shadow rounded-md">
           <h2 className="text-lg font-bold hidden md:block">
@@ -174,6 +183,9 @@ const NewMessFind = () => {
         amenities={amenities}
         featureChanges={featureChanges}
       />
+
+           
+
     </div>
   );
 };
