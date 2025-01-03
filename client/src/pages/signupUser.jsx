@@ -142,7 +142,7 @@ function SignUpForm() {
                   onClick={togglePasswordVisibility}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"
                 >
-                  {isPasswordVisible ? "👁️" : "🙈"}
+                  {isPasswordVisible ? "🙈" : "👁️"}
                 </button>
               </div>
               <input

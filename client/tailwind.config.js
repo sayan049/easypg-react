@@ -9,7 +9,9 @@ module.exports = {
         'custom-gradient': 'linear-gradient(123deg, #09e1ff69, #d9d9d900 72.32%)',
         'new-gradient': 'linear-gradient(172deg, #00acc4, #09e1ff69 58.65%)', // Added gradient
         'input-color':'#116e7b1a',
-        'mobile-owner':'linear-gradient(132deg, rgb(71 228 249) 0%, rgba(255,255,255,1) 99%)'
+        'mobile-owner':'linear-gradient(132deg, rgb(71 228 249) 0%, rgba(255,255,255,1) 99%)',
+        'login-owner':'linear-gradient(360deg, rgba(255,255,255,1) 0%, rgba(44,164,181,1) 100%)',
+        'column-owner':'linear-gradient(201deg, rgba(217, 217, 217, 1) 32%, rgba(44, 164, 181, 1) 100%)'
 
       },
     },
