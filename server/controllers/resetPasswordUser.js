@@ -4,21 +4,27 @@ const User = require("../modules/user");
 
 const resetPasswordUser = async (req, res) => {
   const { token, newPassword } = req.body;
+  console.log(newPassword);
+  console.log(token);
 
   try {
     // Verify the JWT token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const { userId } = decoded; // Extract user ID from decoded token
+    
 
     // Find the user by ID
     const user = await User.findById(userId);
+    console.log(userId);
+    console.log("user:",user);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     // Hash the new password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(newPassword, salt);
+   
+    
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     // Update the password in the database
     user.password = hashedPassword;
