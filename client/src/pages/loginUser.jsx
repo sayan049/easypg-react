@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import { loginUrl, baseurl } from "../constant/urls";
+import { loginUrl,forgotPasswordUserUrl, baseurl } from "../constant/urls";
 
 function LoginUser() {
   useEffect(() => {
@@ -18,6 +18,9 @@ function LoginUser() {
   const [isFormFilled, setIsFormFilled] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Disable button after first click
+  const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
 
   useEffect(() => {
     const storedMessage = localStorage.getItem("loginMessage");
@@ -85,6 +88,25 @@ function LoginUser() {
     setIsFormFilled(email && password);
   }, [email, password]);
   const isFormValid = isFormFilled && isChecked;
+  //forgot password
+  const openForgotPassword = () => {
+    setIsForgotPasswordOpen(true);
+  };
+
+  const closeForgotPassword = () => {
+    setIsForgotPasswordOpen(false);
+    setForgotPasswordMessage("");
+  };
+  const submitForgotPassword = async () => {
+    try {
+      const response = await axios.post(forgotPasswordUserUrl, { email: forgotEmail });
+      if (response.status === 200) {
+        setForgotPasswordMessage("Password reset email sent!");
+      }
+    } catch (error) {
+      setForgotPasswordMessage("Error sending email. Please try again.");
+    }
+  };
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
@@ -160,8 +182,9 @@ function LoginUser() {
 
               {/* Forgot Password Link */}
               <a
-                href="/forgot-password"
-                className="text-sm lg:text-sm text-[#2ca4b5] hover:underline whitespace-nowrap"
+                
+                className="text-sm lg:text-sm text-[#2ca4b5] hover:underline whitespace-nowrap "
+                onClick={openForgotPassword} 
               >
                 Forgot Password?
               </a>
@@ -252,6 +275,36 @@ function LoginUser() {
         </div>
       
       </div>
+      {isForgotPasswordOpen && (
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 className="text-lg font-bold">Forgot Password</h2>
+        <input
+          type="email"
+          value={forgotEmail}
+          onChange={(e) => setForgotEmail(e.target.value)}
+          placeholder="Enter your email"
+          className="w-full px-4 py-2 rounded-full mt-4 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+        />
+        <button
+          onClick={submitForgotPassword}
+          disabled={!forgotEmail} // Disable button if no email is entered
+          className={`w-full bg-[#2ca4b5] text-white py-2 rounded-full mt-4 ${!forgotEmail ? 'bg-gray-300 cursor-not-allowed' : ''}`}
+        >
+          Send Reset Email
+        </button>
+        <button
+          onClick={closeForgotPassword}
+          className="w-full bg-gray-300 text-black py-2 rounded-full mt-2"
+        >
+          Cancel
+        </button>
+        {forgotPasswordMessage && (
+          <p className="text-center mt-4 text-sm">{forgotPasswordMessage}</p>
+        )}
+      </div>
+    </div>
+  )}
     </div>
   );
 }

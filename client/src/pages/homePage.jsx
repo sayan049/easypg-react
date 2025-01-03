@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-
-import "../designs/style.css";
+import { useAuth } from "../contexts/AuthContext";
 import FlashMessage from "../components/flashMessage";
 import UserProfile from "../components/UserProfile";
-import "../designs/UserProfile.css";
-
-import { useAuth } from "../contexts/AuthContext";
 
 function HomePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [message, setMessage] = useState("");
   const [searchItem, setSearchItem] = useState("");
-  // const [IsAuthenticated, setIsAuthenticated] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [logoutStatus, setLogoutStatus] = useState("");
-  const { userName, IsAuthenticated, handleLogout, logoutSuccess,isOwnerAuthenticated,ownerName } = useAuth();
- 
+  const {
+    userName,
+    IsAuthenticated,
+    handleLogout,
+    logoutSuccess,
+    isOwnerAuthenticated,
+    ownerName,
+  } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     document.title = "Find your nearest paying guest";
@@ -44,235 +46,260 @@ function HomePage() {
   }, [location.state?.message]);
 
   useEffect(() => {
-    if (IsAuthenticated ) {
-      try {
-        // Decode token
-
-        console.log("user name:", userName);
-      }
-       catch (error) {
-        console.error("Error decoding or accessing token:", error);
-      }
-    }else if(isOwnerAuthenticated){
-      try {
-        // Decode token
-
-        console.log("user name:", ownerName);
-       
-      }
-       catch (error) {
-        console.error("Error decoding or accessing token:", error);
-      }
-    }
-     else {
-      console.error("Token is not present in cookies");
-    }
-  }, [IsAuthenticated, userName,isOwnerAuthenticated,ownerName]);
-  useEffect(() => {
     const storedLogoutStatus = localStorage.getItem("logoutStatus");
     if (storedLogoutStatus) {
       setLogoutStatus(storedLogoutStatus);
       setTimeout(() => {
         localStorage.removeItem("logoutStatus");
-        setLogoutStatus(""); // Clear the state as well
+        setLogoutStatus("");
       }, 5000);
     }
   }, []);
+
   const handleLogoutClick = () => {
     handleLogout();
   };
 
   return (
-    <body>
-      <section className="first-section">
-        <header>
-          <div className="Container">
-            <div className="easypg">
-              Easy<span className="nunu">Pg</span>
-            </div>
-            <div className="mid_div">
-              <div className="home">Home</div>
-              <div className="about">About</div>
-              <div className="service">Service</div>
-              <div className="contact_us">Contact us</div>
-            </div>
-            {IsAuthenticated || isOwnerAuthenticated ? (
-              <>
-                <div
-                  className="imageProfile"
-                  onClick={() => setShowDropdown(!showDropdown)}
-                >
-                  <UserProfile />
-
-                  <div className="dropdown-content">
-                    <p className=""  > <Link  style={{fontSize:"16  px"}} to="/UserDashboard">Profile</Link></p>
-                    <hr className="HR" />
-                    <p className="logoutuser" onClick={handleLogoutClick}>
-                      Log Out
-                    </p>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="login-box">
-                <p className="login-text">
-                  {" "}
-                  <Link
-                    style={{
-                      textDecoration: "none",
-                      color: "white",
-                      fontSize: "14px",
-                    }}
-                    to="/ProviderSeeker"
-                  >
-                    Login
-                  </Link>
-                </p>
-              </div>
-            )}
+    <div className="text-gray-800">
+      {/* Header Section */}
+      <header className="bg-white shadow-md sticky top-0 z-10 lg:pl-24 lg:pr-24 md:pl-16 md:pr-16 sm:pl-4 sm:pr-4">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <div className="text-2xl font-bold text-[#2CA4B5]">MessMate</div>
           </div>
-        </header>
-        <div
-          style={{
-            position: "absolute",
-            textAlign: "center",
-            height: "auto",
-            width: "100%",
-          }}
-        >
-          {message && (
-            <div style={{ color: "green", fontSize: "20px" }}>
-              <p>
-                <FlashMessage message={message} />
-              </p>
-            </div>
-          )}
-        </div>
-        <div
-          style={{
-            position: "absolute",
-            textAlign: "center",
-            height: "auto",
-            width: "100%",
-          }}
-        >
-          {logoutSuccess && (
-            <div style={{ color: "green", fontSize: "20px" }}>
-              Successfully logged out!
-            </div>
-          )}
-        </div>
-        <div
-          style={{
-            position: "absolute",
-            textAlign: "center",
-            height: "auto",
-            width: "100%",
-          }}
-        >
-          {logoutStatus && (
-            <div style={{ color: "green", fontSize: "20px" }}>
-              {logoutStatus}
-            </div>
-          )}
-        </div>
+          <nav className="hidden md:flex space-x-6">
+          <a href="#home" className="hover:text-blue-600">
+             Home
+              </a>
+            <a href="#about" className="hover:text-blue-600">
+              About
+            </a>
+            <a href="#services" className="hover:text-blue-600">
+              Services
+            </a>
+            <a href="#contact" className="hover:text-blue-600">
+              Contact Us
+            </a>
+          </nav>
+          <Link to="/ProviderSeeker">
+  <button className="hidden md:block border-2 border-black px-4 py-2 rounded-full text-black hover:bg-gray-100">
+    Login
+  </button>
+</Link>
 
-        <div className="body_container">
-          <div>
-            <div>
-              <p>Find Mess Near Your University</p>
-            </div>
-            <div className="searchbox">
-              <input
-                type="search"
-                id="search"
-                placeholder="Enter Location"
-                value={searchItem}
-                onChange={(e) => setSearchItem(e.target.value)}
+          <button
+            className="md:hidden text-gray-600 focus:outline-none"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16m-7 6h7"
               />
-              <input type="submit" value="&rarr;" onClick={performSearch} />
-              <Link
-                style={{
-                  textDecoration: "none",
-                  color: "white",
-                  fontSize: "13px",
-                }}
-                to="/MessFind"
-              >
-                Login
-              </Link>
-            </div>
-          </div>
-          <div className="image_container">
-            <img src="/assets/home.png" alt="logo" />
+            </svg>
+          </button>
+          <div
+            className={`${
+              menuOpen ? "block" : "hidden"
+            } absolute top-16 left-0 w-full bg-white shadow-md md:hidden`}
+          >
+            <nav className="flex flex-col space-y-2 p-4">
+            <a href="#home" className="hover:text-blue-600">
+             Home
+              </a>
+              <a href="#about" className="hover:text-blue-600">
+                About
+              </a>
+              <a href="#services" className="hover:text-blue-600">
+                Services
+              </a>
+              <a href="#contact" className="hover:text-blue-600">
+                Contact Us
+              </a>
+            </nav>
           </div>
         </div>
-      </section>
-      <section className="about-section">
-        <div className="about-us-container">
-          <div className="about-us-text">About us</div>
-          <div className="abouttt">
-            <div className="about-us">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum
-              enim similique aperiam aliquam incidunt sunt cupiditate nihil quo
-              blanditiis doloribus, tempora harum, fugit consectetur dolorem
-              asperiores? Modi libero perspiciatis magni?
+      </header>
+
+      {/* Hero Section */}
+      <section id="home" className="bg-gray-50 pt-28 lg:pl-24 lg:pr-24 md:pl-16 md:pr-16 sm:pl-4 sm:pr-4">
+        <div className="grid sm:grid-cols-2 items-center gap-8">
+          {/* Text Content */}
+          <div className="text-center md:text-left">
+            <h1 className="text-4xl font-bold mb-4">
+              Find Your Perfect Student Home -{" "}
+              <span className="text-[#2CA4B5]">Hassle-Free!</span>
+            </h1>
+            <p className="text-gray-600 mb-6">
+              Search for Student Accommodation Website
+            </p>
+            <div className="relative max-w-lg mx-auto sm:mx-0 pl-[2rem] pr-[2rem]">
+              <input
+                type="text"
+                placeholder="Search city or University"
+                className="w-full border border-gray-300 rounded-full py-3 px-6 pr-20 focus:outline-none focus:ring-2 focus:ring-[#2CA4B5]"
+              />
+              <button className="absolute bg-[#2CA4B5] rounded-full h-[35px] w-[35px] top-[7px] right-[41px]"></button>
             </div>
-            <div className="learn-more">Learn More &rarr;</div>
           </div>
-          <div className="about-image">
-            <img src="/assets/About_image.png" alt="idk" />
+          {/* Image */}
+          <div className="flex justify-center">
+            <img
+              src="/assets/hero.png"
+              alt="Student"
+              className="w-full max-w-sm rounded-md"
+            />
           </div>
         </div>
       </section>
 
-      <section className="last-section">
-        <div className="last-section-container">
-          <div className="col1">
-            <ul>
-              <li className="footereasypg">
-                Easy <span className="nunu">Pg</span>
-              </li>
-              <li>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Temporibus nobis sequi expedita possimus vel reprehenderit
-                nulla, atque reiciendis ex fugit quod. Dicta, consectetur?
-                Tempora sunt delectus aperiam sed soluta atque.
-              </li>
-            </ul>
+      {/* Features Section */}
+      <section className="bg-blue-50 py-16">
+        <div className="container mx-auto px-4 grid md:grid-cols-3 gap-8 text-center lg:pl-24 lg:pr-24 md:pl-16 md:pr-16 sm:pl-4 sm:pr-4">
+          <div>
+            <img
+              src="/assets/online-booking 1.png"
+              alt="Easy Booking"
+              className="mx-auto mb-4"
+            />
+            <h3 className="font-semibold text-lg">Quick & easy bookings</h3>
+            <p className="text-gray-500">
+              Secure your room in no time with hassle-free instant booking
+            </p>
           </div>
-          <div className="col2">
-            <ul>
-              <li className="first-item">Company</li>
-              <li>Careers</li>
-              <li>About Us</li>
-              <li>For Partners</li>
-              <li>Terms</li>
-              <li>Privacy Policy</li>
-              <li>Contact Us</li>
-            </ul>
+          <div>
+            <img
+              src="/assets/choice 1.png"
+              alt="Trusted Listings"
+              className="mx-auto mb-4"
+            />
+            <h3 className="font-semibold text-lg">The widest choice</h3>
+            <p className="text-gray-500">
+              Browse verified, affordable student rooms close to university
+            </p>
           </div>
-          <div className="col2">
-            <ul>
-              <li className="first-item">SUPPORT</li>
-              <li>FAQe</li>
-              <li>Contact Us</li>
-            </ul>
-          </div>
-          <div className="col2">
-            <ul>
-              <li className="first-item">QUICK LINK</li>
-              <li>Terms</li>
-              <li>Privacy Policy</li>
-            </ul>
-          </div>
-          <div className="footer-text">
-            copyright 2024 - All Right Reserved by{" "}
-            <span className="Easyp-pv-ltd">Easypg.pv.ltd</span>
+          <div>
+            <img
+              src="/assets/support 1.png"
+              alt="24/7 Support"
+              className="mx-auto mb-4"
+            />
+            <h3 className="font-semibold text-lg">We’re here to help</h3>
+            <p className="text-gray-500">
+              Reach out to our friendly team of experts who are always on hand
+            </p>
           </div>
         </div>
       </section>
-    </body>
+
+      {/* Cities Section */}
+      <section className="bg-gray-50 py-16 lg:pl-24 lg:pr-24 md:pl-16 md:pr-16 sm:pl-4 sm:pr-4">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl font-bold text-center mb-8">
+            Explore Popular Student Cities
+          </h2>
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {[
+              "Mumbai",
+              "Pune",
+              "Bangalore",
+              "Delhi",
+              "Kolkata",
+              "Hyderabad",
+              "Chennai",
+              "Ahmedabad",
+            ].map((city) => (
+              <div
+                key={city}
+                className="bg-white shadow-md rounded-md p-4 text-center"
+              >
+                <img
+                  src={`/images/cities/${city.toLowerCase()}.jpg`}
+                  alt={city}
+                  className="w-full h-32 object-cover rounded-md mb-4"
+                />
+                <h3 className="text-lg font-semibold">{city}</h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="bg-white py-16 lg:pl-24 lg:pr-24 md:pl-16 md:pr-16 sm:pl-4 sm:pr-4">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-2xl font-bold mb-4 text-center md:text-left">
+            About
+          </h2>
+          <h3 className="text-2xl font-bold mb-4 mt-16 text-center md:text-left ">
+            Welcome to <span className="text-[#2CA4B5]">MessMate!</span>
+          </h3>
+          <p className="text-gray-600 mb-6  mt-8 text-center md:text-left ">
+            We are more than just an app—we are a community committed to
+            simplifying the lives of college students. At MessMate, we believe
+            that finding a comfortable and affordable place to live shouldn’t be
+            a hassle, especially for students starting a new chapter away from
+            home.
+          </p>
+          <button className="flex items-center justify-center md:block border-2 border-black px-4 py-2 rounded-full text-black hover:bg-gray-100 ">
+            <span>Learn more</span>
+            <img src="/assets/Vector 13.png" alt="Arrow" className="ml-2 h-5 w-[4.25rem]" />
+          </button>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section id="services" className="bg-gray-50 py-16 lg:pl-24 lg:pr-24 md:pl-16 md:pr-16 sm:pl-4 sm:pr-4">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl font-bold text-center mb-8">Services</h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="font-semibold text-lg">Why MesaMate?</h3>
+              <ul className="list-disc pl-6 text-gray-600">
+                <li>1000+ Listings</li>
+                <li>Reliable accommodations</li>
+                <li>Easy to use platform</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold text-lg">How It Works</h3>
+              <ul className="list-disc pl-6 text-gray-600">
+                <li>Search for a property</li>
+                <li>Contact the landlord</li>
+                <li>Book your stay</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="bg-white py-16 lg:pl-24 lg:pr-24 md:pl-16 md:pr-16 sm:pl-4 sm:pr-4">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-2xl font-bold mb-4">Contact Us - MesaMate App</h2>
+          <p className="text-gray-600 mb-4">
+            Have questions or need assistance? Get in touch with us via the app
+            or email.
+          </p>
+          <button className="bg-blue-600 text-white px-6 py-2 rounded-md">
+            Download App
+          </button>
+        </div>
+      </section>
+
+      <footer className="bg-gray-900 text-white py-4 text-center">
+        <p>&copy; 2024 MessMate. All rights reserved.</p>
+      </footer>
+    </div>
   );
 }
 
