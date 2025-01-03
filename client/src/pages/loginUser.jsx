@@ -387,7 +387,7 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
         <button
           type="button"
           onClick={toggleNewPasswordVisibility}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"
+          className="absolute right-4 top-[37%] transform -translate-y-1/2 text-gray-500"
         >
           {isNewPasswordVisible ? "🙈" : "👁️"}
         </button>
@@ -405,7 +405,7 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
         <button
           type="button"
           onClick={toggleConfirmPasswordVisibility}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"
+          className="absolute right-4 top-[37%] transform -translate-y-1/2 text-gray-500"
         >
           {isConfirmPasswordVisible ? "🙈" : "👁️"}
         </button>
