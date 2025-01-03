@@ -4,7 +4,7 @@ import Dropdown from "../components/dropdown";
 import Toggle from "../components/toggle";
 import Map from "../components/map";
 
-const FilterModal = ({ isOpen, onClose, price, setPrice, amenities, featureChanges }) => {
+const FilterModal = ({ isOpen, onClose, price, setPrice, amenities, featureChanges, onApplyFilters }) => {
   if (!isOpen) return null;
 
   return (
@@ -41,14 +41,12 @@ const FilterModal = ({ isOpen, onClose, price, setPrice, amenities, featureChang
               {facility.label}
             </label>
           ))}
-
-
         </div>
-        {/* Close Button */}
+        {/* Apply Filters Button */}
         <div className="mt-6 flex justify-end">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded shadow"
-            onClick={onClose}
+            onClick={onApplyFilters} // Call onApplyFilters when button is clicked
           >
             Apply Filters
           </button>
@@ -64,6 +62,7 @@ const NewMessFind = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [coordinates, setCoordinates] = useState({ lat: 0, lng: 0 });
   const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [tempCheckFeatures, setTempCheckFeatures] = useState([]);
 
   const handleCoordinatesChange = (newCoords) => {
     setCoordinates(newCoords);
@@ -86,10 +85,16 @@ const NewMessFind = () => {
   const featureChanges = (e) => {
     const { value, checked } = e.target;
     if (checked) {
-      setCheckFestures([...checkFeatures, value]);
+      setTempCheckFeatures([...tempCheckFeatures, value]);
     } else {
-      setCheckFestures(checkFeatures.filter((feature) => feature !== value));
+      setTempCheckFeatures(tempCheckFeatures.filter((feature) => feature !== value));
     }
+  };
+
+  const onApplyFilters = () => {
+    setCheckFestures(tempCheckFeatures);  // Update the main state with tempCheckFeatures
+    console.log("Applied filters: ", tempCheckFeatures); // Handle sending the checkFeatures data
+    setFilterModalOpen(false); // Close modal after applying
   };
 
   return (
@@ -127,13 +132,12 @@ const NewMessFind = () => {
                 {facility.label}
               </label>
             ))}
-
             <button
-            className="bg-blue-500 text-white px-4 py-2 rounded shadow w-1/2 left-1/4 relative"
-          >
-            Apply Filters
-          </button>
-
+              className="bg-blue-500 text-white px-4 py-2 rounded shadow w-1/2 left-1/4 relative"
+              onClick={onApplyFilters}
+            >
+              Apply Filters
+            </button>
           </div>
         </div>
       </div>
@@ -159,9 +163,9 @@ const NewMessFind = () => {
         </div>
         {/* Listings */}
         <div className="mt-6 flex flex-col gap-6">
-        <div className="text-lg font-bold md:hidden">
+          <div className="text-lg font-bold md:hidden">
             20 Mess in Simhat, Nadia, West Bengal, India
-        </div>
+          </div>
           <div style={{ display: isChecked ? "flex" : "block" }}>
             <MessBars
               checkFeatures={checkFeatures}
@@ -182,13 +186,10 @@ const NewMessFind = () => {
         setPrice={setPrice}
         amenities={amenities}
         featureChanges={featureChanges}
+        onApplyFilters={onApplyFilters} // Pass onApplyFilters function as a prop
       />
-
-           
-
     </div>
   );
 };
 
 export default NewMessFind;
-
