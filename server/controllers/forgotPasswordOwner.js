@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
-const User = require("../modules/PgOwner"); // Adjust path to your User model
+const User =  require("../modules/pgProvider");
 require("dotenv").config();
 
 const USER_EMAIL = process.env.USER_EMAIL;

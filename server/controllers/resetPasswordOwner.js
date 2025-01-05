@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const User = require("../modules/pgOwner");
+const User =  require("../modules/pgProvider");
 
 const resetPasswordUser = async (req, res) => {
   const { token, password } = req.body;
