@@ -37,13 +37,7 @@
 import React, { useState } from 'react';
 
 function Dropdown() {
-  //const [text, setText] = useState('Sort By');
   const [display, setDisplay] = useState(false);
-
-  const changeText = ({/*newText*/}) => {
-  //  setText(newText);
-    setDisplay(false);
-  };
 
   const toggleDisplay = () => {
     setDisplay(!display);
@@ -57,31 +51,35 @@ function Dropdown() {
 
   return (
     <nav className="relative">
+      {/* Dropdown Button with only the icon */}
       <button
         onClick={toggleDisplay}
-        className="flex items-center justify-between  px-4 py-2 rounded-md text-sm font-semibold text-white w-full md:w-auto"
+        className="flex items-center justify-between px-4 py-2 rounded-md text-sm font-semibold text-white w-full md:w-auto"
       >
-        {/* {text} */}
         <img
-          src="./assets/dropdoown.png"
+          src="./assets/dropdoown.png" // Use your dropdown icon here
           alt="Dropdown"
-          className="w-4 h-4 ml-2"
+          className="w-4 h-4"
         />
       </button>
 
+      {/* Dropdown List */}
       <ul
         className={`${
           display ? 'block' : 'hidden'
-        } absolute bg-white shadow-lg rounded-md w-full mt-2 z-10 md:w-48`}
+        } absolute bg-white shadow-lg rounded-md w-full mt-2 z-10 md:w-48 md:absolute md:left-0`}
       >
         {dropdownData.map((val) => (
           <li key={val.name}>
             <a
               href="#0"
-              onClick={() => changeText(val.name)}
+              onClick={() => setDisplay(false)} // Close dropdown after selection
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#2ca4b5] hover:text-white"
             >
-              {val.name}
+              <div className="flex items-center space-x-2">
+                {/* Option text */}
+                <span>{val.name}</span>
+              </div>
             </a>
           </li>
         ))}
