@@ -37,13 +37,13 @@
 import React, { useState } from 'react';
 
 function Dropdown() {
-  const [text, setText] = useState('Sort By');
+  //const [text, setText] = useState('Sort By');
   const [display, setDisplay] = useState(false);
 
-  const changeText = (newText) => {
-    setText(newText);
-    setDisplay(false);
-  };
+  // const changeText = (newText) => {
+  //   setText(newText);
+  //   setDisplay(false);
+  // };
 
   const toggleDisplay = () => {
     setDisplay(!display);
@@ -61,7 +61,7 @@ function Dropdown() {
         onClick={toggleDisplay}
         className="flex items-center justify-between bg-[#2ca4b5] px-4 py-2 rounded-md text-sm font-semibold text-white w-full md:w-auto"
       >
-        {text}
+        {/* {text} */}
         <img
           src="./assets/dropdoown.png"
           alt="Dropdown"
@@ -78,10 +78,10 @@ function Dropdown() {
           <li key={val.name}>
             <a
               href="#0"
-              onClick={() => changeText(val.name)}
+              //onClick={() => changeText(val.name)}
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#2ca4b5] hover:text-white"
             >
-              
+              {val.name}
             </a>
           </li>
         ))}
