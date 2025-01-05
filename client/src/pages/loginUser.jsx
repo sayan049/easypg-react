@@ -342,7 +342,7 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
       </div>
       {isForgotPasswordOpen && (
   <div className="fixed top-0 left-0 z-50 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
-    <div className="bg-white rounded-lg shadow-xl w-96 p-6">
+    <div className="bg-white rounded-lg shadow-xl w-[22rem] p-6">
       <h2 className="text-xl font-semibold mb-4">Forgot Password</h2>
       <input
         type="email"
@@ -372,7 +372,7 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 {/* Reset Password Form */}
 {resetToken && tokenValid && (
   <div className="fixed top-0 left-0 z-50 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
-    <div className="bg-white rounded-lg shadow-xl w-96 p-6">
+    <div className="bg-white rounded-lg shadow-xl w-[22rem] p-6">
       <h2 className="text-xl font-semibold mb-4">Reset Password</h2>
       
       {/* New Password Input */}
