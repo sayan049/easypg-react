@@ -51,25 +51,24 @@ function Dropdown() {
 
   return (
     <nav className="relative">
-      {/* Dropdown Button with only the icon */}
+      {/* Dropdown Button */}
       <button
         onClick={toggleDisplay}
-        className="flex items-center justify-between px-4 py-2 rounded-md text-sm font-semibold text-white w-full md:w-auto"
+        className="flex items-center justify-between px-4 py-2 rounded-md text-sm font-semibold text-gray-700 bg-white border border-gray-300 w-full md:w-auto"
       >
+        <span>Sort By</span>
         <img
           src="./assets/down-arrow.png" // Use your dropdown icon here
           alt="Dropdown"
-          className="w-4 h-4"
+          className="w-4 h-4 ml-2"
         />
-        
-        
       </button>
 
       {/* Dropdown List */}
       <ul
         className={`${
           display ? 'block' : 'hidden'
-        } absolute bg-white shadow-lg rounded-md w-full mt-2 z-10 md:w-48 md:absolute md:left-0`}
+        } absolute bg-white shadow-lg rounded-md w-full mt-2 z-10 md:w-48 md:left-0`}
       >
         {dropdownData.map((val) => (
           <li key={val.name}>
