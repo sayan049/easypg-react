@@ -40,7 +40,7 @@ function Dropdown() {
   //const [text, setText] = useState('Sort By');
   const [display, setDisplay] = useState(false);
 
-  const changeText = (newText) => {
+  const changeText = ({/*newText*/}) => {
   //  setText(newText);
     setDisplay(false);
   };
