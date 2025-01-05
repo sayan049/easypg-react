@@ -25,7 +25,7 @@ const sessionConfig = session({
     httpOnly: true,
     secure: process.env.NODE_ENV === "production", // Enable secure cookies in production
     maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", // Adjust for cross-origin
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   },
 });
 
