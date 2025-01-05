@@ -81,7 +81,7 @@ function Dropdown() {
               onClick={() => changeText(val.name)}
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#2ca4b5] hover:text-white"
             >
-              {val.name}
+              
             </a>
           </li>
         ))}
