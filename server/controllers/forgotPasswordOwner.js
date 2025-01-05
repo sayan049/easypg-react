@@ -19,7 +19,7 @@ const forgotPasswordUser = async (req, res) => {
     }
 
     // Check if user is verified
-    if (!user.is_verified) {
+    if (!user.is_verified_Owner) {
       return res.status(403).json({ message: "User account is not verified." });
     }
     if (user.googleId) {
@@ -42,7 +42,7 @@ const forgotPasswordUser = async (req, res) => {
     });
 
     // Construct reset URL for the user
-    const resetUrl = `https://easypg-react-client.onrender.com/LoginUser?resetToken=${resetToken}`;
+    const resetUrl = `https://easypg-react-client.onrender.com/LoginOwner?resetToken=${resetToken}`;
 
 
     const mailOptions = {

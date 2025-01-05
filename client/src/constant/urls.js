@@ -17,5 +17,8 @@ export const forgotPasswordUserUrl = `${baseUrl}/auth/user/forgot-password`;
 export const resetPasswordUserUrl = `${baseUrl}/auth/user/reset-password`;
 export const tokenVerifyUserUrl = `${baseUrl}/auth/LoginUser/user/reset-password/:resetToken`;
 
+export const forgotPasswordOwnerUrl = `${baseUrl}/auth/owner/forgot-password`;
+export const resetPasswordOwnerUrl = `${baseUrl}/auth/owner/reset-password`;
+export const tokenVerifyOwnerUrl = `${baseUrl}/auth/LoginOwner/owner/reset-password/:resetToken`;
 
 export const baseurl =`${baseUrl}`;

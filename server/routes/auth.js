@@ -6,6 +6,8 @@ const ensureAuthenticated = require("../middleware/is-auth");
 const updateDetailshandler =require("../controllers/updateDetails")
 const forgotPasswordUser = require("../controllers/forgotPasswordUser")
 const resetPasswordUser = require("../controllers/resetPasswordUser")
+const forgotPasswordOwner = require("../controllers/forgotPasswordOwner")
+const resetPasswordOwner = require("../controllers/resetPasswordOwner")
 const jwt = require('jsonwebtoken');
 router.post("/signup", authHandlers.signupHandler);
 router.post("/login", authHandlers.loginHandler);
@@ -74,5 +76,28 @@ router.get('/LoginUser/user/reset-password/:resetToken', (req, res) => {
 
 
 router.post("/user/reset-password",resetPasswordUser);
+//----------------------------------------------------------------------------------->
+router.post("/owner/forgot-password", forgotPasswordOwner);
+router.get('/LoginOwner/owner/reset-password/:resetToken', (req, res) => {
+  const resetToken = req.params.resetToken;
+
+  // Verify the token
+  jwt.verify(resetToken, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(400).json({ message: 'Invalid or expired token' });
+    }
+
+    // Send the URL to the frontend instead of redirecting
+    return res.json({
+      message: 'Token is valid',
+      resetUrl: `https://easypg-react-client.onrender.com/LoginUser?resetToken=${resetToken}`,
+    });
+  });
+});
+
+
+
+router.post("/owner/reset-password",resetPasswordOwner);
+
 
 module.exports = router;

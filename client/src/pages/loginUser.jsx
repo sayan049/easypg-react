@@ -43,7 +43,23 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
     }
   }, [searchParams]);
   
+    // useEffect(() => {
+    //   // Check if the message should be displayed based on localStorage
+    //   const storedMessage = localStorage.getItem("loginMessage");
+    //   if (storedMessage) {
+    //     setMessage(location.state?.message || "");
+    //   }
   
+    //   // Remove the message after 5 seconds
+    //   const timer = setTimeout(() => {
+    //     setMessage("");
+    //     localStorage.removeItem("loginMessage");
+    //   }, 5000);
+  
+    //   return () => clearTimeout(timer);
+    // }, [location.state?.message]);
+  
+ 
 
   // useEffect(() => {
   //   const params = new URLSearchParams(location.search);
