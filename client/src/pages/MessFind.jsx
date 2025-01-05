@@ -150,10 +150,10 @@ const MessFind = () => {
             20 Mess in Simhat, Nadia, West Bengal, India
           </h2>
           <div className="flex items-center gap-4">
-          <Dropdown className='hidden md:block'/>
+          
             <Toggle isChecked={isChecked} setIsChecked={setIsChecked} />
             <span>Map View</span>
-            
+            <Dropdown className='hidden md:block'/>
             {/* <button
               className="bg-blue-500 text-white px-4 py-2 rounded shadow md:hidden"
               onClick={() => setFilterModalOpen(true)}
