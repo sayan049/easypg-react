@@ -292,7 +292,7 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
               className="w-full  flex items-center justify-center  py-2 rounded-full hover:bg-[#0511121a] bg-[#116e7b1a]"
             >
               <img
-                src="/assets/googleicon.png"
+                src="/assets/googleIcon.png"
                 alt="Google"
                 className="w-6 h-6 mr-2 text-gray-600"
               />
