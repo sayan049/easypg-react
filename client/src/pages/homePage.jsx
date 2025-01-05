@@ -27,7 +27,7 @@ function HomePage() {
 
   const performSearch = () => {
     alert("Searching for: " + searchItem);
-    navigate("/newMessFind");
+    navigate("/MessFind");
   };
 
   useEffect(() => {
