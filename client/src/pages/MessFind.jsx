@@ -56,7 +56,7 @@ const FilterModal = ({ isOpen, onClose, price, setPrice, amenities, featureChang
   );
 };
 
-const NewMessFind = () => {
+const MessFind = () => {
   const [price, setPrice] = useState(1500);
   const [checkFeatures, setCheckFestures] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
@@ -198,4 +198,4 @@ const NewMessFind = () => {
   );
 };
 
-export default NewMessFind;
+export default MessFind;
