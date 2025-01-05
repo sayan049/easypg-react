@@ -152,7 +152,7 @@ const MessFind = () => {
           <div className="flex items-center gap-4">
             <Toggle isChecked={isChecked} setIsChecked={setIsChecked} />
             <span>Map View</span>
-            <Dropdown/>
+            <Dropdown className='hidden md:block'/>
             {/* <button
               className="bg-blue-500 text-white px-4 py-2 rounded shadow md:hidden"
               onClick={() => setFilterModalOpen(true)}
