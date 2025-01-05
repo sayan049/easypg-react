@@ -70,7 +70,7 @@ root.render(
               </ProtectedRoute>
             }
           />
-          <Route path="/MessFind" element={<NewMessFind />} />
+          <Route path="/MessFind" element={<MessFind />} />
           <Route path="/MailVerify" element={<MailVerify />} />
           <Route path="/MailVerifyOwner" element={<MailVerifyOwner />} />
           <Route
