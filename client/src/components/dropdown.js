@@ -41,7 +41,7 @@ function Dropdown() {
   const [display, setDisplay] = useState(false);
 
   const changeText = (newText) => {
-    setText(newText);
+  //  setText(newText);
     setDisplay(false);
   };
 
