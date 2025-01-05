@@ -56,15 +56,13 @@ function Dropdown() {
         onClick={toggleDisplay}
         className="flex items-center justify-between px-4 py-2 rounded-md text-sm font-semibold text-white w-full md:w-auto"
       >
-        {/* <img
-          src="./assets/dropdoown.png" // Use your dropdown icon here
+        <img
+          src="./assets/down-arrow.png" // Use your dropdown icon here
           alt="Dropdown"
           className="w-4 h-4"
-        /> */}
-        <a href="https://www.flaticon.com/free-icons/down-arrow" title="down arrow icons"
-         className="w-4 h-4">
-          
-         </a>
+        />
+        
+        
       </button>
 
       {/* Dropdown List */}
