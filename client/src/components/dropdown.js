@@ -59,7 +59,7 @@ function Dropdown() {
     <nav className="relative">
       <button
         onClick={toggleDisplay}
-        className="flex items-center justify-between bg-gray-200 px-4 py-2 rounded-md text-sm font-semibold text-gray-700 w-full md:w-auto"
+        className="flex items-center justify-between bg-[#2ca4b5] px-4 py-2 rounded-md text-sm font-semibold text-white w-full md:w-auto"
       >
         {text}
         <img
@@ -79,7 +79,7 @@ function Dropdown() {
             <a
               href="#0"
               onClick={() => changeText(val.name)}
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#2ca4b5] hover:text-white"
             >
               {val.name}
             </a>
