@@ -161,6 +161,7 @@ const NewMessFind = () => {
             </button> */}
             <img
             className="md:hidden"
+            alt="x"
             src="/assets/filter 1.png"
             onClick={() => setFilterModalOpen(true)}
             />
