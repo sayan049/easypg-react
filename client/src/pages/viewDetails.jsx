@@ -129,10 +129,23 @@ const ViewDetails = () => {
           </p>
 
           {/* Amenities */}
+          {/* <div className="flex flex-wrap gap-4 mb-6">
+            {Array.isArray(owner?.facility) &&
+              owner.facility.map((element, index) => (
+
+                <div className="flex items-center space-x-2" key={index}>
+                  <span className="text-blue-500">&#x1F6BF;</span>
+                  <p>{element}</p>
+                </div>
+              ))}
+          </div> */}
+          {/* Amenities */}
 <div className="flex flex-wrap gap-4 mb-6">
   {Array.isArray(owner?.facility) &&
     amenities
-      .filter((amenity) => owner.facility.includes(amenity.label)) // Match amenities
+      .filter((amenity) =>
+        owner.facility[0].split(",").includes(amenity.label) // Split and match
+      )
       .map((amenity) => (
         <div className="flex items-center space-x-2" key={amenity.id}>
           <span className="text-blue-500">{amenity.icon}</span>
@@ -140,6 +153,7 @@ const ViewDetails = () => {
         </div>
       ))}
 </div>
+
 
 
           {/* About Section */}
