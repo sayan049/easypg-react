@@ -68,9 +68,9 @@ function StickyBookingCard() {
 
       {/* Right Section: Action */}
       <div className="flex items-center gap-4">
-        <div className="flex items-center bg-green-500 text-white text-sm font-semibold px-3 py-1 rounded-full shadow">
+        {/* <div className="flex items-center bg-green-500 text-white text-sm font-semibold px-3 py-1 rounded-full shadow">
           <span className="mr-2">📍</span> Sayan Patra
-        </div>
+        </div> */}
         <button className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded shadow">
           Confirm Booking
         </button>
