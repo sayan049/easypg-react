@@ -42,7 +42,7 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
       setLoading(false); // Stop loading if no token
     }
   }, [searchParams]);
-  
+
     // useEffect(() => {
     //   // Check if the message should be displayed based on localStorage
     //   const storedMessage = localStorage.getItem("loginMessage");
@@ -60,6 +60,7 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
     // }, [location.state?.message]);
   
  
+
 
   // useEffect(() => {
   //   const params = new URLSearchParams(location.search);
@@ -103,6 +104,7 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
   const loginHandler = async (event) => {
     event.preventDefault();
     const jsonData = { email, password };
+
   
     try {
       setIsSubmitting(true);
@@ -122,6 +124,7 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
         localStorage.setItem("sId_message", message);
   
         // Navigate to homepage or another page after successful login
+
         navigate("/", { state: { message: message } });
         window.location.reload();
       }
@@ -134,7 +137,7 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
       }, 5000);
     }
   };
-  
+
 
   const loginwithgoogle = () => {
     window.location.href = `${baseurl}/auth/google?state=` + encodeURIComponent(JSON.stringify({ type: "student" }));
@@ -313,7 +316,9 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
               className="w-full  flex items-center justify-center  py-2 rounded-full hover:bg-[#0511121a] bg-[#116e7b1a]"
             >
               <img
+
                 src="/assets/googleIcon.png"
+
                 alt="Google"
                 className="w-6 h-6 mr-2 text-gray-600"
               />
@@ -363,7 +368,9 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
       </div>
       {isForgotPasswordOpen && (
   <div className="fixed top-0 left-0 z-50 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
+
     <div className="bg-white rounded-lg shadow-xl w-[22rem] p-6">
+
       <h2 className="text-xl font-semibold mb-4">Forgot Password</h2>
       <input
         type="email"
@@ -393,7 +400,9 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 {/* Reset Password Form */}
 {resetToken && tokenValid && (
   <div className="fixed top-0 left-0 z-50 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
+
     <div className="bg-white rounded-lg shadow-xl w-[22rem] p-6">
+
       <h2 className="text-xl font-semibold mb-4">Reset Password</h2>
       
       {/* New Password Input */}
@@ -408,7 +417,9 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
         <button
           type="button"
           onClick={toggleNewPasswordVisibility}
+
           className="absolute right-4 top-[37%] transform -translate-y-1/2 text-gray-500"
+
         >
           {isNewPasswordVisible ? "🙈" : "👁️"}
         </button>
@@ -426,7 +437,9 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
         <button
           type="button"
           onClick={toggleConfirmPasswordVisibility}
+
           className="absolute right-4 top-[37%] transform -translate-y-1/2 text-gray-500"
+
         >
           {isConfirmPasswordVisible ? "🙈" : "👁️"}
         </button>

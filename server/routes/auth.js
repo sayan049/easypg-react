@@ -6,12 +6,16 @@ const ensureAuthenticated = require("../middleware/is-auth");
 const updateDetailshandler =require("../controllers/updateDetails")
 const forgotPasswordUser = require("../controllers/forgotPasswordUser")
 const resetPasswordUser = require("../controllers/resetPasswordUser")
+
 const forgotPasswordOwner = require("../controllers/forgotPasswordOwner")
 const resetPasswordOwner = require("../controllers/resetPasswordOwner")
 const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+
+const jwt = require('jsonwebtoken');
+
 router.post("/signup", authHandlers.signupHandler);
 router.post("/login", authHandlers.loginHandler);
 router.post("/signupOwner", upload, authHandlers.signupHandlerOwner);
@@ -21,6 +25,7 @@ router.get("/findMess", authHandlers.findMess);
 // router.get("/protected", ensureAuthenticated, (req, res) => {
 //   res.json({ message: "This is a protected route", user: req.session.user });
 // });
+
 
 
 router.get("/check-session", (req, res) => {
@@ -79,6 +84,29 @@ router.get("/check-session", (req, res) => {
 });
 
 
+// =======
+// router.get("/check-session", (req, res) => {
+//   let user = null;
+//   let loginMethod = null;
+
+//   if (req.session && req.session.user) {
+    
+//     user = req.session.user;
+//     loginMethod = 'local';
+//   } else if (req.session && req.session.passport && req.session.passport.user) {
+    
+//     user = req.session.passport.user;
+//     loginMethod = 'google';
+//   }
+
+//   if (user) {
+//     res.status(200).json({ isAuthenticated: true, user, loginMethod });
+//   } else {
+//     res.status(401).json({ isAuthenticated: false });
+//   }
+// });
+
+// >>>>>>> 562532821bcb4ce984acab541a68e76985fb31bc
 router.post('/updateDetails',upload, updateDetailshandler.updateDetails);
 router.get('/get-details', updateDetailshandler.getDetails);
 
@@ -116,6 +144,7 @@ router.get('/LoginUser/user/reset-password/:resetToken', (req, res) => {
 
 
 router.post("/user/reset-password",resetPasswordUser);
+
 //----------------------------------------------------------------------------------->
 router.post("/owner/forgot-password", forgotPasswordOwner);
 router.get('/LoginOwner/owner/reset-password/:resetToken', (req, res) => {
@@ -138,6 +167,7 @@ router.get('/LoginOwner/owner/reset-password/:resetToken', (req, res) => {
 
 
 router.post("/owner/reset-password",resetPasswordOwner);
+
 
 
 module.exports = router;

@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation,useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { baseurl,loginOwnerUrl,forgotPasswordOwnerUrl,resetPasswordOwnerUrl,tokenVerifyOwnerUrl} from "../constant/urls";import "../designs/loginForMessOwner.css";
+
 
 
 function LoginOwner() {
@@ -17,6 +19,7 @@ function LoginOwner() {
   const [isFormFilled, setIsFormFilled] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Disable button after first click
+
     const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
     const [forgotEmail, setForgotEmail] = useState("");
     const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
@@ -53,6 +56,7 @@ function LoginOwner() {
       };
 
 
+
   useEffect(() => {
     // Check if the message should be displayed based on localStorage
     const storedMessage = localStorage.getItem("loginMessageOwner");
@@ -74,6 +78,7 @@ function LoginOwner() {
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
+
   const toggleNewPasswordVisibility = () => {
     setIsNewPasswordVisible(!isNewPasswordVisible);
   };
@@ -81,6 +86,7 @@ function LoginOwner() {
   const toggleConfirmPasswordVisibility = () => {
     setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
   };
+
 
   const loginHandlerOwner = async (event) => {
     event.preventDefault();
@@ -125,6 +131,7 @@ function LoginOwner() {
       encodeURIComponent(JSON.stringify({ type: "owner" }));
   };
 
+
   const openForgotPassword = () => {
     setIsForgotPasswordOpen(true);
   };
@@ -167,12 +174,11 @@ function LoginOwner() {
     }
   };
 
+
   useEffect(() => {
     setIsFormFilled(email && password);
   }, [email, password]);
   const isFormValid = isFormFilled && isChecked;
-
-
 
 
   return (
@@ -249,9 +255,11 @@ function LoginOwner() {
 
               {/* Forgot Password Link */}
               <a
+
                 
                 className="text-sm lg:text-sm text-[#2ca4b5] hover:underline whitespace-nowrap"
                 onClick={openForgotPassword} 
+
               >
                 Forgot Password?
               </a>
@@ -294,7 +302,9 @@ function LoginOwner() {
               className="w-full  flex items-center justify-center  py-2 rounded-full hover:bg-[#0511121a] bg-[#116e7b1a]"
             >
               <img
+
                 src="/assets/googleIcon.png"
+
                 alt="Google"
                 className="w-6 h-6 mr-2 text-gray-600"
               />
@@ -346,6 +356,7 @@ function LoginOwner() {
         <div  className="h-[23rem] w-[3.5rem] bg-column-owner absolute transform rotate-[150deg] rounded-full top-[22.5rem] right-[2rem]"></div>
         <div  className="h-[25.5rem] w-[3.5rem] bg-column-owner absolute transform rotate-[150deg] rounded-full top-[18rem] right-[0rem]"></div>
       </div>
+
       {isForgotPasswordOpen && (
   <div className="fixed top-0 left-0 z-50 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
     <div className="bg-white rounded-lg shadow-xl w-[22rem] p-6">
@@ -428,6 +439,7 @@ function LoginOwner() {
     </div>
   </div>
 )}
+
     </div>
   );
 }

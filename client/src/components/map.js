@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import 'ol/ol.css';
 import { Map, View } from 'ol';
@@ -10,6 +11,7 @@ import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import Style from 'ol/style/Style';
 import Icon from 'ol/style/Icon';
+
 
 function MapComponent({ isChecked, coordinates }) {
   const mapContainerStyle = {
