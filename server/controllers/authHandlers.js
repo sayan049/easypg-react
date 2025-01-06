@@ -50,6 +50,7 @@ exports.signupHandler = async (req, res) => {
 exports.loginHandler = async (req, res) => {
   const email = req.body.email;
   const pass = req.body.password;
+  console.log(email,password)
   try {
     const user = await User.findOne({ email });
     if (!user) {
