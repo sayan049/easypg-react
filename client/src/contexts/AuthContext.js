@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { baseurl } from '../constant/urls';
-import { useNavigate } from "react-router-dom";
+
 
 const AuthContext = createContext();
 
@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [owner, setOwner] = useState(null);
   const [loginMethod,setLoginMethod] =useState(null);
   const [type,setType] = useState(null);
-    const navigate = useNavigate();
+  
 
   useEffect(() => {
     const checkSession = async () => {
@@ -127,7 +127,7 @@ export const AuthProvider = ({ children }) => {
       if (!accessToken) {
         // If no access token is found, user is not logged in
         alert("You are not logged in.");
-        navigate("/login"); // Redirect to login page if not logged in
+       
         return;
       }
   
@@ -162,11 +162,11 @@ export const AuthProvider = ({ children }) => {
         setIsOwnerAuthenticated(false);
   
        
-        navigate("/");
+    
       } else {
         // If the token is invalid, show an error message
         alert("Your session has expired or is invalid. Please log in again.");
-        navigate("/");
+     
       }
     } catch (error) {
       console.error('Logout error:', error);
