@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { baseurl } from '../constant/urls';
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -11,11 +12,12 @@ export const AuthProvider = ({ children }) => {
   const [isOwnerAuthenticated, setIsOwnerAuthenticated] = useState(false);
   const [ownerName, setOwnerName] = useState(null);
   const [ownerImage, setOwnerImage] = useState(null);
-  const [logoutSuccess, setLogoutSuccess] = useState(false);
+  // const [logoutSuccess, setLogoutSuccess] = useState(false);
   const [user, setUser] = useState(null);
   const [owner, setOwner] = useState(null);
   const [loginMethod,setLoginMethod] =useState(null);
   const [type,setType] = useState(null);
+    const navigate = useNavigate();
 
   useEffect(() => {
     const checkSession = async () => {
@@ -119,38 +121,64 @@ export const AuthProvider = ({ children }) => {
 
   const handleLogout = async () => {
     try {
+      // Check if the user is logged in by verifying the JWT token in localStorage
+      const accessToken = localStorage.getItem("accessToken");
+  
+      if (!accessToken) {
+        // If no access token is found, user is not logged in
+        alert("You are not logged in.");
+        navigate("/login"); // Redirect to login page if not logged in
+        return;
+      }
+  
       setLoading(true);
+  
+      // Send request to backend to verify if the access token is valid
       const response = await fetch(`${baseurl}/auth/logout`, {
         method: 'GET',
-        credentials: 'include',
         headers: {
-          'Content-Type': 'application/json'
+          'Authorization': `Bearer ${accessToken}`, // Include the token in the Authorization header
+          'Content-Type': 'application/json',
         },
       });
-
-      if (!response.ok) throw new Error('Failed to log out');
-
-      setIsAuthenticated(false);
-      setIsOwnerAuthenticated(false);
-      setUserName(null);
-      setUserImage(null);
-      setOwnerName(null);
-      setOwnerImage(null);
-      setUser(null);
-      setOwner(null);
-      setLoginMethod(null);
-      setLogoutSuccess(true);
-      setType(null);
-      setTimeout(() => setLogoutSuccess(false), 3000);
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        // If the token is valid, clear the tokens from localStorage
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+  
+        // Reset user-related state
+        setIsAuthenticated(false);
+        setUser(null);
+        setUserName(null);
+        setUserImage(null);
+        setLoginMethod(null);
+        setType(null);
+        setOwner(null);
+        setOwnerName(null);
+        setOwnerImage(null);
+        setIsOwnerAuthenticated(false);
+  
+       
+        navigate("/");
+      } else {
+        // If the token is invalid, show an error message
+        alert("Your session has expired or is invalid. Please log in again.");
+        navigate("/");
+      }
     } catch (error) {
-      console.error('There has been a problem with your fetch operation:', error);
+      console.error('Logout error:', error);
+      alert('An error occurred while logging out. Please try again.');
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
-    <AuthContext.Provider value={{ IsAuthenticated, userName, userImage,user,owner,loginMethod,type, isOwnerAuthenticated, ownerName, ownerImage, setIsOwnerAuthenticated, setIsAuthenticated, handleLogout, logoutSuccess }}>
+    <AuthContext.Provider value={{ IsAuthenticated, userName, userImage,user,owner,loginMethod,type, isOwnerAuthenticated, ownerName, ownerImage, setIsOwnerAuthenticated, setIsAuthenticated, handleLogout }}>
       {!loading? children : <div>Loading...</div>}
     </AuthContext.Provider>
   );

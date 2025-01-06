@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 const authHandlers = require("../controllers/authHandlers");
 const upload = require("../middleware/upload");
-const ensureAuthenticated = require("../middleware/is-auth");
+
 const updateDetailshandler =require("../controllers/updateDetails")
 const forgotPasswordUser = require("../controllers/forgotPasswordUser")
 const resetPasswordUser = require("../controllers/resetPasswordUser")
-
+const authenticateJWT = require("../middleware/is-auth")
 const forgotPasswordOwner = require("../controllers/forgotPasswordOwner")
 const resetPasswordOwner = require("../controllers/resetPasswordOwner")
 const jwt = require('jsonwebtoken');
@@ -104,16 +104,10 @@ router.get("/check-session", (req, res) => {
 router.post('/updateDetails',upload, updateDetailshandler.updateDetails);
 router.get('/get-details', updateDetailshandler.getDetails);
 
-// router.get("/logout", (req, res) => {
-//   req.session.destroy((err) => {
-//     if (err) {
-//       console.error(err);
-//       return res.status(500).send({ error: "Failed to log out" });
-//     }
-//     res.clearCookie("connect.sid", { httpOnly: true });
-//     res.send("Logged out successfully.");
-//   });
-// });
+router.get("/logout", authenticateJWT, (req, res) => {
+    res.status(200).json({ message: "Logged out successfully." });
+});
+
 router.post("/user/forgot-password", forgotPasswordUser);
 // Assuming you're using Express.js
 
