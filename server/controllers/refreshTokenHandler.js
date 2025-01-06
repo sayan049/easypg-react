@@ -18,7 +18,7 @@ exports.refreshTokenHandler = async (req, res) => {
     const { id, type,loginMethod } = decoded;
     
     let user;
-    if (type === "user") {
+    if (type === "student") {
       user = await User.findById(id);
     } else if (type === "owner") {
       user = await PgOwner.findById(id);
