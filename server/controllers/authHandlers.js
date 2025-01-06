@@ -223,16 +223,17 @@ exports.loginHandlerOwner = async (req, res) => {
     if (passWordValid && pgOwner.is_verified_Owner === false) {
       console.log("Email not verified");
       return res.status(401).json({ message: "Invalid email or password." });
-    }
+    };
+    const loginMethod = 'local';
     const name=pgOwner.firstName+" "+pgOwner.lastName
     //jwt sign 
     const accessToken = jwt.sign(
-      { id: pgOwner._id,name:name, email: pgOwner.email, type: "owner" },
+      { id: pgOwner._id,name:name, email: pgOwner.email, type: "owner",loginMethod },
       JWT_SECRET,
       { expiresIn: "1h" } // Access token valid for 15 minutes
     );
     const refreshToken = jwt.sign(
-      { id: pgOwner._id,name:name, email: pgOwner.email, type: "owner" },
+      { id: pgOwner._id,name:name, email: pgOwner.email, type: "owner",loginMethod },
       JWT_REFRESH_SECRET,
       { expiresIn: "10d" } // Refresh token valid for 7 days
     );
