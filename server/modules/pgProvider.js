@@ -92,6 +92,7 @@ const pgOwnerSchema = new mongoose.Schema({
     type: Date,
     default:Date.now
   },
+  refreshToken: { type: String, default: null },
  
 });
 

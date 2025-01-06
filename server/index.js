@@ -10,7 +10,7 @@ const authRoutes = require('./routes/auth');
 const mailRoute = require('./routes/mailVerifierRoute');
 const mailVerifyOwner = require('./routes/mailVerifyOwner');
 const connectDB = require('./config/mongoDB');
-const sessionConfig = require('./config/sessionStore');
+// const sessionConfig = require('./config/sessionStore');
 
 const app = express();
 
@@ -29,7 +29,7 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(sessionConfig);
+// app.use(sessionConfig);
 app.use(passport.initialize());
 app.use(passport.session());
 
