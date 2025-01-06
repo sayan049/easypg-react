@@ -18,6 +18,7 @@ function MapComponent({ isChecked, coordinates }) {
     height: '84vh',
     width: '35vw',
     display: isChecked ? 'block' : 'none',
+   
   };
 
   useEffect(() => {
@@ -68,7 +69,7 @@ function MapComponent({ isChecked, coordinates }) {
     };
   }, [coordinates]); // Re-run effect when coordinates change
 
-  return <div id="map" style={mapContainerStyle}></div>;
+  return <div id="map" style={mapContainerStyle} ></div>;
 }
 
 export default MapComponent;

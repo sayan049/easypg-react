@@ -157,7 +157,7 @@ function MapDirection({ coordinates }) {
       >
         Get Directions
       </button>
-      <div id="map" className="h-64 flex items-center justify-center"></div>
+      <div id="map" className="h-64 flex items-center justify-center className='hadow-md shadow-gray-300 p-2 border rounded'"></div>
     </>
   );
 }
