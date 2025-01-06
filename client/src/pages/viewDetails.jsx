@@ -53,29 +53,30 @@ const ViewDetails = () => {
 
       {/* Modal for Viewing All Photos */}
       {showModal && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-75 flex justify-center items-center">
-          <div className="bg-white rounded-lg p-4 max-w-4xl w-full relative">
-            {/* Close Button */}
-            <button
-              onClick={() => setShowModal(false)} // Close modal
-              className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded"
-            >
-              Close
-            </button>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {Array.isArray(owner?.messPhoto) &&
-                owner.messPhoto.map((element, index) => (
-                  <img
-                    key={index}
-                    src={element}
-                    alt={`Room ${index + 1}`}
-                    className="w-full h-48 object-cover rounded shadow-md"
-                  />
-                ))}
-            </div>
-          </div>
-        </div>
-      )}
+  <div className="fixed inset-0 z-50 bg-black bg-opacity-75 flex justify-center items-center">
+    <div className="relative bg-white rounded-lg p-4 max-w-4xl w-full h-[80vh] overflow-y-auto">
+      {/* Close Button */}
+      <button
+        onClick={() => setShowModal(false)} // Close modal
+        className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded"
+      >
+        Close
+      </button>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {Array.isArray(owner?.messPhoto) &&
+          owner.messPhoto.map((element, index) => (
+            <img
+              key={index}
+              src={element}
+              alt={`Room ${index + 1}`}
+              className="w-full h-48 object-cover rounded shadow-md"
+            />
+          ))}
+      </div>
+    </div>
+  </div>
+)}
+
 
       {/* Content Section */}
       <div className="max-w-[80rem] mx-auto bg-white shadow-md rounded-lg overflow-hidden my-8">
