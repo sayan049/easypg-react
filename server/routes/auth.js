@@ -14,7 +14,6 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
-const jwt = require('jsonwebtoken');
 
 router.post("/signup", authHandlers.signupHandler);
 router.post("/login", authHandlers.loginHandler);
