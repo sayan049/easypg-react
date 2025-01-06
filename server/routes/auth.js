@@ -59,7 +59,7 @@ router.get("/check-session", (req, res) => {
         // Send the new access token as a cookie
         res.cookie("accessToken", newAccessToken, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === "production", // Use 'true' in production to ensure the cookie is sent over HTTPS
+          secure:'true', // Use 'true' in production to ensure the cookie is sent over HTTPS
           sameSite: "None",
           maxAge: 15 * 60 * 1000, // Set expiry for 15 minutes
         });

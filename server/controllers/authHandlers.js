@@ -91,9 +91,9 @@ exports.loginHandler = async (req, res) => {
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Use 'true' in production to ensure the cookie is sent over HTTPS
+      secure: 'true', // Use 'true' in production to ensure the cookie is sent over HTTPS
       sameSite: "None", // Prevent cross-site request forgery (CSRF)
-      maxAge: 15 * 60 * 1000, // Set expiry for 15 minutes
+      maxAge: 24 * 60 * 1000, // Set expiry for 15 minutes
     });
 
     res.cookie("refreshToken", refreshToken, {
