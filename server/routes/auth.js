@@ -51,7 +51,7 @@ router.get("/check-session", (req, res) => {
 
         // If refresh token is valid, generate a new access token
         const newAccessToken = jwt.sign(
-          { id: decodedRefresh.id, email: decodedRefresh.email, type: decodedRefresh.type, loginMethod: decodedRefresh.loginMethod },
+          { id: decodedRefresh.id, email: decodedRefresh.email,name:decodedRefresh.name, type: decodedRefresh.type, loginMethod: decodedRefresh.loginMethod },
           JWT_SECRET,
           { expiresIn: "15m" }
         );
@@ -67,7 +67,7 @@ router.get("/check-session", (req, res) => {
         // Respond with user info after refreshing access token
         return res.status(200).json({
           isAuthenticated: true,
-          user: { id: decodedRefresh.id, email: decodedRefresh.email },
+          user: { id: decoded.id, email: decoded.email,type:decoded.type,name:decoded.name },
           loginMethod: decodedRefresh.loginMethod, // Send the login method
         });
       });
@@ -75,7 +75,7 @@ router.get("/check-session", (req, res) => {
       // If the access token is valid, proceed with the user info
       res.status(200).json({
         isAuthenticated: true,
-        user: { id: decoded.id, email: decoded.email },
+        user: { id: decoded.id, email: decoded.email,type:decoded.type,name:decoded.name},
         loginMethod: decoded.loginMethod, // Send the login method
       });
     }
