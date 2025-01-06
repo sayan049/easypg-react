@@ -151,7 +151,7 @@ const MessFind = () => {
           </h2>
           <div className="flex items-center gap-4">
           
-            <Toggle isChecked={isChecked} setIsChecked={setIsChecked} />
+            
             <span>Map View</span>
             <Dropdown className='hidden md:block'/>
             {/* <button
@@ -167,6 +167,7 @@ const MessFind = () => {
             onClick={() => setFilterModalOpen(true)}
             />
           </div>
+          <Toggle isChecked={isChecked} setIsChecked={setIsChecked} />
         </div>
         {/* Listings */}
         <div className="mt-6 flex flex-col gap-6">
