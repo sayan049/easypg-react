@@ -39,7 +39,8 @@ function StickyBookingCard() {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-white px-4 py-3 shadow-lg flex items-center justify-between z-50 md:px-8 lg:px-16 xl:px-24">
+    <div className="fixed bottom-0 left-0 w-full bg-white px-4 py-3 shadow-lg flex items-center justify-between z-50 md:px-8 lg:px-16 xl:px-24"
+    style={{boxShadow:'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px',border: 'solid 1px #D9D9D9'}}>
       {/* Left Section: Information */}
       <div className="flex flex-col">
         <h3 className="text-base md:text-lg font-semibold">Greenwood PG</h3>
