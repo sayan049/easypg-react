@@ -104,28 +104,29 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
   const loginHandler = async (event) => {
     event.preventDefault();
     const jsonData = { email, password };
-
   
     try {
       setIsSubmitting(true);
       setIsButtonDisabled(true);
   
-      // Make login request with credentials (cookies)
+      // Make login request with credentials (no need for cookies anymore)
       const response = await axios.post(loginUrl, jsonData, {
-        withCredentials: true,  // Ensure cookies are sent
         headers: { "Content-Type": "application/json" },
       });
   
       if (response.status === 200) {
         const userData = response.data.user;
-        // const message = `Welcome ${userData.name}!`;
+        const { accessToken, refreshToken } = response.data;
+  
+        // Store tokens in localStorage
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
   
         // Optionally store user info in state or localStorage if needed
-        localStorage.setItem("sId_message", message);
+        //localStorage.setItem("userInfo", JSON.stringify(userData));
   
         // Navigate to homepage or another page after successful login
-
-        navigate("/", { state: { message: message } });
+        navigate("/", { state: { message: `Welcome ${userData.name}!` } });
         window.location.reload();
       }
     } catch (error) {
@@ -137,6 +138,7 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
       }, 5000);
     }
   };
+  
 
 
   const loginwithgoogle = () => {

@@ -89,19 +89,19 @@ exports.loginHandler = async (req, res) => {
     user.refreshToken = refreshToken;
     await user.save();
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: 'true', // Use 'true' in production to ensure the cookie is sent over HTTPS
-      sameSite: "None", // Prevent cross-site request forgery (CSRF)
-      maxAge: 24 * 60 * 1000, // Set expiry for 15 minutes
-    });
+    // res.cookie("accessToken", accessToken, {
+    //   httpOnly: true,
+    //   secure: 'true', // Use 'true' in production to ensure the cookie is sent over HTTPS
+    //   sameSite: "None", // Prevent cross-site request forgery (CSRF)
+    //   maxAge: 24 * 60 * 1000, // Set expiry for 15 minutes
+    // });
 
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Use 'true' in production
-      sameSite: "None",
-      maxAge: 10 * 24 * 60 * 60 * 1000, // Set expiry for 10 days
-    });
+    // res.cookie("refreshToken", refreshToken, {
+    //   httpOnly: true,
+    //   secure:'true',// Use 'true' in production
+    //   sameSite: "None",
+    //   maxAge: 10 * 24 * 60 * 60 * 1000, // Set expiry for 10 days
+    // });
     res.status(200).json({
       message: "Login successful.",
       accessToken,
