@@ -28,8 +28,7 @@ router.get("/findMess", authHandlers.findMess);
 
 
 router.get("/check-session", (req, res) => {
-  const accessToken = req.cookies.accessToken;
-  const refreshToken = req.cookies.refreshToken;
+  const accessToken = req.headers['authorization']?.split(' ')[1];  // Get token from Authorization header
 
   if (!accessToken) {
     return res.status(401).json({ isAuthenticated: false });
@@ -38,7 +37,9 @@ router.get("/check-session", (req, res) => {
   // Verify the access token
   jwt.verify(accessToken, JWT_SECRET, async (err, decoded) => {
     if (err) {
-      // If access token is expired or invalid, try to refresh with refresh token
+      // If the access token is expired or invalid, try to refresh with the refresh token
+      const refreshToken = req.headers['refreshToken'];  // Get refresh token from request headers (or localStorage)
+      
       if (!refreshToken) {
         return res.status(401).json({ isAuthenticated: false });
       }
@@ -51,36 +52,30 @@ router.get("/check-session", (req, res) => {
 
         // If refresh token is valid, generate a new access token
         const newAccessToken = jwt.sign(
-          { id: decodedRefresh.id, email: decodedRefresh.email,name:decodedRefresh.name, type: decodedRefresh.type, loginMethod: decodedRefresh.loginMethod },
+          { id: decodedRefresh.id, email: decodedRefresh.email, name: decodedRefresh.name, type: decodedRefresh.type, loginMethod: decodedRefresh.loginMethod },
           JWT_SECRET,
           { expiresIn: "1h" }
         );
 
-        // Send the new access token as a cookie
-        res.cookie("accessToken", newAccessToken, {
-          httpOnly: true,
-          secure:'true', // Use 'true' in production to ensure the cookie is sent over HTTPS
-          sameSite: "None",
-          maxAge: 15 * 60 * 1000, // Set expiry for 15 minutes
-        });
-
-        // Respond with user info after refreshing access token
+        // Send the new access token in response
         return res.status(200).json({
           isAuthenticated: true,
-          user: { id: decoded.id, email: decoded.email,type:decoded.type,name:decoded.name },
-          loginMethod: decodedRefresh.loginMethod, // Send the login method
+          user: { id: decoded.id, email: decoded.email, type: decoded.type, name: decoded.name },
+          loginMethod: decodedRefresh.loginMethod,
+          accessToken: newAccessToken, // Send new access token
         });
       });
     } else {
       // If the access token is valid, proceed with the user info
       res.status(200).json({
         isAuthenticated: true,
-        user: { id: decoded.id, email: decoded.email,type:decoded.type,name:decoded.name},
-        loginMethod: decoded.loginMethod, // Send the login method
+        user: { id: decoded.id, email: decoded.email, type: decoded.type, name: decoded.name },
+        loginMethod: decoded.loginMethod,
       });
     }
   });
 });
+
 
 
 // =======

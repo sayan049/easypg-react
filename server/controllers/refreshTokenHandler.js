@@ -35,12 +35,12 @@ exports.refreshTokenHandler = async (req, res) => {
       { expiresIn: "1h" } // Access token valid for 15 minutes
     );
 
-    res.cookie("accessToken", accessToken,{
-      httpOnly: true,
-      secure:'true', // Use 'true' in production to ensure the cookie is sent over HTTPS
-      sameSite: "None",
-      maxAge: 15 * 60 * 1000, // Set expiry for 15 minutes
-    });
+    // res.cookie("accessToken", accessToken,{
+    //   httpOnly: true,
+    //   secure:'true', // Use 'true' in production to ensure the cookie is sent over HTTPS
+    //   sameSite: "None",
+    //   maxAge: 15 * 60 * 1000, // Set expiry for 15 minutes
+    // });
     res.status(200).json({ accessToken });
   } catch (error) {
     console.error("Refresh token error:", error);

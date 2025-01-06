@@ -21,10 +21,30 @@ export const AuthProvider = ({ children }) => {
     const checkSession = async () => {
       try {
         setLoading(true);
+        const accessToken = localStorage.getItem("accessToken");
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (!accessToken || !refreshToken) {
+          setIsAuthenticated(false);
+          setIsOwnerAuthenticated(false);
+          setUserName(null);
+          setUserImage(null);
+          setOwnerName(null);
+          setOwnerImage(null);
+          setUser(null);
+          setOwner(null);
+          setLoginMethod(null);
+          setType(null);
+          setLoading(false);
+          return;
+        }
         const response = await fetch(`${baseurl}/auth/check-session`, {
           method: 'GET',
           credentials: 'include',
           withCredentials: true,
+          headers: {
+            'Authorization': `Bearer ${accessToken}`, // Attach access token in the Authorization header
+            'Content-Type': 'application/json',
+          },
         });
 
         if (!response.ok) throw new Error('Network response was not ok');
