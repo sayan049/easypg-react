@@ -69,7 +69,7 @@ function MapComponent({ isChecked, coordinates }) {
     };
   }, [coordinates]); // Re-run effect when coordinates change
 
-  return <div id="map" style={mapContainerStyle} className='hadow-md shadow-gray-300 p-2 border rounded'></div>;
+  return <div id="map" style={mapContainerStyle} ></div>;
 }
 
 export default MapComponent;
