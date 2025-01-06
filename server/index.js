@@ -37,7 +37,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(sessionConfig);
 
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 
 // app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/mail', mailRoute);
