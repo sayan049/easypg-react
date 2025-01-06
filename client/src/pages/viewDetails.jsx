@@ -19,6 +19,17 @@ const ViewDetails = () => {
 
   // Scroll to top on load
   useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [showModal]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
@@ -53,29 +64,41 @@ const ViewDetails = () => {
 
       {/* Modal for Viewing All Photos */}
       {showModal && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-75 flex justify-center items-center">
-          <div className="bg-white rounded-lg p-4 max-w-4xl w-full relative">
-            {/* Close Button */}
-            <button
-              onClick={() => setShowModal(false)} // Close modal
-              className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded"
-            >
-              Close
-            </button>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {Array.isArray(owner?.messPhoto) &&
-                owner.messPhoto.map((element, index) => (
-                  <img
-                    key={index}
-                    src={element}
-                    alt={`Room ${index + 1}`}
-                    className="w-full h-48 object-cover rounded shadow-md"
-                  />
-                ))}
-            </div>
-          </div>
+  <div className="fixed inset-0 z-50 bg-black bg-opacity-75 flex justify-center items-center">
+    <div
+      className="bg-white rounded-lg p-4 max-w-4xl w-full relative overflow-hidden flex flex-col"
+      style={{ maxHeight: "90vh" }} // Limits modal height to 90% of viewport
+    >
+      {/* Close Button */}
+      <button
+        onClick={() => setShowModal(false)}
+        className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded"
+      >
+        Close
+      </button>
+
+      {/* Modal Content - Make scrollable */}
+      <div
+        className="overflow-y-auto w-full"
+        style={{ maxHeight: "80vh" }} // Ensures internal scrolling
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {Array.isArray(owner?.messPhoto) &&
+            owner.messPhoto.map((element, index) => (
+              <img
+                key={index}
+                src={element}
+                alt={`Room ${index + 1}`}
+                className="w-full h-48 object-cover rounded shadow-md"
+              />
+            ))}
         </div>
-      )}
+      </div>
+    </div>
+  </div>
+)}
+
+
 
       {/* Content Section */}
       <div className="max-w-[80rem] mx-auto bg-white shadow-md rounded-lg overflow-hidden my-8">
@@ -120,7 +143,7 @@ const ViewDetails = () => {
           </div>
         </div>
 
-        <ConfirmBooking />
+        {!showModal&&<ConfirmBooking />}
 
         <Footer />
       </div>
