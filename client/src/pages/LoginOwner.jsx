@@ -1,13 +1,10 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { useEffect } from "react";
-import { loginOwnerUrl } from "../constant/urls";
-import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { baseurl } from "../constant/urls";
-import axios from "axios";
 
-import "../designs/loginForMessOwner.css";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation,useSearchParams } from "react-router-dom";
+import axios from "axios";
+import { baseurl,loginOwnerUrl,forgotPasswordOwnerUrl,resetPasswordOwnerUrl,tokenVerifyOwnerUrl} from "../constant/urls";import "../designs/loginForMessOwner.css";
+
+
 
 function LoginOwner() {
   useEffect(() => {
@@ -22,6 +19,44 @@ function LoginOwner() {
   const [isFormFilled, setIsFormFilled] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Disable button after first click
+
+    const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
+    const [forgotEmail, setForgotEmail] = useState("");
+    const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
+    const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+    
+    const [resetToken, setResetToken] = useState(""); // State for reset token
+    const [tokenValid, setTokenValid] = useState(null); // State for token validity
+    const [newPassword, setNewPassword] = useState(""); // State for new password
+    const [confirmPassword, setConfirmPassword] = useState(""); // State for confirm password
+    const [resetPasswordError, setResetPasswordError] = useState(""); // Error state for reset password
+    const [loading, setLoading] = useState(true);
+    const [searchParams] = useSearchParams();
+      useEffect(() => {
+        const tokenFromUrl = searchParams.get("resetToken");
+        if (tokenFromUrl) {
+          setResetToken(tokenFromUrl);
+          verifyResetToken(tokenFromUrl);
+        } else {
+          setLoading(false); // Stop loading if no token
+        }
+      }, [searchParams]);
+      const verifyResetToken = async (token) => {
+        try {
+          const response = await axios.get(tokenVerifyOwnerUrl.replace(':resetToken', token));
+    
+          setTokenValid(response.status === 200);
+        } catch (error) {
+          console.error("Error verifying reset token:", error);
+          setTokenValid(false);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+
+
   useEffect(() => {
     // Check if the message should be displayed based on localStorage
     const storedMessage = localStorage.getItem("loginMessageOwner");
@@ -43,6 +78,15 @@ function LoginOwner() {
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
+
+  const toggleNewPasswordVisibility = () => {
+    setIsNewPasswordVisible(!isNewPasswordVisible);
+  };
+  
+  const toggleConfirmPasswordVisibility = () => {
+    setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
+  };
+
 
   const loginHandlerOwner = async (event) => {
     event.preventDefault();
@@ -86,10 +130,56 @@ function LoginOwner() {
       `${baseurl}/auth/google-owner?state=` +
       encodeURIComponent(JSON.stringify({ type: "owner" }));
   };
+
+
+  const openForgotPassword = () => {
+    setIsForgotPasswordOpen(true);
+  };
+
+  const closeForgotPassword = () => {
+    setIsForgotPasswordOpen(false);
+    setForgotPasswordMessage("");
+  };
+  const submitForgotPassword = async () => {
+    try {
+      const response = await axios.post(forgotPasswordOwnerUrl, { email: forgotEmail });
+      if (response.status === 200) {
+        setForgotPasswordMessage("Password reset email sent!");
+        setIsForgotPasswordOpen(false); 
+      } else {
+        setForgotPasswordMessage("Error sending email. Please try again.");
+      }
+    } catch (error) {
+      setForgotPasswordMessage("Error sending email. Please try again.");
+    }
+  };
+  const submitResetPassword = async () => {
+    if (!resetToken || !newPassword || newPassword !== confirmPassword) {
+      setResetPasswordError("Passwords do not match or invalid token.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(resetPasswordOwnerUrl, { token: resetToken, password: newPassword }, {headers: { "Content-Type": "application/json" }});
+     
+      if (response.status === 200) {
+        alert("Password successfully reset! Redirecting to login...");
+        setResetToken(null);
+        navigate("/LoginUser");  // Redirect to login page
+      } else {
+        setResetPasswordError("Error resetting password. Please try again....");
+      }
+    } catch (error) {
+      setResetPasswordError("Error resetting password. Please try again.");
+    }
+  };
+
+
   useEffect(() => {
     setIsFormFilled(email && password);
   }, [email, password]);
   const isFormValid = isFormFilled && isChecked;
+
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
@@ -165,8 +255,11 @@ function LoginOwner() {
 
               {/* Forgot Password Link */}
               <a
-                href="/forgot-password"
+
+                
                 className="text-sm lg:text-sm text-[#2ca4b5] hover:underline whitespace-nowrap"
+                onClick={openForgotPassword} 
+
               >
                 Forgot Password?
               </a>
@@ -209,7 +302,9 @@ function LoginOwner() {
               className="w-full  flex items-center justify-center  py-2 rounded-full hover:bg-[#0511121a] bg-[#116e7b1a]"
             >
               <img
-                src="../assets/googleicon.png"
+
+                src="/assets/googleIcon.png"
+
                 alt="Google"
                 className="w-6 h-6 mr-2 text-gray-600"
               />
@@ -261,6 +356,90 @@ function LoginOwner() {
         <div  className="h-[23rem] w-[3.5rem] bg-column-owner absolute transform rotate-[150deg] rounded-full top-[22.5rem] right-[2rem]"></div>
         <div  className="h-[25.5rem] w-[3.5rem] bg-column-owner absolute transform rotate-[150deg] rounded-full top-[18rem] right-[0rem]"></div>
       </div>
+
+      {isForgotPasswordOpen && (
+  <div className="fixed top-0 left-0 z-50 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
+    <div className="bg-white rounded-lg shadow-xl w-[22rem] p-6">
+      <h2 className="text-xl font-semibold mb-4">Forgot Password</h2>
+      <input
+        type="email"
+        value={forgotEmail}
+        onChange={(e) => setForgotEmail(e.target.value)}
+        placeholder="Enter your email"
+        className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+      />
+      <button
+        onClick={submitForgotPassword}
+        disabled={!forgotEmail}
+        className={`w-full bg-[#2ca4b5] text-white py-2 rounded-full mt-4 ${!forgotEmail ? 'bg-gray-300 cursor-not-allowed' : ''}`}
+      >
+        Send Reset Email
+      </button>
+      <p className="text-center text-sm text-gray-600 mt-2">{forgotPasswordMessage}</p>
+      <button
+        onClick={closeForgotPassword}
+        className="w-full bg-gray-300 text-black py-2 rounded-full mt-2"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+)}
+
+{/* Reset Password Form */}
+{resetToken && tokenValid && (
+  <div className="fixed top-0 left-0 z-50 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
+    <div className="bg-white rounded-lg shadow-xl w-[22rem] p-6">
+      <h2 className="text-xl font-semibold mb-4">Reset Password</h2>
+      
+      {/* New Password Input */}
+      <div className="relative">
+        <input
+          type={isNewPasswordVisible ? "text" : "password"}
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          placeholder="New Password"
+          className="w-full rounded-full px-4 py-2 mb-4 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+        />
+        <button
+          type="button"
+          onClick={toggleNewPasswordVisibility}
+          className="absolute right-4 top-[37%] transform -translate-y-1/2 text-gray-500"
+        >
+          {isNewPasswordVisible ? "🙈" : "👁️"}
+        </button>
+      </div>
+      
+      {/* Confirm Password Input */}
+      <div className="relative">
+        <input
+          type={isConfirmPasswordVisible ? "text" : "password"}
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          placeholder="Confirm Password"
+          className="w-full rounded-full px-4 py-2 mb-4 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+        />
+        <button
+          type="button"
+          onClick={toggleConfirmPasswordVisibility}
+          className="absolute right-4 top-[37%] transform -translate-y-1/2 text-gray-500"
+        >
+          {isConfirmPasswordVisible ? "🙈" : "👁️"}
+        </button>
+      </div>
+      
+      {resetPasswordError && <p className="text-red-500 text-sm mb-4">{resetPasswordError}</p>}
+      
+      <button 
+        onClick={submitResetPassword}
+        className={`w-full bg-[#2ca4b5] text-white py-2 rounded-full mt-4 ${!newPassword || !confirmPassword ? 'bg-gray-300 cursor-not-allowed' : ''}`}
+      >
+        Reset Password
+      </button>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

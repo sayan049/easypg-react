@@ -1,15 +1,17 @@
+
+import React, { useEffect } from 'react';
+import 'ol/ol.css';
 import { Map, View } from 'ol';
+import TileLayer from 'ol/layer/Tile';
+import OSM from 'ol/source/OSM';
+import { fromLonLat } from 'ol/proj';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
-import TileLayer from 'ol/layer/Tile';
-import VectorLayer from 'ol/layer/Vector';
-import 'ol/ol.css';
-import { fromLonLat } from 'ol/proj';
-import OSM from 'ol/source/OSM';
 import VectorSource from 'ol/source/Vector';
-import Icon from 'ol/style/Icon';
+import VectorLayer from 'ol/layer/Vector';
 import Style from 'ol/style/Style';
-import React, { useEffect } from 'react';
+import Icon from 'ol/style/Icon';
+
 
 function MapComponent({ isChecked, coordinates }) {
   const mapContainerStyle = {

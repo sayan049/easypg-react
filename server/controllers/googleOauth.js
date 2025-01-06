@@ -1,8 +1,14 @@
 require("dotenv").config();
 const passport = require("passport");
 const OAuth2Strategy = require("passport-google-oauth2").Strategy;
+
+const jwt = require("jsonwebtoken");
 const User = require("../modules/user");
 const PgOwner = require("../modules/pgProvider");
+
+const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+
 
 passport.use(
   new OAuth2Strategy(
@@ -14,9 +20,9 @@ passport.use(
     },
     async (req, accessToken, refreshToken, profile, done) => {
       try {
-        const userType = req.query.state
-          ? JSON.parse(req.query.state).type
-          : "student";
+
+        const userType = req.query.state ? JSON.parse(req.query.state).type : "student";
+
 
         const email = profile.emails[0]?.value;
         const firstName = profile.name.givenName || profile.displayName;
@@ -28,30 +34,42 @@ passport.use(
           return done(new Error("Incomplete profile information from Google"), null);
         }
 
+
+        // JWT generation logic
+        const generateJWT = (user, type, image = null) => {
+          // Access token with image included in payload
+          const accessToken = jwt.sign(
+            { id: user._id, email: user.email, type, image }, // Added image to the payload
+            JWT_SECRET,
+            { expiresIn: "15m" }
+          );
+
+          // Refresh token without image
+          const refreshToken = jwt.sign(
+            { id: user._id, email: user.email, type }, // Refresh token only contains basic info
+            JWT_REFRESH_SECRET,
+            { expiresIn: "7d" }
+          );
+
+          return { accessToken, refreshToken };
+        };
+
+
         if (userType === "student") {
           let user = await User.findOne({ email });
 
           if (user) {
-            // Existing student, create session
+
+            // Existing student, check if Google ID is linked
             if (user.googleId) {
-              // Google ID exists, create session
-              const userSession = {
-                id: user._id,
-                name: `${user.firstName} ${user.lastName}`,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                image: user.image,
-                is_verified: user.is_verified,
-              };
-              return done(null, { userSession, type: "student" });
+              const tokens = generateJWT(user, "student", image);
+              return done(null, { tokens, userSession: user });
             } else {
-              // Google ID is not linked, redirect to login page
-              return done(new Error("used email"),null);
+              return done(new Error("Google ID is not linked with this student account"));
             }
-            
           } else {
-            // New student, save to database
+            // New student, create user and issue JWTs
+
             const newUser = new User({
               googleId: profile.id,
               firstName,
@@ -61,41 +79,27 @@ passport.use(
               is_verified: true,
             });
             await newUser.save();
-            const userSession = {
-              id: newUser._id,
-              name: `${newUser.firstName} ${newUser.lastName}`,
-              firstName: newUser.firstName,
-              lastName: newUser.lastName,
-              email: newUser.email,
-              image: newUser.image,
-              is_verified: newUser.is_verified,
-            };
-            return done(null, { userSession, type: "student" });
+
+
+            const tokens = generateJWT(newUser, "student", image);
+            return done(null, { tokens, userSession: newUser });
+
           }
         } else if (userType === "owner") {
           let owner = await PgOwner.findOne({ email });
 
           if (owner) {
-            // Existing owner, create session
+
+            // Existing owner, check if Google ID is linked
             if (owner.googleId) {
-              // Google ID exists, create session
-              const ownerSession = {
-                id: owner._id,
-                name: `${owner.firstName} ${owner.lastName}`,
-                firstName: owner.firstName,
-                lastName: owner.lastName,
-                email: owner.email,
-                image: owner.image,
-                is_verified_Owner: owner.is_verified_Owner,
-              };
-              return done(null, { ownerSession, type: "owner" });
-            }else {
-              // Google ID is not linked, redirect to login page
-              return done(new Error("used email owner"));
+              const tokens = generateJWT(owner, "owner", image);
+              return done(null, { tokens, ownerSession: owner });
+            } else {
+              return done(new Error("Google ID is not linked with this owner account"));
             }
-            
           } else {
-            // New owner, save to database
+            // New owner, create owner and issue JWTs
+
             const newOwner = new PgOwner({
               googleId: profile.id,
               firstName,
@@ -105,16 +109,11 @@ passport.use(
               is_verified_Owner: true,
             });
             await newOwner.save();
-            const ownerSession = {
-              id: newOwner._id,
-              name: `${newOwner.firstName} ${newOwner.lastName}`,
-              firstName: newOwner.firstName,
-              lastName: newOwner.lastName,
-              email: newOwner.email,
-              image: newOwner.image,
-              is_verified_Owner: newOwner.is_verified_Owner,
-            };
-            return done(null, { ownerSession, type: "owner" });
+
+
+            const tokens = generateJWT(newOwner, "owner", image);
+            return done(null, { tokens, ownerSession: newOwner });
+
           }
         } else {
           return done(new Error("Invalid user type"), null);
@@ -126,32 +125,9 @@ passport.use(
   )
 );
 
-passport.serializeUser((sessionData, done) => {
-  done(null, sessionData);
-});
 
-passport.deserializeUser(async (sessionData, done) => {
-  try {
-    if (sessionData.type === "student") {
-      const student = await User.findById(sessionData.userSession.id);
-      if (student) {
-        done(null, { userSession: sessionData.userSession, type: "student" });
-      } else {
-        done(new Error("Student not found"), null);
-      }
-    } else if (sessionData.type === "owner") {
-      const owner = await PgOwner.findById(sessionData.ownerSession.id);
-      if (owner) {
-        done(null, { ownerSession: sessionData.ownerSession, type: "owner" });
-      } else {
-        done(new Error("Owner not found"), null);
-      }
-    } else {
-      done(new Error("Invalid user type"), null);
-    }
-  } catch (error) {
-    done(error, null);
-  }
-});
+// Passport serialize and deserialize functions are not necessary anymore for JWT-based auth
+// As we are not storing user data in the session, no need to serialize or deserialize
+
 
 module.exports = passport;

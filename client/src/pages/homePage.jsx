@@ -27,7 +27,9 @@ function HomePage() {
 
   const performSearch = () => {
     alert("Searching for: " + searchItem);
+
     navigate("/MessFind");
+
   };
 
   useEffect(() => {
@@ -49,7 +51,9 @@ function HomePage() {
       try {
         // Decode token
 
+
         console.log("user name:", userName);
+
       }
        catch (error) {
         console.error("Error decoding or accessing token:", error);

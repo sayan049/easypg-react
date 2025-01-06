@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import MapDirection from "../components/mapDirection";
+
 import Footer from "../components/footer";
 import ConfirmBooking from "../components/confirmBooking";
+
 
 
 const ViewDetails = () => {
@@ -169,6 +171,7 @@ const ViewDetails = () => {
         </div>
       </footer> */}
       <ConfirmBooking/>
+
       <Footer/>
 
     </div>

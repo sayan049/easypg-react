@@ -1,9 +1,11 @@
+
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { signupownerUrl } from "../constant/urls";
+import { useNavigate } from "react-router-dom";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { signupownerUrl } from "../constant/urls";
+
 
 
 
