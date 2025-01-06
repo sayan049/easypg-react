@@ -78,29 +78,7 @@ router.get("/check-session", (req, res) => {
 
 
 
-// =======
-// router.get("/check-session", (req, res) => {
-//   let user = null;
-//   let loginMethod = null;
 
-//   if (req.session && req.session.user) {
-    
-//     user = req.session.user;
-//     loginMethod = 'local';
-//   } else if (req.session && req.session.passport && req.session.passport.user) {
-    
-//     user = req.session.passport.user;
-//     loginMethod = 'google';
-//   }
-
-//   if (user) {
-//     res.status(200).json({ isAuthenticated: true, user, loginMethod });
-//   } else {
-//     res.status(401).json({ isAuthenticated: false });
-//   }
-// });
-
-// >>>>>>> 562532821bcb4ce984acab541a68e76985fb31bc
 router.post('/updateDetails',upload, updateDetailshandler.updateDetails);
 router.get('/get-details', updateDetailshandler.getDetails);
 

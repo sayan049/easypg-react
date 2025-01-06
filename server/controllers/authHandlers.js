@@ -147,24 +147,13 @@ exports.signupHandlerOwner = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // const profilePhoto = req.files.profilePhoto
-    //   ? req.files.profilePhoto[0].filename
-    //   : null;
    
       if (profilePhoto && profilePhoto[0]) {
                     const result = await cloudinary.uploader.upload(profilePhoto[0].path);
                     profilePhoto = result.secure_url; // Save Cloudinary URL
                   
                 }
-    // console.log("mhm  "+ typeof [req.files.messPhoto.map(file => file.filename)]);
-    // let messPhoto = [];
 
-    // if (req.files && req.files.messPhoto) {
-    //   req.files.messPhoto.map((file) => {
-    //     console.log(file.filename + "\n");
-    //     messPhoto.push(file.filename);
-    //   });
-    // }
         if (messPhoto && messPhoto.length > 0) {
                     const messPhotoUrls = [];
                     for (const photo of messPhoto) {
@@ -235,71 +224,29 @@ exports.loginHandlerOwner = async (req, res) => {
       console.log("Email not verified");
       return res.status(401).json({ message: "Invalid email or password." });
     }
+    const name=pgOwner.firstName+" "+pgOwner.lastName
     //jwt sign 
     const accessToken = jwt.sign(
-      { id: pgOwner._id, email: pgOwner.email, type: "owner" },
+      { id: pgOwner._id,name:name, email: pgOwner.email, type: "owner" },
       JWT_SECRET,
       { expiresIn: "1h" } // Access token valid for 15 minutes
     );
     const refreshToken = jwt.sign(
-      { id: pgOwner._id, email: pgOwner.email, type: "owner" },
+      { id: pgOwner._id,name:name, email: pgOwner.email, type: "owner" },
       JWT_REFRESH_SECRET,
       { expiresIn: "10d" } // Refresh token valid for 7 days
     );
     pgOwner.refreshToken = refreshToken;
     await pgOwner.save();
-    // req.session.user = {
-    //   id: pgOwner._id,
-    //   name: pgOwner.firstName+" "+pgOwner.lastName,
-    //   type: "owner",
-    //   firstName: pgOwner.firstName,
-    //   lastName:pgOwner.lastName,
-    //   email:pgOwner.email,
-    //   address:pgOwner.address,
-    //   mobile:pgOwner.mobileNo,
-    //   pin:pgOwner.pincode,
-    //   messName:pgOwner.messName,
-    //   bioMess:pgOwner.aboutMess,
-    //   location:pgOwner.location,
-    //   profilePhoto:pgOwner.profilePhoto,
-    //   messPhoto:pgOwner.messPhoto,
-    //   facility:pgOwner.facility,
-    //   is_verified_Owner:pgOwner.is_verified_Owner,
-     
-    // };
+
 
     res.status(200).json({
       message: "Login successful.",
       accessToken,
       refreshToken,
-      user: {
-        id:pgOwner._id,
-        name: `${ pgOwner.firstName} ${pgOwner.lastName}`,
-        email: pgOwner.email,
-      },
+     
     });
-    // res.status(200).send({
-    //   message: "Login successful",
-    //   user: {
-    //     id: pgOwner._id,
-    //     name: pgOwner.firstName+" "+pgOwner.lastName,
-    //     type: "owner",
-    //     firstName: pgOwner.firstName,
-    //     lastName:pgOwner.lastName,
-    //     email:pgOwner.email,
-    //     address:pgOwner.address,
-    //     mobile:pgOwner.mobileNo,
-    //     pin:pgOwner.pincode,
-    //     messName:pgOwner.messName,
-    //     bioMess:pgOwner.aboutMess,
-    //     location:pgOwner.location,
-    //     profilePhoto:pgOwner.profilePhoto,
-    //     messPhoto:pgOwner.messPhoto,
-    //     facility:pgOwner.facility,
-    //     is_verified_Owner:pgOwner.is_verified_Owner,
-       
-    //   },
-    // });
+  
     console.log("succesfully logged in");
   } catch (error) {
     console.log("Error: ", error);
