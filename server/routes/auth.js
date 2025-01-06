@@ -109,16 +109,16 @@ router.get("/check-session", (req, res) => {
 router.post('/updateDetails',upload, updateDetailshandler.updateDetails);
 router.get('/get-details', updateDetailshandler.getDetails);
 
-router.get("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send({ error: "Failed to log out" });
-    }
-    res.clearCookie("connect.sid", { httpOnly: true });
-    res.send("Logged out successfully.");
-  });
-});
+// router.get("/logout", (req, res) => {
+//   req.session.destroy((err) => {
+//     if (err) {
+//       console.error(err);
+//       return res.status(500).send({ error: "Failed to log out" });
+//     }
+//     res.clearCookie("connect.sid", { httpOnly: true });
+//     res.send("Logged out successfully.");
+//   });
+// });
 router.post("/user/forgot-password", forgotPasswordUser);
 // Assuming you're using Express.js
 

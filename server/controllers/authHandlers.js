@@ -5,7 +5,10 @@ const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const sendmail = require("../controllers/emailSender");
 const sendmailOwner = require("./emailSenderOwner");
+const jwt = require("jsonwebtoken");
 
+const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 //jwt Secret
 
 exports.signupHandler = async (req, res) => {
@@ -50,7 +53,7 @@ exports.signupHandler = async (req, res) => {
 exports.loginHandler = async (req, res) => {
   const email = req.body.email;
   const pass = req.body.password;
-  console.log(email,password)
+  console.log(email,pass)
   try {
     const user = await User.findOne({ email });
     if (!user) {
@@ -84,20 +87,7 @@ exports.loginHandler = async (req, res) => {
     );
     user.refreshToken = refreshToken;
     await user.save();
-    // req.session.user = {
-    //   id: user._id,
-    //   name: user.firstName +" "+ user.lastName,
-    //   type: "student",
-    //   firstName: user.firstName,
-    //   lastName: user.lastName,
-    //   email: user.email,
-    //   address: user.address,
-    //   pin: user.pin,
-    //   is_verified:user.is_verified,
-      
-    // };
 
-    // Set the access token and refresh token as cookies
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // Use 'true' in production to ensure the cookie is sent over HTTPS
@@ -121,68 +111,12 @@ exports.loginHandler = async (req, res) => {
         email: user.email,
       },
     });
-    // res.status(200).send({
-    //   message: "Login successful",
-    //   user: {
-    //     id: user._id,
-    //     name: user.firstName +" "+ user.lastName,
-    //     type: "student",
-    //     firstName:user.firstName,
-    //     lastName:user.lastName,
-    //     email:user.email,
-    //     address:user.address,
-    //     pin:user.pin,
-    //     is_verified:user.is_verified,
-       
-    //   },
-    // });
+ 
     console.log("successfully logged in");
   } catch (error) {
     console.error("Error logging in user:", error);
     res.status(500).json({ message: "Server error." });
-// =======
-//       return res.status(401).send("Invalid username or password");
-//     }
 
-//     if (user.is_verified === false) {
-//       console.log("Email is not verified");
-//       return res.status(403).send("Not verified credentials");
-//     }
-
-//     // No need to set a JWT token, session will handle authentication
-//     req.session.user = {
-//       id: user._id,
-//       name: user.firstName +" "+ user.lastName,
-//       type: "student",
-//       firstName: user.firstName,
-//       lastName: user.lastName,
-//       email: user.email,
-//       address: user.address,
-//       pin: user.pin,
-//       is_verified:user.is_verified,
-      
-//     };
-//     // localStorage.setItem('ii',req.sessionId)
-//     res.status(200).send({
-//       message: "Login successful",
-//       user: {
-//         id: user._id,
-//         name: user.firstName +" "+ user.lastName,
-//         type: "student",
-//         firstName:user.firstName,
-//         lastName:user.lastName,
-//         email:user.email,
-//         address:user.address,
-//         pin:user.pin,
-//         is_verified:user.is_verified,
-       
-//       },
-//     });
-//     console.log("successfully logged in");
-//   } catch (error) {
-//     console.error("Error logging in user:", error);
-//     res.status(500).send("Failed to login");
-// >>>>>>> 562532821bcb4ce984acab541a68e76985fb31bc
   }
 };
 
