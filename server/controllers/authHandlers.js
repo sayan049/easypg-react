@@ -5,7 +5,10 @@ const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const sendmail = require("../controllers/emailSender");
 const sendmailOwner = require("./emailSenderOwner");
+const jwt = require("jsonwebtoken");
 
+const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 //jwt Secret
 
 exports.signupHandler = async (req, res) => {
