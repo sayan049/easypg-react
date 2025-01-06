@@ -77,12 +77,12 @@ exports.loginHandler = async (req, res) => {
     const name=  user.firstName+" "+user.lastName
     // set a JWT token, that will handle authentication
     const accessToken = jwt.sign(
-      { id: user._id,name:name, email: user.email, type: "user",loginMethod },
+      { id: user._id,name:name, email: user.email, type: "student",loginMethod },
       JWT_SECRET,
       { expiresIn: "1h" } // Access token valid for 15 minutes
     );
     const refreshToken = jwt.sign(
-      { id: user._id, name:name,email: user.email, type: "user",loginMethod },
+      { id: user._id, name:name,email: user.email, type: "student",loginMethod },
       JWT_REFRESH_SECRET,
       { expiresIn: "10d" } // Refresh token valid for 7 days
     );
