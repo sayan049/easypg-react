@@ -79,7 +79,7 @@ exports.loginHandler = async (req, res) => {
     const accessToken = jwt.sign(
       { id: user._id,name:name, email: user.email, type: "user",loginMethod },
       JWT_SECRET,
-      { expiresIn: "15m" } // Access token valid for 15 minutes
+      { expiresIn: "1h" } // Access token valid for 15 minutes
     );
     const refreshToken = jwt.sign(
       { id: user._id, name:name,email: user.email, type: "user",loginMethod },
@@ -239,7 +239,7 @@ exports.loginHandlerOwner = async (req, res) => {
     const accessToken = jwt.sign(
       { id: pgOwner._id, email: pgOwner.email, type: "owner" },
       JWT_SECRET,
-      { expiresIn: "15m" } // Access token valid for 15 minutes
+      { expiresIn: "1h" } // Access token valid for 15 minutes
     );
     const refreshToken = jwt.sign(
       { id: pgOwner._id, email: pgOwner.email, type: "owner" },

@@ -16,7 +16,7 @@ exports.refreshTokenHandler = async (req, res) => {
     // Verify refresh token
     const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
     const { id, type,loginMethod } = decoded;
-
+    
     let user;
     if (type === "user") {
       user = await User.findById(id);
@@ -27,12 +27,12 @@ exports.refreshTokenHandler = async (req, res) => {
     if (!user || user.refreshToken !== refreshToken) {
       return res.status(403).json({ message: "Invalid refresh token" });
     }
-
+    const name=  user.firstName+" "+user.lastName
     // Generate a new access token
     const accessToken = jwt.sign(
-      { id: user._id, email: user.email, type,loginMethod },
+      { id: user._id, email: user.email,name:name, type,loginMethod },
       JWT_SECRET,
-      { expiresIn: "15m" } // Access token valid for 15 minutes
+      { expiresIn: "1h" } // Access token valid for 15 minutes
     );
 
     res.status(200).json({ accessToken });

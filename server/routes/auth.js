@@ -53,7 +53,7 @@ router.get("/check-session", (req, res) => {
         const newAccessToken = jwt.sign(
           { id: decodedRefresh.id, email: decodedRefresh.email,name:decodedRefresh.name, type: decodedRefresh.type, loginMethod: decodedRefresh.loginMethod },
           JWT_SECRET,
-          { expiresIn: "15m" }
+          { expiresIn: "1h" }
         );
 
         // Send the new access token as a cookie
