@@ -9,7 +9,7 @@ const passport = require('./controllers/googleOauth');
 const authRoutes = require('./routes/auth');
 const mailRoute = require('./routes/mailVerifierRoute');
 const mailVerifyOwner = require('./routes/mailVerifyOwner');
-// const connectDB = require('./config/mongoDB');
+ const connectDB = require('./config/mongoDB');
 // <<<<<<< HEAD
 // // const sessionConfig = require('./config/sessionStore');
 // =======
