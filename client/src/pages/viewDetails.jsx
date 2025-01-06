@@ -16,6 +16,15 @@ const ViewDetails = () => {
   const lat = parseFloat(locationArray[0].trim()) || 0; // Latitude
   const lng = parseFloat(locationArray[1].trim()) || 0; // Longitude
   const coordinates = { lat, lng };
+  const amenities = [
+    { id: "test1", label: "A/C", icon: "💨" },
+    { id: "test2", label: "TV", icon: "📺" },
+    { id: "test3", label: "Power Backup", icon: "🔋" },
+    { id: "test4", label: "WiFi", icon: "📶" },
+    { id: "test5", label: "Kitchen", icon: "🍴" },
+    { id: "test6", label: "Tank Water", icon: "💧" },
+    { id: "test7", label: "Double Bed", icon: "🛏️" },
+  ];
 
   // Scroll to top on load
   useEffect(() => {
@@ -120,15 +129,18 @@ const ViewDetails = () => {
           </p>
 
           {/* Amenities */}
-          <div className="flex flex-wrap gap-4 mb-6">
-            {Array.isArray(owner?.facility) &&
-              owner.facility.map((element, index) => (
-                <div className="flex items-center space-x-2" key={index}>
-                  <span className="text-blue-500">&#x1F6BF;</span>
-                  <p>{element}</p>
-                </div>
-              ))}
-          </div>
+<div className="flex flex-wrap gap-4 mb-6">
+  {Array.isArray(owner?.facility) &&
+    amenities
+      .filter((amenity) => owner.facility.includes(amenity.label)) // Match amenities
+      .map((amenity) => (
+        <div className="flex items-center space-x-2" key={amenity.id}>
+          <span className="text-blue-500">{amenity.icon}</span>
+          <p>{amenity.label}</p>
+        </div>
+      ))}
+</div>
+
 
           {/* About Section */}
           <div className="mb-6">
