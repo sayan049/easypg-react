@@ -19,6 +19,17 @@ const ViewDetails = () => {
 
   // Scroll to top on load
   useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [showModal]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
@@ -120,7 +131,7 @@ const ViewDetails = () => {
           </div>
         </div>
 
-        <ConfirmBooking />
+        {!showModal&&<ConfirmBooking />}
 
         <Footer />
       </div>
