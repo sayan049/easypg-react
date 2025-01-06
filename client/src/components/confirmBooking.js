@@ -39,14 +39,16 @@ function StickyBookingCard() {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-white p-3 shadow-lg flex items-center justify-between z-50">
+    <div className="fixed bottom-0 left-0 w-full bg-white p-3 shadow-lg flex items-center justify-between z-50"
+    style={{boxShadow:'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px',border: 'solid 1px #D9D9D9'}}
+    >
       {/* Left Section: Information */}
       <div className="flex flex-col">
         <h3 className="text-base font-semibold">Greenwood PG</h3>
         <p className="text-sm text-gray-600">Single Room</p>
         <div className="text-blue-600 font-bold text-lg mt-1">₹3,000</div>
         {/* Booking Duration Dropdown */}
-        <div className="flex items-center text-sm text-gray-600 mt-1">
+        {/* <div className="flex items-center text-sm text-gray-600 mt-1">
           <label htmlFor="booking-duration" className="mr-2">
             Booking Duration:
           </label>
@@ -62,7 +64,7 @@ function StickyBookingCard() {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
         <p className="text-sm text-gray-600 mt-1">Booking Fee: ₹100</p>
       </div>
 
