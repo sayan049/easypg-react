@@ -85,7 +85,7 @@ const ViewDetails = () => {
         </div>
 
         {/* Ratings Section */}
-        <div className="mb-6">
+        <div className="mb-6 shadow-md shadow-gray-300 p-5 border rounded">
           <h2 className="text-lg font-semibold mb-4">Ratings and Reviews</h2>
           <div className="flex items-center space-x-4 mb-4">
             <div className="text-4xl font-bold text-yellow-500">2.7</div>
@@ -150,26 +150,7 @@ const ViewDetails = () => {
         </div>
       </div>
 
-      {/* Footer Section */}
-      {/* <footer className="bg-gray-800 text-white text-sm p-6">
-        <div className="flex flex-wrap justify-between">
-          <div>
-            <h3 className="font-semibold">Easy Pg</h3>
-            <p>Looking for a PG with great amenities and comfort? Find the best stays at the most affordable prices here.</p>
-          </div>
-          <div>
-            <h3 className="font-semibold">Quick Links</h3>
-            <ul>
-              <li>
-                <a href="" className="hover:underline">Terms</a>
-              </li>
-              <li>
-                <a href="" className="hover:underline">Privacy Policy</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </footer> */}
+      
       <ConfirmBooking/>
 
       <Footer/>

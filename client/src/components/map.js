@@ -18,7 +18,7 @@ function MapComponent({ isChecked, coordinates }) {
     height: '84vh',
     width: '35vw',
     display: isChecked ? 'block' : 'none',
-    boxshadow:' rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px',
+    boxShadow:' rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px',
     padding:'10px'
   };
 
