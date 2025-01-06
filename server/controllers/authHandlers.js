@@ -74,14 +74,15 @@ exports.loginHandler = async (req, res) => {
       return res.status(403).json({ message: "Please verify your email first." });
     }
     const loginMethod = 'local';
+    const name=  user.firstName+" "+user.lastName
     // set a JWT token, that will handle authentication
     const accessToken = jwt.sign(
-      { id: user._id, email: user.email, type: "user",loginMethod },
+      { id: user._id,name:name, email: user.email, type: "user",loginMethod },
       JWT_SECRET,
-      { expiresIn: "15m" } // Access token valid for 15 minutes
+      { expiresIn: "1h" } // Access token valid for 15 minutes
     );
     const refreshToken = jwt.sign(
-      { id: user._id, email: user.email, type: "user",loginMethod },
+      { id: user._id, name:name,email: user.email, type: "user",loginMethod },
       JWT_REFRESH_SECRET,
       { expiresIn: "10d" } // Refresh token valid for 7 days
     );
@@ -105,11 +106,7 @@ exports.loginHandler = async (req, res) => {
       message: "Login successful.",
       accessToken,
      refreshToken,
-      user: {
-        id: user._id,
-        name: `${user.firstName} ${user.lastName}`,
-        email: user.email,
-      },
+   
     });
  
     console.log("successfully logged in");
@@ -242,7 +239,7 @@ exports.loginHandlerOwner = async (req, res) => {
     const accessToken = jwt.sign(
       { id: pgOwner._id, email: pgOwner.email, type: "owner" },
       JWT_SECRET,
-      { expiresIn: "15m" } // Access token valid for 15 minutes
+      { expiresIn: "1h" } // Access token valid for 15 minutes
     );
     const refreshToken = jwt.sign(
       { id: pgOwner._id, email: pgOwner.email, type: "owner" },
