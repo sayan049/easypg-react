@@ -162,6 +162,63 @@ const ViewDetails = () => {
             <p className="text-gray-700">{owner?.aboutMess}</p>
           </div>
 
+             {/* Ratings Section */}
+        <div className="mb-6 shadow-md shadow-gray-300 p-5 border rounded">
+          <h2 className="text-lg font-semibold mb-4">Ratings and Reviews</h2>
+          <div className="flex items-center space-x-4 mb-4">
+            <div className="text-4xl font-bold text-yellow-500">2.7</div>
+            <div className="text-sm text-gray-600">★ Avg from 30 ratings</div>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2">
+              <div className="w-24 text-gray-600">5 ★</div>
+              <div className="bg-gray-200 w-full rounded h-3">
+                <div className="bg-green-500 h-3 rounded" style={{ width: "20%" }}></div>
+              </div>
+              <span className="text-sm">20%</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-24 text-gray-600">4 ★</div>
+              <div className="bg-gray-200 w-full rounded h-3">
+                <div className="bg-green-400 h-3 rounded" style={{ width: "15%" }}></div>
+              </div>
+              <span className="text-sm">15%</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-24 text-gray-600">3 ★</div>
+              <div className="bg-gray-200 w-full rounded h-3">
+                <div className="bg-yellow-500 h-3 rounded" style={{ width: "40%" }}></div>
+              </div>
+              <span className="text-sm">40%</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-24 text-gray-600">2 ★</div>
+              <div className="bg-gray-200 w-full rounded h-3">
+                <div className="bg-orange-400 h-3 rounded" style={{ width: "10%" }}></div>
+              </div>
+              <span className="text-sm">10%</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-24 text-gray-600">1 ★</div>
+              <div className="bg-gray-200 w-full rounded h-3">
+                <div className="bg-red-500 h-3 rounded" style={{ width: "15%" }}></div>
+              </div>
+              <span className="text-sm">15%</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Single Review */}
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold mb-4">Review</h2>
+          <div className="bg-gray-100 p-4 rounded shadow">
+            <p className="text-gray-700">
+              <strong>Sunjit Mahanty</strong> - Jul 2023
+            </p>
+            <p>Very special and beautiful place and also the behavior of hotel management is excellent.</p>
+          </div>
+        </div>
+
           {/* Map Section */}
           <div className="mb-6">
             <h2 className="text-lg font-semibold mb-4">What's nearby?</h2>
