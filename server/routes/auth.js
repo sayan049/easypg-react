@@ -30,7 +30,7 @@ router.get("/findMess", authHandlers.findMess);
 router.post("refresh-token",refreshTokenHandler)
 
 router.get("/check-session", (req, res) => {
-  const accessToken = req.headers['Authorization']?.split(' ')[1]; // Get token from Authorization header
+  const accessToken = req.headers['authorization']?.split(' ')[1]; // Get token from Authorization header
 
   if (!accessToken) {
     return res.status(401).json({ isAuthenticated: false, message: "Access token is required." });
@@ -60,29 +60,35 @@ router.get('/get-details', updateDetailshandler.getDetails);
 
 router.get("/logout", authenticateJWT, async (req, res) => {
   try {
-    // Decode the access token to get the user details
-    const { id, type } = req.user; // The `req.user` is populated by authenticateJWT middleware
+    // Decode the token using `authenticateJWT` middleware
+    const { id, type } = req.user; // Extract `id` and `type` from the token
 
-    let user;
+    if (!id || !type) {
+      return res.status(400).json({ message: "Invalid token payload." });
+    }
+
+    // Remove the refresh token based on the user type
     if (type === "student") {
-      // Find the student by ID
-      user = await User.findById(id);
+      const user = await User.findById(id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found." });
+      }
+      user.refreshToken = null; // Clear the refresh token
+      await user.save();
     } else if (type === "owner") {
-      // Find the owner by ID
-      user = await PgOwner.findById(id);
+      const owner = await PgOwner.findById(id);
+      if (!owner) {
+        return res.status(404).json({ message: "Owner not found." });
+      }
+      owner.refreshToken = null; // Clear the refresh token
+      await owner.save();
+    } else {
+      return res.status(400).json({ message: "Invalid user type." });
     }
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found." });
-    }
-
-    // Remove the refresh token
-    user.refreshToken = undefined;
-    await user.save();
 
     return res.status(200).json({ message: "Logged out successfully." });
   } catch (error) {
-    console.error("Logout Error:", error);
+    console.error("Logout error:", error);
     return res.status(500).json({ message: "An error occurred during logout." });
   }
 });

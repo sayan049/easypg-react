@@ -143,36 +143,69 @@ export const AuthProvider = ({ children }) => {
   
 
   const handleLogout = async () => {
-    try {
-      // Check if the user is logged in by verifying the JWT token in localStorage
-      const accessToken = localStorage.getItem("accessToken");
+    setLoading(true); // Start the loading indicator
   
-      if (!accessToken) {
-        // If no access token is found, user is not logged in
-        alert("You are not logged in.");
-       
+    try {
+      let accessToken = localStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
+  
+      if (!refreshToken) {
+        alert("No refresh token found. Please log in again.");
+        setLoading(false);
         return;
       }
   
-      setLoading(true);
+      if (!accessToken) {
+        console.log("Access token not found. Trying to refresh...");
+      }
   
-      // Send request to backend to verify if the access token is valid
-      const response = await fetch(`${baseurl}/auth/logout`, {
+      // Check session using the access token
+      const sessionResponse = await fetch(`${baseurl}/auth/check-session`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${accessToken}`, // Include the token in the Authorization header
+          'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
       });
   
-      const data = await response.json();
+      if (sessionResponse.status === 401 || !accessToken) {
+        console.log("Access token expired. Refreshing...");
+        // Refresh the access token if it's expired
+        const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refreshToken }),
+        });
   
-      if (response.ok) {
-        // If the token is valid, clear the tokens from localStorage
+        if (refreshResponse.ok) {
+          const { accessToken: newAccessToken } = await refreshResponse.json();
+          localStorage.setItem('accessToken', newAccessToken);
+          accessToken = newAccessToken; // Use the new access token for logout
+          console.log("Access token refreshed successfully.");
+        } else {
+          console.error("Failed to refresh access token.");
+          alert("Session expired. Please log in again.");
+          setLoading(false);
+          return;
+        }
+      }
+  
+      // Perform logout
+      const logoutResponse = await fetch(`${baseurl}/auth/logout`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${accessToken}`, // Use the updated or refreshed token
+          "Content-Type": "application/json",
+        },
+      });
+  
+      const logoutData = await logoutResponse.json();
+  
+      if (logoutResponse.ok) {
+        // Clear tokens and reset state on successful logout
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
   
-        // Reset user-related state
         setIsAuthenticated(false);
         setUser(null);
         setUserName(null);
@@ -184,20 +217,19 @@ export const AuthProvider = ({ children }) => {
         setOwnerImage(null);
         setIsOwnerAuthenticated(false);
   
-       
-    
+        console.log(logoutData.message); // Optional: Log the server response
       } else {
-        // If the token is invalid, show an error message
+        console.error("Logout error:", logoutData.message);
         alert("Your session has expired or is invalid. Please log in again.");
-     
       }
     } catch (error) {
-      console.error('Logout error:', error);
-      alert('An error occurred while logging out. Please try again.');
+      console.error("Logout error:", error);
+      alert("An error occurred while logging out. Please try again.");
     } finally {
-      setLoading(false);
+      setLoading(false); // Stop the loading indicator
     }
   };
+  
   
 
   return (
