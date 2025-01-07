@@ -52,6 +52,8 @@ passport.use(
             JWT_REFRESH_SECRET,
             { expiresIn: "7d" }
           );
+          user.refreshToken = refreshToken;
+  user.save(); 
 
           return { accessToken, refreshToken };
         };

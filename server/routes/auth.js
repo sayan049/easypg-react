@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const User = require('../modules/user');
+const PgOwner = require('../modules/pgProvider');
 const authHandlers = require("../controllers/authHandlers");
 const upload = require("../middleware/upload");
 const { refreshTokenHandler } = require("../controllers/refreshTokenHandler");
@@ -56,8 +58,33 @@ router.get("/check-session", (req, res) => {
 router.post('/updateDetails',upload, updateDetailshandler.updateDetails);
 router.get('/get-details', updateDetailshandler.getDetails);
 
-router.get("/logout", authenticateJWT, (req, res) => {
-    res.status(200).json({ message: "Logged out successfully." });
+router.get("/logout", authenticateJWT, async (req, res) => {
+  try {
+    // Decode the access token to get the user details
+    const { id, type } = req.user; // The `req.user` is populated by authenticateJWT middleware
+
+    let user;
+    if (type === "student") {
+      // Find the student by ID
+      user = await User.findById(id);
+    } else if (type === "owner") {
+      // Find the owner by ID
+      user = await PgOwner.findById(id);
+    }
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Remove the refresh token
+    user.refreshToken = undefined;
+    await user.save();
+
+    return res.status(200).json({ message: "Logged out successfully." });
+  } catch (error) {
+    console.error("Logout Error:", error);
+    return res.status(500).json({ message: "An error occurred during logout." });
+  }
 });
 
 router.post("/user/forgot-password", forgotPasswordUser);
