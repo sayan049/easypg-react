@@ -43,7 +43,7 @@ router.get("/check-session", (req, res) => {
       return res.status(401).json({ isAuthenticated: false, message: "Invalid or expired access token." });
     }
 
-    console.log(decoded.id, decoded.email, decoded.type, decoded.name);
+    // console.log(decoded.id, decoded.email, decoded.type, decoded.name);
 
     // Prepare response
     const userResponse = {
@@ -53,7 +53,7 @@ router.get("/check-session", (req, res) => {
     };
 
     // If user is an owner, attach the image
-    if (decoded.type === 'owner') {
+    if (decoded.loginMethod === 'google') {
       userResponse.user.image = decoded.image; // Assuming the image is stored in the decoded token
     }
 

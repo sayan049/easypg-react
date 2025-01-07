@@ -40,7 +40,7 @@ exports.refreshTokenHandler = async (req, res) => {
     };
 
     // If user is an owner, include the image in the payload
-    if (type === 'owner') {
+    if (loginMethod=== 'google') {
       payload.image = user.image; // Assuming 'image' field exists on the PgOwner model
     }
 
