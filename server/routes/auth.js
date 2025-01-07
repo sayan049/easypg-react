@@ -30,7 +30,7 @@ router.get("/findMess", authHandlers.findMess);
 router.post("refresh-token",refreshTokenHandler)
 
 router.get("/check-session", (req, res) => {
-  const accessToken = req.headers['authorization']?.split(' ')[1]; // Get token from Authorization header
+  const accessToken = req.headers['Authorization']?.split(' ')[1]; // Get token from Authorization header
 
   if (!accessToken) {
     return res.status(401).json({ isAuthenticated: false, message: "Access token is required." });
