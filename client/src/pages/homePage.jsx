@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useLocation,useSearchParams} from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import "../designs/style.css";
 import FlashMessage from "../components/flashMessage";
@@ -19,12 +19,12 @@ function HomePage() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [logoutStatus, setLogoutStatus] = useState("");
   const { userName, IsAuthenticated, handleLogout, logoutSuccess,isOwnerAuthenticated,ownerName } = useAuth();
-  const [tokensAvailable, setTokensAvailable] = useState(false);
+ 
 
   useEffect(() => {
     document.title = "Find your nearest paying guest";
   }, []);
-  
+
   const performSearch = () => {
     alert("Searching for: " + searchItem);
 
@@ -46,53 +46,33 @@ function HomePage() {
     return () => clearTimeout(timer);
   }, [location.state?.message]);
 
+  useEffect(() => {
+    if (IsAuthenticated ) {
+      try {
+        // Decode token
 
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const accessToken = urlParams.get('accessToken');
-    const refreshToken = urlParams.get('refreshToken');
-  
-    if (accessToken && refreshToken) {
-      // Store tokens in localStorage
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-  
-      // Set tokensAvailable state to true
-      setTokensAvailable(true);
-    }
-  }, []);
-  
-  useEffect(() => {
-    if (tokensAvailable) {
-      if (IsAuthenticated ) {
-        try {
-          // Decode token
-  
-  
-          console.log("user name:", userName);
-  
-        }
-         catch (error) {
-          console.error("Error decoding or accessing token:", error);
-        }
-      }else if(isOwnerAuthenticated){
-        try {
-          // Decode token
-  
-          console.log("user name:", ownerName);
-         
-        }
-         catch (error) {
-          console.error("Error decoding or accessing token:", error);
-        }
+        console.log("user name:", userName);
+
       }
-       else {
-        console.error("Token is not present in cookies");
+       catch (error) {
+        console.error("Error decoding or accessing token:", error);
+      }
+    }else if(isOwnerAuthenticated){
+      try {
+        // Decode token
+
+        console.log("user name:", ownerName);
+       
+      }
+       catch (error) {
+        console.error("Error decoding or accessing token:", error);
       }
     }
-  }, [tokensAvailable,IsAuthenticated, userName,isOwnerAuthenticated,ownerName]);
-  
+     else {
+      console.error("Token is not present in cookies");
+    }
+  }, [IsAuthenticated, userName,isOwnerAuthenticated,ownerName]);
   useEffect(() => {
     const storedLogoutStatus = localStorage.getItem("logoutStatus");
     if (storedLogoutStatus) {
