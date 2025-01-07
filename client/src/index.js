@@ -11,7 +11,7 @@ import LoginUser from "./pages/loginUser";
 import LandingPage from "./pages/landingPage";
 import LoginOwner from "./pages/LoginOwner";
 import SignupOwner from "./pages/signupOwner";
-
+import NewDashboard from "./pages/newDashBoard";
 import GoogleCallbackPage from "./pages/GoogleCallbackPage";
 
 
@@ -37,6 +37,7 @@ root.render(
           <Route path="/" element={<App />} />
           {/* <Route path="/newHome" element={<NewHomePage />} /> */}
           <Route path="/ProviderSeeker" element={<ProviderSeeker />} />
+          <Route path="/NewDashBoard" element={<NewDashboard />} />
           <Route
             path="/signupforuser"
             element={
