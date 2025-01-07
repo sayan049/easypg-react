@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authHandlers = require("../controllers/authHandlers");
 const upload = require("../middleware/upload");
-
+const refreshTokenHandler =require("../controllers/refreshTokenHandler")
 const updateDetailshandler =require("../controllers/updateDetails")
 const forgotPasswordUser = require("../controllers/forgotPasswordUser")
 const resetPasswordUser = require("../controllers/resetPasswordUser")
@@ -25,56 +25,30 @@ router.get("/findMess", authHandlers.findMess);
 //   res.json({ message: "This is a protected route", user: req.session.user });
 // });
 
-
+router.post("refresh-token",refreshTokenHandler)
 
 router.get("/check-session", (req, res) => {
-  const accessToken = req.headers['authorization']?.split(' ')[1];  // Get token from Authorization header
+  const accessToken = req.headers['authorization']?.split(' ')[1]; // Get token from Authorization header
 
   if (!accessToken) {
-    return res.status(401).json({ isAuthenticated: false });
+    return res.status(401).json({ isAuthenticated: false, message: "Access token is required." });
   }
 
   // Verify the access token
-  jwt.verify(accessToken, JWT_SECRET, async (err, decoded) => {
+  jwt.verify(accessToken, JWT_SECRET, (err, decoded) => {
     if (err) {
-      // If the access token is expired or invalid, try to refresh with the refresh token
-      const refreshToken = req.headers['refreshToken'];  // Get refresh token from request headers (or localStorage)
-      
-      if (!refreshToken) {
-        return res.status(401).json({ isAuthenticated: false });
-      }
-
-      // Verify the refresh token
-      jwt.verify(refreshToken, JWT_REFRESH_SECRET, async (err, decodedRefresh) => {
-        if (err) {
-          return res.status(401).json({ isAuthenticated: false });
-        }
-
-        // If refresh token is valid, generate a new access token
-        const newAccessToken = jwt.sign(
-          { id: decodedRefresh.id, email: decodedRefresh.email, name: decodedRefresh.name, type: decodedRefresh.type, loginMethod: decodedRefresh.loginMethod },
-          JWT_SECRET,
-          { expiresIn: "1h" }
-        );
-
-        // Send the new access token in response
-        return res.status(200).json({
-          isAuthenticated: true,
-          user: { id: decoded.id, email: decoded.email, type: decoded.type, name: decoded.name },
-          loginMethod: decodedRefresh.loginMethod,
-          accessToken: newAccessToken, // Send new access token
-        });
-      });
-    } else {
-      // If the access token is valid, proceed with the user info
-      res.status(200).json({
-        isAuthenticated: true,
-        user: { id: decoded.id, email: decoded.email, type: decoded.type, name: decoded.name },
-        loginMethod: decoded.loginMethod,
-      });
+      return res.status(401).json({ isAuthenticated: false, message: "Invalid or expired access token." });
     }
+
+    // If the access token is valid, return user info
+    return res.status(200).json({
+      isAuthenticated: true,
+      user: { id: decoded.id, email: decoded.email, type: decoded.type, name: decoded.name },
+      loginMethod: decoded.loginMethod,
+    });
   });
 });
+
 
 
 
