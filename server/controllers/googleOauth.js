@@ -37,7 +37,7 @@ passport.use(
 
         // JWT generation logic
         const generateJWT = (user, type, image = null) => {
-          const name = user.firstName+" "+user.lastName;
+          const name = user.firstName+" "+user.lastName
           const loginMethod ="google;"
           // Access token with image included in payload
           const accessToken = jwt.sign(
