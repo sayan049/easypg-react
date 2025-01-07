@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
             'Content-Type': 'application/json',
           },
         });
-  
+  console.log(accessToken,refreshToken)
         // If the access token is expired, try refreshing it
         if (response.status === 401) {
           const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
