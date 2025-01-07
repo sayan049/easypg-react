@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const User = require('../modules/user');
+const PgOwner = require('../modules/pgProvider');
 const authHandlers = require("../controllers/authHandlers");
 const upload = require("../middleware/upload");
 const { refreshTokenHandler } = require("../controllers/refreshTokenHandler");
@@ -29,6 +31,7 @@ router.post("refresh-token",refreshTokenHandler)
 
 router.get("/check-session", (req, res) => {
   const accessToken = req.headers['authorization']?.split(' ')[1]; // Get token from Authorization header
+  console.log("token",accessToken)
 
   if (!accessToken) {
     return res.status(401).json({ isAuthenticated: false, message: "Access token is required." });
@@ -39,7 +42,7 @@ router.get("/check-session", (req, res) => {
     if (err) {
       return res.status(401).json({ isAuthenticated: false, message: "Invalid or expired access token." });
     }
-
+console.log(decoded.id,decoded.email,decoded.type,decoded.name)
     // If the access token is valid, return user info
     return res.status(200).json({
       isAuthenticated: true,
@@ -56,8 +59,39 @@ router.get("/check-session", (req, res) => {
 router.post('/updateDetails',upload, updateDetailshandler.updateDetails);
 router.get('/get-details', updateDetailshandler.getDetails);
 
-router.get("/logout", authenticateJWT, (req, res) => {
-    res.status(200).json({ message: "Logged out successfully." });
+router.get("/logout", authenticateJWT, async (req, res) => {
+  try {
+    // Decode the token using `authenticateJWT` middleware
+    const { id, type } = req.user; // Extract `id` and `type` from the token
+
+    if (!id || !type) {
+      return res.status(400).json({ message: "Invalid token payload." });
+    }
+
+    // Remove the refresh token based on the user type
+    if (type === "student") {
+      const user = await User.findById(id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found." });
+      }
+      user.refreshToken = null; // Clear the refresh token
+      await user.save();
+    } else if (type === "owner") {
+      const owner = await PgOwner.findById(id);
+      if (!owner) {
+        return res.status(404).json({ message: "Owner not found." });
+      }
+      owner.refreshToken = null; // Clear the refresh token
+      await owner.save();
+    } else {
+      return res.status(400).json({ message: "Invalid user type." });
+    }
+
+    return res.status(200).json({ message: "Logged out successfully." });
+  } catch (error) {
+    console.error("Logout error:", error);
+    return res.status(500).json({ message: "An error occurred during logout." });
+  }
 });
 
 router.post("/user/forgot-password", forgotPasswordUser);

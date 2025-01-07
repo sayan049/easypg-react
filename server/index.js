@@ -62,7 +62,7 @@ app.get("/auth/google-owner", passport.authenticate("google", {
         return res.redirect(`${ORIGIN}/ProviderSeeker?error=auth_failed`);
       }
       const { accessToken, refreshToken } = user.tokens;
-      return res.redirect(`${ORIGIN}/?accessToken=${accessToken}&refreshToken=${refreshToken}`);
+      return res.redirect(`${ORIGIN}/googleCallback/?accessToken=${accessToken}&refreshToken=${refreshToken}`);
     })(req, res, next);
   });
   

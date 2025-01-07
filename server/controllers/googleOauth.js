@@ -38,7 +38,7 @@ passport.use(
         // JWT generation logic
         const generateJWT = (user, type, image = null) => {
           const name = user.firstName+" "+user.lastName
-          const loginMethod ="google;"
+          const loginMethod ="google";
           // Access token with image included in payload
           const accessToken = jwt.sign(
             { id: user._id,name:name, email: user.email, type, image,loginMethod }, // Added image to the payload
@@ -52,6 +52,8 @@ passport.use(
             JWT_REFRESH_SECRET,
             { expiresIn: "7d" }
           );
+          user.refreshToken = refreshToken;
+  user.save(); 
 
           return { accessToken, refreshToken };
         };
@@ -65,7 +67,7 @@ passport.use(
             // Existing student, check if Google ID is linked
             if (user.googleId) {
               const tokens = generateJWT(user, "student", image);
-              return done(null, { tokens, userSession: user });
+              return done(null, { tokens });
             } else {
               return done(new Error("Google ID is not linked with this student account"));
             }
@@ -84,7 +86,7 @@ passport.use(
 
 
             const tokens = generateJWT(newUser, "student", image);
-            return done(null, { tokens, userSession: newUser });
+            return done(null, { tokens });
 
           }
         } else if (userType === "owner") {
@@ -95,7 +97,7 @@ passport.use(
             // Existing owner, check if Google ID is linked
             if (owner.googleId) {
               const tokens = generateJWT(owner, "owner", image);
-              return done(null, { tokens, ownerSession: owner });
+              return done(null, { tokens });
             } else {
               return done(new Error("Google ID is not linked with this owner account"));
             }
@@ -114,7 +116,7 @@ passport.use(
 
 
             const tokens = generateJWT(newOwner, "owner", image);
-            return done(null, { tokens, ownerSession: newOwner });
+            return done(null, { tokens });
 
           }
         } else {

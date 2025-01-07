@@ -11,7 +11,8 @@ import LoginUser from "./pages/loginUser";
 import LandingPage from "./pages/landingPage";
 import LoginOwner from "./pages/LoginOwner";
 import SignupOwner from "./pages/signupOwner";
-//import NewHomePage from "./pages/newHome";
+
+import GoogleCallbackPage from "./pages/GoogleCallbackPage";
 
 
 import MessFind from "./pages/MessFind";
@@ -98,6 +99,9 @@ root.render(
             <ViewDetails />
 
           } />
+        <Route path="/googleCallback" element={
+          <GoogleCallbackPage/>
+        }/>
         </Routes>
       </Router>
     </AuthProvider>

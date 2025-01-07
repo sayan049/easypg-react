@@ -9,15 +9,11 @@ const jwt = require("jsonwebtoken");
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
-//jwt Secret
+
 
 exports.signupHandler = async (req, res) => {
   const email = req.body.email;
-// <<<<<<< HEAD
- 
-// =======
-//   // const name = req.body.Firstname;
-// >>>>>>> 562532821bcb4ce984acab541a68e76985fb31bc
+
 
   const existnigUser = await User.findOne({ email: email });
 
@@ -38,14 +34,7 @@ exports.signupHandler = async (req, res) => {
     
   } catch (error) {
     console.error("Error during signup:", error);
-// =======
-//     //console.log(newUser);
-//     console.log("---------------------------------------------------");
-//     res.status(201).json(newUser);
-//     sendmail(req.body.firstName, email, newUser._id);
-//   } catch (error) {
-//     console.error("Error:", error);
-// >>>>>>> 562532821bcb4ce984acab541a68e76985fb31bc
+
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -89,19 +78,6 @@ exports.loginHandler = async (req, res) => {
     user.refreshToken = refreshToken;
     await user.save();
 
-    // res.cookie("accessToken", accessToken, {
-    //   httpOnly: true,
-    //   secure: 'true', // Use 'true' in production to ensure the cookie is sent over HTTPS
-    //   sameSite: "None", // Prevent cross-site request forgery (CSRF)
-    //   maxAge: 24 * 60 * 1000, // Set expiry for 15 minutes
-    // });
-
-    // res.cookie("refreshToken", refreshToken, {
-    //   httpOnly: true,
-    //   secure:'true',// Use 'true' in production
-    //   sameSite: "None",
-    //   maxAge: 10 * 24 * 60 * 60 * 1000, // Set expiry for 10 days
-    // });
     res.status(200).json({
       message: "Login successful.",
       accessToken,
@@ -252,59 +228,7 @@ exports.loginHandlerOwner = async (req, res) => {
   } catch (error) {
     console.log("Error: ", error);
     res.status(500).json({ message: "Server error." });
-// =======
-//       return res.status(401).send("Invalid email or password");
-//     }
-//     if (passWordValid && pgOwner.is_verified_Owner === false) {
-//       console.log("Email not verified");
-//       return res.status(403).send("Not verified credentials");
-//     }
-//     req.session.user = {
-//       id: pgOwner._id,
-//       name: pgOwner.firstName+" "+pgOwner.lastName,
-//       type: "owner",
-//       firstName: pgOwner.firstName,
-//       lastName:pgOwner.lastName,
-//       email:pgOwner.email,
-//       address:pgOwner.address,
-//       mobile:pgOwner.mobileNo,
-//       pin:pgOwner.pincode,
-//       messName:pgOwner.messName,
-//       bioMess:pgOwner.aboutMess,
-//       location:pgOwner.location,
-//       profilePhoto:pgOwner.profilePhoto,
-//       messPhoto:pgOwner.messPhoto,
-//       facility:pgOwner.facility,
-//       is_verified_Owner:pgOwner.is_verified_Owner,
-     
-//     };
-//     res.status(200).send({
-//       message: "Login successful",
-//       user: {
-//         id: pgOwner._id,
-//         name: pgOwner.firstName+" "+pgOwner.lastName,
-//         type: "owner",
-//         firstName: pgOwner.firstName,
-//         lastName:pgOwner.lastName,
-//         email:pgOwner.email,
-//         address:pgOwner.address,
-//         mobile:pgOwner.mobileNo,
-//         pin:pgOwner.pincode,
-//         messName:pgOwner.messName,
-//         bioMess:pgOwner.aboutMess,
-//         location:pgOwner.location,
-//         profilePhoto:pgOwner.profilePhoto,
-//         messPhoto:pgOwner.messPhoto,
-//         facility:pgOwner.facility,
-//         is_verified_Owner:pgOwner.is_verified_Owner,
-       
-//       },
-//     });
-//     console.log("succesfully logged in");
-//   } catch (error) {
-//     console.log("Error: ", error);
-//     res.status(404).send("Failed to log in");
-// >>>>>>> 562532821bcb4ce984acab541a68e76985fb31bc
+
   }
 };
 
