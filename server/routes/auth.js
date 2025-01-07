@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authHandlers = require("../controllers/authHandlers");
 const upload = require("../middleware/upload");
-const refreshTokenHandler =require("../controllers/refreshTokenHandler")
+
 const updateDetailshandler =require("../controllers/updateDetails")
 const forgotPasswordUser = require("../controllers/forgotPasswordUser")
 const resetPasswordUser = require("../controllers/resetPasswordUser")
