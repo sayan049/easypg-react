@@ -109,15 +109,15 @@ export const AuthProvider = ({ children }) => {
       setIsOwnerAuthenticated(data.isAuthenticated && data.user.type === 'owner');
   
       if (data.isAuthenticated && data.user.type === 'student') {
-        setUserName(data.user.userSession.name);
-        setUserImage(data.user.userSession.image);
-        setUser(data.user.userSession);
+        setUserName(data.user.name);
+        setUserImage(data.user.image);
+        setUser(data.user);
         setLoginMethod(data.loginMethod);
         setType(data.user.type);
       } else if (data.isAuthenticated && data.user.type === 'owner') {
-        setOwnerName(data.user.ownerSession.name);
-        setOwnerImage(data.user.ownerSession.image);
-        setOwner(data.user.ownerSession);
+        setOwnerName(data.user.name);
+        setOwnerImage(data.user.image);
+        setOwner(data.user);
         setLoginMethod(data.loginMethod);
         setType(data.user.type);
       }

@@ -67,7 +67,7 @@ passport.use(
             // Existing student, check if Google ID is linked
             if (user.googleId) {
               const tokens = generateJWT(user, "student", image);
-              return done(null, { tokens, userSession: user });
+              return done(null, { tokens });
             } else {
               return done(new Error("Google ID is not linked with this student account"));
             }
@@ -86,7 +86,7 @@ passport.use(
 
 
             const tokens = generateJWT(newUser, "student", image);
-            return done(null, { tokens, userSession: newUser });
+            return done(null, { tokens });
 
           }
         } else if (userType === "owner") {
@@ -97,7 +97,7 @@ passport.use(
             // Existing owner, check if Google ID is linked
             if (owner.googleId) {
               const tokens = generateJWT(owner, "owner", image);
-              return done(null, { tokens, ownerSession: owner });
+              return done(null, { tokens });
             } else {
               return done(new Error("Google ID is not linked with this owner account"));
             }
@@ -116,7 +116,7 @@ passport.use(
 
 
             const tokens = generateJWT(newOwner, "owner", image);
-            return done(null, { tokens, ownerSession: newOwner });
+            return done(null, { tokens });
 
           }
         } else {
