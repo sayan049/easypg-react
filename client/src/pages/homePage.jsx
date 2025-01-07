@@ -19,7 +19,7 @@ function HomePage() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [logoutStatus, setLogoutStatus] = useState("");
   const { userName, IsAuthenticated, handleLogout, logoutSuccess,isOwnerAuthenticated,ownerName } = useAuth();
- 
+  const [tokensAvailable, setTokensAvailable] = useState(false);
 
   useEffect(() => {
     document.title = "Find your nearest paying guest";
@@ -46,46 +46,53 @@ function HomePage() {
     return () => clearTimeout(timer);
   }, [location.state?.message]);
 
+
+
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    
     const accessToken = urlParams.get('accessToken');
     const refreshToken = urlParams.get('refreshToken');
-    
+  
     if (accessToken && refreshToken) {
       // Store tokens in localStorage
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
   
-      // Optionally, redirect the user to a different page (e.g., the dashboard or home)
-     
+      // Set tokensAvailable state to true
+      setTokensAvailable(true);
     }
-    if (IsAuthenticated ) {
-      try {
-        // Decode token
-
-
-        console.log("user name:", userName);
-
+  }, []);
+  
+  useEffect(() => {
+    if (tokensAvailable) {
+      if (IsAuthenticated ) {
+        try {
+          // Decode token
+  
+  
+          console.log("user name:", userName);
+  
+        }
+         catch (error) {
+          console.error("Error decoding or accessing token:", error);
+        }
+      }else if(isOwnerAuthenticated){
+        try {
+          // Decode token
+  
+          console.log("user name:", ownerName);
+         
+        }
+         catch (error) {
+          console.error("Error decoding or accessing token:", error);
+        }
       }
-       catch (error) {
-        console.error("Error decoding or accessing token:", error);
-      }
-    }else if(isOwnerAuthenticated){
-      try {
-        // Decode token
-
-        console.log("user name:", ownerName);
-       
-      }
-       catch (error) {
-        console.error("Error decoding or accessing token:", error);
+       else {
+        console.error("Token is not present in cookies");
       }
     }
-     else {
-      console.error("Token is not present in cookies");
-    }
-  }, [IsAuthenticated, userName,isOwnerAuthenticated,ownerName]);
+  }, [tokensAvailable,IsAuthenticated, userName,isOwnerAuthenticated,ownerName]);
+  
   useEffect(() => {
     const storedLogoutStatus = localStorage.getItem("logoutStatus");
     if (storedLogoutStatus) {
