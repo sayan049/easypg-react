@@ -12,7 +12,7 @@ const authenticateJWT = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    // req.user = decoded; // Attach user data to the request
+    req.user = decoded; // Attach user data to the request
     next();
   } catch (error) {
     console.error("JWT Verification Error:", error);  // Log the error for debugging
