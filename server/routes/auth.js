@@ -42,7 +42,7 @@ router.get("/check-session", (req, res) => {
     if (err) {
       return res.status(401).json({ isAuthenticated: false, message: "Invalid or expired access token." });
     }
-
+console.log(decoded.id,decoded.email,decoded.type,decoded.name)
     // If the access token is valid, return user info
     return res.status(200).json({
       isAuthenticated: true,
