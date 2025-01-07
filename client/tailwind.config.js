@@ -11,7 +11,9 @@ module.exports = {
         'input-color':'#116e7b1a',
         'mobile-owner':'linear-gradient(132deg, rgb(71 228 249) 0%, rgba(255,255,255,1) 99%)',
         'login-owner':'linear-gradient(360deg, rgba(255,255,255,1) 0%, rgba(44,164,181,1) 100%)',
-        'column-owner':'linear-gradient(201deg, rgba(217, 217, 217, 1) 32%, rgba(44, 164, 181, 1) 100%)'
+        'column-owner':'linear-gradient(201deg, rgba(217, 217, 217, 1) 32%, rgba(44, 164, 181, 1) 100%)',
+        'new-bg':' linear-gradient(63deg, rgba(44,164,181,1) 0%, rgba(255,255,255,1) 100%);',
+        'fuck-bg':'linear-gradient(113deg, rgba(9,225,255,0.25) 25%, rgba(9,225,255,0.25) 25%)',
 
       },
     },

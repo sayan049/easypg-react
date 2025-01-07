@@ -11,6 +11,7 @@ import LoginUser from "./pages/loginUser";
 import LandingPage from "./pages/landingPage";
 import LoginOwner from "./pages/LoginOwner";
 import SignupOwner from "./pages/signupOwner";
+//import NewHomePage from "./pages/newHome";
 
 
 import MessFind from "./pages/MessFind";
@@ -33,6 +34,7 @@ root.render(
       <Router>
         <Routes>
           <Route path="/" element={<App />} />
+          {/* <Route path="/newHome" element={<NewHomePage />} /> */}
           <Route path="/ProviderSeeker" element={<ProviderSeeker />} />
           <Route
             path="/signupforuser"
