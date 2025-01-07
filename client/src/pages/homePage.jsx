@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useLocation,useSearchParams} from "react-router-dom";
 
 import "../designs/style.css";
 import FlashMessage from "../components/flashMessage";
@@ -24,7 +24,21 @@ function HomePage() {
   useEffect(() => {
     document.title = "Find your nearest paying guest";
   }, []);
-
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    const accessToken = urlParams.get('accessToken');
+    const refreshToken = urlParams.get('refreshToken');
+    
+    if (accessToken && refreshToken) {
+      // Store tokens in localStorage
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+  
+      // Optionally, redirect the user to a different page (e.g., the dashboard or home)
+     
+    }
+  }, []);
   const performSearch = () => {
     alert("Searching for: " + searchItem);
 

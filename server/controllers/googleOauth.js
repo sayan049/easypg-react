@@ -37,16 +37,18 @@ passport.use(
 
         // JWT generation logic
         const generateJWT = (user, type, image = null) => {
+          const name = user.firstName+" "+user.lastName;
+          const loginMethod ="google;"
           // Access token with image included in payload
           const accessToken = jwt.sign(
-            { id: user._id, email: user.email, type, image }, // Added image to the payload
+            { id: user._id,name:name, email: user.email, type, image,loginMethod }, // Added image to the payload
             JWT_SECRET,
-            { expiresIn: "15m" }
+            { expiresIn: "1h" }
           );
 
           // Refresh token without image
           const refreshToken = jwt.sign(
-            { id: user._id, email: user.email, type }, // Refresh token only contains basic info
+            { id: user._id,name:name, email: user.email, type, image,loginMethod }, // Refresh token only contains basic info
             JWT_REFRESH_SECRET,
             { expiresIn: "7d" }
           );
