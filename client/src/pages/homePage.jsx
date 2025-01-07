@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -27,9 +26,7 @@ function HomePage() {
 
   const performSearch = () => {
     alert("Searching for: " + searchItem);
-
-    navigate("/MessFind");
-
+    navigate("/newMessFind");
   };
 
   useEffect(() => {
@@ -51,9 +48,7 @@ function HomePage() {
       try {
         // Decode token
 
-
         console.log("user name:", userName);
-
       }
        catch (error) {
         console.error("Error decoding or accessing token:", error);
