@@ -5,6 +5,7 @@ function GoogleCallbackPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [tokensSet, setTokensSet] = useState(false);
 
   useEffect(() => {
     const handleAuthCallback = () => {
@@ -21,12 +22,12 @@ function GoogleCallbackPage() {
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
 
-        // Confirm tokens are stored before navigating
+        // Confirm tokens are stored before triggering re-render
         if (
           localStorage.getItem("accessToken") === accessToken &&
           localStorage.getItem("refreshToken") === refreshToken
         ) {
-          navigate("/"); // Navigate to the home page
+          setTokensSet(true); // Set state to signal that tokens are set
         } else {
           throw new Error("Failed to store authentication tokens.");
         }
@@ -39,7 +40,14 @@ function GoogleCallbackPage() {
     };
 
     handleAuthCallback();
-  }, [navigate]);
+  }, []);
+
+  useEffect(() => {
+    if (tokensSet) {
+      // Once tokens are set, navigate to home
+      navigate("/");
+    }
+  }, [tokensSet, navigate]); // Trigger navigation when tokens are confirmed to be set
 
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
@@ -49,7 +57,7 @@ function GoogleCallbackPage() {
         <div>
           <h1>Authentication Error</h1>
           <p>{error}</p>
-          <button onClick={() => navigate("/ProviderSeeker")}>Go to Login</button>
+          <button onClick={() => navigate("/login")}>Go to Login</button>
         </div>
       ) : null}
     </div>
