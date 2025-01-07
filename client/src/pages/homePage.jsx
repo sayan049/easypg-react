@@ -24,21 +24,7 @@ function HomePage() {
   useEffect(() => {
     document.title = "Find your nearest paying guest";
   }, []);
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    const accessToken = urlParams.get('accessToken');
-    const refreshToken = urlParams.get('refreshToken');
-    
-    if (accessToken && refreshToken) {
-      // Store tokens in localStorage
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
   
-      // Optionally, redirect the user to a different page (e.g., the dashboard or home)
-     
-    }
-  }, []);
   const performSearch = () => {
     alert("Searching for: " + searchItem);
 
@@ -61,6 +47,19 @@ function HomePage() {
   }, [location.state?.message]);
 
   useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    const accessToken = urlParams.get('accessToken');
+    const refreshToken = urlParams.get('refreshToken');
+    
+    if (accessToken && refreshToken) {
+      // Store tokens in localStorage
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+  
+      // Optionally, redirect the user to a different page (e.g., the dashboard or home)
+     
+    }
     if (IsAuthenticated ) {
       try {
         // Decode token
