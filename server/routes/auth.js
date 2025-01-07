@@ -31,7 +31,7 @@ router.post("refresh-token",refreshTokenHandler)
 
 router.get("/check-session", (req, res) => {
   const accessToken = req.headers['authorization']?.split(' ')[1]; // Get token from Authorization header
-  console.log("token",accessToken)
+  console.log("token", accessToken);
 
   if (!accessToken) {
     return res.status(401).json({ isAuthenticated: false, message: "Access token is required." });
@@ -42,15 +42,26 @@ router.get("/check-session", (req, res) => {
     if (err) {
       return res.status(401).json({ isAuthenticated: false, message: "Invalid or expired access token." });
     }
-console.log(decoded.id,decoded.email,decoded.type,decoded.name)
-    // If the access token is valid, return user info
-    return res.status(200).json({
+
+    // console.log(decoded.id, decoded.email, decoded.type, decoded.name);
+
+    // Prepare response
+    const userResponse = {
       isAuthenticated: true,
       user: { id: decoded.id, email: decoded.email, type: decoded.type, name: decoded.name },
       loginMethod: decoded.loginMethod,
-    });
+    };
+
+    // If user is an owner, attach the image
+    if (decoded.loginMethod === 'google') {
+      userResponse.user.image = decoded.image; // Assuming the image is stored in the decoded token
+    }
+
+    // Send the response with the user data
+    return res.status(200).json(userResponse);
   });
 });
+
 
 
 

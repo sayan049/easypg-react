@@ -1,5 +1,24 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { baseurl } from '../constant/urls';
+const LoadingSpinner = () => (
+  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+    <div className="spinner"></div>
+    <style>{`
+      .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(0, 0, 0, 0.1);
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `}</style>
+  </div>
+);
 
 
 const AuthContext = createContext();
@@ -234,7 +253,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ IsAuthenticated, userName, userImage,user,owner,loginMethod,type, isOwnerAuthenticated, ownerName, ownerImage, setIsOwnerAuthenticated, setIsAuthenticated, handleLogout }}>
-      {!loading? children : <div>Loading...</div>}
+      {!loading? children : <LoadingSpinner />}
     </AuthContext.Provider>
   );
 };
