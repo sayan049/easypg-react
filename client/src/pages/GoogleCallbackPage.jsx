@@ -5,10 +5,10 @@ function GoogleCallbackPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [tokensSet, setTokensSet] = useState(false);
+  const [isTokenReady, setIsTokenReady] = useState(false);
 
   useEffect(() => {
-    const handleAuthCallback = () => {
+    const handleAuthCallback = async () => {
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const accessToken = urlParams.get("accessToken");
@@ -18,19 +18,14 @@ function GoogleCallbackPage() {
           throw new Error("Authentication failed: Missing tokens.");
         }
 
-        // Safely store tokens in localStorage
+        // Store tokens in sessionStorage and localStorage
+        // sessionStorage.setItem("accessToken", accessToken);
+        // sessionStorage.setItem("refreshToken", refreshToken);
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
 
-        // Confirm tokens are stored before triggering re-render
-        if (
-          localStorage.getItem("accessToken") === accessToken &&
-          localStorage.getItem("refreshToken") === refreshToken
-        ) {
-          setTokensSet(true); // Set state to signal that tokens are set
-        } else {
-          throw new Error("Failed to store authentication tokens.");
-        }
+        // Set a flag indicating tokens are ready
+        setIsTokenReady(true);
       } catch (err) {
         console.error("Error during authentication callback:", err);
         setError(err.message);
@@ -43,11 +38,13 @@ function GoogleCallbackPage() {
   }, []);
 
   useEffect(() => {
-    if (tokensSet) {
-      // Once tokens are set, navigate to home
-      navigate("/");
+    // Perform redirection only after the tokens are ready
+    if (isTokenReady) {
+      setTimeout(() => {
+        navigate("/");
+      }, 100); // Short delay to ensure state updates
     }
-  }, [tokensSet, navigate]); // Trigger navigation when tokens are confirmed to be set
+  }, [isTokenReady, navigate]);
 
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
