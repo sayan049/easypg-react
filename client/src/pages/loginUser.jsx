@@ -123,10 +123,10 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
         localStorage.setItem("refreshToken", refreshToken);
   
         // Optionally store user info in state or localStorage if needed
-        //localStorage.setItem("userInfo", JSON.stringify(userData));
-  
+       
+    // const message = Welcome ${userData.name}!;
         // Navigate to homepage or another page after successful login
-        navigate("/", { state: { message: `Welcome ${userData.name}!` } });
+        navigate("/", { state: { message: message } });
         window.location.reload();
       }
     } catch (error) {

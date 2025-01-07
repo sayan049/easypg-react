@@ -103,10 +103,14 @@ function LoginOwner() {
         headers: { "Content-Type": "application/json" },
       });
       if (response.status === 200) {
-        console.log("Response:", response.data);
-        const userData = response.data.user;
-        const message = `Welcome ${userData.name}!`;
-        localStorage.setItem("sId_message", message);
+        const { accessToken, refreshToken } = response.data;
+  
+        // Store tokens in localStorage
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+
+        // const message = `Welcome ${userData.name}!`;
+        // localStorage.setItem("sId_message", message);
         navigate("/", { state: { message: message } });
 
         console.log("succesfully logged in");

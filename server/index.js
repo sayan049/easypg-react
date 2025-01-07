@@ -10,11 +10,6 @@ const authRoutes = require('./routes/auth');
 const mailRoute = require('./routes/mailVerifierRoute');
 const mailVerifyOwner = require('./routes/mailVerifyOwner');
  const connectDB = require('./config/mongoDB');
-// <<<<<<< HEAD
-// // const sessionConfig = require('./config/sessionStore');
-// =======
-// const sessionConfig = require('./config/sessionStore');
-// >>>>>>> 562532821bcb4ce984acab541a68e76985fb31bc
 
 const app = express();
 
@@ -66,15 +61,8 @@ app.get("/auth/google-owner", passport.authenticate("google", {
         console.error("No user returned from Google OAuth");
         return res.redirect(`${ORIGIN}/ProviderSeeker?error=auth_failed`);
       }
-  
-      req.logIn(user, (loginErr) => {
-        if (loginErr) {
-          console.error("Login Error:", loginErr.message);
-          return res.redirect(`${ORIGIN}/ProviderSeeker?error=login_failed`);
-        }
-  
-        return res.redirect(`${ORIGIN}`);
-      });
+      const { accessToken, refreshToken } = user.tokens;
+      return res.redirect(`${ORIGIN}/?accessToken=${accessToken}&refreshToken=${refreshToken}`);
     })(req, res, next);
   });
   
