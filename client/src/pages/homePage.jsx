@@ -362,7 +362,7 @@ const HomePage = () => {
     handleLogout();
   };
   return (
-    <div className="font-sans">
+    <div >
       <div className="bg-gradient-to-r from-[#2CA4B5] to-white min-h-screen flex flex-col">
         {/* Header Section */}
         <header className="w-full flex justify-between items-center py-4 px-6 lg:px-10 bg-white shadow-sm">
