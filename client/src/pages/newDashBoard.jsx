@@ -58,7 +58,7 @@ function NewDashBoard() {
           <Sidebar setActivePage={setActivePage} isOpen={isSidebarOpen} />
 
           {/* Right-side Content */}
-          <div className=" lg:overflow-y-auto pr-6 pl-6 " style={{width:'100%'}}>
+          <div className=" lg:overflow-y-auto " style={{width:'100%'}}>
             {activePage === "My Bookings" && <BookingTable />}
             {activePage === "Dashboard" && <div>Dashboard Content</div>}
             {activePage === "Payments" && <div>Payments Content</div>}
