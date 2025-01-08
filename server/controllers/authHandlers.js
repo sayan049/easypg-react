@@ -119,6 +119,7 @@ exports.signupHandlerOwner = async (req, res) => {
   } = req.body;
 
   let { profilePhoto, messPhoto } = req.files;
+  console.log("Received roomInfo:", roomInfo);
 
   try {
     // Check if the user already exists
