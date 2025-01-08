@@ -63,7 +63,7 @@ function Sidebar({ setActivePage, isOpen }) {
       </div>
 
       {/* Bottom Navigation for smaller screens */}
-      <div className="lg:hidden fixed bottom-0 w-full bg-white shadow-md flex justify-around p-2">
+      <div className="lg:hidden fixed bottom-0 w-full bg-white shadow-md flex justify-around p-2 right-0">
         <button
           className="flex flex-col items-center text-gray-700 hover:text-blue-500"
           onClick={() => setActivePage("Dashboard")}

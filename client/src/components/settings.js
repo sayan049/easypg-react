@@ -81,7 +81,7 @@ function Settings() {
   };
 
   return (
-    <div className="bg-white p-6 shadow rounded-md">
+    <div className="bg-white pb-16 pr-6 pt-6 pl-6 shadow rounded-md">
       <h2 className="text-2xl font-bold mb-6">Profile Settings</h2>
 
       {/* Profile Picture Section (First Row) */}
