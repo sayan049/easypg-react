@@ -222,60 +222,59 @@ function Settings() {
 
 
       {/* Notification Preferences */}
-      <section className="mb-6">
-        <h3 className="text-xl font-semibold mb-4">Notification Preferences</h3>
-        <div className="flex items-center space-x-4">
-        
-          <label className="flex items-center space-x-2">
-            {/* <input
-              type="checkbox"
-              checked={notifications.email}
-              onChange={() => handleToggle("notifications", "email")}
-            /> */}
-            <ToggleSwitch isChecked={isChecked} setIsChecked={setIsChecked}/>
-            <span>Email Notifications</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            {/* <input
-              type="checkbox"
-              checked={notifications.sms}
-              onChange={() => handleToggle("notifications", "sms")}
-            /> */}
-            <ToggleSwitch isChecked={isChecked} setIsChecked={setIsChecked}/>
-            <span>SMS Notifications</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            {/* <input
-              type="checkbox"
-              checked={notifications.push}
-              onChange={() => handleToggle("notifications", "push")}
-            /> */}
-            <ToggleSwitch isChecked={isChecked} setIsChecked={setIsChecked}/>
-            <span>App Push Notifications</span>
-          </label>
-        </div>
-      </section>
+{/* Notification Preferences */}
+<section className="mb-6">
+  <h3 className="text-xl font-semibold mb-4">Notification Preferences</h3>
+  <div className="flex flex-wrap gap-4">
+    <label className="flex items-center space-x-2">
+      {/* <input
+        type="checkbox"
+        checked={notifications.email}
+        onChange={() => handleToggle("notifications", "email")}
+      /> */}
+      <ToggleSwitch isChecked={isChecked} setIsChecked={setIsChecked}/>
+      <span>Email Notifications</span>
+    </label>
+    <label className="flex items-center space-x-2">
+      <input
+        type="checkbox"
+        checked={notifications.sms}
+        onChange={() => handleToggle("notifications", "sms")}
+      />
+      <span>SMS Notifications</span>
+    </label>
+    <label className="flex items-center space-x-2">
+      <input
+        type="checkbox"
+        checked={notifications.push}
+        onChange={() => handleToggle("notifications", "push")}
+      />
+      <span>App Push Notifications</span>
+    </label>
+  </div>
+</section>
+
 
       {/* Privacy Settings */}
       <section className="mb-6">
         <h3 className="text-xl font-semibold mb-4">Privacy Settings</h3>
         <div className="flex items-center space-x-4">
           <label className="flex items-center space-x-2">
-            {/* <input
+            <input
               type="checkbox"
               checked={privacy.profilePrivate}
               onChange={() => handleToggle("privacy", "profilePrivate")}
-            /> */}
-            <ToggleSwitch isChecked={isChecked} setIsChecked={setIsChecked}/>
+            />
+            {/* <ToggleSwitch/> */}
             <span>Make Profile Private</span>
           </label>
           <label className="flex items-center space-x-2">
-            {/* <input
+            <input
               type="checkbox"
               checked={privacy.hideContact}
               onChange={() => handleToggle("privacy", "hideContact")}
-            /> */}
-            <ToggleSwitch isChecked={isChecked} setIsChecked={setIsChecked}/>
+            />
+            {/* <ToggleSwitch/> */}
             <span>Hide Contact Information</span>
           </label>
         </div>
