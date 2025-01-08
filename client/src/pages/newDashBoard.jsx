@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import Sidebar from "../components/sidebar";
 import BookingTable from "../components/BookingTable";
+import Settings from "../components/settings";
 
 function NewDashBoard() {
    const [activePage, setActivePage] = useState("Dashboard");
    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen); // Toggle sidebar visibility
-  };
+
+  //  const toggleSidebar = () => {
+  //   setIsSidebarOpen(!isSidebarOpen); // Toggle sidebar visibility
+  // };
 
 
    // Log the activePage to ensure state changes
@@ -90,15 +92,15 @@ function NewDashBoard() {
 {/* ham */}
 
         {/* Sidebar with page selection */}
-        <div className="flex">
-        <Sidebar setActivePage={setActivePage} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+        <div className="flex pb-[35px]">
+        <Sidebar setActivePage={setActivePage} isOpen={isSidebarOpen} />
 
 {/* Conditional rendering based on activePage */}
 <div style={{width: {isSidebarOpen}? '100%':'80%'}}>
 {activePage === "My Bookings" && <BookingTable />}
 {activePage === "Dashboard" && <div>Dashboard Content</div>}
 {activePage === "Payments" && <div>Payments Content</div>}
-{activePage === "Settings" && <div>Settings Content</div>}
+{activePage === "Settings" && <Settings/>}
 </div>
         </div>
        
