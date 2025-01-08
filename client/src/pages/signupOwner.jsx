@@ -78,7 +78,7 @@ function SignupOwner() {
     facility: [],
     gender: "", // Add gender field (Girls, Boys, Coed)
     roomInfo: [{ 
-      roomNo: "", 
+      roomNo: 1, 
       bedContains: "", // One of 'one', 'two', 'three', 'four', 'five'
       pricePerHead: "",
       roomAvailable: true,
@@ -571,7 +571,7 @@ console.log(isFormComplete());
               onChange={handleChange}
               className="w-full px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[#2ca4b5]  bg-[#116e7b1a]"
             >
-            
+             <option value="">Select Option</option>
               <option value="Girls Pg">Girls Pg</option>
               <option value="Boys Pg">Boys Pg</option>
               <option value="Coed Pg">Coed Pg</option>
