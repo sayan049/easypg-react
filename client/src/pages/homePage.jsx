@@ -26,7 +26,7 @@ function HomePage() {
 
   const performSearch = () => {
     alert("Searching for: " + searchItem);
-    navigate("/newMessFind");
+    navigate("/MessFind");
   };
 
   useEffect(() => {
@@ -191,7 +191,7 @@ function HomePage() {
                 onChange={(e) => setSearchItem(e.target.value)}
               />
               <input type="submit" value="&rarr;" onClick={performSearch} />
-              <Link
+              {/* <Link
                 style={{
                   textDecoration: "none",
                   color: "white",
@@ -200,7 +200,7 @@ function HomePage() {
                 to="/MessFind"
               >
                 Login
-              </Link>
+              </Link> */}
             </div>
           </div>
           <div className="image_container">
