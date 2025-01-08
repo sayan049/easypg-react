@@ -19,7 +19,7 @@ const corsOptions = {
   origin: ORIGIN,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With','x-device-info'],
 };
 app.set('trust proxy', 1); // Trust the first proxy
 
