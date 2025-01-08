@@ -152,14 +152,21 @@ exports.signupHandlerOwner = async (req, res) => {
       }
       messPhoto = messPhotoUrls;
     }
-// const roomInfo=[];
-//     // Validate roomInfo structure directly
-//     const validatedRoomInfo = roomInfo.map((room) => ({
-//       roomNo: room.roomNo || "",
-//       bedContains: room.bedContains || "",
-//       pricePerHead: room.pricePerHead || "",
-//       roomAvailable: room.roomAvailable !== undefined ? room.roomAvailable : true,
-//     }));
+
+    // Validate roomInfo structure (Optional)
+    if (roomInfo && Array.isArray(roomInfo)) {
+      const validatedRoomInfo = roomInfo.map((room) => ({
+        roomNo: room.roomNo || "",
+        bedContains: room.bedContains || "",
+        pricePerHead: room.pricePerHead || "",
+        roomAvailable: room.roomAvailable !== undefined ? room.roomAvailable : true,
+      }));
+      // Optionally, you can replace roomInfo with validatedRoomInfo, if needed
+      roomInfo = validatedRoomInfo;
+    } else {
+      console.log({ error: "Invalid room information" });
+      return res.status(400).json({ error: "Invalid room information" });
+    }
 
     // Create new PG Owner
     const newOwner = await PgOwner.create({
@@ -190,6 +197,7 @@ exports.signupHandlerOwner = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 
 
