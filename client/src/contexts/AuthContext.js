@@ -218,6 +218,7 @@ export const AuthProvider = ({ children }) => {
         headers: {
           "Authorization": `Bearer ${accessToken}`, // Use the updated or refreshed token
           "Content-Type": "application/json",
+          "X-Device-Info": deviceInfo, 
         },
       });
   
