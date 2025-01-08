@@ -220,6 +220,7 @@ export const AuthProvider = ({ children }) => {
           "Content-Type": "application/json",
           "X-Device-Info": deviceInfo, 
         },
+        body: JSON.stringify({ refreshToken }),
       });
   
       const logoutData = await logoutResponse.json();
