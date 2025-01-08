@@ -104,12 +104,13 @@ function LoginOwner() {
       email: email,
       password: password,
     };
+    const deviceInfo = navigator.userAgent || "Unknown Device";
     try {
       setIsSubmitting(true); // Disable button during submission
       setIsButtonDisabled(true); // Disable button immediately
       const response = await axios.post(loginOwnerUrl, jsonData, {
         withCredentials: true,
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Device-Info": deviceInfo, },
       });
       if (response.status === 200) {
         const { accessToken, refreshToken } = response.data;
@@ -137,13 +138,13 @@ function LoginOwner() {
       }, 5000);
     }
   };
-
   const loginwithgoogleOwner = () => {
+    const deviceInfo = navigator.userAgent;  // Capture device info (e.g., user agent)
+    const state = JSON.stringify({ type: "owner", device: deviceInfo }); // Add device info in the state
     window.location.href =
-      `${baseurl}/auth/google-owner?state=` +
-      encodeURIComponent(JSON.stringify({ type: "owner" }));
+      `${baseurl}/auth/google-owner?state=` + encodeURIComponent(state); // Send the state with device info
   };
-
+  
   const openForgotPassword = () => {
     setIsForgotPasswordOpen(true);
   };

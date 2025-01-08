@@ -40,58 +40,65 @@ exports.signupHandler = async (req, res) => {
 };
 
 exports.loginHandler = async (req, res) => {
-  const email = req.body.email;
-  const pass = req.body.password;
-  console.log(email,pass)
+  const { email, password } = req.body;
+  const device = req.headers['x-device-info'] || req.headers['user-agent'] || 'Unknown Device'; // Extract device info from headers
+
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      console.log("user not found");
-
+      console.log("User not found");
       return res.status(401).json({ message: "Invalid email or password." });
-
     }
-    const isPassValid = await bcrypt.compare(pass, user.password);
+
+    const isPassValid = await bcrypt.compare(password, user.password);
     if (!isPassValid) {
-      console.log("invalid user or password");
-
+      console.log("Invalid password");
       return res.status(401).json({ message: "Invalid email or password." });
     }
 
-    if (user.is_verified === false) {
-     
+    if (!user.is_verified) {
+      console.log("Email not verified");
       return res.status(403).json({ message: "Please verify your email first." });
     }
+
     const loginMethod = 'local';
-    const name=  user.firstName+" "+user.lastName
-    // set a JWT token, that will handle authentication
+    const name = `${user.firstName} ${user.lastName}`;
+
+    // Generate JWT Tokens
     const accessToken = jwt.sign(
-      { id: user._id,name:name, email: user.email, type: "student",loginMethod },
+      { id: user._id, name, email: user.email, type: "student", loginMethod },
       JWT_SECRET,
-      { expiresIn: "1h" } // Access token valid for 15 minutes
+      { expiresIn: "1h" }
     );
+
     const refreshToken = jwt.sign(
-      { id: user._id, name:name,email: user.email, type: "student",loginMethod },
+      { id: user._id, name, email: user.email, type: "student", loginMethod },
       JWT_REFRESH_SECRET,
-      { expiresIn: "10d" } // Refresh token valid for 7 days
+      { expiresIn: "10d" }
     );
-    user.refreshToken = refreshToken;
+
+    // Save Refresh Token with Device Info in the Database
+    user.refreshTokens.push({
+      token: refreshToken,
+      device: device,
+      createdAt: new Date(),
+    });
+
     await user.save();
 
     res.status(200).json({
       message: "Login successful.",
       accessToken,
-     refreshToken,
-   
+      refreshToken,
     });
- 
-    console.log("successfully logged in");
+
+    console.log("Successfully logged in");
   } catch (error) {
     console.error("Error logging in user:", error);
     res.status(500).json({ message: "Server error." });
-
   }
 };
+
 
 exports.signupHandlerOwner = async (req, res) => {
 
@@ -178,59 +185,65 @@ exports.findMess = async (req, res) => {
 };
 
 exports.loginHandlerOwner = async (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
+  const { email, password } = req.body;
+  const device = req.headers['x-device-info'] || req.headers['user-agent'] || 'Unknown Device'; // Extract device info
+
   try {
-    const pgOwner = await PgOwner.findOne({ email: email });
+    const pgOwner = await PgOwner.findOne({ email });
     if (!pgOwner) {
       console.log("Pg Owner not found");
-
-      return res.status(401).json({ message: "Invalid email or password." });
-
-      return res.status(401).send("Invalid email or password");
-
-    }
-    const passWordValid = bcrypt.compare(password, pgOwner.password);
-    if (!passWordValid) {
-      console.log("Invlid email or password");
-
       return res.status(401).json({ message: "Invalid email or password." });
     }
-    if (passWordValid && pgOwner.is_verified_Owner === false) {
+
+    const isPasswordValid = await bcrypt.compare(password, pgOwner.password);
+    if (!isPasswordValid) {
+      console.log("Invalid email or password");
+      return res.status(401).json({ message: "Invalid email or password." });
+    }
+
+    if (!pgOwner.is_verified_Owner) {
       console.log("Email not verified");
-      return res.status(401).json({ message: "Invalid email or password." });
-    };
-    const loginMethod = 'local';
-    const name=pgOwner.firstName+" "+pgOwner.lastName
-    //jwt sign 
-    const accessToken = jwt.sign(
-      { id: pgOwner._id,name:name, email: pgOwner.email, type: "owner",loginMethod },
-      JWT_SECRET,
-      { expiresIn: "1h" } // Access token valid for 15 minutes
-    );
-    const refreshToken = jwt.sign(
-      { id: pgOwner._id,name:name, email: pgOwner.email, type: "owner",loginMethod },
-      JWT_REFRESH_SECRET,
-      { expiresIn: "10d" } // Refresh token valid for 7 days
-    );
-    pgOwner.refreshToken = refreshToken;
-    await pgOwner.save();
+      return res.status(403).json({ message: "Please verify your email first." });
+    }
 
+    const loginMethod = 'local';
+    const name = `${pgOwner.firstName} ${pgOwner.lastName}`;
+
+    // Generate JWT Tokens
+    const accessToken = jwt.sign(
+      { id: pgOwner._id, name, email: pgOwner.email, type: "owner", loginMethod },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    const refreshToken = jwt.sign(
+      { id: pgOwner._id, name, email: pgOwner.email, type: "owner", loginMethod },
+      JWT_REFRESH_SECRET,
+      { expiresIn: "10d" }
+    );
+
+    // Save Refresh Token with Device Info in the Database
+    pgOwner.refreshTokens.push({
+      token: refreshToken,
+      device:device,
+      createdAt: new Date(),
+    });
+
+    await pgOwner.save();
 
     res.status(200).json({
       message: "Login successful.",
       accessToken,
       refreshToken,
-     
     });
-  
-    console.log("succesfully logged in");
-  } catch (error) {
-    console.log("Error: ", error);
-    res.status(500).json({ message: "Server error." });
 
+    console.log("Successfully logged in");
+  } catch (error) {
+    console.error("Error logging in owner:", error);
+    res.status(500).json({ message: "Server error." });
   }
 };
+
 
 
 

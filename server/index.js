@@ -43,12 +43,12 @@ connectDB();
 // Google OAuth routes
 app.get("/auth/google", passport.authenticate("google", {
   scope: ["profile", "email"],
-  state: JSON.stringify({ type: 'student' })
+  state: JSON.stringify({ type: 'student',device:device })
 }));
 
 app.get("/auth/google-owner", passport.authenticate("google", {
     scope: ["profile", "email"],
-    state: JSON.stringify({ type: 'owner' }) // Route for owner login
+    state: JSON.stringify({ type: 'owner',device:device }) // Route for owner login
   }));
 
   app.get("/auth/google/callback", (req, res, next) => {
@@ -62,6 +62,7 @@ app.get("/auth/google-owner", passport.authenticate("google", {
         return res.redirect(`${ORIGIN}/ProviderSeeker?error=auth_failed`);
       }
       const { accessToken, refreshToken } = user.tokens;
+      const { device } = req.query.state ? JSON.parse(req.query.state) : {};  
       return res.redirect(`${ORIGIN}/googleCallback/?accessToken=${accessToken}&refreshToken=${refreshToken}`);
     })(req, res, next);
   });

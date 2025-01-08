@@ -79,21 +79,33 @@ router.get("/logout", authenticateJWT, async (req, res) => {
       return res.status(400).json({ message: "Invalid token payload." });
     }
 
-    // Remove the refresh token based on the user type
+    // Remove the refresh token based on the user type and device
+    const refreshToken = req.body.refreshToken; // Assumes the refresh token is sent in the body
+
+    if (!refreshToken) {
+      return res.status(400).json({ message: "Refresh token is required to log out." });
+    }
+
+    let user;
     if (type === "student") {
-      const user = await User.findById(id);
+      user = await User.findById(id);
       if (!user) {
         return res.status(404).json({ message: "User not found." });
       }
-      user.refreshToken = null; // Clear the refresh token
+      const device = req.headers['x-device-info'];
+      // Remove the refresh token from the stored tokens array based on the token provided
+      user.refreshTokens = user.refreshTokens.filter(rt => !(rt.token === refreshToken && rt.device === device));
+
       await user.save();
     } else if (type === "owner") {
-      const owner = await PgOwner.findById(id);
-      if (!owner) {
+      user = await PgOwner.findById(id);
+      if (!user) {
         return res.status(404).json({ message: "Owner not found." });
       }
-      owner.refreshToken = null; // Clear the refresh token
-      await owner.save();
+
+      // Remove the refresh token from the stored tokens array based on the token provided
+      user.refreshTokens = user.refreshTokens.filter(rt => rt.token !== refreshToken);
+      await user.save();
     } else {
       return res.status(400).json({ message: "Invalid user type." });
     }

@@ -50,8 +50,13 @@ const userSchema = new mongoose.Schema({
     default:Date.now
   },
 
-  refreshToken: { type: String, default: null },
-
+  refreshTokens: [
+    {
+      token: { type: String, required: true }, // Refresh token
+      device: { type: String, required: true }, // Device info
+      createdAt: { type: Date, default: Date.now }, // Creation timestamp
+    },
+  ],
  
 
 });

@@ -43,36 +43,7 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
     }
   }, [searchParams]);
 
-    // useEffect(() => {
-    //   // Check if the message should be displayed based on localStorage
-    //   const storedMessage = localStorage.getItem("loginMessage");
-    //   if (storedMessage) {
-    //     setMessage(location.state?.message || "");
-    //   }
-  
-    //   // Remove the message after 5 seconds
-    //   const timer = setTimeout(() => {
-    //     setMessage("");
-    //     localStorage.removeItem("loginMessage");
-    //   }, 5000);
-  
-    //   return () => clearTimeout(timer);
-    // }, [location.state?.message]);
-  
- 
 
-
-  // useEffect(() => {
-  //   const params = new URLSearchParams(location.search);
-  //   const tokenFromUrl = params.get("resetToken");
-  
-  //   if (tokenFromUrl) {
-  //     setResetToken(tokenFromUrl);
-  //     verifyResetToken(tokenFromUrl);
-  //   } else {
-  //     setLoading(false); // Stop loading if no token
-  //   }
-  // }, [location.search]);
   
   const verifyResetToken = async (token) => {
     try {
@@ -104,6 +75,8 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
   const loginHandler = async (event) => {
     event.preventDefault();
     const jsonData = { email, password };
+    const deviceInfo = navigator.userAgent || "Unknown Device";
+
   
     try {
       setIsSubmitting(true);
@@ -111,7 +84,7 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
   
       // Make login request with credentials (no need for cookies anymore)
       const response = await axios.post(loginUrl, jsonData, {
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Device-Info": deviceInfo, },
       });
   
       if (response.status === 200) {
@@ -142,9 +115,11 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
 
   const loginwithgoogle = () => {
-    window.location.href = `${baseurl}/auth/google?state=` + encodeURIComponent(JSON.stringify({ type: "student" }));
+    const deviceInfo = navigator.userAgent;  // You can capture any other device info as needed
+    const state = JSON.stringify({ type: "student", device: deviceInfo });
+    window.location.href = `${baseurl}/auth/google?state=${encodeURIComponent(state)}`;
   };
-
+  
   const openForgotPassword = () => {
     setIsForgotPasswordOpen(true);
   };

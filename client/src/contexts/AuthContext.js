@@ -45,6 +45,8 @@ export const AuthProvider = ({ children }) => {
   
         const accessToken = localStorage.getItem("accessToken");
         const refreshToken = localStorage.getItem("refreshToken");
+        const deviceInfo = navigator.userAgent || "Unknown Device";
+
   
         // If tokens are not available, reset the state and return
         if (!accessToken || !refreshToken) {
@@ -66,7 +68,7 @@ export const AuthProvider = ({ children }) => {
         if (response.status === 401) {
           const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { "Content-Type": "application/json", "X-Device-Info": deviceInfo, },
             body: JSON.stringify({ refreshToken }),
           });
   
@@ -167,7 +169,8 @@ export const AuthProvider = ({ children }) => {
     try {
       let accessToken = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
-  
+      const deviceInfo = navigator.userAgent || "Unknown Device";
+
       if (!refreshToken) {
         alert("No refresh token found. Please log in again.");
         setLoading(false);
@@ -192,7 +195,7 @@ export const AuthProvider = ({ children }) => {
         // Refresh the access token if it's expired
         const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json", "X-Device-Info": deviceInfo, },
           body: JSON.stringify({ refreshToken }),
         });
   

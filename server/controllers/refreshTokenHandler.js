@@ -16,7 +16,7 @@ exports.refreshTokenHandler = async (req, res) => {
     // Verify refresh token
     const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
     const { id, type, loginMethod } = decoded;
-    
+
     let user;
     if (type === "student") {
       user = await User.findById(id);
@@ -24,23 +24,29 @@ exports.refreshTokenHandler = async (req, res) => {
       user = await PgOwner.findById(id);
     }
 
-    if (!user || user.refreshToken !== refreshToken) {
+    if (!user) {
+      return res.status(403).json({ message: "User not found" });
+    }
+
+    // Check if the refresh token exists in the user's stored tokens
+    const tokenEntry = user.refreshTokens.find(rt => rt.token === refreshToken && rt.device === req.headers['x-device-info'] || req.headers['user-agent'] || 'Unknown Device' );
+
+    if (!tokenEntry) {
       return res.status(403).json({ message: "Invalid refresh token" });
     }
 
-    const name = user.firstName + " " + user.lastName;
-    
     // Prepare the payload for the new access token
-    const payload = { 
-      id: user._id, 
-      email: user.email, 
-      name: name, 
-      type, 
-      loginMethod 
+    const name = user.firstName + " " + user.lastName;
+    const payload = {
+      id: user._id,
+      email: user.email,
+      name: name,
+      type,
+      loginMethod,
     };
 
-    // If user is an owner, include the image in the payload
-    if (loginMethod=== 'google') {
+    // If the user is an owner and uses Google login, include the image in the payload
+    if (loginMethod === "google") {
       payload.image = user.image; // Assuming 'image' field exists on the PgOwner model
     }
 

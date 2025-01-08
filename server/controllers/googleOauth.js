@@ -20,9 +20,10 @@ passport.use(
     },
     async (req, accessToken, refreshToken, profile, done) => {
       try {
+        const state = req.query.state ? JSON.parse(req.query.state) : {};
+        const device = state.device || ''; // Extract device info from state
 
-        const userType = req.query.state ? JSON.parse(req.query.state).type : "student";
-
+        const userType = state.type || "student";  // Default to "student" if type is not provided
 
         const email = profile.emails[0]?.value;
         const firstName = profile.name.givenName || profile.displayName;
@@ -52,9 +53,8 @@ passport.use(
             JWT_REFRESH_SECRET,
             { expiresIn: "7d" }
           );
-          user.refreshToken = refreshToken;
-  user.save(); 
-
+          user.refreshTokens.push({ token: refreshToken, device:device,createdAt: new Date(), });
+           user.save();
           return { accessToken, refreshToken };
         };
 
