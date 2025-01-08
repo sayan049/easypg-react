@@ -41,15 +41,27 @@ app.use('/mailOwner', mailVerifyOwner);
 connectDB();
 
 // Google OAuth routes
-app.get("/auth/google", passport.authenticate("google", {
-  scope: ["profile", "email"],
-  state: req.query.state, 
-}));
+app.get("/auth/google", (req, res, next) => {
+  // Access the state from the query string
+  const state = req.query.state;
 
-app.get("/auth/google-owner", passport.authenticate("google", {
+  // Pass the state to the passport.authenticate() method
+  passport.authenticate("google", {
     scope: ["profile", "email"],
-    state: req.query.state, 
-  }));
+    state: state  // Pass the state here
+  })(req, res, next);
+});
+
+app.get("/auth/google-owner", (req, res, next) => {
+  // Access the state from the query string
+  const state = req.query.state;
+
+  // Pass the state to the passport.authenticate() method
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    state: state  // Pass the state here
+  })(req, res, next);
+});
 
   app.get("/auth/google/callback", (req, res, next) => {
     // Parse the state from query parameters before calling passport.authenticate
