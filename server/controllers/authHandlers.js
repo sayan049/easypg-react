@@ -101,7 +101,6 @@ exports.loginHandler = async (req, res) => {
 
 
 exports.signupHandlerOwner = async (req, res) => {
-
   const {
     firstName,
     lastName,
@@ -114,41 +113,65 @@ exports.signupHandlerOwner = async (req, res) => {
     aboutMess,
     location,
     facility,
+    gender,
+    roomInfo,
   } = req.body;
- let {profilePhoto, messPhoto } = req.files;
+
+  let { profilePhoto, messPhoto } = req.files;
+
   try {
+    // Check if the user already exists
     const existingUser = await PgOwner.findOne({ email });
     if (existingUser) {
       console.log({ error: `${email} already exists` });
       return res.status(400).json({ error: `${email} already exists` });
     }
 
+    // Validate password
     if (!password) {
       console.log({ error: "Password is required" });
       return res.status(400).json({ error: "Password is required" });
     }
 
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-   
-      if (profilePhoto && profilePhoto[0]) {
-                    const result = await cloudinary.uploader.upload(profilePhoto[0].path);
-                    profilePhoto = result.secure_url; // Save Cloudinary URL
-                  
-                }
+    // Process profile photo
+    if (profilePhoto && profilePhoto[0]) {
+      const result = await cloudinary.uploader.upload(profilePhoto[0].path);
+      profilePhoto = result.secure_url; // Save Cloudinary URL
+    }
 
-        if (messPhoto && messPhoto.length > 0) {
-                    const messPhotoUrls = [];
-                    for (const photo of messPhoto) {
-                        const result = await cloudinary.uploader.upload(photo.path);
-                        messPhotoUrls.push(result.secure_url); // Save Cloudinary URLs
-                       
-                    }
-                  messPhoto = messPhotoUrls;
-                    
-                }
+    // Process mess photos
+    if (messPhoto && messPhoto.length > 0) {
+      const messPhotoUrls = [];
+      for (const photo of messPhoto) {
+        const result = await cloudinary.uploader.upload(photo.path);
+        messPhotoUrls.push(result.secure_url); // Save Cloudinary URLs
+      }
+      messPhoto = messPhotoUrls;
+    }
 
-    const newUser = await PgOwner.create({
+    // Ensure `roomInfo` is parsed correctly
+    let parsedRoomInfo = [];
+    if (typeof roomInfo === "string") {
+      parsedRoomInfo = JSON.parse(roomInfo); // Parse if it's a JSON string
+    } else if (Array.isArray(roomInfo)) {
+      parsedRoomInfo = roomInfo; // Use directly if it's already an array
+    } else {
+      return res.status(400).json({ error: "Invalid roomInfo format" });
+    }
+
+    // Validate roomInfo structure
+    const validatedRoomInfo = parsedRoomInfo.map((room) => ({
+      roomNo: room.roomNo || "",
+      bedContains: room.bedContains || "",
+      pricePerHead: room.pricePerHead || "",
+      roomAvailable: room.roomAvailable !== undefined ? room.roomAvailable : true,
+    }));
+
+    // Create new PG Owner
+    const newOwner = await PgOwner.create({
       firstName,
       lastName,
       email,
@@ -162,16 +185,22 @@ exports.signupHandlerOwner = async (req, res) => {
       profilePhoto,
       messPhoto,
       facility,
-      
+      gender,
+      roomInfo: validatedRoomInfo,
     });
-    //console.log(newUser+" xxx"+ newUser.profilePhoto);
-    sendmailOwner(req.body.firstName, email, newUser._id);
-    return res.status(201).json(newUser);
+
+    // Send confirmation email
+    sendmailOwner(firstName, email, newOwner._id);
+
+    // Return success response
+    return res.status(201).json(newOwner);
   } catch (error) {
     console.error("Error creating user:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
 
 exports.findMess = async (req, res) => {
   try {
