@@ -489,7 +489,7 @@ const HomePage = () => {
           {/* Right Image */}
           <div className="max-w-sm lg:max-w-md mt-10 lg:mt-0 lg:order-2">
             <img
-              src="assets/sweetHome.png"
+              src="assets/vecteezy_home-png-with-ai-generated_33504402 1.png"
               alt="House"
               className="rounded-lg"
             />
