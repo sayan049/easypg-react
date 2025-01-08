@@ -152,8 +152,18 @@ exports.signupHandlerOwner = async (req, res) => {
       messPhoto = messPhotoUrls;
     }
 
+    // Ensure `roomInfo` is parsed correctly
+    let parsedRoomInfo = [];
+    if (typeof roomInfo === "string") {
+      parsedRoomInfo = JSON.parse(roomInfo); // Parse if it's a JSON string
+    } else if (Array.isArray(roomInfo)) {
+      parsedRoomInfo = roomInfo; // Use directly if it's already an array
+    } else {
+      return res.status(400).json({ error: "Invalid roomInfo format" });
+    }
+
     // Validate roomInfo structure
-    const validatedRoomInfo = roomInfo.map((room) => ({
+    const validatedRoomInfo = parsedRoomInfo.map((room) => ({
       roomNo: room.roomNo || "",
       bedContains: room.bedContains || "",
       pricePerHead: room.pricePerHead || "",
@@ -189,6 +199,7 @@ exports.signupHandlerOwner = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 
 exports.findMess = async (req, res) => {
