@@ -13,9 +13,9 @@ function Sidebar({ setActivePage, isOpen }) {
     <>
       {/* Sidebar for larger screens */}
       <div
-        className={`w-64 bg-white shadow-md h-screen fixed lg:relative ${
+        className={`w-64 bg-white shadow-md h-[calc(100vh-16rem)] fixed lg:relative ${
           isOpen ? "block" : "hidden"
-        } lg:block`}
+        } lg:block` }
        // style={isOpen ? styl : {}}
       >
         <div className="p-6">
