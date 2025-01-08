@@ -309,6 +309,12 @@ function Settings() {
             </button>
 
             <h3 className="text-xl font-semibold mb-4 flex justify-center">Account Management</h3>
+            {/* <div className="flex justify-center">
+            <img
+                src="/assets/delete 1.png" // Path to your default image
+                alt="Default"
+              />
+            </div> */}
             <div className="flex space-x-4 justify-center">
               <button className="bg-red-500 text-white px-4 py-2 rounded-md">
                 Logout
@@ -321,7 +327,7 @@ function Settings() {
         </div>
       )}
 
-<div className="mt-6 flex ">
+<div className="mt-6 flex pb-2">
         <button
           onClick={() => setIsModalOpen(true)}
           className="bg-blue-500 text-white px-4 py-2 rounded-md"
