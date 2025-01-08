@@ -1,6 +1,6 @@
 import React from "react";
 
-function Sidebar({ setActivePage, isOpen, toggleSidebar }) {
+function Sidebar({ setActivePage, isOpen }) {
   // Style object for the sidebar
   const styl = {
     zIndex: '20',
@@ -26,7 +26,7 @@ function Sidebar({ setActivePage, isOpen, toggleSidebar }) {
             className="p-4 text-gray-700 hover:bg-gray-200 cursor-pointer"
             onClick={() => {
               setActivePage("Dashboard");
-              toggleSidebar();
+              //toggleSidebar();
             }}
           >
             Dashboard
@@ -35,7 +35,7 @@ function Sidebar({ setActivePage, isOpen, toggleSidebar }) {
             className="p-4 text-gray-700 hover:bg-gray-200 cursor-pointer"
             onClick={() => {
               setActivePage("My Bookings");
-              toggleSidebar();
+             // toggleSidebar();
             }}
           >
             My Bookings
@@ -44,7 +44,7 @@ function Sidebar({ setActivePage, isOpen, toggleSidebar }) {
             className="p-4 text-gray-700 hover:bg-gray-200 cursor-pointer"
             onClick={() => {
               setActivePage("Payments");
-              toggleSidebar();
+              //toggleSidebar();
             }}
           >
             Payments
@@ -53,7 +53,7 @@ function Sidebar({ setActivePage, isOpen, toggleSidebar }) {
             className="p-4 text-gray-700 hover:bg-gray-200 cursor-pointer"
             onClick={() => {
               setActivePage("Settings");
-              toggleSidebar();
+             // toggleSidebar();
             }}
           >
             Settings
