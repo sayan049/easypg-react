@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 function Settings() {
   const [image, setImage] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [personalInfo, setPersonalInfo] = useState({
     fullName: "",
     email: "",
@@ -284,7 +285,7 @@ function Settings() {
       </section> */}
 
       {/* Account Management */}
-      <section className="mb-6">
+      {/* <section className="mb-6">
         <h3 className="text-xl font-semibold mb-4">Account Management</h3>
         <div className="flex space-x-4">
           <button className="bg-red-500 text-white px-4 py-2 rounded-md">
@@ -294,9 +295,42 @@ function Settings() {
             Delete Account
           </button>
         </div>
-      </section>
+      </section> */}
+       
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="relative bg-white p-6 rounded-md w-full max-w-md">
+            {/* Cross Button */}
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-2 right-2 text-gray-600 hover:text-black text-xl"
+            >
+              &times;
+            </button>
 
+            <h3 className="text-xl font-semibold mb-4 flex justify-center">Account Management</h3>
+            <div className="flex space-x-4 justify-center">
+              <button className="bg-red-500 text-white px-4 py-2 rounded-md">
+                Logout
+              </button>
+              <button className="bg-red-600 text-white px-4 py-2 rounded-md">
+                Delete Account
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+<div className="mt-6 flex ">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md"
+        >
+          Account Management
+        </button>
+      </div>
       <div className="flex justify-end">
+        
         <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mr-2">
           Reset to Default
         </button>
@@ -304,7 +338,11 @@ function Settings() {
           Save All Changes
         </button>
       </div>
+
+      
     </div>
+
+    
   );
 }
 
