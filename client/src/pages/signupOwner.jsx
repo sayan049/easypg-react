@@ -536,24 +536,27 @@ console.log(isFormComplete());
 
        {/* location and pg */}
       <div className="flex flex-col md:flex-row gap-0 md:gap-16 mb-4">
-      <div className="w-full md:w-1/2 mb-4">
+      <div className="flex flex-col md:flex-row gap-0 md:gap-16 mb-4">
+  <div className="w-full md:w-1/2 mb-4">
     <div className="flex items-center justify-between">
       <input
         type="text"
         name="location"
         id="location"
-        placeholder="Location"
+        placeholder="Location (latitude, longitude)" 
         value={formData.location}
-        onChange={handleChange}
-        className="block w-full px-4 py-2  rounded-full focus:outline-none focus:ring-2 focus:ring-[#2ca4b5]  bg-[#116e7b1a]"
-        onClick={mapMake}
+        readOnly // Makes the input non-editable
+        className="block w-full px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[#2ca4b5] bg-[#116e7b1a]"
       />
       <FontAwesomeIcon
         icon={faMapMarkerAlt}
-        className="text-xl text-[#2ca4b5] ml-2" // Added margin-left to space out icon
+        className="text-xl text-[#2ca4b5] ml-2 cursor-pointer" // Added cursor-pointer for clickable effect
+        onClick={mapMake} // Call the mapMake function on click
       />
     </div>
   </div>
+</div>
+
 
           <div className="w-full md:w-1/2">
             {/* <label htmlFor="gender" className="block text-left text-lg mb-2">
@@ -567,9 +570,9 @@ console.log(isFormComplete());
               className="w-full px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[#2ca4b5]  bg-[#116e7b1a]"
             >
             
-              <option value="Girls">Girls Pg</option>
-              <option value="Boys">Boys Pg</option>
-              <option value="Coed">Coed Pg</option>
+              <option value="Girls Pg">Girls Pg</option>
+              <option value="Boys Pg">Boys Pg</option>
+              <option value="Coed Pg">Coed Pg</option>
             </select>
           </div>
         </div>
