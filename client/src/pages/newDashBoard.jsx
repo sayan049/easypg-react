@@ -16,6 +16,47 @@ function NewDashBoard() {
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-800">
+
+<header className="bg-white p-6 shadow rounded-md mb-6 flex items-center justify-between">
+  {/* Logo Section */}
+  <div className="flex-1">
+    <h1 className="text-2xl font-bold text-blue-500">
+      Mess<span className="text-gray-800">Mate.</span>
+    </h1>
+  </div>
+
+  {/* Search Bar in the Center */}
+  <div className="flex-1 flex justify-center">
+    <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 shadow-inner w-96">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-5 h-5 text-gray-400"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z"
+        />
+      </svg>
+      <input
+        type="text"
+        placeholder="Quickly search for specific messes, PGs, or bookings."
+        className="bg-transparent w-full ml-2 focus:outline-none text-gray-700"
+      />
+    </div>
+  </div>
+
+  {/* Empty Right Section for Alignment */}
+  <div className="flex-1"></div>
+</header>
+
+
+
+
       <div className="max-w-7xl mx-auto p-4">
         {/* Header */}
         <header className="bg-white p-6 shadow rounded-md mb-6">
@@ -26,7 +67,7 @@ function NewDashBoard() {
           </p>
         </header>
 
-        <button
+        {/* <button
             className="lg:hidden text-gray-700"
             onClick={toggleSidebar} // Toggle sidebar on button click
           >
@@ -44,7 +85,7 @@ function NewDashBoard() {
                 d="M4 6h16M4 12h16M4 18h16"
               />
             </svg>
-          </button>
+          </button> */}
 {/* ham */}
 
         {/* Sidebar with page selection */}
@@ -52,7 +93,7 @@ function NewDashBoard() {
         <Sidebar setActivePage={setActivePage} isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
 {/* Conditional rendering based on activePage */}
-<div style={{width: {isSidebarOpen}?'80%':'100%'}}>
+<div style={{width: {isSidebarOpen}? '100%':'80%'}}>
 {activePage === "My Bookings" && <BookingTable />}
 {activePage === "Dashboard" && <div>Dashboard Content</div>}
 {activePage === "Payments" && <div>Payments Content</div>}
@@ -62,20 +103,7 @@ function NewDashBoard() {
        
         
 
-        {/* Footer Buttons */}
-        <div className="mt-6 flex justify-between">
-          <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded">
-            Refresh List
-          </button>
-          <div className="space-x-4">
-            <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded">
-              Export List
-            </button>
-            <button className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
-              + New Booking
-            </button>
-          </div>
-        </div>
+       
       </div>
     </div>
   );
