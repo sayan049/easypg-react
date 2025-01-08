@@ -75,6 +75,7 @@ app.get("/auth/google-owner", passport.authenticate("google", {
   });
   
   
+  
 app.use('/auth', authRoutes);
 
 app.get('/', (req, res) => {
