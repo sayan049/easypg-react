@@ -214,7 +214,7 @@ export const AuthProvider = ({ children }) => {
   
       // Perform logout
       const logoutResponse = await fetch(`${baseurl}/auth/logout`, {
-        method: "GET",
+        method: "POST",
         headers: {
           "Authorization": `Bearer ${accessToken}`, // Use the updated or refreshed token
           "Content-Type": "application/json",
