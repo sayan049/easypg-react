@@ -43,15 +43,18 @@ connectDB();
 // Google OAuth routes
 app.get("/auth/google", passport.authenticate("google", {
   scope: ["profile", "email"],
-  state: JSON.stringify({ type: 'student',device:device })
+  state: req.query.state, 
 }));
 
 app.get("/auth/google-owner", passport.authenticate("google", {
     scope: ["profile", "email"],
-    state: JSON.stringify({ type: 'owner',device:device }) // Route for owner login
+    state: req.query.state, 
   }));
 
   app.get("/auth/google/callback", (req, res, next) => {
+    // Parse the state from query parameters before calling passport.authenticate
+    const state = req.query.state ? JSON.parse(req.query.state) : {};
+  
     passport.authenticate("google", (err, user, info) => {
       if (err) {
         console.error("Authentication Error:", err.message);
@@ -61,11 +64,16 @@ app.get("/auth/google-owner", passport.authenticate("google", {
         console.error("No user returned from Google OAuth");
         return res.redirect(`${ORIGIN}/ProviderSeeker?error=auth_failed`);
       }
+  
+      // Extract tokens and device info (from the state object)
       const { accessToken, refreshToken } = user.tokens;
-      const { device } = req.query.state ? JSON.parse(req.query.state) : {};  
-      return res.redirect(`${ORIGIN}/googleCallback/?accessToken=${accessToken}&refreshToken=${refreshToken}`);
+      const { device } = state;  // Extract device info from state
+  
+      // Send the tokens and the device info to your desired callback URL
+      return res.redirect(`${ORIGIN}/googleCallback/?accessToken=${accessToken}&refreshToken=${refreshToken}&device=${encodeURIComponent(device)}`);
     })(req, res, next);
   });
+  
   
 app.use('/auth', authRoutes);
 

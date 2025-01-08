@@ -53,8 +53,8 @@ passport.use(
             JWT_REFRESH_SECRET,
             { expiresIn: "7d" }
           );
-          user.refreshTokens.push({ token: refreshToken, device:device,createdAt: new Date(), });
-           user.save();
+          user.refreshTokens.push({ token: refreshToken, device, createdAt: new Date() });
+          user.save(); 
           return { accessToken, refreshToken };
         };
 
