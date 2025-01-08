@@ -15,6 +15,9 @@ module.exports = {
         'new-bg':' linear-gradient(63deg, rgba(44,164,181,1) 0%, rgba(255,255,255,1) 100%);',
         'fuck-bg':'linear-gradient(113deg, rgba(9,225,255,0.25) 25%, rgba(9,225,255,0.25) 25%)',
       },
+      screens: {
+        'max-lg': '1156px', // Custom breakpoint at 1156px
+      },
     },
   },
   plugins: [],
