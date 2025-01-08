@@ -486,6 +486,7 @@ console.log(isFormComplete());
             placeholder="Select"
             className="px-4 py-2 rounded-full bg-[#116e7b1a] focus:ring focus:ring-[#2ca4b5]"
           >
+             <option value="">Select Option</option>
             <option value="one">Single</option>
             <option value="two">Double</option>
             <option value="three">Triple</option>
@@ -511,6 +512,7 @@ console.log(isFormComplete());
             onChange={(e) => handleRoomChange(index, e)}
             className="px-4 py-2 rounded-full bg-[#116e7b1a] focus:ring focus:ring-[#2ca4b5]"
           >
+             <option value="">Select Option</option>
             <option value={true}>Yes</option>
             <option value={false}>No</option>
           </select>
@@ -536,7 +538,7 @@ console.log(isFormComplete());
 
        {/* location and pg */}
       <div className="flex flex-col md:flex-row gap-0 md:gap-16 mb-4">
-      <div className="flex flex-col md:flex-row gap-0 md:gap-16 mb-4">
+      
   <div className="w-full md:w-1/2 mb-4">
     <div className="flex items-center justify-between">
       <input
@@ -555,7 +557,7 @@ console.log(isFormComplete());
       />
     </div>
   </div>
-</div>
+
 
 
           <div className="w-full md:w-1/2">
