@@ -70,7 +70,7 @@ router.get("/check-session", (req, res) => {
 router.post('/updateDetails',upload, updateDetailshandler.updateDetails);
 router.get('/get-details', updateDetailshandler.getDetails);
 
-router.get("/logout", authenticateJWT, async (req, res) => {
+router.post("/logout", authenticateJWT, async (req, res) => {
   try {
     // Decode the token using `authenticateJWT` middleware
     const { id, type } = req.user; // Extract `id` and `type` from the token
