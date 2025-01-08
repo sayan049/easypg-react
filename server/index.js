@@ -53,7 +53,9 @@ app.get("/auth/google-owner", passport.authenticate("google", {
 
   app.get("/auth/google/callback", (req, res, next) => {
     // Parse the state from query parameters before calling passport.authenticate
+    console.log(req.query);  // Log the query parameters
     const state = req.query.state ? JSON.parse(req.query.state) : {};
+   
   
     passport.authenticate("google", (err, user, info) => {
       if (err) {
