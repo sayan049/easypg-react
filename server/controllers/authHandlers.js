@@ -119,7 +119,8 @@ exports.signupHandlerOwner = async (req, res) => {
   } = req.body;
 
   let { profilePhoto, messPhoto } = req.files;
-  console.log("Received roomInfo:", roomInfo);
+  console.log("Received roomInfo:", JSON.stringify(roomInfo, null, 2));
+
 
   try {
     // Check if the user already exists
