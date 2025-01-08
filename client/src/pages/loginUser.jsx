@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation,useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { loginUrl, forgotPasswordUserUrl, resetPasswordUserUrl,tokenVerifyUserUrl, baseurl } from "../constant/urls";
-
+// import Skeleton from "react-loading-skeleton";
+// import "react-loading-skeleton/dist/skeleton.css";
 
 function LoginUser() {
   useEffect(() => {
@@ -176,6 +177,7 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
+      
       {/* Left Section */}
       <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6">
         <div className="w-full max-w-lg p-8">
