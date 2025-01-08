@@ -76,8 +76,15 @@ function SignupOwner() {
     profilePhoto: null,
     messPhoto: [],
     facility: [],
+    gender: "", // Add gender field (Girls, Boys, Coed)
+    roomInfo: [{ 
+      roomNo: "", 
+      bedContains: "", // One of 'one', 'two', 'three', 'four', 'five'
+      pricePerHead: "",
+      roomAvailable: true,
+    }],
   });
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -99,6 +106,42 @@ function SignupOwner() {
         : prevData.facility.filter((facility) => facility !== value);
 
       return { ...prevData, facility: facilities };
+    });
+  };
+  const handleRoomChange = (index, e) => {
+    const updatedRooms = formData.roomInfo.map((room, i) => {
+      if (i === index) {
+        return {
+          ...room,
+          [e.target.name]: e.target.value,
+        };
+      }
+      return room;
+    });
+  
+    setFormData({
+      ...formData,
+      roomInfo: updatedRooms,
+    });
+  };
+  
+  const addRoom = () => {
+    const newRoom = {
+      roomNo: formData.roomInfo.length + 1,  // Auto-incremented room number
+      bedContains: "",
+      pricePerHead: "",
+      roomAvailable: true,
+    };
+    setFormData({
+      ...formData,
+      roomInfo: [...formData.roomInfo, newRoom],
+    });
+  };
+  const removeRoom = (index) => {
+    const updatedRooms = formData.roomInfo.filter((_, i) => i !== index);
+    setFormData({
+      ...formData,
+      roomInfo: updatedRooms,
     });
   };
 
@@ -198,9 +241,18 @@ function SignupOwner() {
       formData.aboutMess &&
       formData.profilePhoto &&
       formData.messPhoto.length > 0 &&
-      formData.location
+      formData.location &&
+      formData.password &&
+      formData.roomInfo.every(
+        (room) =>
+          room.roomNo &&
+          room.bedContains &&
+          room.pricePerHead &&
+          room.roomAvailable
+      ) &&
+      formData.gender
     );
-  };
+  }; 
 console.log(isFormComplete());  
   
   return (
@@ -282,7 +334,7 @@ console.log(isFormComplete());
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
-                className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a] "
+                className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a] "
                 placeholder="First Name"
               />
             </div>
@@ -292,7 +344,7 @@ console.log(isFormComplete());
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
-                className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+                className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                 placeholder="Last Name"
               />
             </div>
@@ -304,7 +356,7 @@ console.log(isFormComplete());
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+              className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
               placeholder="Email"
             />
           </div>
@@ -314,7 +366,7 @@ console.log(isFormComplete());
               name="address"
               value={formData.address}
               onChange={handleChange}
-              className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+              className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
               placeholder="Address"
             />
           </div>
@@ -326,7 +378,7 @@ console.log(isFormComplete());
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+                className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                 placeholder="Password"
               />
               <span
@@ -342,7 +394,7 @@ console.log(isFormComplete());
                 name="pincode"
                 value={formData.pincode}
                 onChange={handleChange}
-                className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+                className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                 placeholder="Pincode"
               />
             </div>
@@ -354,7 +406,7 @@ console.log(isFormComplete());
               name="mobileNo"
               value={formData.mobileNo}
               onChange={handleChange}
-              className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+              className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
               placeholder="Mobile No."
             />
           </div>
@@ -392,7 +444,7 @@ console.log(isFormComplete());
           name="messName"
           value={formData.messName}
           onChange={handleChange}
-          className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+          className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
           placeholder="Mess Name"
         />
       </div>
@@ -401,27 +453,127 @@ console.log(isFormComplete());
           name="aboutMess"
           value={formData.aboutMess}
           onChange={handleChange}
-          className="w-full rounded-2xl p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+          className="w-full rounded-2xl px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
           placeholder="About your Mess"
           rows="4"
         ></textarea>
       </div>
-      <div className="mb-4 flex items-center">
-        <input
-          type="text"
-          value={formData.location}
-          onChange={handleChange}
-          className="w-full rounded-full p-3 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
-          placeholder="Location (Latitude, Longitude)"
-          readOnly required
-        />
-        <div
-          onClick={mapMake}
-          className="ml-2 cursor-pointer text-2xl text-green-600"
-        >
-           <FontAwesomeIcon icon={faMapMarkerAlt} />
+ {/* room info */}
+ <div className="mb-4">
+  <p className="text-black text-[25px]">Room Information</p>
+  {formData.roomInfo.map((room, index) => (
+    <div
+      className="flex flex-col mb-4 bg-[#116e7b1a] rounded-2xl justify-center p-4"
+      key={index}
+    >
+      <div className="flex flex-col md:flex-row gap-4 flex-wrap">
+        <div className="flex flex-col md:w-1/4">
+          <label>Room No.</label>
+          <input
+            type="text"
+            name="roomNo"
+            value={`RoomNo-${index + 1}`} // Display formatted room number
+            readOnly
+            className="px-4 py-2 rounded-full bg-[#116e7b1a] focus:ring focus:ring-[#2ca4b5]"
+          />
+        </div>
+        <div className="flex flex-col md:w-1/4">
+          <label>Bed Contains</label>
+          <select
+            name="bedContains"
+            value={room.bedContains}
+            onChange={(e) => handleRoomChange(index, e)}
+            placeholder="Select"
+            className="px-4 py-2 rounded-full bg-[#116e7b1a] focus:ring focus:ring-[#2ca4b5]"
+          >
+            <option value="one">Single</option>
+            <option value="two">Double</option>
+            <option value="three">Triple</option>
+            <option value="four">Four</option>
+            <option value="five">Five</option>
+          </select>
+        </div>
+        <div className="flex flex-col md:w-1/4">
+          <label>Price Per Head</label>
+          <input
+            type="number"
+            name="pricePerHead"
+            value={room.pricePerHead}
+            onChange={(e) => handleRoomChange(index, e)}
+            className="px-4 py-2 rounded-full bg-[#116e7b1a] focus:ring focus:ring-[#2ca4b5]"
+          />
+        </div>
+        <div className="flex flex-col md:w-1/4">
+          <label>Room Available</label>
+          <select
+            name="roomAvailable"
+            value={room.roomAvailable}
+            onChange={(e) => handleRoomChange(index, e)}
+            className="px-4 py-2 rounded-full bg-[#116e7b1a] focus:ring focus:ring-[#2ca4b5]"
+          >
+            <option value={true}>Yes</option>
+            <option value={false}>No</option>
+          </select>
         </div>
       </div>
+      <button
+        type="button"
+        className="bg-red-500 text-white px-4 py-2 rounded-full self-center mt-4"
+        onClick={() => removeRoom(index)}
+      >
+        Remove
+      </button>
+    </div>
+  ))}
+  <button
+    type="button"
+    onClick={addRoom}
+    className="bg-[#2ca4b5] text-white px-6 py-2 rounded-md mt-4"
+  >
+    + Add Room
+  </button>
+</div>
+
+       {/* location and pg */}
+      <div className="flex flex-col md:flex-row gap-0 md:gap-16 mb-4">
+      <div className="w-full md:w-1/2 mb-4">
+    <div className="flex items-center justify-between">
+      <input
+        type="text"
+        name="location"
+        id="location"
+        placeholder="Location"
+        value={formData.location}
+        onChange={handleChange}
+        className="block w-full px-4 py-2  rounded-full focus:outline-none focus:ring-2 focus:ring-[#2ca4b5]  bg-[#116e7b1a]"
+        onClick={mapMake}
+      />
+      <FontAwesomeIcon
+        icon={faMapMarkerAlt}
+        className="text-xl text-[#2ca4b5] ml-2" // Added margin-left to space out icon
+      />
+    </div>
+  </div>
+
+          <div className="w-full md:w-1/2">
+            {/* <label htmlFor="gender" className="block text-left text-lg mb-2">
+              Mess Type:
+            </label> */}
+            <select
+              name="gender"
+              id="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              className="w-full px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[#2ca4b5]  bg-[#116e7b1a]"
+            >
+            
+              <option value="Girls">Girls Pg</option>
+              <option value="Boys">Boys Pg</option>
+              <option value="Coed">Coed Pg</option>
+            </select>
+          </div>
+        </div>
+
 
       {/* Mess Photos Upload */}
       <div className="mb-4">
