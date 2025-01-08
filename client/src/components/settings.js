@@ -162,21 +162,23 @@ function Settings() {
           onChange={handleInputChange}
           className="border border-gray-300 rounded-md p-2 w-full"
         />
-        <input
-          type="text"
-          name="location"
-          placeholder="location"
-          value={personalInfo.location}
-          onChange={handleInputChange}
-          className="border border-gray-300 rounded-md p-2 w-full"
-          
-        />
-         <div
-          onClick={mapMake}
-          className="ml-2 cursor-pointer text-2xl text-green-600"
-        >
-           <FontAwesomeIcon icon={faMapMarkerAlt} />
-        </div>
+        <div className="relative">
+  <input
+    type="text"
+    name="location"
+    placeholder="Location"
+    value={personalInfo.location}
+    onChange={handleInputChange}
+    className="border border-gray-300 rounded-md p-2 w-full pr-10"
+  />
+  <div
+    onClick={mapMake}
+    className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-2xl text-green-600"
+  >
+    <FontAwesomeIcon icon={faMapMarkerAlt} />
+  </div>
+</div>
+
        
       </div>
       <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md">
