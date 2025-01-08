@@ -177,7 +177,7 @@ exports.signupHandlerOwner = async (req, res) => {
       messPhoto,
       facility,
       gender,
-      roomInfo: validatedRoomInfo,
+      roomInfo,
     });
 
     // Send confirmation email
