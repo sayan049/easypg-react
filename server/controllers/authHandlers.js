@@ -152,14 +152,14 @@ exports.signupHandlerOwner = async (req, res) => {
       }
       messPhoto = messPhotoUrls;
     }
-
-    // Validate roomInfo structure directly
-    const validatedRoomInfo = roomInfo.map((room) => ({
-      roomNo: room.roomNo || "",
-      bedContains: room.bedContains || "",
-      pricePerHead: room.pricePerHead || "",
-      roomAvailable: room.roomAvailable !== undefined ? room.roomAvailable : true,
-    }));
+// const roomInfo=[];
+//     // Validate roomInfo structure directly
+//     const validatedRoomInfo = roomInfo.map((room) => ({
+//       roomNo: room.roomNo || "",
+//       bedContains: room.bedContains || "",
+//       pricePerHead: room.pricePerHead || "",
+//       roomAvailable: room.roomAvailable !== undefined ? room.roomAvailable : true,
+//     }));
 
     // Create new PG Owner
     const newOwner = await PgOwner.create({
