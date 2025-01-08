@@ -103,17 +103,17 @@ function Settings() {
               className="w-36 h-36 rounded-full object-cover mx-auto mt-4 border-4 border-[#2ca4b5]"
             />
           ) : (
-            <div className="w-36 h-36 rounded-full bg-[#AAF5FF] mx-auto mt-4 flex items-center justify-center">
+            <div className="w-36 h-36 rounded-full mx-auto mt-4 flex items-center justify-center">
               <img
-                src="/assets/homeAvatar.png" // Path to your default image
+                src="/assets/Component 2.png" // Path to your default image
                 alt="Default"
-                className="w-20 h-20 object-cover"
+                className="w-40 h-[13rem] object-cover relative top-[34px]"
               />
             </div>
           )}
           <label
             htmlFor="file"
-            className="cursor-pointer text-xl text-blue-600 text-white"
+            className="cursor-pointer text-xl text-blue-600 text-white relative top-[-34px] left-[54px] opacity-0"
           >
             ➕
           </label>
