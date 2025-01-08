@@ -204,6 +204,7 @@ export const AuthProvider = ({ children }) => {
           localStorage.setItem('accessToken', newAccessToken);
           accessToken = newAccessToken; // Use the new access token for logout
           console.log("Access token refreshed successfully.");
+          
         } else {
           console.error("Failed to refresh access token.");
           alert("Session expired. Please log in again.");

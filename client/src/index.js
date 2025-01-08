@@ -13,7 +13,7 @@ import LoginOwner from "./pages/LoginOwner";
 import SignupOwner from "./pages/signupOwner";
 import NewDashboard from "./pages/newDashBoard";
 import GoogleCallbackPage from "./pages/GoogleCallbackPage";
-
+// import Test from "./pages/test";
 
 import MessFind from "./pages/MessFind";
 
@@ -103,6 +103,10 @@ root.render(
         <Route path="/googleCallback" element={
           <GoogleCallbackPage/>
         }/>
+     
+        {/* <Route path="/test" element={
+          <Test/>
+        }/> */}
         </Routes>
       </Router>
     </AuthProvider>

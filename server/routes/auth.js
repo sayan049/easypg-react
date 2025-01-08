@@ -27,7 +27,7 @@ router.get("/findMess", authHandlers.findMess);
 //   res.json({ message: "This is a protected route", user: req.session.user });
 // });
 
-router.post("refresh-token",refreshTokenHandler)
+router.post("/refresh-token",refreshTokenHandler)
 
 router.get("/check-session", (req, res) => {
   const accessToken = req.headers['authorization']?.split(' ')[1]; // Get token from Authorization header
