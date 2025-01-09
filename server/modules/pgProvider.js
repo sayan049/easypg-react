@@ -79,26 +79,37 @@ const pgOwnerSchema = new mongoose.Schema({
     gender: {
         type: String,
         enum: ['Girls Pg', 'Boys Pg', 'Coed Pg'], // "Coed" for mixed-gender mess
-        required: true
+        required: function() {
+            return !this.googleId;
+        }
     },
     roomInfo: [
         {
           room: {
             type: String, // Changed from Number to String
-            required: true,
+            required: function() {
+                return !this.googleId;
+            }
           },
           bedContains: {
             type: String,
             enum: ['one', 'two', 'three', 'four', 'five'], // Maximum 5 beds in a room
-            required: true,
+            required: function() {
+                return !this.googleId;
+            }
           },
           pricePerHead: {
             type: Number,
-            required: true,
+            required: function() {
+                return !this.googleId;
+            }
           },
           roomAvailable: {
             type: Boolean,
             default: true,
+            required: function() {
+                return !this.googleId;
+            }
           },
         },
       ],
