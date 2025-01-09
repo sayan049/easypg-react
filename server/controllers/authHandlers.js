@@ -156,19 +156,23 @@ exports.signupHandlerOwner = async (req, res) => {
     }
 
     // Validate roomInfo structure (Optional)
-    if (roomInfo && Array.isArray(roomInfo)) {
-      const validatedRoomInfo = roomInfo.map((room) => ({
-        roomNo: room.roomNo || "",
-        bedContains: room.bedContains || "",
-        pricePerHead: room.pricePerHead || "",
-        roomAvailable: room.roomAvailable !== undefined ? room.roomAvailable : true,
-      }));
-      // Optionally, you can replace roomInfo with validatedRoomInfo, if needed
-      roomInfo = validatedRoomInfo;
-    } else {
-      console.log({ error: "Invalid room information" });
-      return res.status(400).json({ error: "Invalid room information" });
-    }
+// Ensure roomInfo is an array and contains at least one object
+if (!Array.isArray(roomInfo) || roomInfo.length === 0) {
+  console.log({ error: "Invalid room information - roomInfo should be a non-empty array" });
+  return res.status(400).json({ error: "Invalid room information - roomInfo should be a non-empty array" });
+}
+
+// Validate each room object in the array
+const validatedRoomInfo = roomInfo.map((room) => ({
+  roomNo: room.roomNo || "", // Ensure roomNo is a valid value
+  bedContains: room.bedContains || "", // Ensure bedContains is valid
+  pricePerHead: room.pricePerHead || "", // Ensure pricePerHead is valid
+  roomAvailable: room.roomAvailable !== undefined ? room.roomAvailable : true, // Default to true if not provided
+}));
+
+roomInfo = validatedRoomInfo; // Use the validated roomInfo
+console.log("Received roomInfo:", JSON.stringify(roomInfo, null, 2));
+
 
     // Create new PG Owner
     const newOwner = await PgOwner.create({
