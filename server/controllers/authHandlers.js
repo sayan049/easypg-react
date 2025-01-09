@@ -119,7 +119,7 @@ exports.signupHandlerOwner = async (req, res) => {
   } = req.body;
 
   let { profilePhoto, messPhoto } = req.files;
-  console.log("Received roomInfo:", JSON.stringify(roomInfo, null, 2));
+  console.log("Received", req.body, req.files);
   if (req.body.roomInfo) {
     try {
       req.body.roomInfo = JSON.parse(req.body.roomInfo);

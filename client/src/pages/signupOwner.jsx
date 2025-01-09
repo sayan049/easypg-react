@@ -192,30 +192,23 @@ function SignupOwner() {
     e.preventDefault();
     try {
       const formDataToSend = new FormData();
-  
       for (const key in formData) {
         if (key === "messPhoto") {
-          // Handle multiple mess photos
-          formData.messPhoto.forEach((file) => formDataToSend.append(key, file));
-        } else if (key === "roomInfo") {
-          // Stringify roomInfo before appending
-          formDataToSend.append(key, JSON.stringify(formData[key]));
+          formData.messPhoto.forEach((file) =>
+            formDataToSend.append(key, file)
+          );
         } else {
-          // Handle all other fields
           formDataToSend.append(key, formData[key]);
         }
       }
-  
-      
-      console.log("Sending formData:", formDataToSend);
-  
-      // Send formData via POST request
+      console.log("Sending roomInfo:", formData);
       const response = await axios.post(signupownerUrl, formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-  
+
       if (response.status === 201) {
         console.log("Response:", response.data);
+
         const a = "Please verify your email to log in";
         localStorage.setItem("loginMessageOwner", a);
         navigate("/LoginOwner", { state: { message: a } });
@@ -223,13 +216,13 @@ function SignupOwner() {
         console.error("Signup failed:", response.data);
       }
     } catch (error) {
+      
       console.error(
         "Error creating user:",
         error.response ? error.response.data : error.message
       );
     }
   };
-  
 
 
   const toggleEye = () => {
