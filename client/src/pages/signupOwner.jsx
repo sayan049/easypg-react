@@ -127,16 +127,18 @@ function SignupOwner() {
   
   const addRoom = () => {
     const newRoom = {
-      room:`RoomNo-${formData.roomInfo.length + 1}`,  // Auto-incremented room number
+      room: `RoomNo-${formData.roomInfo.length + 1}`,  // Ensure proper room number
       bedContains: "",
       pricePerHead: "",
       roomAvailable: true,
     };
+  
     setFormData({
       ...formData,
       roomInfo: [...formData.roomInfo, newRoom],
     });
   };
+  
   const removeRoom = (index) => {
     const updatedRooms = formData.roomInfo
       .filter((_, i) => i !== index)
