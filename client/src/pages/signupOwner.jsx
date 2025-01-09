@@ -201,7 +201,8 @@ function SignupOwner() {
           formDataToSend.append(key, formData[key]);
         }
       }
-      console.log("Sending roomInfo:", formData.roomInfo);
+      console.log("Sending formData:", JSON.stringify(formData, null, 2));
+
       const response = await axios.post(signupownerUrl, formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -224,14 +225,13 @@ function SignupOwner() {
     }
   };
 
-  console.log("Sending formData:", JSON.stringify(formData, null, 2));
 
   const toggleEye = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
   const isFormComplete = () => {
-    console.log(formData); // Log the form data to check if all fields are filled
+   // Log the form data to check if all fields are filled
     return (
       formData.mobileNo &&
       formData.address &&
