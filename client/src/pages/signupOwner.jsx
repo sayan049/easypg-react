@@ -216,12 +216,15 @@ function SignupOwner() {
         console.error("Signup failed:", response.data);
       }
     } catch (error) {
+      
       console.error(
         "Error creating user:",
         error.response ? error.response.data : error.message
       );
     }
   };
+
+  console.log("Sending formData:", JSON.stringify(formData, null, 2));
 
   const toggleEye = () => {
     setIsPasswordVisible(!isPasswordVisible);
