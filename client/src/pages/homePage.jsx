@@ -362,12 +362,25 @@ const HomePage = () => {
   const handleLogoutClick = () => {
     handleLogout();
   };
+  const handleScroll = (event, id) => {
+    event.preventDefault();
+    const targetSection = document.getElementById(id);
+  
+    if (targetSection) {
+      // Use scrollIntoView with fallback for older browsers
+      targetSection.scrollIntoView({
+        behavior: "smooth", // Smooth scroll
+        block: "start", // Align to the top of the viewport
+      });
+    }
+  };
+  
   return (
     <div >
       <div className="bg-gradient-to-r from-[#2CA4B5] to-white min-h-screen flex flex-col">
         {/* Header Section */}
         <header className="w-full flex justify-between items-center py-4 px-6 lg:px-10 bg-white shadow-sm">
-          <div className="text-2xl font-bold text-teal-700">MessMate</div>
+         <div className="flex justify-center items-end"><img src="./assets/companylogo.png" alt="logo" srcset="" /> <div className="text-2xl font-bold text-[#2CA4B5]">essMate</div></div>
           <nav className="hidden lg:flex space-x-8">
             <a href="#home" className="text-gray-800 hover:text-teal-600">
               Home
@@ -475,19 +488,19 @@ const HomePage = () => {
              ×
           </button>
           <nav className="mt-12 space-y-6 px-6">
-  <Link to="#home" className="block text-lg font-medium text-gray-800 hover:text-[#06b6d4] transition duration-300">
+  <Link to="#home" className="block text-lg font-medium text-gray-800 hover:text-[#06b6d4] transition duration-300" onClick={(e) => handleScroll(e, "home")}>
     Home
   </Link>
-  <Link to="#about" className="block text-lg font-medium text-gray-800 hover:text-[#06b6d4] transition duration-300">
+  <Link to="#about" className="block text-lg font-medium text-gray-800 hover:text-[#06b6d4] transition duration-300" onClick={(e) => handleScroll(e, "about")}>
     About
   </Link>
-  <Link to="#services" className="block text-lg font-medium text-gray-800 hover:text-[#06b6d4] transition duration-300">
+  <Link to="#services" className="block text-lg font-medium text-gray-800 hover:text-[#06b6d4] transition duration-300" onClick={(e) => handleScroll(e, "services")}>
     Services
   </Link>
   <Link to="/ProviderSeeker" className="block text-lg font-medium text-gray-800 hover:text-[#06b6d4] transition duration-300">
     Login
   </Link>
-  <Link to="#contact" className="block text-lg font-medium text-gray-800 hover:text-[#06b6d4] transition duration-300">
+  <Link to="#contact" className="block text-lg font-medium text-gray-800 hover:text-[#06b6d4] transition duration-300" onClick={(e) => handleScroll(e, "contact")}>
     Contact Us
   </Link>
 </nav>
@@ -544,7 +557,7 @@ const HomePage = () => {
 
 
         {/* Main Section */}
-        <main className="flex-grow flex flex-col lg:flex-row items-center justify-between px-6 lg:px-36 py-16">
+        <main className="flex-grow flex flex-col lg:flex-row items-center justify-between px-6 lg:px-20 py-16" id="home">
           {/* Left Content */}
           <div className="text-center lg:text-left max-w-lg">
             <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
@@ -555,14 +568,15 @@ const HomePage = () => {
               Search for Student Accommodation Website
             </p>
             <div className="mt-6 relative ">
-              <div className="flex border-2 rounded-full  border-[#2CA4B5]">
+              <div className="flex border-[3px] rounded-full  border-[#2CA4B5]">
+                <img src="./assets/Map_Pin.png" alt="map_pin" srcset=""className="absolute left-4 top-4" />
                 <input
                   type="text"
                   placeholder="Search city or University"
-                  className="w-full py-4 px-5 rounded-full shadow-lg flex-1 outline-none bg-white text-black placeholder-[#CCCCCC] focus:ring-2 focus:ring-teal-500"
+                  className="w-full py-4 px-12 rounded-full shadow-lg flex-1 outline-none bg-white text-black placeholder-[#CCCCCC] focus:ring-2 focus:ring-teal-500"
                 />
               </div>
-              <button className="absolute top-2 right-3 h-11 w-11 text-white bg-teal-600 rounded-full flex items-center justify-center" onClick={performSearch}></button>
+              <button className="absolute top-2 right-3 h-11 w-11 text-white bg-[#2CA4B5] rounded-full flex items-center justify-center" onClick={performSearch}></button>
             </div>
           </div>
 
@@ -579,7 +593,7 @@ const HomePage = () => {
 
       {/* Features Section */}
       <section className="bg-[#09E1FF] bg-opacity-25 py-12">
-        <div className="container mx-auto grid gap-8 md:grid-cols-3 text-center px-24">
+        <div className="container mx-auto grid gap-8 md:grid-cols-3 text-center ">
           <div>
             <div className=" flex justify-center ">
               <img
@@ -631,7 +645,10 @@ const HomePage = () => {
           <h2 className="text-2xl font-bold text-center mb-8">
             Explore popular student cities
           </h2>
-          <div className="grid gap-x-0 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 px-24">
+          <div className="grid gap-x-4 gap-y-8 px-8 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 lg:px-24 md:px-24">
+
+
+
             <div className="flex justify-center group">
               <div>
                 <img
@@ -639,7 +656,7 @@ const HomePage = () => {
                   alt="kolkata"
                   className="max-w-auto h-auto group-hover:scale-105 transition-transform duration-300 ease-in-out"
                 />
-                <p className="text-[#2CA4B5] font-semibold text-2xl">Kolkata</p>
+                <p className="text-[#2CA4B5] ">Kolkata</p>
                 <p className="text-black">263 properties</p>
               </div>
             </div>
@@ -650,7 +667,7 @@ const HomePage = () => {
                   alt="bankura"
                   className="max-w-auto h-auto group-hover:scale-105 transition-transform duration-300 ease-in-out"
                 />
-                <p className="text-[#2CA4B5] font-semibold text-2xl">Bankura</p>
+                <p className="text-[#2CA4B5] ">Bankura</p>
                 <p className="text-black">263 properties</p>
               </div>
             </div>
@@ -661,7 +678,7 @@ const HomePage = () => {
                   alt="west mednipur"
                   className="max-w-auto h-auto group-hover:scale-105 transition-transform duration-300 ease-in-out"
                 />
-                <p className="text-[#2CA4B5] font-semibold text-2xl">
+                <p className="text-[#2CA4B5] ">
                   West Mednipur
                 </p>
                 <p className="text-black">263 properties</p>
@@ -674,7 +691,7 @@ const HomePage = () => {
                   alt="jhargram"
                   className="max-w-auto h-auto group-hover:scale-105 transition-transform duration-300 ease-in-out"
                 />
-                <p className="text-[#2CA4B5] font-semibold text-2xl">
+                <p className="text-[#2CA4B5] ">
                   Jhargram
                 </p>
                 <p className="text-black">263 properties</p>
@@ -687,7 +704,7 @@ const HomePage = () => {
                   alt="bardhaman"
                   className="max-w-auto h-auto group-hover:scale-105 transition-transform duration-300 ease-in-out"
                 />
-                <p className="text-[#2CA4B5] font-semibold text-2xl">
+                <p className="text-[#2CA4B5]">
                   Bardhaman
                 </p>
                 <p className="text-black">263 properties</p>
@@ -700,7 +717,7 @@ const HomePage = () => {
                   alt="kalyani"
                   className="max-w-auto h-auto group-hover:scale-105 transition-transform duration-300 ease-in-out"
                 />
-                <p className="text-[#2CA4B5] font-semibold text-2xl">Kalyani</p>
+                <p className="text-[#2CA4B5] ">Kalyani</p>
                 <p className="text-black">263 properties</p>
               </div>
             </div>
@@ -711,7 +728,7 @@ const HomePage = () => {
                   alt="durgapur"
                   className="max-w-auto h-auto group-hover:scale-105 transition-transform duration-300 ease-in-out"
                 />
-                <p className="text-[#2CA4B5] font-semibold text-2xl">
+                <p className="text-[#2CA4B5] ">
                   Durgapur
                 </p>
                 <p className="text-black">263 properties</p>
@@ -724,7 +741,7 @@ const HomePage = () => {
                   alt="asansole"
                   className="max-w-auto h-auto group-hover:scale-105 transition-transform duration-300 ease-in-out"
                 />
-                <p className="text-[#2CA4B5] font-semibold text-2xl">
+                <p className="text-[#2CA4B5] ">
                   Asansole
                 </p>
                 <p className="text-black">263 properties</p>
@@ -737,7 +754,7 @@ const HomePage = () => {
                   alt="bolpur"
                   className="max-w-auto h-auto group-hover:scale-105 transition-transform duration-300 ease-in-out"
                 />
-                <p className="text-[#2CA4B5] font-semibold text-2xl">Bolpur</p>
+                <p className="text-[#2CA4B5] ">Bolpur</p>
                 <p className="text-black">263 properties</p>
               </div>
             </div>
@@ -746,10 +763,10 @@ const HomePage = () => {
       </section>
 
       {/* About Section */}
-      <section className="bg-gray-50 py-12">
-        <div className="container mx-auto text-start px-24">
+      <section className="bg-gray-50 py-12 "id="about">
+        <div className="container mx-auto text-start px-8 lg:px-24 md:px-24">
           <h2 className="text-3xl font-bold">About</h2>
-          <p className="text-2xl font-bold py-10 text-black">
+          <p className="text-2xl font-bold pt-8 text-black">
             <span className="text-black">Welcome to </span>
             <span className="text-[#2CA4B5]">MessMate!</span>
           </p>
@@ -760,18 +777,19 @@ const HomePage = () => {
             a hassle, especially for students starting a new chapter away from
             home.
           </p>
-          <button className="rounded-full bg-white text-black px-4 py-2 border border-black hover:bg-gray-100 mt-4 font-semibold text-xs">
-            See More <span className="ml-2 text-black">→</span>
-          </button>
+          <button className="rounded-full bg-white text-black px-4 py-2 border border-black hover:bg-gray-100 mt-4 font-semibold text-xs transition-transform duration-300 ease-in-out hover:scale-x-110 hover:scale-y-110">
+  See More <span className="ml-2 text-black">→</span>
+</button>
+
         </div>
       </section>
 
-      <div className="bg-gray-50 min-h-screen px-24 py-10">
+      <div className="bg-gray-50 min-h-screen px-8 py-10 px-8 lg:px-24 md:px-24">
         {/* Services Section */}
-        <section className="mb-16">
+        <section className="mb-16 " id="services">
           <h2 className="text-3xl font-bold text-black mb-6">Services</h2>
 
-          <div className="flex flex-col lg:flex-row items-center">
+          <div className="flex flex-col lg:flex-row ">
             <div className="flex-1">
               <h3 className="text-2xl font-semibold text-black mb-4">
                 Why MessMate?
@@ -784,7 +802,7 @@ const HomePage = () => {
               <h4 className="text-xl font-semibold text-black mb-4">
                 How It Works:
               </h4>
-              <ul className="space-y-4 px-4">
+              <ul className="space-y-4 px-8">
                 <li className="flex items-center">
                   <span className="h-4 w-4 bg-orange-500 rounded-full inline-block mr-3"></span>
                   <span>Download the app.</span>
@@ -803,9 +821,9 @@ const HomePage = () => {
             <div className="flex-1 flex justify-center mt-10 lg:mt-0">
               <div className="relative">
                 <img
-                  src="assets/kolkata.png"
+                  src="assets/gettyimages-1029403636-2048x2048 1.png"
                   alt="Business Meeting"
-                  className="w-80 h-56 rounded-lg shadow-lg"
+                  className=" rounded-lg shadow-lg"
                 />
               </div>
             </div>
@@ -814,22 +832,22 @@ const HomePage = () => {
 
         {/* Contact Us Section */}
         <section className="container">
-          <h2 className="text-4xl font-bold text-black mb-6">
-            Contact Us - MessMate App
+          <h2 className="text-3xl font-bold text-black mb-6" id="contact">
+            <span>Contact Us - </span> <span className="text-[#2CA4B5]">MessMate </span> 
           </h2>
 
-          <div className="flex flex-col lg:flex-row items-center lg:items-start">
+          <div className="flex  flex-row items-center">
             {/* Left Image Section */}
-            <div className="hidden lg:flex flex-1 justify-center">
+            
               <img
                 src="assets/kolkata.png"
                 alt="Customer Support"
-                className="w-80 h-56 rounded-lg shadow-lg"
+                className="w-80 h-56 rounded-lg shadow-lg relative left-8 hidden sm:block"
               />
-            </div>
+            
 
             {/* Right Contact Info Section */}
-            <div className="flex-1 mt-10 lg:mt-0 lg:ml-0 border-2 border-teal-500 rounded-lg p-6">
+            <div className="flex-1 mt-10 z-[22] h-auto bg-white lg:mt-0 lg:ml-0 border-[4px] border-[#2CA4B5] rounded-lg p-6 shadow-xl">
               <p className="text-gray-800 mb-4">
                 We are here to assist you! Reach out to us for inquiries,
                 feedback, or support. Our team is dedicated to providing the

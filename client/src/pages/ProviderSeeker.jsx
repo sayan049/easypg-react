@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 // import "../designs/provider-seeker-page.css";
 // import "../designs/footerstyle.css";
+import Footer from "../components/footer";
 
 const urlParams = new URLSearchParams(window.location.search);
 const error = urlParams.get("error");
@@ -27,18 +28,18 @@ function ProviderSeeker() {
       <div className="bg-custom-gradient flex flex-col lg:flex-row items-center justify-center min-h-screen px-4 md:px-8 lg:px-20">
         {/* Left Container */}
         <div className="w-full lg:w-1/2 text-center ">
-          <h2 className="text-4xl font-bold text-cyan-500 mb-4">Sign Up</h2>
+          <h2 className="text-4xl font-bold text-[#2CA4B5] mb-4">Sign Up</h2>
           <h3 className="text-xl mb-6">Who are you?</h3>
           <div className="flex flex-col items-center  space-y-4">
             <Link
               to="/LoginUser"
-              className="bg-cyan-500 text-white px-6 py-3 rounded-full shadow hover:bg-cyan-600"
+              className="border-[3px] border-transparent bg-[#2CA4B5] text-white px-6 py-3 rounded-full hover:bg-transparent hover:text-[#2CA4B5] hover:border-[3px] hover:border-[#2CA4B5] "
             >
               Mess Seeker
             </Link>
             <Link
               to="/LandingPage"
-              className="border-3 border-cyan-500 text-cyan-500 px-6 py-3 rounded-full shadow hover:bg-cyan-500 hover:text-white"
+              className=" border-[3px] border-[#2CA4B5] text-[#2CA4B5] px-6 py-3 rounded-full hover:bg-[#2CA4B5] hover:text-white"
             >
               Mess Owner
             </Link>
@@ -56,44 +57,7 @@ function ProviderSeeker() {
       </div>
 
       {/* Footer Section */}
-      <footer className="bg-cyan-400 text-white py-10 text-xs">
-        <div className="container mx-auto grid grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-8 px-4">
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Easy <span className="font-bold">Pg</span></h3>
-            {/* <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Temporibus nobis
-              sequi expedita possimus vel reprehenderit nulla, atque reiciendis ex fugit quod.
-            </p> */}
-          </div>
-          <div>
-            <h2 className="text-lg font-semibold mb-4">Company</h2>
-            <ul className="space-y-2">
-              {['Careers', 'About Us', 'For Partners', 'Terms', 'Privacy Policy', 'Contact Us'].map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h2 className="text-lg font-semibold mb-4">Support</h2>
-            <ul className="space-y-2">
-              {['FAQe', 'Contact Us'].map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h2 className="text-lg font-semibold mb-4">Quick Link</h2>
-            <ul className="space-y-2">
-              {['Terms', 'Privacy Policy'].map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <div className="text-center mt-8">
-          <p className="text-sm">Copyright 2024 - All Right Reserved by <span className="font-bold">Easypg.pv.ltd</span></p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
