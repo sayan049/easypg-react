@@ -115,20 +115,10 @@ exports.signupHandlerOwner = async (req, res) => {
     location,
     facility,
     gender,
-    roomInfo, // Directly use roomInfo without parsing
+    roomInfo, // Directly use roomInfo from req.body
   } = req.body;
 
   let { profilePhoto, messPhoto } = req.files;
-  console.log("Received", req.body, req.files);
-  if (req.body.roomInfo) {
-    try {
-      req.body.roomInfo = JSON.parse(req.body.roomInfo);
-    } catch (error) {
-      console.log("Invalid roomInfo format");
-      return res.status(400).json({ error: "Invalid roomInfo format" });
-    }
-  }
-  
 
   try {
     // Check if the user already exists
@@ -163,24 +153,16 @@ exports.signupHandlerOwner = async (req, res) => {
       messPhoto = messPhotoUrls;
     }
 
-    // Validate roomInfo structure (Optional)
-// Ensure roomInfo is an array and contains at least one object
-if (!Array.isArray(roomInfo) || roomInfo.length === 0) {
-  console.log({ error: "Invalid room information - roomInfo should be a non-empty array" });
-  return res.status(400).json({ error: "Invalid room information - roomInfo should be a non-empty array" });
-}
-
-// Validate each room object in the array
-const validatedRoomInfo = roomInfo.map((room) => ({
-  roomNo: room.roomNo || "", // Ensure roomNo is a valid value
-  bedContains: room.bedContains || "", // Ensure bedContains is valid
-  pricePerHead: room.pricePerHead || "", // Ensure pricePerHead is valid
-  roomAvailable: room.roomAvailable !== undefined ? room.roomAvailable : true, // Default to true if not provided
-}));
-
-roomInfo = validatedRoomInfo; // Use the validated roomInfo
-console.log("Received roomInfo:", JSON.stringify(roomInfo, null, 2));
-
+    // Parse roomInfo if it exists
+    let parsedRoomInfo = [];
+    if (roomInfo && typeof roomInfo === 'string') {
+      try {
+        parsedRoomInfo = JSON.parse(roomInfo);
+      } catch (error) {
+        console.error("Error parsing roomInfo:", error);
+        return res.status(400).json({ error: 'Invalid roomInfo format' });
+      }
+    }
 
     // Create new PG Owner
     const newOwner = await PgOwner.create({
@@ -198,7 +180,7 @@ console.log("Received roomInfo:", JSON.stringify(roomInfo, null, 2));
       messPhoto,
       facility,
       gender,
-      roomInfo,
+      roomInfo: parsedRoomInfo,
     });
 
     // Send confirmation email
