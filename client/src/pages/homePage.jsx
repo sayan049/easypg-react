@@ -297,6 +297,7 @@ const HomePage = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [logoutStatus, setLogoutStatus] = useState("");
   const { userName, IsAuthenticated, handleLogout, logoutSuccess,isOwnerAuthenticated,ownerName } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
 
 
 
@@ -410,9 +411,88 @@ const HomePage = () => {
              )}
 
 
-<button className="lg:hidden text-2xl text-gray-800">☰</button>
+          <button
+            className="lg:hidden text-2xl text-gray-800"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            ☰
+          </button> 
           
         </header>
+
+
+         {/* Mobile Menu */}
+         {/* {menuOpen && (
+          <div className="lg:hidden bg-white shadow-md py-4">
+            <ul className="space-y-4 text-center">
+              <li>
+                <a href="#home" className="text-gray-800 hover:text-teal-600">
+                  Home
+                </a>
+              </li>
+              <li>
+                <a href="#about" className="text-gray-800 hover:text-teal-600">
+                  About
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#services"
+                  className="text-gray-800 hover:text-teal-600"
+                >
+                  Service
+                </a>
+              </li>
+              <li>
+                <Link to="/ProviderSeeker" className="text-gray-800 hover:text-teal-600">
+                  Login
+                </Link>
+              </li>
+              <li>
+                <a
+                  href="#contact"
+                  className="text-gray-800 hover:text-teal-600"
+                >
+                  Contact us
+                </a>
+              </li>
+            </ul>
+          </div>
+        )} */}
+
+          {/* Sidebar */}
+          <div
+  className={`fixed bg-white right-0 w-64 text-teal-800 shadow-2xl rounded-tl-2xl rounded-bl-2xl z-50 transform ${
+    menuOpen ? "translate-x-0" : "translate-x-full"
+  } transition-transform duration-300 ease-in-out`}
+  style={{ boxShadow:  'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px'}}
+>
+
+          <button
+            className="absolute top-4 right-4 text-2xl text-black hover:text-gray-200"
+            onClick={() => setMenuOpen(false)}
+          >
+             ×
+          </button>
+          <nav className="mt-12 space-y-6 px-6">
+  <Link to="#home" className="block text-lg font-medium text-gray-800 hover:text-[#06b6d4] transition duration-300">
+    Home
+  </Link>
+  <Link to="#about" className="block text-lg font-medium text-gray-800 hover:text-[#06b6d4] transition duration-300">
+    About
+  </Link>
+  <Link to="#services" className="block text-lg font-medium text-gray-800 hover:text-[#06b6d4] transition duration-300">
+    Services
+  </Link>
+  <Link to="/ProviderSeeker" className="block text-lg font-medium text-gray-800 hover:text-[#06b6d4] transition duration-300">
+    Login
+  </Link>
+  <Link to="#contact" className="block text-lg font-medium text-gray-800 hover:text-[#06b6d4] transition duration-300">
+    Contact Us
+  </Link>
+</nav>
+
+        </div>
 
 
 
