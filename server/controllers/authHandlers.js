@@ -120,7 +120,15 @@ exports.signupHandlerOwner = async (req, res) => {
 
   let { profilePhoto, messPhoto } = req.files;
   console.log("Received roomInfo:", JSON.stringify(roomInfo, null, 2));
-
+  if (req.body.roomInfo) {
+    try {
+      req.body.roomInfo = JSON.parse(req.body.roomInfo);
+    } catch (error) {
+      console.log("Invalid roomInfo format");
+      return res.status(400).json({ error: "Invalid roomInfo format" });
+    }
+  }
+  
 
   try {
     // Check if the user already exists
