@@ -78,7 +78,7 @@ function SignupOwner() {
     facility: [],
     gender: "", // Add gender field (Girls, Boys, Coed)
     roomInfo: [{ 
-      room: "", 
+      room: "RoomNo-1", 
       bedContains: "", // One of 'one', 'two', 'three', 'four', 'five'
       pricePerHead: "",
       roomAvailable: true,
@@ -239,7 +239,7 @@ function SignupOwner() {
   };
 
   const isFormComplete = () => {
-   // Log the form data to check if all fields are filled
+  console.log(formData)// Log the form data to check if all fields are filled
     return (
       formData.mobileNo &&
       formData.address &&
