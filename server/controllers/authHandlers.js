@@ -117,7 +117,7 @@ exports.signupHandlerOwner = async (req, res) => {
     gender,
     roomInfo, // Directly use roomInfo from req.body
   } = req.body;
-
+console.log(req.body);
   let { profilePhoto, messPhoto } = req.files;
 
   try {
