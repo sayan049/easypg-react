@@ -197,18 +197,21 @@ function SignupOwner() {
           formData.messPhoto.forEach((file) =>
             formDataToSend.append(key, file)
           );
+        } else if (key === "roomInfo") {
+          // Stringify roomInfo to send it as a JSON string
+          formDataToSend.append(key, JSON.stringify(formData[key]));
         } else {
           formDataToSend.append(key, formData[key]);
         }
       }
-
+      console.log("Sending roomInfo:", formData.roomInfo); // Log the roomInfo being sent
       const response = await axios.post(signupownerUrl, formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
+  
       if (response.status === 201) {
         console.log("Response:", response.data);
-
+  
         const a = "Please verify your email to log in";
         localStorage.setItem("loginMessageOwner", a);
         navigate("/LoginOwner", { state: { message: a } });
@@ -222,13 +225,15 @@ function SignupOwner() {
       );
     }
   };
+  
+
 
   const toggleEye = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
   const isFormComplete = () => {
-    console.log(formData); // Log the form data to check if all fields are filled
+   // Log the form data to check if all fields are filled
     return (
       formData.mobileNo &&
       formData.address &&
@@ -254,7 +259,8 @@ function SignupOwner() {
     );
   }; 
 console.log(isFormComplete());  
-  
+
+
   return (
     <div className="relative md:bg-custom-gradient bg-mobile-owner" >
     {/* Header text */}

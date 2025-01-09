@@ -115,7 +115,7 @@ exports.signupHandlerOwner = async (req, res) => {
     location,
     facility,
     gender,
-    roomInfo, // Directly use roomInfo without parsing
+    roomInfo, // Directly use roomInfo from req.body
   } = req.body;
 
   let { profilePhoto, messPhoto } = req.files;
@@ -152,14 +152,17 @@ exports.signupHandlerOwner = async (req, res) => {
       }
       messPhoto = messPhotoUrls;
     }
-// const roomInfo=[];
-//     // Validate roomInfo structure directly
-//     const validatedRoomInfo = roomInfo.map((room) => ({
-//       roomNo: room.roomNo || "",
-//       bedContains: room.bedContains || "",
-//       pricePerHead: room.pricePerHead || "",
-//       roomAvailable: room.roomAvailable !== undefined ? room.roomAvailable : true,
-//     }));
+
+    // Parse roomInfo if it exists
+    let parsedRoomInfo = [];
+    if (roomInfo && typeof roomInfo === 'string') {
+      try {
+        parsedRoomInfo = JSON.parse(roomInfo);
+      } catch (error) {
+        console.error("Error parsing roomInfo:", error);
+        return res.status(400).json({ error: 'Invalid roomInfo format' });
+      }
+    }
 
     // Create new PG Owner
     const newOwner = await PgOwner.create({
@@ -177,7 +180,7 @@ exports.signupHandlerOwner = async (req, res) => {
       messPhoto,
       facility,
       gender,
-      roomInfo: validatedRoomInfo,
+      roomInfo: parsedRoomInfo,
     });
 
     // Send confirmation email
@@ -190,6 +193,7 @@ exports.signupHandlerOwner = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 
 
