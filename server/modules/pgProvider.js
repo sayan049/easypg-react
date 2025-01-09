@@ -81,26 +81,28 @@ const pgOwnerSchema = new mongoose.Schema({
         enum: ['Girls Pg', 'Boys Pg', 'Coed Pg'], // "Coed" for mixed-gender mess
         required: true
     },
-    roomInfo: [{
-        roomNo: {
-            type: Number,
+    roomInfo: [
+        {
+          room: {
+            type: String, // Changed from Number to String
             required: true,
-            // Ensures room numbers are unique
-        },
-        bedContains: {
+          },
+          bedContains: {
             type: String,
             enum: ['one', 'two', 'three', 'four', 'five'], // Maximum 5 beds in a room
-            required: true
-        },
-        pricePerHead: {
+            required: true,
+          },
+          pricePerHead: {
             type: Number,
-            required: true
-        },
-        roomAvailable: {
+            required: true,
+          },
+          roomAvailable: {
             type: Boolean,
-            default: true
-        }
-    }],
+            default: true,
+          },
+        },
+      ],
+
    is_verified_Owner:{
         type: Boolean,
         default: false

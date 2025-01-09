@@ -78,7 +78,7 @@ function SignupOwner() {
     facility: [],
     gender: "", // Add gender field (Girls, Boys, Coed)
     roomInfo: [{ 
-      roomNo: 1, 
+      room: "", 
       bedContains: "", // One of 'one', 'two', 'three', 'four', 'five'
       pricePerHead: "",
       roomAvailable: true,
@@ -127,7 +127,7 @@ function SignupOwner() {
   
   const addRoom = () => {
     const newRoom = {
-      roomNo: formData.roomInfo.length + 1,  // Auto-incremented room number
+      room:`RoomNo-${formData.roomInfo.length + 1}`,  // Auto-incremented room number
       bedContains: "",
       pricePerHead: "",
       roomAvailable: true,
@@ -138,12 +138,18 @@ function SignupOwner() {
     });
   };
   const removeRoom = (index) => {
-    const updatedRooms = formData.roomInfo.filter((_, i) => i !== index);
+    const updatedRooms = formData.roomInfo
+      .filter((_, i) => i !== index)
+      .map((room, i) => ({
+        ...room,
+        room: `RoomNo-${i + 1}`, // Reassign room numbers
+      }));
     setFormData({
       ...formData,
       roomInfo: updatedRooms,
     });
   };
+  
 
   const removeImage = (index) => {
     setImgArray((prevArray) => prevArray.filter((_, i) => i !== index));
@@ -250,7 +256,7 @@ function SignupOwner() {
       formData.password &&
       formData.roomInfo.every(
         (room) =>
-          room.roomNo &&
+          room.room &&
           room.bedContains &&
           room.pricePerHead &&
           room.roomAvailable
@@ -477,7 +483,7 @@ console.log(isFormComplete());
           <label>Room No.</label>
           <input
             type="text"
-            name="roomNo"
+            name="room"
             value={`RoomNo-${index + 1}`} // Display formatted room number
             readOnly
             className="px-4 py-2 rounded-full bg-[#116e7b1a] focus:ring focus:ring-[#2ca4b5]"
