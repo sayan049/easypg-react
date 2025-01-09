@@ -206,6 +206,7 @@ function SignupOwner() {
         }
       }
   
+      
       console.log("Sending formData:", formDataToSend);
   
       // Send formData via POST request
