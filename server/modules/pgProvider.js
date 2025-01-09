@@ -85,7 +85,7 @@ const pgOwnerSchema = new mongoose.Schema({
         roomNo: {
             type: Number,
             required: true,
-            unique: true, // Ensures room numbers are unique
+            // Ensures room numbers are unique
         },
         bedContains: {
             type: String,
