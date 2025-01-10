@@ -37,10 +37,10 @@ function SignupOwner() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async (position) => {
         const { latitude, longitude } = position.coords;
-  console.log("bc:",process.env.Google_apiKey)
+  console.log("bc:",process.env.REACT_APP_MAPS_API_KEY)
         try {
           const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.Google_apiKey}`
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.REACT_APP_MAPS_API_KEY}`
           );
           const data = await response.json();
   
