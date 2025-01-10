@@ -312,7 +312,7 @@ const HomePage = () => {
 
   
   const handleInputChange = async (event) => {
-    console.log("ab",process.env.places_api);
+    console.log("ab",process.env.Google_apiKey);
     const query = event.target.value;
     setSearchItem(query);
 
