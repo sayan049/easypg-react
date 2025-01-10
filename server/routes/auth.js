@@ -12,7 +12,7 @@ const authenticateJWT = require("../middleware/is-auth")
 const forgotPasswordOwner = require("../controllers/forgotPasswordOwner")
 const resetPasswordOwner = require("../controllers/resetPasswordOwner")
 const jwt = require('jsonwebtoken');
-const fetch = require('node-fetch');
+
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
