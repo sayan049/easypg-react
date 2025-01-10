@@ -287,7 +287,7 @@ import UserProfile from "../components/UserProfile";
 import "../designs/UserProfile.css";
 
 import { useAuth } from "../contexts/AuthContext";
-import { baseurl } from "../constant/urls";
+import { baseurl,LocationIqurl } from "../constant/urls";
 const HomePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -316,7 +316,7 @@ const HomePage = () => {
     setSearchItem(query);
   
     if (query.length > 4) { // Only search if input has 3+ characters
-      const fetchUrl = `${baseurl}/api/autocomplete?input=${encodeURIComponent(query)}`;
+      const fetchUrl = `${LocationIqurl}?input=${encodeURIComponent(query)}`;
       console.log("Fetch URL:", fetchUrl); // Log the URL for debugging
   
       try {
