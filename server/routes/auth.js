@@ -21,8 +21,7 @@ console.log("api:",apiKey)
 router.get('/api/autocomplete', async (req, res) => {
   const { input } = req.query;
  
-  const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&key=${apiKey}`;
-
+  const url =  `https://us1.locationiq.com/v1/autocomplete.php?key=${apiKey}&q=${query}&format=json`
   try {
     const response = await fetch(url);
     const data = await response.json();
