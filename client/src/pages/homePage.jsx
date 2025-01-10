@@ -324,7 +324,7 @@ const HomePage = () => {
         console.log("Backend Response Status:", response.status); // Check response status
         const data = await response.json();
         console.log("Autocomplete Suggestions:", data);
-        setSuggestions(data.predictions || []); // Safeguard if 'predictions' is undefined
+        setSuggestions(data.display_name || []); // Safeguard if 'predictions' is undefined
       } catch (error) {
         console.error("Error fetching data from backend:", error);
       }
