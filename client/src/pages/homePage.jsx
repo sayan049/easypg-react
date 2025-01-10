@@ -317,11 +317,14 @@ const HomePage = () => {
   const handleInputChange = async (event) => {
     const query = event.target.value;
     setSearchItem(query);
-    
-    if (query.length > 2) {  // Start searching after 3 characters
-      const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json`);
+
+    if (query.length > 2) {
+      // Start searching after 3 characters
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${query}&format=json`
+      );
       const data = await response.json();
-      
+
       // Set suggestions from API response
       setSuggestions(data);
     } else {
@@ -335,7 +338,6 @@ const HomePage = () => {
     setSuggestions([]); // Clear suggestions
   };
 
- 
   useEffect(() => {
     const storedMessage = localStorage.getItem("sId_message");
     if (storedMessage) {
@@ -604,52 +606,51 @@ const HomePage = () => {
         >
           {/* Left Content */}
           <div className="text-center lg:text-left max-w-lg">
-  <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
-    Find Your Perfect Student Home -{" "}
-    <span className="text-[#2CA4B5] lg:text-white">Hassle-Free!</span>
-  </h1>
-  <p className="text-black lg:text-white mt-4">
-    Search for Student Accommodation Website
-  </p>
-  <div className="mt-6 relative">
-    <div className="flex border-[3px] rounded-full  border-[#2CA4B5]">
-      <img
-        src="./assets/Map_Pin.png"
-        alt="map_pin"
-        className="absolute left-4 top-4"
-      />
-      <input
-        type="text"
-        placeholder="Search city or University"
-        className="w-full py-4 px-12 rounded-full shadow-lg flex-1 outline-none bg-white text-black placeholder-[#CCCCCC] focus:ring-2 focus:ring-teal-500"
-        value={searchItem}
-        onChange={handleInputChange}
-      />
-    </div>
-    <button
-      className="absolute top-2 right-3 h-11 w-11 text-white bg-[#2CA4B5] rounded-full flex items-center justify-center"
-      onClick={performSearch}
-    >
-      {/* <span>🔍</span> */}
-    </button>
+            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
+              Find Your Perfect Student Home -{" "}
+              <span className="text-[#2CA4B5] lg:text-white">Hassle-Free!</span>
+            </h1>
+            <p className="text-black lg:text-white mt-4">
+              Search for Student Accommodation Website
+            </p>
+            <div className="mt-6 relative">
+              <div className="flex border-[3px] rounded-full  border-[#2CA4B5]">
+                <img
+                  src="./assets/Map_Pin.png"
+                  alt="map_pin"
+                  className="absolute left-4 top-4"
+                />
+                <input
+                  type="text"
+                  placeholder="Search city or University"
+                  className="w-full py-4 px-12 rounded-full shadow-lg flex-1 outline-none bg-white text-black placeholder-[#CCCCCC] focus:ring-2 focus:ring-teal-500"
+                  value={searchItem}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <button
+                className="absolute top-2 right-3 h-11 w-11 text-white bg-[#2CA4B5] rounded-full flex items-center justify-center"
+                onClick={performSearch}
+              >
+                {/* <span>🔍</span> */}
+              </button>
 
-    {/* Suggestions Dropdown */}
-    {suggestions.length > 0 && (
-      <div className="absolute w-full mt-1 bg-white shadow-lg rounded-lg">
-        {suggestions.map((suggestion, index) => (
-          <div
-            key={index}
-            className="p-2 cursor-pointer hover:bg-[#2CA4B5] hover:text-white"
-            onClick={() => handleSuggestionClick(suggestion)}
-          >
-            {suggestion.display_name}
+              {/* Suggestions Dropdown */}
+              {suggestions.length > 0 && (
+                <div className="absolute w-full mt-1 bg-white shadow-lg rounded-lg">
+                  {suggestions.map((suggestion, index) => (
+                    <div
+                      key={index}
+                      className="p-2 cursor-pointer hover:bg-[#2CA4B5] hover:text-white"
+                      onClick={() => handleSuggestionClick(suggestion)}
+                    >
+                      {suggestion.display_name}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        ))}
-      </div>
-    )}
-  </div>
-</div>
-
 
           {/* Right Image */}
           <div className="max-w-sm lg:max-w-md mt-10 lg:mt-0 lg:order-2">
