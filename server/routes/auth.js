@@ -17,18 +17,23 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 const apiKey = process.env.GOOGLE_PLACES;
-console.log("api:",apiKey)
-router.get('/api/autocomplete', async (req, res) => {
+console.log("API Key:", apiKey);
+
+router.get("/api/autocomplete", async (req, res) => {
   const { input } = req.query;
- 
-  const url =  `https://us1.locationiq.com/v1/autocomplete.php?key=${apiKey}&q=${query}&format=json`
+
+  const url = `https://api.locationiq.com/v1/autocomplete?key=${apiKey}&q=${input}`;
+
   try {
     const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
     const data = await response.json();
-    res.json(data);
+    res.json(data); // Send back the autocomplete results
   } catch (error) {
-    console.error('Error fetching data from Google Places API:', error);
-    res.status(500).send('Error fetching data');
+    console.error("Error fetching data from LocationIQ API:", error);
+    res.status(500).send("Error fetching data");
   }
 });
 router.post("/signup", authHandlers.signupHandler);
