@@ -15,8 +15,21 @@ const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+const apiKey = process.env.GOOGLE_PLACES;
+router.get('/api/autocomplete', async (req, res) => {
+  const { input } = req.query;
+ 
+  const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&key=${apiKey}`;
 
-
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error('Error fetching data from Google Places API:', error);
+    res.status(500).send('Error fetching data');
+  }
+});
 router.post("/signup", authHandlers.signupHandler);
 router.post("/login", authHandlers.loginHandler);
 router.post("/signupOwner",uploadTemp, uploadToCloudinary, authHandlers.signupHandlerOwner);

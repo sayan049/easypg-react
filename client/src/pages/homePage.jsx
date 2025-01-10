@@ -287,6 +287,7 @@ import UserProfile from "../components/UserProfile";
 import "../designs/UserProfile.css";
 
 import { useAuth } from "../contexts/AuthContext";
+import { baseurl } from "../constant/urls";
 const HomePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -310,30 +311,23 @@ const HomePage = () => {
     document.title = "Find your nearest paying guest";
   }, []);
 
-  
   const handleInputChange = async (event) => {
-    console.log("ab",process.env.REACT_APP_MAPS_API_KEY);
     const query = event.target.value;
     setSearchItem(query);
-const api =process.env.REACT_APP_MAPS_API_KEY
-console.log("xx",api);
-    if (query.length > 2) {  // Start searching after 3 characters
+  
+    if (query.length > 2) {
       try {
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${query}&key=${api}`
-        );
+        const response = await fetch(`${baseurl}/api/autocomplete?input=${query}`);
         const data = await response.json();
-        
-        
-        // Filter results based on type (e.g., cities, universities)
         setSuggestions(data.predictions); // Store the predictions
       } catch (error) {
-        console.error('Error fetching data from Google Places:', error);
+        console.error('Error fetching data from backend:', error);
       }
     } else {
       setSuggestions([]);
     }
   };
+  
 
   const handleSuggestionClick = (suggestion) => {
     // Set the selected suggestion in the input field
