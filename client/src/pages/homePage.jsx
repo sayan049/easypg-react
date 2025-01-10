@@ -315,11 +315,12 @@ const HomePage = () => {
     console.log("ab",process.env.Google_apiKey);
     const query = event.target.value;
     setSearchItem(query);
-
+const api =process.env.Google_apiKey
+console.log("xx",api);
     if (query.length > 2) {  // Start searching after 3 characters
       try {
         const response = await fetch(
-          `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${query}&key=${process.env.Google_apiKey}`
+          `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${query}&key=${api}`
         );
         const data = await response.json();
         
