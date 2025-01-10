@@ -314,19 +314,24 @@ const HomePage = () => {
   const handleInputChange = async (event) => {
     const query = event.target.value;
     setSearchItem(query);
+    console.log("Query:", query);
   
     if (query.length > 2) {
       try {
         const response = await fetch(`${baseurl}/api/autocomplete?input=${query}`);
+        console.log("Backend Response Status:", response.status);
+  
         const data = await response.json();
-        setSuggestions(data.predictions); // Store the predictions
+        console.log("Suggestions Data:", data);
+        setSuggestions(data.predictions || []); // Safeguard in case predictions is undefined
       } catch (error) {
-        console.error('Error fetching data from backend:', error);
+        console.error("Error fetching data from backend:", error);
       }
     } else {
       setSuggestions([]);
     }
   };
+  
   
 
   const handleSuggestionClick = (suggestion) => {

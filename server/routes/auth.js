@@ -27,14 +27,17 @@ console.log("Input:", input);
   try {
     const response = await fetch(url);
     if (!response.ok) {
+      const errorText = await response.text(); // Log the response text
+      console.error(`Error response from LocationIQ: ${errorText}`);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    res.json(data); // Send back the autocomplete results
+    res.json(data);
   } catch (error) {
     console.error("Error fetching data from LocationIQ API:", error);
     res.status(500).send("Error fetching data");
   }
+  
 });
 router.post("/signup", authHandlers.signupHandler);
 router.post("/login", authHandlers.loginHandler);
