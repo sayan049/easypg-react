@@ -22,7 +22,7 @@ console.log("API Key:", apiKey);
 router.get("/api/autocomplete", async (req, res) => {
   const { input } = req.query;
 console.log("Input:", input);
-  const url = `https://api.locationiq.com/v1/autocomplete?key=${apiKey}&q=${input}`;
+  const url = `https://nominatim.openstreetmap.org/search?q=${input}&format=json`;
 
   try {
     const response = await fetch(url);
