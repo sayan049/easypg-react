@@ -310,26 +310,31 @@ const HomePage = () => {
     document.title = "Find your nearest paying guest";
   }, []);
 
-  const performSearch = () => {
-    alert("Searching for: " + searchItem);
-    navigate("/MessFind");
-  };
+  let debounceTimer;
+
   const handleInputChange = async (event) => {
     const query = event.target.value;
     setSearchItem(query);
 
-    if (query.length > 2) {
-      // Start searching after 3 characters
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${query}&format=json`
-      );
-      const data = await response.json();
+    // Clear the previous debounce timer
+    clearTimeout(debounceTimer);
 
-      // Set suggestions from API response
-      setSuggestions(data);
-    } else {
-      setSuggestions([]);
-    }
+    // Set a new timer to call the API after 300ms
+    debounceTimer = setTimeout(async () => {
+      if (query.length > 2) {  // Start searching after 3 characters
+        try {
+          const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json`);
+          const data = await response.json();
+
+          // Set suggestions from API response
+          setSuggestions(data);
+        } catch (error) {
+          console.error('Error fetching data from Nominatim:', error);
+        }
+      } else {
+        setSuggestions([]);
+      }
+    }, 300); // 300ms debounce
   };
 
   const handleSuggestionClick = (suggestion) => {
@@ -338,6 +343,10 @@ const HomePage = () => {
     setSuggestions([]); // Clear suggestions
   };
 
+  const performSearch = () => {
+    alert("Searching for: " + searchItem);
+    navigate("/MessFind");
+  };
   useEffect(() => {
     const storedMessage = localStorage.getItem("sId_message");
     if (storedMessage) {
