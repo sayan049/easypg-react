@@ -312,10 +312,10 @@ const HomePage = () => {
 
   
   const handleInputChange = async (event) => {
-    console.log("ab",process.env.REACT_APP_PLACES_API_KEY);
+    console.log("ab",process.env.REACT_APP_MAPS_API_KEY);
     const query = event.target.value;
     setSearchItem(query);
-const api =process.env.REACT_APP_PLACES_API_KEY
+const api =process.env.REACT_APP_MAPS_API_KEY
 console.log("xx",api);
     if (query.length > 2) {  // Start searching after 3 characters
       try {
