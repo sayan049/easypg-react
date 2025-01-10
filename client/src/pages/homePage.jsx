@@ -312,23 +312,24 @@ const HomePage = () => {
   }, []);
 
   const handleInputChange = async (event) => {
-    const query = event.target.value;
+    const query = event.target.value.trim(); // Remove extra spaces
     setSearchItem(query);
-    console.log("Query:", query);
   
-    if (query.length > 2) {
+    if (query.length > 4) { // Only search if input has 3+ characters
+      const fetchUrl = `${baseurl}/api/autocomplete?input=${encodeURIComponent(query)}`;
+      console.log("Fetch URL:", fetchUrl); // Log the URL for debugging
+  
       try {
-        const response = await fetch(`${baseurl}/api/autocomplete?input=${query}`);
-        console.log("Backend Response Status:", response.status);
-  
+        const response = await fetch(fetchUrl);
+        console.log("Backend Response Status:", response.status); // Check response status
         const data = await response.json();
-        console.log("Suggestions Data:", data);
-        setSuggestions(data.predictions || []); // Safeguard in case predictions is undefined
+        console.log("Autocomplete Suggestions:", data);
+        setSuggestions(data.predictions || []); // Safeguard if 'predictions' is undefined
       } catch (error) {
         console.error("Error fetching data from backend:", error);
       }
     } else {
-      setSuggestions([]);
+      setSuggestions([]); // Clear suggestions for short queries
     }
   };
   
