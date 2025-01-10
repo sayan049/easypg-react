@@ -310,39 +310,32 @@ const HomePage = () => {
     document.title = "Find your nearest paying guest";
   }, []);
 
-  let debounceTimer;
-
+  const performSearch = () => {
+    alert("Searching for: " + searchItem);
+    navigate("/MessFind");
+  };
   const handleInputChange = async (event) => {
     const query = event.target.value;
     setSearchItem(query);
-  
-    // Clear the previous debounce timer
-    clearTimeout(debounceTimer);
-  
-    // Set a new timer to call the API after 300ms
-    debounceTimer = setTimeout(async () => {
-      if (query.length > 2) {  // Start searching after 3 characters
-        try {
-          const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json`);
-          
-          // Check if we hit rate limits (HTTP 429)
-          if (response.status === 429) {
-            console.log('Rate limit hit. Retrying after delay...');
-            setTimeout(() => handleInputChange(event), 1000); // Retry after 1 second
-            return;
-          }
-  
-          const data = await response.json();
-          setSuggestions(data);
-        } catch (error) {
-          console.error('Error fetching data from Nominatim:', error);
-        }
-      } else {
-        setSuggestions([]);
+
+    if (query.length > 2) {
+      // Start searching after 3 characters
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${query}&format=json`
+      );
+      if (response.status === 429) {
+        console.log('Rate limit hit. Retrying after delay...');
+        setTimeout(() => handleInputChange(event), 1000); // Retry after 1 second
+        return;
       }
-    }, 300); // 300ms debounce
+      const data = await response.json();
+
+      // Set suggestions from API response
+      setSuggestions(data);
+    } else {
+      setSuggestions([]);
+    }
   };
-  
 
   const handleSuggestionClick = (suggestion) => {
     // Set the selected suggestion in the input field
@@ -350,10 +343,6 @@ const HomePage = () => {
     setSuggestions([]); // Clear suggestions
   };
 
-  const performSearch = () => {
-    alert("Searching for: " + searchItem);
-    navigate("/MessFind");
-  };
   useEffect(() => {
     const storedMessage = localStorage.getItem("sId_message");
     if (storedMessage) {
