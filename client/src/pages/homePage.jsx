@@ -315,18 +315,24 @@ const HomePage = () => {
   const handleInputChange = async (event) => {
     const query = event.target.value;
     setSearchItem(query);
-
+  
     // Clear the previous debounce timer
     clearTimeout(debounceTimer);
-
+  
     // Set a new timer to call the API after 300ms
     debounceTimer = setTimeout(async () => {
       if (query.length > 2) {  // Start searching after 3 characters
         try {
           const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${query}&format=json`);
+          
+          // Check if we hit rate limits (HTTP 429)
+          if (response.status === 429) {
+            console.log('Rate limit hit. Retrying after delay...');
+            setTimeout(() => handleInputChange(event), 1000); // Retry after 1 second
+            return;
+          }
+  
           const data = await response.json();
-
-          // Set suggestions from API response
           setSuggestions(data);
         } catch (error) {
           console.error('Error fetching data from Nominatim:', error);
@@ -336,6 +342,7 @@ const HomePage = () => {
       }
     }, 300); // 300ms debounce
   };
+  
 
   const handleSuggestionClick = (suggestion) => {
     // Set the selected suggestion in the input field
