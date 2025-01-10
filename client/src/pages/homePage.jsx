@@ -315,7 +315,7 @@ const HomePage = () => {
     const query = event.target.value.trim(); // Remove extra spaces
     setSearchItem(query);
   
-    if (query.length > 4) { // Only search if input has 3+ characters
+    if (query.length > 4) { // Only search if input has 5+ characters
       const fetchUrl = `${LocationIqurl}?input=${encodeURIComponent(query)}`;
       console.log("Fetch URL:", fetchUrl); // Log the URL for debugging
   
@@ -324,7 +324,9 @@ const HomePage = () => {
         console.log("Backend Response Status:", response.status); // Check response status
         const data = await response.json();
         console.log("Autocomplete Suggestions:", data);
-        setSuggestions(data.display_name || []); // Safeguard if 'predictions' is undefined
+  
+        // Assuming data is an array of suggestions
+        setSuggestions(data || []); // Set suggestions array directly
       } catch (error) {
         console.error("Error fetching data from backend:", error);
       }
@@ -332,6 +334,7 @@ const HomePage = () => {
       setSuggestions([]); // Clear suggestions for short queries
     }
   };
+  
   
   
 
@@ -614,51 +617,53 @@ const HomePage = () => {
         >
           {/* Left Content */}
           <div className="text-center lg:text-left max-w-lg">
-            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
-              Find Your Perfect Student Home -{" "}
-              <span className="text-[#2CA4B5] lg:text-white">Hassle-Free!</span>
-            </h1>
-            <p className="text-black lg:text-white mt-4">
-              Search for Student Accommodation Website
-            </p>
-            <div className="mt-6 relative">
-              <div className="flex border-[3px] rounded-full  border-[#2CA4B5]">
-                <img
-                  src="./assets/Map_Pin.png"
-                  alt="map_pin"
-                  className="absolute left-4 top-4"
-                />
-                <input
-                  type="text"
-                  placeholder="Search city or University"
-                  className="w-full py-4 px-12 rounded-full shadow-lg flex-1 outline-none bg-white text-black placeholder-[#CCCCCC] focus:ring-2 focus:ring-teal-500"
-                  value={searchItem}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <button
-                className="absolute top-2 right-3 h-11 w-11 text-white bg-[#2CA4B5] rounded-full flex items-center justify-center"
-                onClick={performSearch}
-              >
-                {/* <span>🔍</span> */}
-              </button>
+  <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
+    Find Your Perfect Student Home -{" "}
+    <span className="text-[#2CA4B5] lg:text-white">Hassle-Free!</span>
+  </h1>
+  <p className="text-black lg:text-white mt-4">
+    Search for Student Accommodation Website
+  </p>
+  <div className="mt-6 relative ">
+    <div className="flex border-[3px] rounded-full border-[#2CA4B5]">
+      <img
+        src="./assets/Map_Pin.png"
+        alt="map_pin"
+        srcset=""
+        className="absolute left-4 top-4"
+      />
+      <input
+        type="text"
+        placeholder="Search city or University"
+        className="w-full py-4 px-12 rounded-full shadow-lg flex-1 outline-none bg-white text-black placeholder-[#CCCCCC] focus:ring-2 focus:ring-teal-500"
+        value={searchItem}
+        onChange={handleInputChange}
+      />
+    </div>
+    <button
+      className="absolute top-2 right-3 h-11 w-11 text-white bg-[#2CA4B5] rounded-full flex items-center justify-center"
+      onClick={performSearch}
+    ></button>
 
-              {/* Suggestions Dropdown */}
-              {suggestions.length > 0 && (
-                <div className="absolute w-full mt-1 bg-white shadow-lg rounded-lg">
-                  {suggestions.map((suggestion, index) => (
-                    <div
-                      key={index}
-                      className="p-2 cursor-pointer hover:bg-[#2CA4B5] hover:text-white"
-                      onClick={() => handleSuggestionClick(suggestion)}
-                    >
-                      {suggestion.display_name}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+    {/* Render Suggestions Dropdown */}
+    {suggestions.length > 0 && (
+      <div className="absolute left-0 right-0 bg-white shadow-md mt-1 z-10">
+        <ul className="max-h-60 overflow-y-auto">
+          {suggestions.map((suggestion, index) => (
+            <li
+              key={index}
+              className="p-2 cursor-pointer hover:bg-gray-200"
+              onClick={() => handleSuggestionClick(suggestion)}
+            >
+              {suggestion.display_name} {/* Adjust based on the data structure */}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+</div>
+
 
           {/* Right Image */}
           <div className="max-w-sm lg:max-w-md mt-10 lg:mt-0 lg:order-2">
