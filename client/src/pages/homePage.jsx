@@ -310,28 +310,23 @@ const HomePage = () => {
     document.title = "Find your nearest paying guest";
   }, []);
 
-  const performSearch = () => {
-    alert("Searching for: " + searchItem);
-    navigate("/MessFind");
-  };
+  
   const handleInputChange = async (event) => {
     const query = event.target.value;
     setSearchItem(query);
 
-    if (query.length > 2) {
-      // Start searching after 3 characters
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${query}&format=json`
-      );
-      if (response.status === 429) {
-        console.log('Rate limit hit. Retrying after delay...');
-        setTimeout(() => handleInputChange(event), 1000); // Retry after 1 second
-        return;
+    if (query.length > 2) {  // Start searching after 3 characters
+      try {
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${query}&key=${process.env.places_api}`
+        );
+        const data = await response.json();
+        
+        // Filter results based on type (e.g., cities, universities)
+        setSuggestions(data.predictions); // Store the predictions
+      } catch (error) {
+        console.error('Error fetching data from Google Places:', error);
       }
-      const data = await response.json();
-
-      // Set suggestions from API response
-      setSuggestions(data);
     } else {
       setSuggestions([]);
     }
@@ -339,8 +334,13 @@ const HomePage = () => {
 
   const handleSuggestionClick = (suggestion) => {
     // Set the selected suggestion in the input field
-    setSearchItem(suggestion.display_name);
+    setSearchItem(suggestion.description);
     setSuggestions([]); // Clear suggestions
+  };
+
+  const performSearch = () => {
+    alert("Searching for: " + searchItem);
+    navigate("/MessFind");
   };
 
   useEffect(() => {
