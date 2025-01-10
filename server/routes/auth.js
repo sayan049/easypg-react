@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../modules/user');
 const PgOwner = require('../modules/pgProvider');
 const authHandlers = require("../controllers/authHandlers");
-const upload = require("../middleware/upload");
+const { uploadTemp, uploadToCloudinary } = require("../middleware/upload");
 const { refreshTokenHandler } = require("../controllers/refreshTokenHandler");
 const updateDetailshandler =require("../controllers/updateDetails")
 const forgotPasswordUser = require("../controllers/forgotPasswordUser")
@@ -19,7 +19,7 @@ const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
 router.post("/signup", authHandlers.signupHandler);
 router.post("/login", authHandlers.loginHandler);
-router.post("/signupOwner", upload, authHandlers.signupHandlerOwner);
+router.post("/signupOwner",uploadTemp, uploadToCloudinary, authHandlers.signupHandlerOwner);
 router.post("/loginOwner", authHandlers.loginHandlerOwner);
 router.get("/findMess", authHandlers.findMess); 
 
@@ -67,7 +67,7 @@ router.get("/check-session", (req, res) => {
 
 
 
-router.post('/updateDetails',upload, updateDetailshandler.updateDetails);
+router.post('/updateDetails',uploadTemp, uploadToCloudinary, updateDetailshandler.updateDetails);
 router.get('/get-details', updateDetailshandler.getDetails);
 
 router.post("/logout", authenticateJWT, async (req, res) => {

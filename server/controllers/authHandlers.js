@@ -101,99 +101,174 @@ exports.loginHandler = async (req, res) => {
 
 
 // Remove JSON.parse for roomInfo, no need to parse it manually
+// exports.signupHandlerOwner = async (req, res) => {
+//   const {
+//     firstName,
+//     lastName,
+//     email,
+//     address,
+//     password,
+//     pincode,
+//     mobileNo,
+//     messName,
+//     aboutMess,
+//     location,
+//     facility,
+//     gender,
+//     roomInfo, // Directly use roomInfo from req.body
+//   } = req.body;
+// console.log(req.body);
+//   let { profilePhoto, messPhoto } = req.files;
+
+//   try {
+//     // Check if the user already exists
+//     const existingUser = await PgOwner.findOne({ email });
+//     if (existingUser) {
+//       console.log({ error: `${email} already exists` });
+//       return res.status(400).json({ error: `${email} already exists` });
+//     }
+
+//     // Validate password
+//     if (!password) {
+//       console.log({ error: "Password is required" });
+//       return res.status(400).json({ error: "Password is required" });
+//     }
+
+//     // Hash the password
+//     const hashedPassword = await bcrypt.hash(password, 10);
+
+//     // Process profile photo
+//     if (profilePhoto && profilePhoto[0]) {
+//       const result = await cloudinary.uploader.upload(profilePhoto[0].path);
+//       profilePhoto = result.secure_url; // Save Cloudinary URL
+//     }
+
+//     // Process mess photos
+//     if (messPhoto && messPhoto.length > 0) {
+//       const messPhotoUrls = [];
+//       for (const photo of messPhoto) {
+//         const result = await cloudinary.uploader.upload(photo.path);
+//         messPhotoUrls.push(result.secure_url); // Save Cloudinary URLs
+//       }
+//       messPhoto = messPhotoUrls;
+//     }
+
+//     // Parse roomInfo if it exists
+//     let parsedRoomInfo = [];
+//     if (roomInfo && typeof roomInfo === 'string') {
+//       try {
+//         parsedRoomInfo = JSON.parse(roomInfo);
+//       } catch (error) {
+//         console.error("Error parsing roomInfo:", error);
+//         return res.status(400).json({ error: 'Invalid roomInfo format' });
+//       }
+//     }
+
+//     // Create new PG Owner
+//     const newOwner = await PgOwner.create({
+//       firstName,
+//       lastName,
+//       email,
+//       address,
+//       password: hashedPassword,
+//       pincode,
+//       mobileNo,
+//       messName,
+//       aboutMess,
+//       location,
+//       profilePhoto,
+//       messPhoto,
+//       facility,
+//       gender,
+//       roomInfo: parsedRoomInfo,
+//     });
+
+//     // Send confirmation email
+//     sendmailOwner(firstName, email, newOwner._id);
+
+//     // Return success response
+//     return res.status(201).json(newOwner);
+//   } catch (error) {
+//     console.error("Error creating user:", error);
+//     return res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
 exports.signupHandlerOwner = async (req, res) => {
   const {
-    firstName,
-    lastName,
-    email,
-    address,
-    password,
-    pincode,
-    mobileNo,
-    messName,
-    aboutMess,
-    location,
-    facility,
-    gender,
-    roomInfo, // Directly use roomInfo from req.body
-  } = req.body;
-console.log(req.body);
-  let { profilePhoto, messPhoto } = req.files;
-
-  try {
-    // Check if the user already exists
-    const existingUser = await PgOwner.findOne({ email });
-    if (existingUser) {
-      console.log({ error: `${email} already exists` });
-      return res.status(400).json({ error: `${email} already exists` });
-    }
-
-    // Validate password
-    if (!password) {
-      console.log({ error: "Password is required" });
-      return res.status(400).json({ error: "Password is required" });
-    }
-
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Process profile photo
-    if (profilePhoto && profilePhoto[0]) {
-      const result = await cloudinary.uploader.upload(profilePhoto[0].path);
-      profilePhoto = result.secure_url; // Save Cloudinary URL
-    }
-
-    // Process mess photos
-    if (messPhoto && messPhoto.length > 0) {
-      const messPhotoUrls = [];
-      for (const photo of messPhoto) {
-        const result = await cloudinary.uploader.upload(photo.path);
-        messPhotoUrls.push(result.secure_url); // Save Cloudinary URLs
-      }
-      messPhoto = messPhotoUrls;
-    }
-
-    // Parse roomInfo if it exists
-    let parsedRoomInfo = [];
-    if (roomInfo && typeof roomInfo === 'string') {
-      try {
-        parsedRoomInfo = JSON.parse(roomInfo);
-      } catch (error) {
-        console.error("Error parsing roomInfo:", error);
-        return res.status(400).json({ error: 'Invalid roomInfo format' });
-      }
-    }
-
-    // Create new PG Owner
-    const newOwner = await PgOwner.create({
       firstName,
       lastName,
       email,
       address,
-      password: hashedPassword,
+      password,
       pincode,
       mobileNo,
       messName,
       aboutMess,
       location,
-      profilePhoto,
-      messPhoto,
       facility,
       gender,
-      roomInfo: parsedRoomInfo,
-    });
+      roomInfo,
+  } = req.body;
 
-    // Send confirmation email
-    sendmailOwner(firstName, email, newOwner._id);
+  try {
+      // Check if the user already exists
+      const existingUser = await PgOwner.findOne({ email });
+      if (existingUser) {
+          return res.status(400).json({ error: `${email} already exists` });
+      }
 
-    // Return success response
-    return res.status(201).json(newOwner);
+      // Validate password
+      if (!password) {
+          return res.status(400).json({ error: "Password is required" });
+      }
+
+      // Hash the password
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      // Get processed image URLs from the middleware
+      const profilePhoto = req.cloudinaryResults?.profilePhoto?.[0] || null; // Profile photo URL
+      const messPhoto = req.cloudinaryResults?.messPhoto || []; // Mess photos URLs array
+
+      // Parse roomInfo if it exists
+      let parsedRoomInfo = [];
+      if (roomInfo && typeof roomInfo === 'string') {
+          try {
+              parsedRoomInfo = JSON.parse(roomInfo);
+          } catch (error) {
+              console.error("Error parsing roomInfo:", error);
+              return res.status(400).json({ error: 'Invalid roomInfo format' });
+          }
+      }
+
+      // Create new PG Owner
+      const newOwner = await PgOwner.create({
+          firstName,
+          lastName,
+          email,
+          address,
+          password: hashedPassword,
+          pincode,
+          mobileNo,
+          messName,
+          aboutMess,
+          location,
+          profilePhoto,
+          messPhoto,
+          facility,
+          gender,
+          roomInfo: parsedRoomInfo,
+      });
+
+      // Send confirmation email
+      sendmailOwner(firstName, email, newOwner._id);
+
+      // Return success response
+      return res.status(201).json(newOwner);
   } catch (error) {
-    console.error("Error creating user:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+      console.error("Error creating user:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 
 
 
