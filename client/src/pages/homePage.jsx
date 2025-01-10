@@ -321,7 +321,7 @@ const HomePage = () => {
           `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${query}&key=${process.env.places_api}`
         );
         const data = await response.json();
-        console.log(process.env.places_api);
+        console.log("ab",process.env.places_api);
         
         // Filter results based on type (e.g., cities, universities)
         setSuggestions(data.predictions); // Store the predictions
