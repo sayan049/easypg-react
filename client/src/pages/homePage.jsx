@@ -312,7 +312,7 @@ const HomePage = () => {
   }, []);
 
   const handleInputChange = async (event) => {
-    const query = event.target.value.trim(); // Remove extra spaces
+    const query = event.target.value; // Remove extra spaces
     setSearchItem(query);
   
     if (query.length > 4) { // Only search if input has 5+ characters
@@ -340,7 +340,7 @@ const HomePage = () => {
 
   const handleSuggestionClick = (suggestion) => {
     // Set the selected suggestion in the input field
-    setSearchItem(suggestion.description);
+    setSearchItem(suggestion.display_name);
     setSuggestions([]); // Clear suggestions
   };
 
