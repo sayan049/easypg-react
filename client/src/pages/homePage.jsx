@@ -319,7 +319,7 @@ const HomePage = () => {
     if (query.length > 2) {  // Start searching after 3 characters
       try {
         const response = await fetch(
-          `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${query}&key=${process.env.places_api}`
+          `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${query}&key=${process.env.Google_apiKey}`
         );
         const data = await response.json();
         
