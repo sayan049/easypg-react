@@ -17,6 +17,7 @@ const fetch = require('node-fetch');
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 const apiKey = process.env.GOOGLE_PLACES;
+console.log("api:",apiKey)
 router.get('/api/autocomplete', async (req, res) => {
   const { input } = req.query;
  
