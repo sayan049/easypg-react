@@ -316,7 +316,7 @@ const HomePage = () => {
   const throttleInterval = 1000; // 1 second interval (1000ms)
   
   const handleInputChange = async (event) => {
-    const query = event.target.value.trim(); // Trim extra spaces
+    const query = event.target.value; // Trim extra spaces
     setSearchItem(query);
   
     if (query.length >3) { // Only search if input has 4+ characters
