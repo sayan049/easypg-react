@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Sidebar from "../components/sidebar";
 import BookingTable from "../components/BookingTable";
 import Settings from "../components/settings";
+import DashboardContent from "../components/dashboardContent";
 
 function NewDashBoard() {
   const [activePage, setActivePage] = useState("Dashboard");
@@ -60,7 +61,7 @@ function NewDashBoard() {
           {/* Right-side Content */}
           <div className=" lg:overflow-y-auto " style={{width:'100%'}}>
             {activePage === "My Bookings" && <BookingTable />}
-            {activePage === "Dashboard" && <div>Dashboard Content</div>}
+            {activePage === "Dashboard" && <DashboardContent/>}
             {activePage === "Payments" && <div>Payments Content</div>}
             {activePage === "Settings" && <Settings />}
           </div>
