@@ -311,29 +311,47 @@ const HomePage = () => {
     document.title = "Find your nearest paying guest";
   }, []);
 
+  let debounceTimeout; // Variable for debounce timeout
+  let lastRequestTime = 0; // Variable to track last API call time
+  const throttleInterval = 1000; // 1 second interval (1000ms)
+  
   const handleInputChange = async (event) => {
-    const query = event.target.value; // Remove extra spaces
+    const query = event.target.value.trim(); // Trim extra spaces
     setSearchItem(query);
   
-    if (query.length > 4) { // Only search if input has 5+ characters
-      const fetchUrl = `${LocationIqurl}?input=${encodeURIComponent(query)}`;
-      console.log("Fetch URL:", fetchUrl); // Log the URL for debugging
+    if (query.length >3) { // Only search if input has 4+ characters
+      // Clear any previous debounce timeout
+      clearTimeout(debounceTimeout);
   
-      try {
-        const response = await fetch(fetchUrl);
-        console.log("Backend Response Status:", response.status); // Check response status
-        const data = await response.json();
-        console.log("Autocomplete Suggestions:", data);
+      // Set a debounce delay
+      debounceTimeout = setTimeout(async () => {
+        const currentTime = Date.now();
+        
+        // Throttle: Ensure at least 1 second between API calls
+        if (currentTime - lastRequestTime > throttleInterval) {
+          lastRequestTime = currentTime; // Update the last request time
   
-        // Assuming data is an array of suggestions
-        setSuggestions(data || []); // Set suggestions array directly
-      } catch (error) {
-        console.error("Error fetching data from backend:", error);
-      }
+          const fetchUrl = `${LocationIqurl}?input=${encodeURIComponent(query)}`;
+          console.log("Fetch URL:", fetchUrl); // Log the URL for debugging
+  
+          try {
+            const response = await fetch(fetchUrl);
+            console.log("Backend Response Status:", response.status); // Check response status
+            const data = await response.json();
+            console.log("Autocomplete Suggestions:", data);
+  
+            // Set the suggestions based on API response
+            setSuggestions(data || []);
+          } catch (error) {
+            console.error("Error fetching data from backend:", error);
+          }
+        }
+      }, 500); // Debounce delay of 500ms
     } else {
       setSuggestions([]); // Clear suggestions for short queries
     }
   };
+  
   
   
   
@@ -624,12 +642,11 @@ const HomePage = () => {
   <p className="text-black lg:text-white mt-4">
     Search for Student Accommodation Website
   </p>
-  <div className="mt-6 relative ">
-    <div className="flex border-[3px] rounded-full border-[#2CA4B5]">
+  <div className="mt-6 relative">
+    <div className="flex border-[3px] rounded-full  border-[#2CA4B5]">
       <img
         src="./assets/Map_Pin.png"
         alt="map_pin"
-        srcset=""
         className="absolute left-4 top-4"
       />
       <input
@@ -643,26 +660,27 @@ const HomePage = () => {
     <button
       className="absolute top-2 right-3 h-11 w-11 text-white bg-[#2CA4B5] rounded-full flex items-center justify-center"
       onClick={performSearch}
-    ></button>
+    >
+      {/* <span>🔍</span> */}
+    </button>
 
-    {/* Render Suggestions Dropdown */}
+    {/* Suggestions Dropdown */}
     {suggestions.length > 0 && (
-      <div className="absolute left-0 right-0 bg-white shadow-md mt-1 z-10">
-        <ul className="max-h-60 overflow-y-auto">
-          {suggestions.map((suggestion, index) => (
-            <li
-              key={index}
-              className="p-2 cursor-pointer hover:bg-gray-200"
-              onClick={() => handleSuggestionClick(suggestion)}
-            >
-              {suggestion.display_name} {/* Adjust based on the data structure */}
-            </li>
-          ))}
-        </ul>
+      <div className="absolute w-full mt-1 bg-white shadow-lg rounded-lg">
+        {suggestions.map((suggestion, index) => (
+          <div
+            key={index}
+            className="p-2 cursor-pointer hover:bg-[#2CA4B5] hover:text-white"
+            onClick={() => handleSuggestionClick(suggestion)}
+          >
+            {suggestion.display_name}
+          </div>
+        ))}
       </div>
     )}
   </div>
 </div>
+
 
 
           {/* Right Image */}
