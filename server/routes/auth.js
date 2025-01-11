@@ -16,13 +16,13 @@ const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
-// const apiKey = process.env.GOOGLE_PLACES;
+const apiKey = process.env.GOOGLE_PLACES;
 // console.log("API Key:", apiKey);
 
 router.get("/api/autocomplete", async (req, res) => {
   const { input } = req.query;
 console.log("Input:", input);
-const url = `https://nominatim.openstreetmap.org/search?q=${input}&format=json&countrycodes=IN`;
+const url = `https://api.locationiq.com/v1/autocomplete?key=${apiKey}&q=${input}&countrycodes=IN`;
 
 
   try {
