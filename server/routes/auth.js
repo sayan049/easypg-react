@@ -13,10 +13,33 @@ const forgotPasswordOwner = require("../controllers/forgotPasswordOwner")
 const resetPasswordOwner = require("../controllers/resetPasswordOwner")
 const jwt = require('jsonwebtoken');
 
+
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+const apiKey = process.env.GOOGLE_PLACES;
+// console.log("API Key:", apiKey);
+
+router.get("/api/autocomplete", async (req, res) => {
+  const { input } = req.query;
+console.log("Input:", input);
+const url = `https://api.locationiq.com/v1/autocomplete?key=${apiKey}&q=${input}&countrycodes=IN`;
 
 
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      const errorText = await response.text(); // Log the response text
+      console.error(`Error response from LocationIQ: ${errorText}`);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error("Error fetching data from LocationIQ API:", error);
+    res.status(500).send("Error fetching data");
+  }
+  
+});
 router.post("/signup", authHandlers.signupHandler);
 router.post("/login", authHandlers.loginHandler);
 router.post("/signupOwner",uploadTemp, uploadToCloudinary, authHandlers.signupHandlerOwner);

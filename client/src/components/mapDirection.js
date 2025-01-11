@@ -76,6 +76,7 @@ function MapDirection({ coordinates }) {
 
       // Fetch route from OpenRouteService API
       const apiKey =   process.env.REACT_APP_GOOGLE_API_KEY;
+      console.log("ff",apiKey)
       if (!apiKey) {
         console.error('API key is missing. Check your .env file.');
         return;
