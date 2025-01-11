@@ -346,7 +346,7 @@ const HomePage = () => {
             console.error("Error fetching data from backend:", error);
           }
         }
-      }, 500); // Debounce delay of 500ms
+      }, 2000); // Debounce delay of 500ms
     } else {
       setSuggestions([]); // Clear suggestions for short queries
     }
