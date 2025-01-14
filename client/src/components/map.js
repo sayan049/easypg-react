@@ -38,7 +38,7 @@ function MapComponent({ isChecked, coordinates }) {
     const markerStyle = new Style({
       image: new Icon({
         anchor: [0.5, 1],
-        src: 'https://openlayers.org/en/latest/examples/data/icon.png', // Replace with your custom icon if needed
+        src: 'assets/placeholder.png', // Replace with your custom icon if needed
       }),
     });
     marker.setStyle(markerStyle);
