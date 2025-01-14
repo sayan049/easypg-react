@@ -216,14 +216,14 @@ function SignupOwner() {
           formData.messPhoto.forEach((file) =>
             formDataToSend.append(key, file)
           );
-        } else if (key === "roomInfo") {
-          // Stringify roomInfo to send it as a JSON string
+        } else if (key === "roomInfo" || key === "location") {
+          // Stringify roomInfo and location to send them as JSON strings
           formDataToSend.append(key, JSON.stringify(formData[key]));
         } else {
           formDataToSend.append(key, formData[key]);
         }
       }
-      console.log("Sending roomInfo:", formData.roomInfo); // Log the roomInfo being sent
+      console.log("Sending roomInfo and location:", formData.roomInfo, formData.location); // Log the data being sent
       const response = await axios.post(signupownerUrl, formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -244,6 +244,7 @@ function SignupOwner() {
       );
     }
   };
+  
   
 
 
