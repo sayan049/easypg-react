@@ -316,17 +316,17 @@ const HomePage = () => {
   const throttleInterval = 1000; // 1 second interval (1000ms)
   
   const handleInputChange = async (event) => {
-    const query = event.target.value; // Trim extra spaces
+    const query = event.target.value.trim(); // Trim extra spaces
     setSearchItem(query);
   
-    if (query.length >3) { // Only search if input has 4+ characters
+    if (query.length > 3) { // Only search if input has 4+ characters
       // Clear any previous debounce timeout
       clearTimeout(debounceTimeout);
   
       // Set a debounce delay
       debounceTimeout = setTimeout(async () => {
         const currentTime = Date.now();
-        
+  
         // Throttle: Ensure at least 1 second between API calls
         if (currentTime - lastRequestTime > throttleInterval) {
           lastRequestTime = currentTime; // Update the last request time
@@ -346,11 +346,12 @@ const HomePage = () => {
             console.error("Error fetching data from backend:", error);
           }
         }
-      }, 2000); // Debounce delay of 500ms
+      }, 2000); // Debounce delay of 2 seconds
     } else {
       setSuggestions([]); // Clear suggestions for short queries
     }
   };
+  
   
   
   
