@@ -12,7 +12,7 @@ const ViewDetails = () => {
   const [showModal, setShowModal] = useState(false);
 
   // Parse location
-  const locationArray = owner?.location ? owner.location.coordinates.split(',') : ['0', '0'];
+  const locationArray = owner?.location ? owner.location.coordinates : ['0', '0'];
   const lat = parseFloat(locationArray[0].trim()) || 0; // Latitude
   const lng = parseFloat(locationArray[1].trim()) || 0; // Longitude
   const coordinates = { lat, lng };
