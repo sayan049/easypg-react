@@ -54,7 +54,7 @@ function SignupOwner() {
             location: {
               type: "Point",
               coordinates: [longitude, latitude], // Storing the coordinates as [longitude, latitude]
-              address: address, // Optional: store address if you want to display it later
+              // address: address, // Optional: store address if you want to display it later
             },
           }));
         } catch (error) {

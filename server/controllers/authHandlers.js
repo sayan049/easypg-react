@@ -209,7 +209,7 @@ exports.signupHandlerOwner = async (req, res) => {
       gender,
       roomInfo,
   } = req.body;
-
+console.log(req.body.location)
   try {
       // Check if the user already exists
       const existingUser = await PgOwner.findOne({ email });
