@@ -37,29 +37,37 @@ function SignupOwner() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async (position) => {
         const { latitude, longitude } = position.coords;
-  console.log("bc:",process.env.REACT_APP_MAPS_API_KEY)
+        console.log("Latitude:", latitude, "Longitude:", longitude);
+  
+        // Fetch address from Google Maps API (optional, if you need to display it later)
         try {
           const response = await fetch(
             `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.REACT_APP_MAPS_API_KEY}`
           );
           const data = await response.json();
   
-          const address =
-            data.results[0]?.formatted_address ||
-            `${latitude}, ${longitude}`;
-            
+          const address = data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
+          
+          // Update location with coordinates (longitude, latitude) and optional address
           setFormData((prevData) => ({
             ...prevData,
-            location: address,
+            location: {
+              type: "Point",
+              coordinates: [longitude, latitude], // Storing the coordinates as [longitude, latitude]
+              address: address, // Optional: store address if you want to display it later
+            },
           }));
         } catch (error) {
           console.error("Error fetching location:", error);
         }
+      }, (error) => {
+        console.error("Geolocation error:", error);
       });
     } else {
       alert("Geolocation is not supported by this browser.");
     }
   };
+  
 
 
   const [formData, setFormData] = useState({
@@ -568,9 +576,9 @@ console.log(isFormComplete());
       id="location"
       placeholder="Location (latitude, longitude)"
       value={
-        formData.location && formData.location.coordinates && formData.location.coordinates.length === 2
+        formData.location.coordinates.length === 2
           ? `${formData.location.coordinates[1]}, ${formData.location.coordinates[0]}`  // Display lat, lon
-          : "Latitude, Longitude"  // Display placeholder if coordinates are not set
+          : "Latitude, Longitude"  // Display placeholder if coordinates are not set or invalid
       }
       readOnly // Makes the input non-editable
       className="block w-full px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[#2ca4b5] bg-[#116e7b1a]"
@@ -582,6 +590,7 @@ console.log(isFormComplete());
     />
   </div>
 </div>
+
 
 
 
