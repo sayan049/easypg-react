@@ -72,14 +72,17 @@ function SignupOwner() {
     mobileNo: "",
     messName: "",
     aboutMess: "",
-    location: "",
+    location: {  
+      type: "Point",  
+      coordinates: [],  // [longitude, latitude]
+    },
     profilePhoto: null,
     messPhoto: [],
     facility: [],
     gender: "", // Add gender field (Girls, Boys, Coed)
     roomInfo: [{ 
       room: "RoomNo-1", 
-      bedContains: "", // One of 'one', 'two', 'three', 'four', 'five'
+      bedContains: "", 
       pricePerHead: "",
       roomAvailable: true,
     }],
@@ -239,9 +242,9 @@ function SignupOwner() {
   const toggleEye = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
-
   const isFormComplete = () => {
-  console.log(formData)// Log the form data to check if all fields are filled
+    console.log(formData);  // Log the form data to check if all fields are filled
+    
     return (
       formData.mobileNo &&
       formData.address &&
@@ -252,9 +255,12 @@ function SignupOwner() {
       formData.facility.length > 0 &&
       formData.messName &&
       formData.aboutMess &&
-      formData.profilePhoto &&
-      formData.messPhoto.length > 0 &&
-      formData.location &&
+      formData.profilePhoto &&  // If profile photo is optional, update this condition
+      formData.messPhoto.length > 0 &&  // Same for mess photos, update if optional
+      formData.location &&  // Check if location is set
+      formData.location.type === "Point" &&  // Ensure the location type is "Point"
+      Array.isArray(formData.location.coordinates) &&  // Ensure coordinates is an array
+      formData.location.coordinates.length === 2 &&  // Ensure coordinates have 2 values (longitude, latitude)
       formData.password &&
       formData.roomInfo.every(
         (room) =>
@@ -265,7 +271,8 @@ function SignupOwner() {
       ) &&
       formData.gender
     );
-  }; 
+  };
+  
 console.log(isFormComplete());  
 
 
@@ -553,24 +560,27 @@ console.log(isFormComplete());
        {/* location and pg */}
       <div className="flex flex-col md:flex-row gap-0 md:gap-16 mb-4">
       
-  <div className="w-full md:w-1/2 mb-4">
-    <div className="flex items-center justify-between">
-      <input
-        type="text"
-        name="location"
-        id="location"
-        placeholder="Location (latitude, longitude)" 
-        value={formData.location}
-        readOnly // Makes the input non-editable
-        className="block w-full px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[#2ca4b5] bg-[#116e7b1a]"
-      />
-      <FontAwesomeIcon
-        icon={faMapMarkerAlt}
-        className="text-xl text-[#2ca4b5] ml-2 cursor-pointer" // Added cursor-pointer for clickable effect
-        onClick={mapMake} // Call the mapMake function on click
-      />
-    </div>
+      <div className="w-full md:w-1/2 mb-4">
+  <div className="flex items-center justify-between">
+    <input
+      type="text"
+      name="location"
+      id="location"
+      placeholder="Location (latitude, longitude)"
+      value={formData.location.coordinates.length === 2
+        ? `${formData.location.coordinates[1]}, ${formData.location.coordinates[0]}`  // Display lat, lon
+        : "Latitude, Longitude "}  // Display placeholder if coordinates are not set
+      readOnly // Makes the input non-editable
+      className="block w-full px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+    />
+    <FontAwesomeIcon
+      icon={faMapMarkerAlt}
+      className="text-xl text-[#2ca4b5] ml-2 cursor-pointer" // Added cursor-pointer for clickable effect
+      onClick={mapMake} // Call the mapMake function on click
+    />
   </div>
+</div>
+
 
 
 

@@ -204,7 +204,7 @@ exports.signupHandlerOwner = async (req, res) => {
       mobileNo,
       messName,
       aboutMess,
-      location,
+      location,  // This will now contain { type, coordinates }
       facility,
       gender,
       roomInfo,
@@ -240,6 +240,11 @@ exports.signupHandlerOwner = async (req, res) => {
           }
       }
 
+      // Validate and process location
+      if (!location || location.type !== 'Point' || !Array.isArray(location.coordinates) || location.coordinates.length !== 2) {
+          return res.status(400).json({ error: 'Invalid location format. Location must be in GeoJSON format (type: "Point", coordinates: [longitude, latitude])' });
+      }
+
       // Create new PG Owner
       const newOwner = await PgOwner.create({
           firstName,
@@ -251,7 +256,7 @@ exports.signupHandlerOwner = async (req, res) => {
           mobileNo,
           messName,
           aboutMess,
-          location,
+          location,  // Store the location as received in GeoJSON format
           profilePhoto,
           messPhoto,
           facility,
@@ -269,6 +274,7 @@ exports.signupHandlerOwner = async (req, res) => {
       return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 
 

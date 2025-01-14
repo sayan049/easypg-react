@@ -53,11 +53,20 @@ const pgOwnerSchema = new mongoose.Schema({
         }
     },
     location: {
-        type: String,
-        required: function() {
-            return !this.googleId;
+        type: {
+          type: String,  // "Point" for GeoJSON
+          enum: ['Point'],  // Only allow "Point"
+          required: function() {
+            return !this.googleId;  // location is required only if googleId is not present
+          }
+        },
+        coordinates: {
+          type: [Number],  // Array for [longitude, latitude]
+          required: function() {
+            return !this.googleId;  // coordinates are required if googleId is not present
+          }
         }
-    },
+      },
     profilePhoto: {
         type: String,
         required: function() {

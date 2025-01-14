@@ -312,9 +312,7 @@ const HomePage = () => {
   }, []);
 
   let debounceTimeout; // Variable for debounce timeout
-  let lastRequestTime = 0; // Variable to track last API call time
-  const throttleInterval = 1000; // 1 second interval (1000ms)
-  
+
   const handleInputChange = async (event) => {
     const query = event.target.value.trim(); // Trim extra spaces
     setSearchItem(query);
@@ -323,28 +321,21 @@ const HomePage = () => {
       // Clear any previous debounce timeout
       clearTimeout(debounceTimeout);
   
-      // Set a debounce delay
+      // Set a debounce delay of 2 seconds
       debounceTimeout = setTimeout(async () => {
-        const currentTime = Date.now();
+        const fetchUrl = `${LocationIqurl}?input=${encodeURIComponent(query)}`;
+        console.log("Fetch URL:", fetchUrl); // Log the URL for debugging
   
-        // Throttle: Ensure at least 1 second between API calls
-        if (currentTime - lastRequestTime > throttleInterval) {
-          lastRequestTime = currentTime; // Update the last request time
+        try {
+          const response = await fetch(fetchUrl);
+          console.log("Backend Response Status:", response.status); // Check response status
+          const data = await response.json();
+          console.log("Autocomplete Suggestions:", data);
   
-          const fetchUrl = `${LocationIqurl}?input=${encodeURIComponent(query)}`;
-          console.log("Fetch URL:", fetchUrl); // Log the URL for debugging
-  
-          try {
-            const response = await fetch(fetchUrl);
-            console.log("Backend Response Status:", response.status); // Check response status
-            const data = await response.json();
-            console.log("Autocomplete Suggestions:", data);
-  
-            // Set the suggestions based on API response
-            setSuggestions(data || []);
-          } catch (error) {
-            console.error("Error fetching data from backend:", error);
-          }
+          // Set the suggestions based on API response
+          setSuggestions(data || []);
+        } catch (error) {
+          console.error("Error fetching data from backend:", error);
         }
       }, 2000); // Debounce delay of 2 seconds
     } else {
@@ -353,10 +344,6 @@ const HomePage = () => {
   };
   
   
-  
-  
-  
-
   const handleSuggestionClick = (suggestion) => {
     // Set the selected suggestion in the input field
     setSearchItem(suggestion.display_name);
