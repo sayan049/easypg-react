@@ -567,9 +567,11 @@ console.log(isFormComplete());
       name="location"
       id="location"
       placeholder="Location (latitude, longitude)"
-      value={formData.location.coordinates.length === 2
-        ? `${formData.location.coordinates[1]}, ${formData.location.coordinates[0]}`  // Display lat, lon
-        : "Latitude, Longitude "}  // Display placeholder if coordinates are not set
+      value={
+        formData.location && formData.location.coordinates && formData.location.coordinates.length === 2
+          ? `${formData.location.coordinates[1]}, ${formData.location.coordinates[0]}`  // Display lat, lon
+          : "Latitude, Longitude"  // Display placeholder if coordinates are not set
+      }
       readOnly // Makes the input non-editable
       className="block w-full px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[#2ca4b5] bg-[#116e7b1a]"
     />
@@ -580,6 +582,7 @@ console.log(isFormComplete());
     />
   </div>
 </div>
+
 
 
 
