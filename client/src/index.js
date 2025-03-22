@@ -97,6 +97,13 @@ root.render(
               <NewDashboard />
             </IsAuth>
           } />
+
+            <Route path="/userDashboard" element={
+              <IsAuth>
+              <UserDashboard />
+              </IsAuth>
+          } />
+
           <Route path="/ViewDetails" element={
 
             <ViewDetails />

@@ -304,7 +304,9 @@ const HomePage = () => {
     logoutSuccess,
     isOwnerAuthenticated,
     ownerName,
+    type,
   } = useAuth();
+  console.log(type);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -451,7 +453,8 @@ const HomePage = () => {
                 <div className="dropdown-content">
                   <p className="">
                     {" "}
-                    <Link style={{ fontSize: "16  px" }} to="/UserDashboard">
+                    
+                    <Link style={{ fontSize: "16  px" }} to={type==='student' ?"/newDashboard": "/UserDashboard"}>
                       Profile
                     </Link>
                   </p>

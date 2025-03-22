@@ -4,10 +4,22 @@ import Sidebar from "../components/sidebar";
 import BookingTable from "../components/BookingTable";
 import Settings from "../components/settings";
 import DashboardContent from "../components/dashboardContent";
+import { useAuth } from "../contexts/AuthContext";
+import UserProfile from "../components/UserProfile";
 
 function NewDashBoard() {
   const [activePage, setActivePage] = useState("Dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const {
+      userName,
+      IsAuthenticated,
+      isOwnerAuthenticated,
+      ownerName,
+      user,
+      owner,
+      type,
+    } = useAuth();
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-800">
