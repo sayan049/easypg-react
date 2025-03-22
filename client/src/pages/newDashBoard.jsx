@@ -4,8 +4,7 @@ import Sidebar from "../components/sidebar";
 import BookingTable from "../components/BookingTable";
 import Settings from "../components/settings";
 import DashboardContent from "../components/dashboardContent";
-import { useAuth } from "../contexts/AuthContext";
-import UserProfile from "../components/UserProfile";
+
 
 function NewDashBoard() {
   const [activePage, setActivePage] = useState("Dashboard");
