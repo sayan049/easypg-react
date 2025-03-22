@@ -304,7 +304,6 @@ const HomePage = () => {
     logoutSuccess,
     isOwnerAuthenticated,
     ownerName,
-    type,
   } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
 
