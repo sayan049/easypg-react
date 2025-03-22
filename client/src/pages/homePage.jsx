@@ -451,7 +451,7 @@ const HomePage = () => {
                 <div className="dropdown-content">
                   <p className="">
                     {" "}
-                    <Link style={{ fontSize: "16  px" }} to="/UserDashboard">
+                    <Link style={{ fontSize: "16  px" }} to="/newDashboard">
                       Profile
                     </Link>
                   </p>
