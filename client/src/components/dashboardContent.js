@@ -184,7 +184,7 @@ function DashboardContent() {
 
         <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm mt-6">
           <h2 className="text-lg font-semibold text-gray-700 mb-4">Maintenance Request</h2>
-          <form className="space-y-4">
+          <form className="space-y-4 mb-4">
             <div>
               <label className="block text-sm font-medium text-gray-700" htmlFor="issue">
                 Issue

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import Sidebar from "../components/sidebar";
 import BookingTable from "../components/BookingTable";
 import Settings from "../components/settings";
@@ -13,9 +14,11 @@ function NewDashBoard() {
       {/* Header */}
       <header className="bg-white p-4 shadow rounded-md mb-6 flex flex-wrap items-center justify-between">
         <div className="flex items-center flex-1 lg:flex-none">
+          <Link to="/">
           <h1 className="text-xl lg:text-2xl font-bold text-blue-500">
             Mess<span className="text-gray-800">Mate.</span>
           </h1>
+          </Link>
         </div>
 
         <div className="flex justify-center w-full lg:w-auto mt-4 lg:mt-0 flex-1">

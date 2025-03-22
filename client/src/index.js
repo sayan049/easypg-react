@@ -25,6 +25,8 @@ import UserDashboard from "./pages/Dashboard";
 import IsAuth from "./pages/isAuth";
 import ViewDetails from "./pages/viewDetails";
 
+
+
 // Create the root once and specify the container
 const root = createRoot(document.getElementById("root")); // Using createRoot directly
 
@@ -92,7 +94,7 @@ root.render(
           />
           <Route path="/UserDashboard" element={
             <IsAuth>
-              <UserDashboard />
+              <NewDashboard />
             </IsAuth>
           } />
           <Route path="/ViewDetails" element={
@@ -103,6 +105,7 @@ root.render(
         <Route path="/googleCallback" element={
           <GoogleCallbackPage/>
         }/>
+       
      
         {/* <Route path="/test" element={
           <Test/>

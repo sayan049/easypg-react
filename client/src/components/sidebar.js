@@ -23,7 +23,7 @@ function Sidebar({ setActivePage, isOpen }) {
         </div>
         <ul className="mt-6">
           <li
-            className="p-4 text-gray-700 hover:bg-gray-200 cursor-pointer"
+            className="p-4 text-gray-700 hover:bg-teal-500 hover:text-white cursor-pointer"
             onClick={() => {
               setActivePage("Dashboard");
               //toggleSidebar();
@@ -32,7 +32,7 @@ function Sidebar({ setActivePage, isOpen }) {
             Dashboard
           </li>
           <li
-            className="p-4 text-gray-700 hover:bg-gray-200 cursor-pointer"
+            className="p-4 text-gray-700 hover:bg-teal-500 hover:text-white cursor-pointer "
             onClick={() => {
               setActivePage("My Bookings");
              // toggleSidebar();
@@ -41,7 +41,7 @@ function Sidebar({ setActivePage, isOpen }) {
             My Bookings
           </li>
           <li
-            className="p-4 text-gray-700 hover:bg-gray-200 cursor-pointer"
+            className="p-4 text-gray-700 hover:bg-teal-500 hover:text-white cursor-pointer"
             onClick={() => {
               setActivePage("Payments");
               //toggleSidebar();
@@ -50,7 +50,7 @@ function Sidebar({ setActivePage, isOpen }) {
             Payments
           </li>
           <li
-            className="p-4 text-gray-700 hover:bg-gray-200 cursor-pointer"
+            className="p-4 text-gray-700 hover:bg-teal-500 hover:text-white cursor-pointer"
             onClick={() => {
               setActivePage("Settings");
              // toggleSidebar();
@@ -59,7 +59,8 @@ function Sidebar({ setActivePage, isOpen }) {
             Settings
           </li>
         </ul>
-        <button className="absolute bottom-6 left-6 text-red-500">Logout</button>
+        <div className="mt-6"><button className="p-4  text-red-500 hover:text-white hover:bg-red-500 w-full text-left">Logout</button></div>
+        {/* absolute bottom-6 left-6 */}
       </div>
 
       {/* Bottom Navigation for smaller screens */}
