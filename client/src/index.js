@@ -39,7 +39,7 @@ root.render(
           <Route path="/" element={<App />} />
           {/* <Route path="/newHome" element={<NewHomePage />} /> */}
           <Route path="/ProviderSeeker" element={<ProviderSeeker />} />
-          <Route path="/NewDashBoard" element={<NewDashboard />} />
+          {/* <Route path="/NewDashBoard" element={<NewDashboard />} /> */}
           <Route
             path="/signupforuser"
             element={
@@ -92,7 +92,7 @@ root.render(
               </ProtectedRoute>
             }
           />
-          <Route path="/UserDashboard" element={
+          <Route path="/newDashboard" element={
             <IsAuth>
               <NewDashboard />
             </IsAuth>
