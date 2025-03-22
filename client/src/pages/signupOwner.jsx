@@ -37,29 +37,37 @@ function SignupOwner() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async (position) => {
         const { latitude, longitude } = position.coords;
-  console.log("bc:",process.env.REACT_APP_MAPS_API_KEY)
+        console.log("Latitude:", latitude, "Longitude:", longitude);
+  
+        // Fetch address from Google Maps API (optional, if you need to display it later)
         try {
           const response = await fetch(
             `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.REACT_APP_MAPS_API_KEY}`
           );
           const data = await response.json();
   
-          const address =
-            data.results[0]?.formatted_address ||
-            `${latitude}, ${longitude}`;
-            
+          const address = data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
+          
+          // Update location with coordinates (longitude, latitude) and optional address
           setFormData((prevData) => ({
             ...prevData,
-            location: address,
+            location: {
+              type: "Point",
+              coordinates: [longitude, latitude], // Storing the coordinates as [longitude, latitude]
+              // address: address, // Optional: store address if you want to display it later
+            },
           }));
         } catch (error) {
           console.error("Error fetching location:", error);
         }
+      }, (error) => {
+        console.error("Geolocation error:", error);
       });
     } else {
       alert("Geolocation is not supported by this browser.");
     }
   };
+  
 
 
   const [formData, setFormData] = useState({
@@ -72,14 +80,17 @@ function SignupOwner() {
     mobileNo: "",
     messName: "",
     aboutMess: "",
-    location: "",
+    location: {  
+      type: "Point",  
+      coordinates: [],  // [longitude, latitude]
+    },
     profilePhoto: null,
     messPhoto: [],
     facility: [],
     gender: "", // Add gender field (Girls, Boys, Coed)
     roomInfo: [{ 
       room: "RoomNo-1", 
-      bedContains: "", // One of 'one', 'two', 'three', 'four', 'five'
+      bedContains: "", 
       pricePerHead: "",
       roomAvailable: true,
     }],
@@ -205,14 +216,14 @@ function SignupOwner() {
           formData.messPhoto.forEach((file) =>
             formDataToSend.append(key, file)
           );
-        } else if (key === "roomInfo") {
-          // Stringify roomInfo to send it as a JSON string
+        } else if (key === "roomInfo" || key === "location") {
+          // Stringify roomInfo and location to send them as JSON strings
           formDataToSend.append(key, JSON.stringify(formData[key]));
         } else {
           formDataToSend.append(key, formData[key]);
         }
       }
-      console.log("Sending roomInfo:", formData.roomInfo); // Log the roomInfo being sent
+      console.log("Sending roomInfo and location:", formData.roomInfo, formData.location); // Log the data being sent
       const response = await axios.post(signupownerUrl, formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -234,14 +245,15 @@ function SignupOwner() {
     }
   };
   
+  
 
 
   const toggleEye = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
-
   const isFormComplete = () => {
-  console.log(formData)// Log the form data to check if all fields are filled
+    console.log(formData);  // Log the form data to check if all fields are filled
+    
     return (
       formData.mobileNo &&
       formData.address &&
@@ -252,9 +264,12 @@ function SignupOwner() {
       formData.facility.length > 0 &&
       formData.messName &&
       formData.aboutMess &&
-      formData.profilePhoto &&
-      formData.messPhoto.length > 0 &&
-      formData.location &&
+      formData.profilePhoto &&  // If profile photo is optional, update this condition
+      formData.messPhoto.length > 0 &&  // Same for mess photos, update if optional
+      formData.location &&  // Check if location is set
+      formData.location.type === "Point" &&  // Ensure the location type is "Point"
+      Array.isArray(formData.location.coordinates) &&  // Ensure coordinates is an array
+      formData.location.coordinates.length === 2 &&  // Ensure coordinates have 2 values (longitude, latitude)
       formData.password &&
       formData.roomInfo.every(
         (room) =>
@@ -265,7 +280,8 @@ function SignupOwner() {
       ) &&
       formData.gender
     );
-  }; 
+  };
+  
 console.log(isFormComplete());  
 
 
@@ -553,24 +569,31 @@ console.log(isFormComplete());
        {/* location and pg */}
       <div className="flex flex-col md:flex-row gap-0 md:gap-16 mb-4">
       
-  <div className="w-full md:w-1/2 mb-4">
-    <div className="flex items-center justify-between">
-      <input
-        type="text"
-        name="location"
-        id="location"
-        placeholder="Location (latitude, longitude)" 
-        value={formData.location}
-        readOnly // Makes the input non-editable
-        className="block w-full px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[#2ca4b5] bg-[#116e7b1a]"
-      />
-      <FontAwesomeIcon
-        icon={faMapMarkerAlt}
-        className="text-xl text-[#2ca4b5] ml-2 cursor-pointer" // Added cursor-pointer for clickable effect
-        onClick={mapMake} // Call the mapMake function on click
-      />
-    </div>
+      <div className="w-full md:w-1/2 mb-4">
+  <div className="flex items-center justify-between">
+    <input
+      type="text"
+      name="location"
+      id="location"
+      placeholder="Location (latitude, longitude)"
+      value={
+        formData.location.coordinates.length === 2
+          ? `${formData.location.coordinates[1]}, ${formData.location.coordinates[0]}`  // Display lat, lon
+          : "Latitude, Longitude"  // Display placeholder if coordinates are not set or invalid
+      }
+      readOnly // Makes the input non-editable
+      className="block w-full px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+    />
+    <FontAwesomeIcon
+      icon={faMapMarkerAlt}
+      className="text-xl text-[#2ca4b5] ml-2 cursor-pointer" // Added cursor-pointer for clickable effect
+      onClick={mapMake} // Call the mapMake function on click
+    />
   </div>
+</div>
+
+
+
 
 
 

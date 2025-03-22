@@ -12,9 +12,9 @@ const ViewDetails = () => {
   const [showModal, setShowModal] = useState(false);
 
   // Parse location
-  const locationArray = owner?.location ? owner.location.split(',') : ['0', '0'];
-  const lat = parseFloat(locationArray[0].trim()) || 0; // Latitude
-  const lng = parseFloat(locationArray[1].trim()) || 0; // Longitude
+  const locationArray = owner?.location ? owner.location.coordinates : ['0', '0'];
+  const lat = locationArray[1] || 0; // Latitude (second element in the array)
+  const lng = locationArray[0] || 0; // Longitude (first element in the array)
   const coordinates = { lat, lng };
   const amenities = [
     { id: "test1", label: "A/C", icon: "💨" },
