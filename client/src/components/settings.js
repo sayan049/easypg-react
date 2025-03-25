@@ -9,6 +9,7 @@ function Settings() {
   const [image, setImage] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
   const [personalInfo, setPersonalInfo] = useState({
     fullName: "",
     email: "",
@@ -92,6 +93,52 @@ function Settings() {
     }
   };
 
+
+    useEffect(() => {
+      const fetchDetails = async () => {
+        setIsLoading(true);
+        try {
+          const userId = type === "student" ? user?.id : owner?.id;
+          if (!userId) {
+            console.error("User ID is missing");
+            return;
+          }
+  
+          const url = new URL(fetchDetailsUrl);
+          url.searchParams.append("userId", userId);
+          url.searchParams.append("type", type);
+  
+          const response = await fetch(url, {
+            method: "GET",
+            // Remove Content-Type for GET requests
+            headers: {
+              // No Content-Type header needed for GET requests
+            },
+          });
+  
+          if (!response.ok) {
+            throw new Error("Failed to fetch details");
+          }
+  
+          const data = await response.json();
+          // Assuming the data contains image URLs or paths
+          setUpdatedUserDetails(data || {});
+          console.log("fetched data:", data);
+        } catch (error) {
+          console.error("Error fetching details:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+  
+      if (currentView === "profile") {
+        fetchDetails();
+      } else {
+        setIsLoading(false);
+      }
+    }, [currentView, type, user, owner]);
+
+
   return (
     <div className="bg-white pb-16 pr-6 pt-6 pl-6 shadow rounded-md">
       <h2 className="text-2xl font-bold mb-6">Profile Settings</h2>
@@ -125,7 +172,7 @@ function Settings() {
            {IsAuthenticated || isOwnerAuthenticated ? <UserProfile /> : null}
           <label
             htmlFor="file"
-            className="cursor-pointer text-xl text-blue-600 text-white relative top-[-34px] left-[54px] opacity-0"
+            className="cursor-pointer text-xl text-blue-600 text-white relative top-[-34px] left-[18px] "
           >
             ➕
           </label>
@@ -145,7 +192,7 @@ function Settings() {
             <input
               type="text"
               name="fullName"
-              placeholder="Full Name"
+              placeholder={type === "student" ? user?.name : owner?.name}
               value={personalInfo.fullName}
               onChange={handleInputChange}
               className="border border-gray-300 rounded-md p-2 w-full"
