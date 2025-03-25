@@ -15,7 +15,7 @@ function Settings() {
     fullName: "",
     email: "",
     phone: "",
-    pincode: "",
+    pin: "",
     location: "",
   });
   const {
@@ -247,7 +247,7 @@ function Settings() {
               type="text"
               name="pincode"
               placeholder={user?.pin || "Add your pin"}
-              value={personalInfo.pincode}
+              value={personalInfo.pin}
               onChange={handleInputChange}
               className="border border-gray-300 rounded-md p-2 w-full"
             />
