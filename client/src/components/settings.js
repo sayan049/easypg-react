@@ -166,8 +166,10 @@ function Settings() {
       }
     };
 
+    fetchDetails();
+
     // if (currentView === "profile") {
-    //   fetchDetails();
+    //  
     // } else {
     //   setIsLoading(false);
     // }
@@ -178,7 +180,7 @@ function Settings() {
       <h2 className="text-2xl font-bold mb-6">Profile Settings</h2>
       <div className="relative mb-4">
         <button onClick={() => setIsEditing(!isEditing)} className="absolute right-2 top-2 text-blue-500">
-          <FontAwesomeIcon icon={isEditing ? faSave : faEdit} />
+          
         </button>
       </div>
       {/* Profile Picture Section (First Row) */}
@@ -235,6 +237,7 @@ function Settings() {
               className="border border-gray-300 rounded-md p-2 w-full"
               readOnly={!isEditing}
             />
+            <FontAwesomeIcon icon={isEditing ? faSave : faEdit} />
             <FontAwesomeIcon
               icon={faEdit}
               className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-gray-500"
@@ -248,22 +251,25 @@ function Settings() {
               value={personalInfo.email}
               onChange={handleInputChange}
               className="border border-gray-300 rounded-md p-2 w-full"
+              onClick={() => setIsEditing(!isEditing)}
             />
             <input
               type="text"
               name="phone"
-              placeholder={user?.phone || "Phone number"}
+              placeholder= "Phone number"
               value={personalInfo.phone}
               onChange={handleInputChange}
               className="border border-gray-300 rounded-md p-2 w-full"
+              onClick={() => setIsEditing(!isEditing)}
             />
             <input
               type="text"
               name="pincode"
-              placeholder={user?.pin || "Add your pin"}
+              placeholder= "Add your pin"
               value={personalInfo.pin}
               onChange={handleInputChange}
               className="border border-gray-300 rounded-md p-2 w-full"
+              onClick={() => setIsEditing(!isEditing)}
             />
             <div className="relative">
               <input
@@ -273,6 +279,7 @@ function Settings() {
                 value={personalInfo.location}
                 onChange={handleInputChange}
                 className="border border-gray-300 rounded-md p-2 w-full pr-10"
+                
               />
               <div
                 onClick={mapMake}
