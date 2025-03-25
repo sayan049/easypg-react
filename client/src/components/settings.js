@@ -164,6 +164,8 @@ function Settings() {
       }
     };
 
+    fetchDetails();
+
     // if (currentView === "profile") {
     //   fetchDetails();
     // } else {
