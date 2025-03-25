@@ -179,9 +179,7 @@ function Settings() {
     <div className="bg-white pb-16 pr-6 pt-6 pl-6 shadow rounded-md">
       <h2 className="text-2xl font-bold mb-6">Profile Settings</h2>
       <div className="relative mb-4">
-        <button onClick={() => setIsEditing(!isEditing)} className="absolute right-2 top-2 text-blue-500">
-          <FontAwesomeIcon icon={isEditing ? faSave : faEdit} />
-        </button>
+       
       </div>
       {/* Profile Picture Section (First Row) */}
       <div className="flex justify-center mb-6">
@@ -237,12 +235,10 @@ function Settings() {
               className="border border-gray-300 rounded-md p-2 w-full"
               readOnly={!isEditing}
             />
-            <FontAwesomeIcon
-              icon={faEdit}
-              className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-gray-500"
-              onClick={() => setIsEditing(!isEditing)}
-            />
-
+             <button onClick={() => setIsEditing(!isEditing)} className="absolute right-2 top-2 text-blue-500">
+          <FontAwesomeIcon icon={isEditing ? faSave : faEdit} />
+        </button>
+            
             <input
               type="email"
               name="email"
