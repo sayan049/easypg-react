@@ -87,8 +87,10 @@ const HomePage = () => {
       alert("Please select a valid location!");
       return;
     }
-    console.log(selectedLocation);
-    navigate("/MessFind", { state: selectedLocation });
+    console.log("✅ Passing Location to MessFind:", selectedLocation);
+
+    navigate("/MessFind", { state: { userLocation: selectedLocation } });
+
   };
   
 

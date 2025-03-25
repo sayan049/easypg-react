@@ -56,8 +56,11 @@ const FilterModal = ({ isOpen, onClose, price, setPrice, amenities, featureChang
 
 const MessFind = () => {
   const location = useLocation();
-  const userLocation = location.state || null; // Retrieve lat/lon from Homepage
-console.log("User Location:", userLocation); // Debugging
+  const userLocation = location.state?.userLocation || null;
+  // Retrieve lat/lon from Homepage
+  console.log("🔍 Full Navigation State in MessFind:", location.state);
+  console.log("📍 Extracted User Location:", userLocation);
+  
   const [price, setPrice] = useState(1500);
   const [checkFeatures, setCheckFeatures] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
