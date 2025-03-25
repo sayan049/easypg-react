@@ -63,32 +63,23 @@ function Settings() {
     const formData = new FormData();
     formData.append("userId", type === "student" ? user?.id : owner?.id);
     formData.append("type", type);
+  
     Object.keys(personalInfo).forEach((key) => {
-      if (key !== "messPhoto" && key !== "profilePhoto") {
+      if (personalInfo[key]) {
         formData.append(key, personalInfo[key]);
-        console.log("ds"+formData[key]);
       }
     });
-    
-
-    // if (profilePhotoFile) {
-    //   formData.append("profilePhoto", profilePhotoFile);
-    // }
-
-    // messPhotoFiles.forEach((file, index) => {
-    //   formData.append(`messPhoto`, file);
-    // });
-
+  
     try {
       const response = await fetch(updateDetailsUrl, {
         method: "POST",
         body: formData,
       });
-
+  
       if (!response.ok) {
         throw new Error("Failed to update details");
       }
-
+  
       const data = await response.json();
       alert("Changes saved successfully!");
     } catch (error) {
@@ -96,6 +87,7 @@ function Settings() {
       alert("Failed to save changes. Please try again.");
     }
   };
+  
 
   const loadfile = (e) => {
     const file = e.target.files[0];
