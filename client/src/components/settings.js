@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ToggleSwitch from "./toggle";
-import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import UserProfile from "../components/UserProfile";
 import { useAuth } from "../contexts/AuthContext";
