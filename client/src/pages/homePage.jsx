@@ -314,7 +314,7 @@ const HomePage = () => {
   let debounceTimeout; // Variable for debounce timeout
 
   const handleInputChange = async (event) => {
-    const query = event.target.value.trim(); // Trim extra spaces
+    const query = event.target.value; // Trim extra spaces
     setSearchItem(query);
   
     if (query.length > 3) { // Only search if input has 4+ characters
