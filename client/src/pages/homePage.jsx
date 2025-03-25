@@ -373,7 +373,7 @@ const HomePage = () => {
         className="absolute left-4 top-4"
       />
       <input
-        type="search"
+        type="text"
         placeholder="Search city or University"
         className="w-full py-4 px-12 rounded-full shadow-lg flex-1 outline-none bg-white text-black placeholder-[#CCCCCC] focus:ring-2 focus:ring-teal-500"
         value={searchItem}

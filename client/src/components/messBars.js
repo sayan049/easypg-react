@@ -28,7 +28,7 @@ function MessBars({ isChecked, checkFeatures, coords }) {
           latitude = position.coords.latitude;
           longitude = position.coords.longitude;
         }
-
+        console.log("Latitude:", latitude, "Longitude:", longitude);
         const res = await axios.get(findMessUrl, { params: { lat: latitude, lng: longitude } });
 
         const filteredData = res.data.filter((owner) =>

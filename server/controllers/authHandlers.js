@@ -305,7 +305,7 @@ exports.findMess = async (req, res) => {
     if (!lat || !lng) {
       return res.status(400).json({ message: "Latitude and Longitude are required" });
     }
-
+    console.log("Latitudevv:", latitude, "Longitudevv:", longitude);
     // Generate GeoHash for the user's location
     const userGeohash = geohash.encode(parseFloat(lat), parseFloat(lng), 7);
 
