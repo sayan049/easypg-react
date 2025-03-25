@@ -435,45 +435,84 @@
 
 // export default Settings;
 import React, { useState, useEffect } from "react";
-import ToggleSwitch from "./toggle";
-import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Line } from "react-chartjs-2";
 import { useAuth } from "../contexts/AuthContext";
+import UserProfile from "../components/UserProfile";
 import { fetchDetailsUrl, updateDetailsUrl } from "../constant/urls";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from "chart.js";
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
-function Settings() {
-  const { user, owner, type } = useAuth();
+const UserDashboard = () => {
+  const [currentView, setCurrentView] = useState("dashboard");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const {
+    userName,
+    IsAuthenticated,
+    isOwnerAuthenticated,
+    ownerName,
+    user,
+    owner,
+    type,
+  } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
-  const [personalInfo, setPersonalInfo] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-    pincode: "",
+  const [isEditable, setIsEditable] = useState({});
+  const [hasChanges, setHasChanges] = useState(false);
+  const [updatedUserDetails, setUpdatedUserDetails] = useState({
+    address: "",
+    pin: "",
+    mobileNo: "",
+    facility: "",
+    messName: "",
+    aboutMess: "",
     location: "",
-    messType: "",
+    profilePhoto: "",
+    messPhoto: [],
   });
-  const [passwords, setPasswords] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
-  const [image, setImage] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchDetails = async () => {
       setIsLoading(true);
       try {
         const userId = type === "student" ? user?.id : owner?.id;
-        if (!userId) return;
+        if (!userId) {
+          console.error("User ID is missing");
+          return;
+        }
+
         const url = new URL(fetchDetailsUrl);
         url.searchParams.append("userId", userId);
         url.searchParams.append("type", type);
 
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("Failed to fetch details");
+        const response = await fetch(url, {
+          method: "GET",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch details");
+        }
+
         const data = await response.json();
-        setPersonalInfo(data || {});
+        setUpdatedUserDetails(data || {});
+        console.log("fetched data:", data);
       } catch (error) {
         console.error("Error fetching details:", error);
       } finally {
@@ -481,98 +520,85 @@ function Settings() {
       }
     };
 
-    fetchDetails();
-  }, [type, user, owner]);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setPersonalInfo((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handlePasswordChange = (e) => {
-    const { name, value } = e.target;
-    setPasswords((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) setImage(file);
-  };
-
-  const getLocation = async () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        const { latitude, longitude } = position.coords;
-        try {
-          const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.Google_apiKey}`
-          );
-          const data = await response.json();
-          const address = data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
-          setPersonalInfo((prev) => ({ ...prev, location: address }));
-        } catch (error) {
-          console.error("Error fetching location:", error);
-        }
-      });
+    if (currentView === "profile") {
+      fetchDetails();
     } else {
-      alert("Geolocation is not supported by this browser.");
+      setIsLoading(false);
     }
+  }, [currentView, type, user, owner]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUpdatedUserDetails((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+    setHasChanges(true);
+  };
+
+  const toggleEdit = (field) => {
+    setIsEditable((prevState) => ({
+      ...prevState,
+      [field]: !prevState[field],
+    }));
   };
 
   return (
-    <div className="bg-white p-6 shadow rounded-md">
-      <h2 className="text-2xl font-bold mb-6">Profile Settings</h2>
-
-      <div className="flex justify-center mb-6">
-        <label className="cursor-pointer">
-          <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
-          {image ? (
-            <img src={URL.createObjectURL(image)} alt="Profile" className="w-36 h-36 rounded-full" />
-          ) : (
-            <div className="w-36 h-36 rounded-full bg-gray-200 flex items-center justify-center">
-              <span className="text-gray-500">Upload Image</span>
-            </div>
-          )}
-        </label>
+    <div>
+      <h2>Update Your Details</h2>
+      <p>
+        <strong>Name:</strong> {type === "student" ? user?.name : owner?.name}
+      </p>
+      <p>
+        <strong>Email:</strong> {type === "student" ? user?.email : owner?.email}
+      </p>
+      <div>
+        <strong>Address:</strong>
+        <input
+          name="address"
+          placeholder="Enter address"
+          value={updatedUserDetails.address}
+          onChange={handleChange}
+          disabled={!isEditable.address}
+        />
+        <button onClick={() => toggleEdit("address")}>Edit</button>
       </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <section>
-          <h3 className="text-xl font-semibold mb-4">Personal Information</h3>
-          <input type="text" name="fullName" placeholder="Full Name" value={personalInfo.fullName} onChange={handleInputChange} className="border p-2 w-full" />
-          <input type="email" name="email" placeholder="Email" value={personalInfo.email} onChange={handleInputChange} className="border p-2 w-full" />
-          <div className="relative">
-            <input type="text" name="location" placeholder="Location" value={personalInfo.location} onChange={handleInputChange} className="border p-2 w-full pr-10" />
-            <button onClick={getLocation} className="absolute right-3 top-2 text-green-600">
-              <FontAwesomeIcon icon={faMapMarkerAlt} />
-            </button>
-          </div>
-          <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md">Save Changes</button>
-        </section>
-
-        <section>
-          <h3 className="text-xl font-semibold mb-4">Password Management</h3>
-          <input type="password" name="currentPassword" placeholder="Current Password" value={passwords.currentPassword} onChange={handlePasswordChange} className="border p-2 w-full" />
-          <input type="password" name="newPassword" placeholder="New Password" value={passwords.newPassword} onChange={handlePasswordChange} className="border p-2 w-full" />
-          <input type="password" name="confirmPassword" placeholder="Confirm Password" value={passwords.confirmPassword} onChange={handlePasswordChange} className="border p-2 w-full" />
-          <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md">Update Password</button>
-        </section>
+      <div>
+        <strong>Pin:</strong>
+        <input
+          name="pin"
+          placeholder="Enter PIN"
+          value={updatedUserDetails.pin}
+          onChange={handleChange}
+          disabled={!isEditable.pin}
+        />
+        <button onClick={() => toggleEdit("pin")}>Edit</button>
       </div>
-
-      <button onClick={() => setIsModalOpen(true)} className="mt-6 bg-red-500 text-white px-4 py-2 rounded-md">Account Management</button>
-
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-md">
-            <button onClick={() => setIsModalOpen(false)} className="absolute top-2 right-2 text-gray-600">&times;</button>
-            <h3 className="text-xl font-semibold mb-4">Account Management</h3>
-            <button className="bg-red-500 text-white px-4 py-2 rounded-md">Logout</button>
-            <button className="bg-red-600 text-white px-4 py-2 rounded-md">Delete Account</button>
-          </div>
-        </div>
-      )}
+      <div>
+        <strong>Mobile No:</strong>
+        <input
+          name="mobileNo"
+          placeholder="Enter mobile number"
+          value={updatedUserDetails.mobileNo}
+          onChange={handleChange}
+          disabled={!isEditable.mobileNo}
+        />
+        <button onClick={() => toggleEdit("mobileNo")}>Edit</button>
+      </div>
+      <div>
+        <strong>Facility:</strong>
+        <input
+          name="facility"
+          placeholder="Enter facility details"
+          value={updatedUserDetails.facility}
+          onChange={handleChange}
+          disabled={!isEditable.facility}
+        />
+        <button onClick={() => toggleEdit("facility")}>Edit</button>
+      </div>
+      {hasChanges && <button>Save Changes</button>}
     </div>
   );
-}
+};
 
-export default Settings;
+export default UserDashboard;
