@@ -261,7 +261,7 @@ exports.signupHandlerOwner = async (req, res) => {
     }
 
     // ✅ Generate GeoHash for faster searches
-    const geoHash = geohash.encode(parsedLocation.coordinates[1], parsedLocation.coordinates[0], 5);
+    const geoHash = geohash.encode(parsedLocation.coordinates[1], parsedLocation.coordinates[0], 7);
 
     // Create new PG Owner
     const newOwner = await PgOwner.create({
@@ -301,9 +301,22 @@ exports.signupHandlerOwner = async (req, res) => {
 
 exports.findMess = async (req, res) => {
   try {
-    const pgOwners = await PgOwner.find();
-    // console.log(pgOwners)
-    res.status(200).json(pgOwners);
+    const { lat, lng } = req.query;
+    if (!lat || !lng) {
+      return res.status(400).json({ message: "Latitude and Longitude are required" });
+    }
+
+    // Generate GeoHash for the user's location
+    const userGeohash = geohash.encode(parseFloat(lat), parseFloat(lng), 7);
+
+    // Get neighboring GeoHashes (to include border PGs)
+    const neighbors = geohash.neighbors(userGeohash);
+    neighbors.push(userGeohash); // Include the center geohash
+
+    // Fetch PGs whose GeoHash matches the nearby hashes
+    const nearbyPGs = await PgOwner.find({ geohash: { $in: neighbors } });
+
+    res.status(200).json(nearbyPGs);
   } catch (error) {
     console.error("Error fetching PG owners:", error);
     res.status(500).json({ message: "Server error" });

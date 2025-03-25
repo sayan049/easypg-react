@@ -154,7 +154,7 @@ const pgOwnerSchema = new mongoose.Schema({
 });
 pgOwnerSchema.pre('save', function(next) {
   if (this.location && this.location.coordinates.length === 2) {
-      this.geoHash = geohash.encode(this.location.coordinates[1], this.location.coordinates[0], 5);
+      this.geoHash = geohash.encode(this.location.coordinates[1], this.location.coordinates[0], 7);
   }
   next();
 });

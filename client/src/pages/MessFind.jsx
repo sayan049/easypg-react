@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import MessBars from "../components/messBars";
 import Dropdown from "../components/dropdown";
 import Toggle from "../components/toggle";
@@ -44,10 +45,7 @@ const FilterModal = ({ isOpen, onClose, price, setPrice, amenities, featureChang
         </div>
         {/* Apply Filters Button */}
         <div className="mt-6 flex justify-end">
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded shadow"
-            onClick={onApplyFilters} // Call onApplyFilters when button is clicked
-          >
+          <button className="bg-blue-500 text-white px-4 py-2 rounded shadow" onClick={onApplyFilters}>
             Apply Filters
           </button>
         </div>
@@ -57,20 +55,21 @@ const FilterModal = ({ isOpen, onClose, price, setPrice, amenities, featureChang
 };
 
 const MessFind = () => {
+  const location = useLocation();
+  const userLocation = location.state?.location || null; // Retrieve lat/lon from Homepage
+
   const [price, setPrice] = useState(1500);
-  const [checkFeatures, setCheckFestures] = useState([]);
+  const [checkFeatures, setCheckFeatures] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
-  const [coordinates, setCoordinates] = useState({ lat: 0, lng: 0 });
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [tempCheckFeatures, setTempCheckFeatures] = useState([]);
 
-  const handleCoordinatesChange = (newCoords) => {
-    setCoordinates(newCoords);
-  };
-
   useEffect(() => {
-    console.log("CheckFeatures updated:", checkFeatures);
-  }, [checkFeatures]);
+    console.log("Selected Features:", checkFeatures);
+    if (userLocation) {
+      console.log("User Location:", userLocation); // Debugging
+    }
+  }, [checkFeatures, userLocation]);
 
   const amenities = [
     { id: "test1", label: "A/C", icon: "💨" },
@@ -84,17 +83,14 @@ const MessFind = () => {
 
   const featureChanges = (e) => {
     const { value, checked } = e.target;
-    if (checked) {
-      setTempCheckFeatures([...tempCheckFeatures, value]);
-    } else {
-      setTempCheckFeatures(tempCheckFeatures.filter((feature) => feature !== value));
-    }
+    setTempCheckFeatures((prev) =>
+      checked ? [...prev, value] : prev.filter((feature) => feature !== value)
+    );
   };
 
   const onApplyFilters = () => {
-    setCheckFestures(tempCheckFeatures);  // Update the main state with tempCheckFeatures
-    console.log("Applied filters: ", tempCheckFeatures); // Handle sending the checkFeatures data
-    setFilterModalOpen(false); // Close modal after applying
+    setCheckFeatures(tempCheckFeatures);
+    setFilterModalOpen(false);
   };
 
   return (
@@ -144,44 +140,29 @@ const MessFind = () => {
 
       {/* Listings Section */}
       <div className="w-full md:w-3/4 md:mt-0 md:ml-6">
-        {/* Header */}
         <div className="flex justify-between items-center bg-white p-4 shadow rounded-md">
           <h2 className="text-lg font-bold hidden md:block">
             20 Mess in Simhat, Nadia, West Bengal, India
           </h2>
           <div className="flex items-center gap-4">
-          
             <Toggle isChecked={isChecked} setIsChecked={setIsChecked} />
             <span>Map View</span>
-            <Dropdown className='hidden md:block'/>
-            {/* <button
-              className="bg-blue-500 text-white px-4 py-2 rounded shadow md:hidden"
-              onClick={() => setFilterModalOpen(true)}
-            >
-              Filters
-            </button> */}
-            
+            <Dropdown className="hidden md:block" />
           </div>
           <img
             className="md:hidden"
             alt="x"
             src="/assets/filter 1.png"
             onClick={() => setFilterModalOpen(true)}
-            />
+          />
         </div>
+
         {/* Listings */}
         <div className="mt-6 flex flex-col gap-6">
-          <div className="text-lg font-bold md:hidden">
-            20 Mess in Simhat, Nadia, West Bengal, India
-          </div>
+          <div className="text-lg font-bold md:hidden">20 Mess in Simhat, Nadia, West Bengal, India</div>
           <div style={{ display: isChecked ? "flex" : "block" }}>
-            <MessBars
-              checkFeatures={checkFeatures}
-              isChecked={isChecked}
-              style={{ overflowY: "auto", height: "84vh" }}
-              coords={handleCoordinatesChange}
-            />
-            <Map isChecked={isChecked} coordinates={coordinates} />
+            <MessBars checkFeatures={checkFeatures} isChecked={isChecked} userLocation={userLocation} />
+            <Map isChecked={isChecked} />
           </div>
         </div>
       </div>
@@ -194,7 +175,7 @@ const MessFind = () => {
         setPrice={setPrice}
         amenities={amenities}
         featureChanges={featureChanges}
-        onApplyFilters={onApplyFilters} // Pass onApplyFilters function as a prop
+        onApplyFilters={onApplyFilters}
       />
     </div>
   );
