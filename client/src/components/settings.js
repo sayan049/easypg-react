@@ -176,7 +176,11 @@ function Settings() {
   return (
     <div className="bg-white pb-16 pr-6 pt-6 pl-6 shadow rounded-md">
       <h2 className="text-2xl font-bold mb-6">Profile Settings</h2>
-
+      <div className="relative mb-4">
+        <button onClick={() => setIsEditing(!isEditing)} className="absolute right-2 top-2 text-blue-500">
+          <FontAwesomeIcon icon={isEditing ? faSave : faEdit} />
+        </button>
+      </div>
       {/* Profile Picture Section (First Row) */}
       <div className="flex justify-center mb-6">
         <div className="text-center">
