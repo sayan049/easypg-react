@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { baseurl, findMessUrl } from "../constant/urls";
 import { useNavigate } from "react-router-dom";
 
-function MessBars({ isChecked, checkFeatures, coords }) {
+function MessBars({ isChecked, checkFeatures, userLocation }) {
   const [messData, setMessData] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -15,35 +15,38 @@ function MessBars({ isChecked, checkFeatures, coords }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        let latitude, longitude;
-
-        // Use provided coords if available, else fetch current location
-        if (coords?.lat && coords?.lng) {
-          latitude = coords.lat;
-          longitude = coords.lng;
-        } else {
-          const position = await new Promise((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(resolve, reject);
-          });
-          latitude = position.coords.latitude;
-          longitude = position.coords.longitude;
+        if (!userLocation) {
+          console.error("❌ No location provided.");
+          return;
         }
-        console.log("Latitude:", latitude, "Longitude:", longitude);
-        const res = await axios.get(findMessUrl, { params: { lat: latitude, lng: longitude } });
 
+        console.log("📍 Fetching PGs near:", userLocation.lat, userLocation.lng);
+
+        // Fetch PGs near selected location
+        const res = await axios.get(findMessUrl, {
+          params: { lat: userLocation.lat, lng: userLocation.lng },
+        });
+
+        console.log("🛎 PGs Found:", res.data);
+
+        // Filter PGs based on selected features
         const filteredData = res.data.filter((owner) =>
-          checkFeatures.every((feature) => owner.facility?.includes(feature))
+          checkFeatures.length > 0
+            ? checkFeatures.some((feature) => owner.facility?.includes(feature))
+            : true
         );
+
+        console.log("🔎 Filtered PGs:", filteredData);
 
         setMessData(filteredData);
       } catch (err) {
-        console.log("Error fetching data", err);
+        console.error("❌ Error fetching data", err);
         setError("Failed to fetch PG owners");
       }
     };
 
     fetchData();
-  }, [checkFeatures, coords]);
+  }, [checkFeatures, userLocation]);
 
   if (error) {
     return <div>{error}</div>;

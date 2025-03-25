@@ -57,7 +57,7 @@ const FilterModal = ({ isOpen, onClose, price, setPrice, amenities, featureChang
 const MessFind = () => {
   const location = useLocation();
   const userLocation = location.state?.location || null; // Retrieve lat/lon from Homepage
-
+console.log("User Location:", userLocation); // Debugging
   const [price, setPrice] = useState(1500);
   const [checkFeatures, setCheckFeatures] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
