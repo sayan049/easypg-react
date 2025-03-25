@@ -10,7 +10,7 @@ function Settings() {
   const [image, setImage] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [personalInfo, setPersonalInfo] = useState({
     fullName: "",
     email: "",
@@ -18,15 +18,15 @@ function Settings() {
     pincode: "",
     location: "",
   });
-    const {
-      userName,
-      IsAuthenticated,
-      isOwnerAuthenticated,
-      ownerName,
-      user,
-      owner,
-      type,
-    } = useAuth();
+  const {
+    userName,
+    IsAuthenticated,
+    isOwnerAuthenticated,
+    ownerName,
+    user,
+    owner,
+    type,
+  } = useAuth();
   const [passwords, setPasswords] = useState({
     currentPassword: "",
     newPassword: "",
@@ -60,29 +60,40 @@ function Settings() {
     }
   };
   const handleSaveChanges = async () => {
-    try {
-      const userId = type === "student" ? user?.id : owner?.id;
-      if (!userId) {
-        console.error("User ID is missing");
-        return;
+    const formData = new FormData();
+    formData.append("userId", type === "student" ? user?.id : owner?.id);
+    formData.append("type", type);
+    Object.keys(updatedUserDetails).forEach((key) => {
+      if (key !== "messPhoto" && key !== "profilePhoto") {
+        formData.append(key, updatedUserDetails[key]);
       }
-  
+    });
+
+    // if (profilePhotoFile) {
+    //   formData.append("profilePhoto", profilePhotoFile);
+    // }
+
+    // messPhotoFiles.forEach((file, index) => {
+    //   formData.append(`messPhoto`, file);
+    // });
+
+    try {
       const response = await fetch(updateDetailsUrl, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId, type, ...personalInfo }),
+        body: formData,
       });
-  
-      if (!response.ok) throw new Error("Failed to update details");
-  
-      console.log("Updated successfully");
+
+      if (!response.ok) {
+        throw new Error("Failed to update details");
+      }
+
+      const data = await response.json();
+      alert("Changes saved successfully!");
     } catch (error) {
-      console.error("Error updating details:", error);
+      console.error("Error saving changes:", error);
+      alert("Failed to save changes. Please try again.");
     }
   };
-  
 
   const loadfile = (e) => {
     const file = e.target.files[0];
@@ -118,52 +129,50 @@ function Settings() {
     }
   };
 
-
-    useEffect(() => {
-      console.log("hgfhgf",user);
-      const fetchDetails = async () => {
-        setIsLoading(true);
-        try {
-          const userId = type === "student" ? user?.id : owner?.id;
-          if (!userId) {
-            console.error("User ID is missing");
-            return;
-          }
-  
-          const url = new URL(fetchDetailsUrl);
-          url.searchParams.append("userId", userId);
-          url.searchParams.append("type", type);
-  
-          const response = await fetch(url, {
-            method: "GET",
-            // Remove Content-Type for GET requests
-            headers: {
-              // No Content-Type header needed for GET requests
-            },
-          });
-  
-          if (!response.ok) {
-            throw new Error("Failed to fetch details");
-          }
-  
-          const data = await response.json();
-          // Assuming the data contains image URLs or paths
-          setPersonalInfo(data || {});
-          console.log("fetched data:", data);
-        } catch (error) {
-          console.error("Error fetching details:", error);
-        } finally {
-          setIsLoading(false);
+  useEffect(() => {
+    console.log("hgfhgf", user);
+    const fetchDetails = async () => {
+      setIsLoading(true);
+      try {
+        const userId = type === "student" ? user?.id : owner?.id;
+        if (!userId) {
+          console.error("User ID is missing");
+          return;
         }
-      };
-  
-      // if (currentView === "profile") {
-      //   fetchDetails();
-      // } else {
-      //   setIsLoading(false);
-      // }
-    }, [ type, user, owner]);
 
+        const url = new URL(fetchDetailsUrl);
+        url.searchParams.append("userId", userId);
+        url.searchParams.append("type", type);
+
+        const response = await fetch(url, {
+          method: "GET",
+          // Remove Content-Type for GET requests
+          headers: {
+            // No Content-Type header needed for GET requests
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch details");
+        }
+
+        const data = await response.json();
+        // Assuming the data contains image URLs or paths
+        setPersonalInfo(data || {});
+        console.log("fetched data:", data);
+      } catch (error) {
+        console.error("Error fetching details:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    // if (currentView === "profile") {
+    //   fetchDetails();
+    // } else {
+    //   setIsLoading(false);
+    // }
+  }, [type, user, owner]);
 
   return (
     <div className="bg-white pb-16 pr-6 pt-6 pl-6 shadow rounded-md">
@@ -195,7 +204,7 @@ function Settings() {
               />
             </div>
           )} */}
-           {IsAuthenticated || isOwnerAuthenticated ? <UserProfile /> : null}
+          {IsAuthenticated || isOwnerAuthenticated ? <UserProfile /> : null}
           <label
             htmlFor="file"
             className="cursor-pointer text-xl text-blue-600 text-white relative top-[-34px] left-[18px] "
@@ -205,7 +214,6 @@ function Settings() {
           <div className="mt-2 text-gray-600">Upload Your Profile Photo</div>
         </div>
       </div>
-      
 
       {/* Personal Information and Password Management (Second Row) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -263,20 +271,25 @@ function Settings() {
                 <FontAwesomeIcon icon={faMapMarkerAlt} />
               </div>
             </div>
-             {/* New Dropdown for Mess Selection */}
-    <select
-      name="messType"
-      value={personalInfo.messType || ""}
-      onChange={handleInputChange}
-      className="border border-gray-300 rounded-md p-2 w-full"
-    >
-      <option value="" disabled>Select Mess Type</option>
-      <option value="boys">Boys Mess</option>
-      <option value="girls">Girls Mess</option>
-      <option value="co-ed">Co-ed Mess</option>
-    </select>
+            {/* New Dropdown for Mess Selection */}
+            <select
+              name="messType"
+              value={personalInfo.messType || ""}
+              onChange={handleInputChange}
+              className="border border-gray-300 rounded-md p-2 w-full"
+            >
+              <option value="" disabled>
+                Select Mess Type
+              </option>
+              <option value="boys">Boys Mess</option>
+              <option value="girls">Girls Mess</option>
+              <option value="co-ed">Co-ed Mess</option>
+            </select>
           </div>
-          <button onClick={handleSaveChanges} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md">
+          <button
+            onClick={handleSaveChanges}
+            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md"
+          >
             Save Changes
           </button>
         </section>
@@ -382,7 +395,7 @@ function Settings() {
           </button>
         </div>
       </section> */}
-       
+
       {isModalOpen && (
         <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
           <div className="relative bg-white p-6 rounded-md w-full max-w-md">
@@ -394,7 +407,9 @@ function Settings() {
               &times;
             </button>
 
-            <h3 className="text-xl font-semibold mb-4 flex justify-center">Account Management</h3>
+            <h3 className="text-xl font-semibold mb-4 flex justify-center">
+              Account Management
+            </h3>
             {/* <div className="flex justify-center">
             <img
                 src="/assets/delete 1.png" // Path to your default image
@@ -413,7 +428,7 @@ function Settings() {
         </div>
       )}
 
-<div className="mt-6 flex pb-2">
+      <div className="mt-6 flex pb-2">
         <button
           onClick={() => setIsModalOpen(true)}
           className="bg-blue-500 text-white px-4 py-2 rounded-md"
@@ -422,7 +437,6 @@ function Settings() {
         </button>
       </div>
       <div className="flex justify-end">
-        
         <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mr-2">
           Reset to Default
         </button>
@@ -430,11 +444,7 @@ function Settings() {
           Save All Changes
         </button>
       </div>
-
-      
     </div>
-
-    
   );
 }
 
