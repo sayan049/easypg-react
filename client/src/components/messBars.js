@@ -15,8 +15,8 @@ function MessBars({ isChecked, checkFeatures, userLocation }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (!userLocation) {
-          console.error("❌ No location provided.");
+        if (!userLocation || !userLocation.lat || !userLocation.lng) {
+          console.error("❌ No valid location provided.");
           return;
         }
 
