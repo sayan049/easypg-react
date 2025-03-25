@@ -5,7 +5,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import UserProfile from "../components/UserProfile";
 import { useAuth } from "../contexts/AuthContext";
 import { fetchDetailsUrl, updateDetailsUrl } from "../constant/urls";
-import { faMapMarkerAlt, faEdit, faSave } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMapMarkerAlt,
+  faEdit,
+  faSave,
+} from "@fortawesome/free-solid-svg-icons";
 
 function Settings() {
   const [image, setImage] = useState(null);
@@ -169,7 +173,7 @@ function Settings() {
     fetchDetails();
 
     // if (currentView === "profile") {
-    //  
+    //
     // } else {
     //   setIsLoading(false);
     // }
@@ -178,9 +182,7 @@ function Settings() {
   return (
     <div className="bg-white pb-16 pr-6 pt-6 pl-6 shadow rounded-md">
       <h2 className="text-2xl font-bold mb-6">Profile Settings</h2>
-      <div className="relative mb-4">
-       
-      </div>
+      <div className="relative mb-4"></div>
       {/* Profile Picture Section (First Row) */}
       <div className="flex justify-center mb-6">
         <div className="text-center">
@@ -226,7 +228,7 @@ function Settings() {
             Edit Personal Information
           </h3>
           <div className="grid grid-cols-1 gap-4">
-            <input
+            {/* <input
               type="text"
               name="fullName"
               placeholder={type === "student" ? user?.name : owner?.name}
@@ -265,7 +267,27 @@ function Settings() {
               onChange={handleInputChange}
               className="border border-gray-300 rounded-md p-2 w-full"
               onClick={() => setIsEditing(!isEditing)}
-            />
+            /> */}
+            {Object.entries(personalInfo).map(([key, value]) => (
+              <>
+                <input
+                  key={key}
+                  type="text"
+                  name={key}
+                  placeholder={`Enter your ${key}`}
+                  value={value}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded-md p-2 w-full"
+                  readOnly={!isEditing}
+                />
+                <button
+                  onClick={() => setIsEditing(!isEditing)}
+                  className="absolute right-2 top-2 text-blue-500"
+                >
+                  <FontAwesomeIcon icon={isEditing ? faSave : faEdit} />
+                </button>
+              </>
+            ))}
             <div className="relative">
               <input
                 type="text"
@@ -274,7 +296,6 @@ function Settings() {
                 value={personalInfo.location}
                 onChange={handleInputChange}
                 className="border border-gray-300 rounded-md p-2 w-full pr-10"
-                
               />
               <div
                 onClick={mapMake}
