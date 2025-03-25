@@ -5,12 +5,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import UserProfile from "../components/UserProfile";
 import { useAuth } from "../contexts/AuthContext";
 import { fetchDetailsUrl, updateDetailsUrl } from "../constant/urls";
+import { faMapMarkerAlt, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 function Settings() {
   const [image, setImage] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+
   const {
     userName,
     IsAuthenticated,
@@ -20,20 +23,12 @@ function Settings() {
     owner,
     type,
   } = useAuth();
-
-  const [editableFields, setEditableFields] = useState({});
-
-  const toggleEdit = (field) => {
-    setEditableFields((prev) => ({ ...prev, [field]: !prev[field] }));
-  };
-
-
   const [personalInfo, setPersonalInfo] = useState({
-    fullName:user?.name||"",
-    email:user?.email|| "",
-    phone:user?.phone|| "",
-    pin: user?.pin||"",
-    location:user?.location|| "",
+    fullName: user?.name || "",
+    email: user?.email || "",
+    phone: user?.phone || "",
+    pin: user?.pin || "",
+    location: user?.location || "",
   });
 
   const [passwords, setPasswords] = useState({
@@ -72,25 +67,25 @@ function Settings() {
     const formData = new FormData();
     formData.append("userId", type === "student" ? user?.id : owner?.id);
     formData.append("type", type);
-  
+
     Object.keys(personalInfo).forEach((key) => {
       if (personalInfo[key]) {
         formData.append(key, personalInfo[key]);
       }
     });
-  
+
     try {
       const response = await fetch(updateDetailsUrl, {
         method: "POST",
         body: formData,
       });
 
-      console.log('print data',formData)
-  
+      console.log("print data", formData);
+
       if (!response.ok) {
         throw new Error("Failed to update details");
       }
-  
+
       const data = await response.json();
       alert("Changes saved successfully!");
     } catch (error) {
@@ -98,7 +93,6 @@ function Settings() {
       alert("Failed to save changes. Please try again.");
     }
   };
-  
 
   const loadfile = (e) => {
     const file = e.target.files[0];
@@ -172,8 +166,6 @@ function Settings() {
       }
     };
 
-    fetchDetails();
-
     // if (currentView === "profile") {
     //   fetchDetails();
     // } else {
@@ -237,7 +229,14 @@ function Settings() {
               value={personalInfo.fullName}
               onChange={handleInputChange}
               className="border border-gray-300 rounded-md p-2 w-full"
+              readOnly={!isEditing}
             />
+            <FontAwesomeIcon
+              icon={faEdit}
+              className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-gray-500"
+              onClick={() => setIsEditing(!isEditing)}
+            />
+
             <input
               type="email"
               name="email"
@@ -245,12 +244,7 @@ function Settings() {
               value={personalInfo.email}
               onChange={handleInputChange}
               className="border border-gray-300 rounded-md p-2 w-full"
-              readOnly={!editableFields[key]}
-
             />
-              <button onClick={() => toggleEdit(key)} className="ml-2 text-blue-500">
-                  <FontAwesomeIcon icon={faEdit} />
-              </button>
             <input
               type="text"
               name="phone"
@@ -298,12 +292,14 @@ function Settings() {
               <option value="co-ed">Co-ed Mess</option>
             </select>
           </div>
-          <button
-            onClick={handleSaveChanges}
-            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md"
-          >
-            Save Changes
-          </button>
+          {isEditing && (
+            <button
+              onClick={handleSaveChanges}
+              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md"
+            >
+              Save Changes
+            </button>
+          )}
         </section>
 
         {/* Password Management Section */}
