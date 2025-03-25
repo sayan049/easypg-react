@@ -63,9 +63,9 @@ function Settings() {
     const formData = new FormData();
     formData.append("userId", type === "student" ? user?.id : owner?.id);
     formData.append("type", type);
-    Object.keys(updatedUserDetails).forEach((key) => {
+    Object.keys(personalInfo).forEach((key) => {
       if (key !== "messPhoto" && key !== "profilePhoto") {
-        formData.append(key, updatedUserDetails[key]);
+        formData.append(key, personalInfo[key]);
       }
     });
 
