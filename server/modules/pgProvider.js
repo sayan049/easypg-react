@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const geohash = require('ngeohash');
+
 
 const pgOwnerSchema = new mongoose.Schema({
     firstName: {
@@ -52,21 +54,21 @@ const pgOwnerSchema = new mongoose.Schema({
             return !this.googleId;
         }
     },
+   
     location: {
-        type: {
-          type: String,  // "Point" for GeoJSON
-          enum: ['Point'],  // Only allow "Point"
-          required: function() {
-            return !this.googleId;  // location is required only if googleId is not present
-          }
-        },
-        coordinates: {
-          type: [Number],  // Array for [longitude, latitude]
-          required: function() {
-            return !this.googleId;  // coordinates are required if googleId is not present
-          }
-        }
+      type: {
+          type: String,
+          enum: ['Point'], 
+          required: function() { return !this.googleId; }
       },
+      coordinates: {
+          type: [Number], 
+          required: function() { return !this.googleId; }
+      }
+  },
+
+  geoHash: { type: String, index: true },
+    
     profilePhoto: {
         type: String,
         required: function() {
@@ -149,6 +151,12 @@ const pgOwnerSchema = new mongoose.Schema({
   ],
 
  
+});
+pgOwnerSchema.pre('save', function(next) {
+  if (this.location && this.location.coordinates.length === 2) {
+      this.geoHash = geohash.encode(this.location.coordinates[1], this.location.coordinates[0], 5);
+  }
+  next();
 });
 
 const PgOwner = mongoose.model('Pgowner', pgOwnerSchema);

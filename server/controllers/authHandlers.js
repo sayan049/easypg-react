@@ -6,6 +6,7 @@ const session = require("express-session");
 const sendmail = require("../controllers/emailSender");
 const sendmailOwner = require("./emailSenderOwner");
 const jwt = require("jsonwebtoken");
+const geohash = require('ngeohash');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
@@ -193,6 +194,8 @@ exports.loginHandler = async (req, res) => {
 //     return res.status(500).json({ error: "Internal Server Error" });
 //   }
 // };
+
+
 exports.signupHandlerOwner = async (req, res) => {
   const {
     firstName,
@@ -204,7 +207,7 @@ exports.signupHandlerOwner = async (req, res) => {
     mobileNo,
     messName,
     aboutMess,
-    location,  // This will now contain the location as a string
+    location, 
     facility,
     gender,
     roomInfo,
@@ -228,8 +231,8 @@ exports.signupHandlerOwner = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Get processed image URLs from the middleware
-    const profilePhoto = req.cloudinaryResults?.profilePhoto?.[0] || null; // Profile photo URL
-    const messPhoto = req.cloudinaryResults?.messPhoto || []; // Mess photos URLs array
+    const profilePhoto = req.cloudinaryResults?.profilePhoto?.[0] || null;
+    const messPhoto = req.cloudinaryResults?.messPhoto || [];
 
     // Parse roomInfo if it exists
     let parsedRoomInfo = [];
@@ -246,7 +249,7 @@ exports.signupHandlerOwner = async (req, res) => {
     let parsedLocation = {};
     if (typeof location === 'string') {
       try {
-        parsedLocation = JSON.parse(location); // Parse location string to an object
+        parsedLocation = JSON.parse(location);
       } catch (error) {
         return res.status(400).json({ error: 'Invalid location format' });
       }
@@ -256,6 +259,9 @@ exports.signupHandlerOwner = async (req, res) => {
     if (!parsedLocation || parsedLocation.type !== 'Point' || !Array.isArray(parsedLocation.coordinates) || parsedLocation.coordinates.length !== 2) {
       return res.status(400).json({ error: 'Invalid location format. Location must be in GeoJSON format (type: "Point", coordinates: [longitude, latitude])' });
     }
+
+    // ✅ Generate GeoHash for faster searches
+    const geoHash = geohash.encode(parsedLocation.coordinates[1], parsedLocation.coordinates[0], 5);
 
     // Create new PG Owner
     const newOwner = await PgOwner.create({
@@ -268,7 +274,8 @@ exports.signupHandlerOwner = async (req, res) => {
       mobileNo,
       messName,
       aboutMess,
-      location: parsedLocation,  // Store the location as received in GeoJSON format
+      location: parsedLocation,  // ✅ Store in GeoJSON format
+      geoHash,  // ✅ Store computed GeoHash
       profilePhoto,
       messPhoto,
       facility,
@@ -286,6 +293,8 @@ exports.signupHandlerOwner = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
 
 
 
