@@ -59,6 +59,30 @@ function Settings() {
       setPrivacy({ ...privacy, [field]: !privacy[field] });
     }
   };
+  const handleSaveChanges = async () => {
+    try {
+      const userId = type === "student" ? user?.id : owner?.id;
+      if (!userId) {
+        console.error("User ID is missing");
+        return;
+      }
+  
+      const response = await fetch(updateDetailsUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId, type, ...personalInfo }),
+      });
+  
+      if (!response.ok) throw new Error("Failed to update details");
+  
+      console.log("Updated successfully");
+    } catch (error) {
+      console.error("Error updating details:", error);
+    }
+  };
+  
 
   const loadfile = (e) => {
     const file = e.target.files[0];
@@ -252,7 +276,7 @@ function Settings() {
       <option value="co-ed">Co-ed Mess</option>
     </select>
           </div>
-          <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md">
+          <button onClick={handleSaveChanges} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md">
             Save Changes
           </button>
         </section>
