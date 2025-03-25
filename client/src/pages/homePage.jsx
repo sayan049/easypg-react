@@ -76,6 +76,7 @@ const HomePage = () => {
       lat: suggestion.lat,
       lng: suggestion.lon,
     });
+    console.log(selectedLocation);
     setSuggestions([]); // Clear suggestions
   };
   
