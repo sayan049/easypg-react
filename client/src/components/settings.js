@@ -68,7 +68,7 @@ function Settings() {
         formData.append(key, personalInfo[key]);
       }
     });
-    console.log(formData);
+    console.log("ds"+personalInfo);
 
     // if (profilePhotoFile) {
     //   formData.append("profilePhoto", profilePhotoFile);
