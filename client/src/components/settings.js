@@ -11,13 +11,6 @@ function Settings() {
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [personalInfo, setPersonalInfo] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-    pin: "",
-    location: "",
-  });
   const {
     userName,
     IsAuthenticated,
@@ -27,6 +20,14 @@ function Settings() {
     owner,
     type,
   } = useAuth();
+  const [personalInfo, setPersonalInfo] = useState({
+    fullName:user?.name||"",
+    email:user?.email|| "",
+    phone:user?.phone|| "",
+    pin: user?.pin||"",
+    location:user?.location|| "",
+  });
+
   const [passwords, setPasswords] = useState({
     currentPassword: "",
     newPassword: "",
