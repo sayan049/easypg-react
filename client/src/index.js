@@ -98,11 +98,11 @@ root.render(
             </IsAuth>
           } />
 
-            {/* <Route path="/userDashboard" element={
+            <Route path="/userDashboard" element={
               <IsAuth>
               <UserDashboard />
               </IsAuth>
-          } /> */}
+          } />
 
           <Route path="/ViewDetails" element={
 
