@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ToggleSwitch from "./toggle";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import UserProfile from "../components/UserProfile";
 import { useAuth } from "../contexts/AuthContext";
+import { fetchDetailsUrl, updateDetailsUrl } from "../constant/urls";
 
 function Settings() {
   const [image, setImage] = useState(null);
@@ -122,7 +123,7 @@ function Settings() {
   
           const data = await response.json();
           // Assuming the data contains image URLs or paths
-          setUpdatedUserDetails(data || {});
+          setPersonalInfo(data || {});
           console.log("fetched data:", data);
         } catch (error) {
           console.error("Error fetching details:", error);
@@ -131,12 +132,12 @@ function Settings() {
         }
       };
   
-      if (currentView === "profile") {
-        fetchDetails();
-      } else {
-        setIsLoading(false);
-      }
-    }, [currentView, type, user, owner]);
+      // if (currentView === "profile") {
+      //   fetchDetails();
+      // } else {
+      //   setIsLoading(false);
+      // }
+    }, [ type, user, owner]);
 
 
   return (
