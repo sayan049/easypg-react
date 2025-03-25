@@ -20,6 +20,7 @@ const HomePage = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [logoutStatus, setLogoutStatus] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState(null);
   const {
     userName,
     IsAuthenticated,
@@ -68,7 +69,7 @@ const HomePage = () => {
   };
   
   
-  const [selectedLocation, setSelectedLocation] = useState(null); // Store lat & lng
+ 
 
   const handleSuggestionClick = (suggestion) => {
     setSearchItem(suggestion.display_name);
@@ -76,7 +77,7 @@ const HomePage = () => {
       lat: suggestion.lat,
       lng: suggestion.lon,
     });
-    console.log(selectedLocation);
+    
     setSuggestions([]); // Clear suggestions
   };
   
@@ -86,7 +87,7 @@ const HomePage = () => {
       alert("Please select a valid location!");
       return;
     }
-  
+    console.log(selectedLocation);
     navigate("/MessFind", { state: selectedLocation });
   };
   
