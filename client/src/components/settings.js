@@ -167,7 +167,7 @@ function Settings() {
       <h2 className="text-2xl font-bold mb-6">Profile Settings</h2>
 
       {/* Profile Picture Section (First Row) */}
-      <div className="flex justify-center mb-6">
+      {/* <div className="flex justify-center mb-6">
         <div className="text-center">
           <input
             type="file"
@@ -200,7 +200,8 @@ function Settings() {
           </label>
           <div className="mt-2 text-gray-600">Upload Your Profile Photo</div>
         </div>
-      </div>
+      </div> */}
+      {IsAuthenticated || isOwnerAuthenticated ? <UserProfile /> : null}
 
       {/* Personal Information and Password Management (Second Row) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
