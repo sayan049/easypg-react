@@ -344,16 +344,27 @@ const HomePage = () => {
   };
   
   
+  const [selectedLocation, setSelectedLocation] = useState(null); // Store lat & lng
+
   const handleSuggestionClick = (suggestion) => {
-    // Set the selected suggestion in the input field
     setSearchItem(suggestion.display_name);
+    setSelectedLocation({
+      lat: suggestion.lat,
+      lng: suggestion.lon,
+    });
     setSuggestions([]); // Clear suggestions
   };
+  
 
   const performSearch = () => {
-    alert("Searching for: " + searchItem);
-    navigate("/MessFind");
+    if (!selectedLocation) {
+      alert("Please select a valid location!");
+      return;
+    }
+  
+    navigate("/MessFind", { state: selectedLocation });
   };
+  
 
   useEffect(() => {
     const storedMessage = localStorage.getItem("sId_message");
