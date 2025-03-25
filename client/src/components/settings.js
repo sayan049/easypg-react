@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import UserProfile from "../components/UserProfile";
 import { useAuth } from "../contexts/AuthContext";
 import { fetchDetailsUrl, updateDetailsUrl } from "../constant/urls";
-import { faMapMarkerAlt, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faMapMarkerAlt, faEdit, faSave } from "@fortawesome/free-solid-svg-icons";
 
 function Settings() {
   const [image, setImage] = useState(null);
