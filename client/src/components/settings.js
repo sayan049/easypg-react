@@ -75,6 +75,8 @@ function Settings() {
         method: "POST",
         body: formData,
       });
+
+      console.log('print data',formData)
   
       if (!response.ok) {
         throw new Error("Failed to update details");
