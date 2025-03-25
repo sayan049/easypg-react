@@ -3,6 +3,7 @@ import ToggleSwitch from "./toggle";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import UserProfile from "../components/UserProfile";
+import { useAuth } from "../contexts/AuthContext";
 
 function Settings() {
   const [image, setImage] = useState(null);
@@ -15,6 +16,15 @@ function Settings() {
     pincode: "",
     location: "",
   });
+    const {
+      userName,
+      IsAuthenticated,
+      isOwnerAuthenticated,
+      ownerName,
+      user,
+      owner,
+      type,
+    } = useAuth();
   const [passwords, setPasswords] = useState({
     currentPassword: "",
     newPassword: "",
@@ -87,7 +97,7 @@ function Settings() {
       <h2 className="text-2xl font-bold mb-6">Profile Settings</h2>
 
       {/* Profile Picture Section (First Row) */}
-      {/* <div className="flex justify-center mb-6">
+      <div className="flex justify-center mb-6">
         <div className="text-center">
           <input
             type="file"
@@ -97,7 +107,7 @@ function Settings() {
             onChange={loadfile}
             className="hidden"
           />
-          {image ? (
+          {/* {image ? (
             <img
               src={URL.createObjectURL(image)}
               alt="Profile"
@@ -111,7 +121,8 @@ function Settings() {
                 className="w-40 h-[13rem] object-cover relative top-[34px]"
               />
             </div>
-          )}
+          )} */}
+           {IsAuthenticated || isOwnerAuthenticated ? <UserProfile /> : null}
           <label
             htmlFor="file"
             className="cursor-pointer text-xl text-blue-600 text-white relative top-[-34px] left-[54px] opacity-0"
@@ -120,8 +131,8 @@ function Settings() {
           </label>
           <div className="mt-2 text-gray-600">Upload Your Profile Photo</div>
         </div>
-      </div> */}
-      <UserProfile/>
+      </div>
+      
 
       {/* Personal Information and Password Management (Second Row) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
