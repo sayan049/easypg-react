@@ -210,7 +210,7 @@ function Settings() {
             <input
               type="text"
               name="phone"
-              placeholder={type === "student" ? user?.name : owner?.name}
+              placeholder={user?.phone || "Phone number"}
               value={personalInfo.phone}
               onChange={handleInputChange}
               className="border border-gray-300 rounded-md p-2 w-full"
@@ -218,7 +218,7 @@ function Settings() {
             <input
               type="text"
               name="pincode"
-              placeholder="pincode"
+              placeholder={user?.pin || "Add your pin"}
               value={personalInfo.pincode}
               onChange={handleInputChange}
               className="border border-gray-300 rounded-md p-2 w-full"
@@ -227,7 +227,7 @@ function Settings() {
               <input
                 type="text"
                 name="location"
-                placeholder="Location"
+                placeholder={user?.location || "Add your location"}
                 value={personalInfo.location}
                 onChange={handleInputChange}
                 className="border border-gray-300 rounded-md p-2 w-full pr-10"
