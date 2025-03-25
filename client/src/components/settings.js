@@ -96,6 +96,7 @@ function Settings() {
 
 
     useEffect(() => {
+      console.log("hgfhgf",user);
       const fetchDetails = async () => {
         setIsLoading(true);
         try {
@@ -201,7 +202,7 @@ function Settings() {
             <input
               type="email"
               name="email"
-              placeholder="Email"
+              placeholder={type === "student" ? user?.email : owner?.email}
               value={personalInfo.email}
               onChange={handleInputChange}
               className="border border-gray-300 rounded-md p-2 w-full"
@@ -209,7 +210,7 @@ function Settings() {
             <input
               type="text"
               name="phone"
-              placeholder="Phone"
+              placeholder={type === "student" ? user?.name : owner?.name}
               value={personalInfo.phone}
               onChange={handleInputChange}
               className="border border-gray-300 rounded-md p-2 w-full"
