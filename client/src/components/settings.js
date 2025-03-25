@@ -68,6 +68,7 @@ function Settings() {
         formData.append(key, personalInfo[key]);
       }
     });
+    console.log(formData);
 
     // if (profilePhotoFile) {
     //   formData.append("profilePhoto", profilePhotoFile);
@@ -130,7 +131,7 @@ function Settings() {
   };
 
   useEffect(() => {
-    console.log("hgfhgf", user);
+    //console.log("hgfhgf", user);
     const fetchDetails = async () => {
       setIsLoading(true);
       try {
