@@ -66,9 +66,10 @@ function Settings() {
     Object.keys(personalInfo).forEach((key) => {
       if (key !== "messPhoto" && key !== "profilePhoto") {
         formData.append(key, personalInfo[key]);
+        console.log("ds"+personalInfo[key]);
       }
     });
-    console.log("ds"+personalInfo);
+    
 
     // if (profilePhotoFile) {
     //   formData.append("profilePhoto", profilePhotoFile);
