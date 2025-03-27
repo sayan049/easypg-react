@@ -327,8 +327,12 @@ exports.findMess = async (req, res) => {
 
     // Query MongoDB using correct geohashes
     const nearbyPGs = await PgOwner.find({ geoHash: { $in: neighbors } });
-    console.log(PgOwner.find({}, { messName: 1, geoHash: 1 })
-  );
+ pgowners.find({ geoHash: "tunfwgs" })
+pgowners.find({ geoHash: "tunfwgd" })
+pgowners.find({ geoHash: "tunfwge" })
+// and so on...
+
+
     if (nearbyPGs.length === 0) {
       console.log("⚠️ No PGs found near this location.");
       return res.status(200).json({ message: "No PGs found near this location", data: [] });
