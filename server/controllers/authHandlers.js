@@ -316,7 +316,7 @@ exports.findMess = async (req, res) => {
     console.log("📍 Latitude:", latitude, "Longitude:", longitude);
 
     // Generate 7-character GeoHash for user's location
-    const userGeohash = geohash.encode(latitude, longitude, 7);
+    const userGeohash = geohash.encode(latitude, longitude, 5);
     console.log("🔍 User GeoHash:", userGeohash);
 
     // Get 7-character neighboring GeoHashes
