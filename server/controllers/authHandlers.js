@@ -261,7 +261,7 @@ exports.signupHandlerOwner = async (req, res) => {
     }
 
     // ✅ Generate GeoHash for faster searches
-    const geoHash = geohash.encode(parsedLocation.coordinates[1], parsedLocation.coordinates[0], 7);
+    const geoHash = geohash.encode(parsedLocation.coordinates[1], parsedLocation.coordinates[0], 5);
 
     // Create new PG Owner
     const newOwner = await PgOwner.create({
@@ -320,7 +320,7 @@ exports.findMess = async (req, res) => {
     console.log("🔍 User GeoHash:", userGeohash);
 
     // Get 7-character neighboring GeoHashes
-    let neighbors = geohash.neighbors(userGeohash).map(hash => hash.substring(0, 7));
+    let neighbors = geohash.neighbors(userGeohash).map(hash => hash.substring(0, 5));
     neighbors.push(userGeohash); // Include user's geohash
 
     console.log("🗺 Neighboring GeoHashes:", neighbors);
