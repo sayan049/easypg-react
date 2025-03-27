@@ -190,7 +190,7 @@ function Settings() {
           />
           {image ? (
             <img
-              src={URL.createObjectURL(personalInfo?.image||image)}
+              src={user?.image||URL.createObjectURL(image)}
               alt="Profile"
               className="w-36 h-36 rounded-full object-cover mx-auto mt-4 border-4 border-[#2ca4b5]"
             />
