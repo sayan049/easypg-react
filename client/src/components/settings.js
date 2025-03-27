@@ -203,7 +203,7 @@ function Settings() {
             </div>
           )} */}
           <img
-            src={image ? URL.createObjectURL(image) : user?.image}
+            src={image ? URL.createObjectURL(image) : URL.createObjectURL(user?.image)}
             onError={(e) => {
               e.target.src = "/assets/Component 2.png";
             }}
