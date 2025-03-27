@@ -261,7 +261,7 @@ function Settings() {
               className="border border-gray-300 rounded-md p-2 w-full"
               onClick={() => setIsEditing(!isEditing)}
             /> */}
-            {Object.entries(personalInfo).map(([key, value]) => (
+            {Object.entries(personalInfo).filter(key!='password' && key!='location').map(([key, value]) => (
               <>
                 <input
                   key={key}
