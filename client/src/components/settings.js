@@ -133,7 +133,6 @@ function Settings() {
   };
 
   useEffect(() => {
-    //console.log("hgfhgf", user);
     const fetchDetails = async () => {
       setIsLoading(true);
       try {
@@ -142,42 +141,38 @@ function Settings() {
           console.error("User ID is missing");
           return;
         }
-
+  
         const url = new URL(fetchDetailsUrl);
         url.searchParams.append("userId", userId);
         url.searchParams.append("type", type);
-
-        const response = await fetch(url, {
-          method: "GET",
-          // Remove Content-Type for GET requests
-          headers: {
-            // No Content-Type header needed for GET requests
-          },
-        });
-
+  
+        const response = await fetch(url, { method: "GET" });
+  
         if (!response.ok) {
           throw new Error("Failed to fetch details");
         }
-
+  
         const data = await response.json();
-        // Assuming the data contains image URLs or paths
-        setPersonalInfo(data || {});
-        console.log("fetched data:", data);
+        setPersonalInfo({
+          fullName: `${data.firstName} ${data.lastName}`.trim(),
+          email: data.email,
+          pin: data.pin || "",
+          password: data.password || "",
+          location: data.address || "",
+          phone: data.phone || "",
+        });
+  
+        console.log("Fetched data:", data);
       } catch (error) {
         console.error("Error fetching details:", error);
       } finally {
         setIsLoading(false);
       }
     };
-
+  
     fetchDetails();
-
-    // if (currentView === "profile") {
-    //
-    // } else {
-    //   setIsLoading(false);
-    // }
   }, [type, user, owner]);
+  
 
   return (
     <div className="bg-white pb-16 pr-6 pt-6 pl-6 shadow rounded-md">
