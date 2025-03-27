@@ -261,7 +261,7 @@ exports.signupHandlerOwner = async (req, res) => {
     }
 
     // ✅ Generate GeoHash for faster searches
-    const geoHash = geohash.encode(parsedLocation.coordinates[1], parsedLocation.coordinates[0], 7);
+    const geoHash = geohash.encode(parsedLocation.coordinates[1], parsedLocation.coordinates[0], 5);
 
     // Create new PG Owner
     const newOwner = await PgOwner.create({
@@ -299,29 +299,54 @@ exports.signupHandlerOwner = async (req, res) => {
 
 
 
+
+
 exports.findMess = async (req, res) => {
   try {
     const { lat, lng } = req.query;
+
+    // Validate latitude and longitude
     if (!lat || !lng) {
       return res.status(400).json({ message: "Latitude and Longitude are required" });
     }
-    console.log("Latitudevv:", lat, "Longitudevv:", lng);
-    // Generate GeoHash for the user's location
-    const userGeohash = geohash.encode(parseFloat(lat), parseFloat(lng), 7);
 
-    // Get neighboring GeoHashes (to include border PGs)
-    const neighbors = geohash.neighbors(userGeohash);
-    neighbors.push(userGeohash); // Include the center geohash
+    const latitude = parseFloat(lat);
+    const longitude = parseFloat(lng);
 
-    // Fetch PGs whose GeoHash matches the nearby hashes
-    const nearbyPGs = await PgOwner.find({ geohash: { $in: neighbors } });
+    console.log("📍 Latitude:", latitude, "Longitude:", longitude);
 
+    // Generate 7-character GeoHash for user's location
+    const userGeohash = geohash.encode(latitude, longitude, 5);
+    console.log("🔍 User GeoHash:", userGeohash);
+
+    // Get 7-character neighboring GeoHashes
+    let neighbors = geohash.neighbors(userGeohash).map(hash => hash.substring(0, 5));
+    neighbors.push(userGeohash); // Include user's geohash
+
+    console.log("🗺 Neighboring GeoHashes:", neighbors);
+
+    // Query MongoDB using correct geohashes
+    const nearbyPGs = await PgOwner.find({ geoHash: { $in: neighbors } });
+PgOwner.find({ geoHash: "tunfwgs" })
+PgOwner.find({ geoHash: "tunfwgd" })
+PgOwner.find({ geoHash: "tunfwge" })
+// and so on...
+
+
+    if (nearbyPGs.length === 0) {
+      console.log("⚠️ No PGs found near this location.");
+      return res.status(200).json({ message: "No PGs found near this location", data: [] });
+    }
+
+    console.log("🛎 PGs Found:", nearbyPGs.length);
     res.status(200).json(nearbyPGs);
   } catch (error) {
-    console.error("Error fetching PG owners:", error);
+    console.error("❌ Error fetching PG owners:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
 
 exports.loginHandlerOwner = async (req, res) => {
   const { email, password } = req.body;
