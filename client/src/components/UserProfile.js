@@ -84,7 +84,7 @@ const UserProfile = () => {
   }
 
   return (
-    <div className="user-profile h-36 w-36" style={{ backgroundColor: profileData.backgroundColor }}>
+    <div className="user-profile" style={{ backgroundColor: profileData.backgroundColor }}>
       {profileData.imageUrl? (
         <img src={profileData.imageUrl} alt="Profile" className="profile-image" />
       ) : (

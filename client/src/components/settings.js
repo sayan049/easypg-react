@@ -187,9 +187,9 @@ function Settings() {
             onChange={loadfile}
             className="hidden"
           />
-          {/* {image ? (
+          {image ? (
             <img
-              src={URL.createObjectURL(image)}
+              src={URL.createObjectURL(user?.image||image)}
               alt="Profile"
               className="w-36 h-36 rounded-full object-cover mx-auto mt-4 border-4 border-[#2ca4b5]"
             />
@@ -201,8 +201,8 @@ function Settings() {
                 className="w-40 h-[13rem] object-cover relative top-[34px]"
               />
             </div>
-          )} */}
-          {IsAuthenticated || isOwnerAuthenticated ? <UserProfile /> : null}
+          )}
+          {/* {IsAuthenticated || isOwnerAuthenticated ? <UserProfile /> : null} */}
           <label
             htmlFor="file"
             className="cursor-pointer text-xl text-blue-600 text-white relative top-[-34px] left-[18px] "
