@@ -305,23 +305,30 @@ exports.findMess = async (req, res) => {
     if (!lat || !lng) {
       return res.status(400).json({ message: "Latitude and Longitude are required" });
     }
-    console.log("Latitudevv:", lat, "Longitudevv:", lng);
+    
+    console.log("📍 Latitude:", lat, "Longitude:", lng);
+
     // Generate GeoHash for the user's location
     const userGeohash = geohash.encode(parseFloat(lat), parseFloat(lng), 7);
+    console.log("🔍 User GeoHash:", userGeohash);
 
-    // Get neighboring GeoHashes (to include border PGs)
+    // Get neighboring GeoHashes
     const neighbors = geohash.neighbors(userGeohash);
     neighbors.push(userGeohash); // Include the center geohash
 
-    // Fetch PGs whose GeoHash matches the nearby hashes
-    const nearbyPGs = await PgOwner.find({ geohash: { $in: neighbors } });
+    console.log("🗺 Neighboring GeoHashes:", neighbors);
 
+    // ✅ Correct query (since geoHash is at the root level)
+    const nearbyPGs = await PgOwner.find({ geoHash: { $in: neighbors } });
+
+    console.log("🛎 PGs Found:", nearbyPGs);
     res.status(200).json(nearbyPGs);
   } catch (error) {
-    console.error("Error fetching PG owners:", error);
+    console.error("❌ Error fetching PG owners:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 exports.loginHandlerOwner = async (req, res) => {
   const { email, password } = req.body;
