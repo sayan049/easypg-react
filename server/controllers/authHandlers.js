@@ -327,9 +327,9 @@ exports.findMess = async (req, res) => {
 
     // Query MongoDB using correct geohashes
     const nearbyPGs = await PgOwner.find({ geoHash: { $in: neighbors } });
- pgowners.find({ geoHash: "tunfwgs" })
-pgowners.find({ geoHash: "tunfwgd" })
-pgowners.find({ geoHash: "tunfwge" })
+PgOwner.find({ geoHash: "tunfwgs" })
+PgOwner.find({ geoHash: "tunfwgd" })
+PgOwner.find({ geoHash: "tunfwge" })
 // and so on...
 
 
