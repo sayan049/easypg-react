@@ -153,12 +153,9 @@ function Settings() {
         }
   
         const data = await response.json();
-        setPersonalInfo({
-          fullName: `${data.firstName} ${data.lastName}`.trim(),
-          email: data.email,
-          pin: data.pin || "",
-          phone: data.phone || "",
-        });
+        setPersonalInfo(
+         data||{}
+        );
   
         console.log("Fetched data:", data);
       } catch (error) {
@@ -261,26 +258,28 @@ function Settings() {
               className="border border-gray-300 rounded-md p-2 w-full"
               onClick={() => setIsEditing(!isEditing)}
             /> */}
-            {Object.entries(personalInfo).map(([key, value]) => (
-              <>
-                <input
-                  key={key}
-                  type="text"
-                  name={key}
-                  placeholder={`Enter your ${key}`}
-                  value={value}
-                  onChange={handleInputChange}
-                  className="border border-gray-300 rounded-md p-2 w-full"
-                  readOnly={!isEditing}
-                />
-                <button
-                  onClick={() => setIsEditing(!isEditing)}
-                  className="absolute right-2 top-2 text-blue-500"
-                >
-                  <FontAwesomeIcon icon={isEditing ? faSave : faEdit} />
-                </button>
-              </>
-            ))}
+            {Object.entries(personalInfo)
+  .filter(([key]) => key !== "password" && key !== "location")
+  .map(([key, value]) => (
+    <div key={key} className="relative">
+      <input
+        type="text"
+        name={key}
+        placeholder={`Enter your ${key}`}
+        value={value}
+        onChange={handleInputChange}
+        className="border border-gray-300 rounded-md p-2 w-full"
+        readOnly={!isEditing}
+      />
+      <button
+        onClick={() => setIsEditing(!isEditing)}
+        className="absolute right-2 top-2 text-blue-500"
+      >
+        <FontAwesomeIcon icon={isEditing ? faSave : faEdit} />
+      </button>
+    </div>
+  ))}
+
             <div className="relative">
               <input
                 type="text"
