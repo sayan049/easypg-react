@@ -169,7 +169,7 @@ function Settings() {
     };
   
     fetchDetails();
-    console.log(user?.image)
+    console.log(user?.image+"xxxx")
   }, [type, user, owner]);
   
 
@@ -190,7 +190,7 @@ function Settings() {
           />
           {image ? (
             <img
-              src={URL.createObjectURL(user?.image||image)}
+              src={URL.createObjectURL(personalInfo?.image||image)}
               alt="Profile"
               className="w-36 h-36 rounded-full object-cover mx-auto mt-4 border-4 border-[#2ca4b5]"
             />
