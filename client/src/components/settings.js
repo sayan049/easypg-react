@@ -141,17 +141,17 @@ function Settings() {
           console.error("User ID is missing");
           return;
         }
-  
+
         const url = new URL(fetchDetailsUrl);
         url.searchParams.append("userId", userId);
         url.searchParams.append("type", type);
-  
+
         const response = await fetch(url, { method: "GET" });
-  
+
         if (!response.ok) {
           throw new Error("Failed to fetch details");
         }
-  
+
         const data = await response.json();
         setPersonalInfo({
           fullName: `${data.firstName} ${data.lastName}`.trim(),
@@ -159,7 +159,7 @@ function Settings() {
           pin: data.pin || "",
           phone: data.phone || "",
         });
-  
+
         console.log("Fetched data:", data);
       } catch (error) {
         console.error("Error fetching details:", error);
@@ -167,11 +167,10 @@ function Settings() {
         setIsLoading(false);
       }
     };
-  
+
     fetchDetails();
-    console.log(user?.image+"xxxx")
+    console.log(user?.image + "xxxx");
   }, [type, user, owner]);
-  
 
   return (
     <div className="bg-white pb-16 pr-6 pt-6 pl-6 shadow rounded-md">
@@ -188,21 +187,22 @@ function Settings() {
             onChange={loadfile}
             className="hidden"
           />
-          {image ? (
+          {image || user?.image ? (
             <img
-              src={user?.image||URL.createObjectURL(image)}
+              src={image ? URL.createObjectURL(image) : user?.image}
               alt="Profile"
               className="w-36 h-36 rounded-full object-cover mx-auto mt-4 border-4 border-[#2ca4b5]"
             />
           ) : (
             <div className="w-36 h-36 rounded-full mx-auto mt-4 flex items-center justify-center">
               <img
-                src="/assets/Component 2.png" // Path to your default image
+                src="/assets/Component 2.png"
                 alt="Default"
                 className="w-40 h-[13rem] object-cover relative top-[34px]"
               />
             </div>
           )}
+
           {/* {IsAuthenticated || isOwnerAuthenticated ? <UserProfile /> : null} */}
           <label
             htmlFor="file"
@@ -262,26 +262,28 @@ function Settings() {
               className="border border-gray-300 rounded-md p-2 w-full"
               onClick={() => setIsEditing(!isEditing)}
             /> */}
-            {Object.entries(personalInfo).filter(([key]) => key !== "password" && key !== "location").map(([key, value]) => (
-              <>
-                <input
-                  key={key}
-                  type="text"
-                  name={key}
-                  placeholder={`Enter your ${key}`}
-                  value={value}
-                  onChange={handleInputChange}
-                  className="border border-gray-300 rounded-md p-2 w-full"
-                  readOnly={!isEditing}
-                />
-                <button
-                  onClick={() => setIsEditing(!isEditing)}
-                  className="absolute right-2 top-2 text-blue-500"
-                >
-                  <FontAwesomeIcon icon={isEditing ? faSave : faEdit} />
-                </button>
-              </>
-            ))}
+            {Object.entries(personalInfo)
+              .filter(([key]) => key !== "password" && key !== "location")
+              .map(([key, value]) => (
+                <>
+                  <input
+                    key={key}
+                    type="text"
+                    name={key}
+                    placeholder={`Enter your ${key}`}
+                    value={value}
+                    onChange={handleInputChange}
+                    className="border border-gray-300 rounded-md p-2 w-full"
+                    readOnly={!isEditing}
+                  />
+                  <button
+                    onClick={() => setIsEditing(!isEditing)}
+                    className="absolute right-2 top-2 text-blue-500"
+                  >
+                    <FontAwesomeIcon icon={isEditing ? faSave : faEdit} />
+                  </button>
+                </>
+              ))}
             <div className="relative">
               <input
                 type="text"
