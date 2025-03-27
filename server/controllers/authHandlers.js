@@ -299,35 +299,49 @@ exports.signupHandlerOwner = async (req, res) => {
 
 
 
+const geohash = require("ngeohash");
+const PgOwner = require("../models/PgOwner"); // Ensure correct import
+
 exports.findMess = async (req, res) => {
   try {
     const { lat, lng } = req.query;
+
+    // Validate latitude and longitude
     if (!lat || !lng) {
       return res.status(400).json({ message: "Latitude and Longitude are required" });
     }
-    
-    console.log("📍 Latitude:", lat, "Longitude:", lng);
 
-    // Generate GeoHash for the user's location
-    const userGeohash = geohash.encode(parseFloat(lat), parseFloat(lng), 7);
+    const latitude = parseFloat(lat);
+    const longitude = parseFloat(lng);
+
+    console.log("📍 Latitude:", latitude, "Longitude:", longitude);
+
+    // Generate 7-character GeoHash for user's location
+    const userGeohash = geohash.encode(latitude, longitude, 7);
     console.log("🔍 User GeoHash:", userGeohash);
 
-    // Get neighboring GeoHashes
-    const neighbors = geohash.neighbors(userGeohash);
-    neighbors.push(userGeohash); // Include the center geohash
+    // Get 7-character neighboring GeoHashes
+    let neighbors = geohash.neighbors(userGeohash).map(hash => hash.substring(0, 7));
+    neighbors.push(userGeohash); // Include user's geohash
 
     console.log("🗺 Neighboring GeoHashes:", neighbors);
 
-    // ✅ Correct query (since geoHash is at the root level)
+    // Query MongoDB using correct geohashes
     const nearbyPGs = await PgOwner.find({ geoHash: { $in: neighbors } });
 
-    console.log("🛎 PGs Found:", nearbyPGs);
+    if (nearbyPGs.length === 0) {
+      console.log("⚠️ No PGs found near this location.");
+      return res.status(200).json({ message: "No PGs found near this location", data: [] });
+    }
+
+    console.log("🛎 PGs Found:", nearbyPGs.length);
     res.status(200).json(nearbyPGs);
   } catch (error) {
     console.error("❌ Error fetching PG owners:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 
 exports.loginHandlerOwner = async (req, res) => {
