@@ -187,7 +187,7 @@ function Settings() {
             onChange={loadfile}
             className="hidden"
           />
-          {/* {image || user?.image ? (
+          {image || user?.image ? (
             <img
               src={image ? URL.createObjectURL(image) : user?.image}
               alt="Profile"
@@ -201,15 +201,7 @@ function Settings() {
                 className="w-40 h-[13rem] object-cover relative top-[34px]"
               />
             </div>
-          )} */}
-          <img
-            src={image ? URL.createObjectURL(image) : URL.createObjectURL(user?.image)}
-            onError={(e) => {
-              e.target.src = "/assets/Component 2.png";
-            }}
-            alt="Profile"
-            className="w-36 h-36 rounded-full object-cover mx-auto mt-4 border-4 border-[#2ca4b5]"
-          />
+          )}
 
           {/* {IsAuthenticated || isOwnerAuthenticated ? <UserProfile /> : null} */}
           <label
