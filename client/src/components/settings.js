@@ -157,8 +157,6 @@ function Settings() {
           fullName: `${data.firstName} ${data.lastName}`.trim(),
           email: data.email,
           pin: data.pin || "",
-          password: data.password || "",
-          location: data.address || "",
           phone: data.phone || "",
         });
   
