@@ -169,6 +169,7 @@ function Settings() {
     };
   
     fetchDetails();
+    console.log(user?.image)
   }, [type, user, owner]);
   
 
