@@ -299,8 +299,7 @@ exports.signupHandlerOwner = async (req, res) => {
 
 
 
-const geohash = require("ngeohash");
-const PgOwner = require("../models/PgOwner"); // Ensure correct import
+
 
 exports.findMess = async (req, res) => {
   try {
