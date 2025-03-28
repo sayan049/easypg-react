@@ -195,15 +195,15 @@ function Settings() {
             className="hidden"
           />
         
-          <img
+          {/* <img
             src={
               image instanceof File ? URL.createObjectURL(image) : user?.image
             }
             alt="Profile"
             className="w-36 h-36 rounded-full object-cover mx-auto mt-4 border-4 border-[#2ca4b5]"
-          />
+          /> */}
 
-          {/* {IsAuthenticated || isOwnerAuthenticated ? <UserProfile /> : null} */}
+          {IsAuthenticated || isOwnerAuthenticated ? <UserProfile /> : null}
           <label
             htmlFor="file"
             className="cursor-pointer text-xl text-blue-600 text-white relative top-[-34px] left-[18px] "
