@@ -58,7 +58,7 @@ function MessBars({ isChecked, checkFeatures, userLocation }) {
         <div
           key={owner._id}
           className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md mb-4 sm:mb-2"
-          onClick={() => clickNavi(owner)}
+         // onClick={() => clickNavi(owner)}
         >
           {/* Image Section */}
           {!isChecked && (

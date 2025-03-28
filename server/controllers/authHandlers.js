@@ -313,7 +313,7 @@ exports.findMess = async (req, res) => {
     const latitude = parseFloat(lat);
     const longitude = parseFloat(lng);
 
-    console.log("📍 Latitude:", latitude, "Longitude:", longitude);
+    console.log(" Latitude:", latitude, "Longitude:", longitude);
 
     // Generate 7-character GeoHash for user's location
     const userGeohash = geohash.encode(latitude, longitude, 5);
@@ -327,21 +327,18 @@ exports.findMess = async (req, res) => {
 
     // Query MongoDB using correct geohashes
     const nearbyPGs = await PgOwner.find({ geoHash: { $in: neighbors } });
-PgOwner.find({ geoHash: "tunfwgs" })
-PgOwner.find({ geoHash: "tunfwgd" })
-PgOwner.find({ geoHash: "tunfwge" })
-// and so on...
+
 
 
     if (nearbyPGs.length === 0) {
-      console.log("⚠️ No PGs found near this location.");
+      console.log(" No PGs found near this location.");
       return res.status(200).json({ message: "No PGs found near this location", data: [] });
     }
 
-    console.log("🛎 PGs Found:", nearbyPGs.length);
+    console.log(" PGs Found:", nearbyPGs.length);
     res.status(200).json(nearbyPGs);
   } catch (error) {
-    console.error("❌ Error fetching PG owners:", error);
+    console.error(" Error fetching PG owners:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
