@@ -193,21 +193,7 @@ function Settings() {
             onChange={loadfile}
             className="hidden"
           />
-          {/* {image || user?.image ? (
-            <img
-              src={image ? URL.createObjectURL(image) : user?.image}
-              alt="Profile"
-              className="w-36 h-36 rounded-full object-cover mx-auto mt-4 border-4 border-[#2ca4b5]"
-            />
-          ) : (
-            <div className="w-36 h-36 rounded-full mx-auto mt-4 flex items-center justify-center">
-              <img
-                src="/assets/Component 2.png"
-                alt="Default"
-                className="w-40 h-[13rem] object-cover relative top-[34px]"
-              />
-            </div>
-          )} */}
+        
           <img
             src={
               image instanceof File ? URL.createObjectURL(image) : user?.image
