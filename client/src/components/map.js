@@ -39,6 +39,7 @@ function MapComponent({ isChecked, coordinates }) {
       image: new Icon({
         anchor: [0.5, 1],
         src: 'assets/placeholder.png', // Replace with your custom icon if needed
+        scale: 0.05,
       }),
     });
     marker.setStyle(markerStyle);
