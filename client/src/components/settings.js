@@ -169,7 +169,7 @@ function Settings() {
     };
 
     fetchDetails();
-    console.log(user?.image + "xxxx");
+   // console.log(user?.image + "xxxx");
   }, [type, user, owner]);
 
   return (
@@ -272,7 +272,7 @@ function Settings() {
             {Object.entries(personalInfo)
               .filter(([key]) => key !== "password" && key !== "location")
               .map(([key, value]) => (
-                <>
+                <div className="relative">
                   <input
                     key={key}
                     type="text"
@@ -285,11 +285,12 @@ function Settings() {
                   />
                   <button
                     onClick={() => setIsEditing(!isEditing)}
-                    className="absolute right-2 top-2 text-blue-500"
+                    //className="absolute right-2 top-2 text-blue-500"
+                    className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-2xl text-green-600"
                   >
                     <FontAwesomeIcon icon={isEditing ? faSave : faEdit} />
                   </button>
-                </>
+                </div>
               ))}
             <div className="relative">
               <input
