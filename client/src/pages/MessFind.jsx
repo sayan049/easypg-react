@@ -57,6 +57,7 @@ const FilterModal = ({ isOpen, onClose, price, setPrice, amenities, featureChang
 const MessFind = () => {
   const location = useLocation();
   const userLocation = location.state?.userLocation || null;
+  const item= location.state?.item || null; // Retrieve items from Homepage
   // Retrieve lat/lon from Homepage
   console.log("🔍 Full Navigation State in MessFind:", location.state);
   console.log("📍 Extracted User Location:", userLocation);
@@ -150,7 +151,7 @@ const MessFind = () => {
       <div className="w-full md:w-3/4 md:mt-0 md:ml-6">
         <div className="flex justify-between items-center bg-white p-4 shadow rounded-md">
           <h2 className="text-lg font-bold hidden md:block">
-            20 Mess in Simhat, Nadia, West Bengal, India
+            20 Mess in {item}
           </h2>
           <div className="flex items-center gap-4">
             <Toggle isChecked={isChecked} setIsChecked={setIsChecked} />
@@ -167,7 +168,7 @@ const MessFind = () => {
 
         {/* Listings */}
         <div className="mt-6 flex flex-col gap-6">
-          <div className="text-lg font-bold md:hidden">20 Mess in Simhat, Nadia, West Bengal, India</div>
+          <div className="text-lg font-bold md:hidden">20 Mess in {item}</div>
           <div style={{ display: isChecked ? "flex" : "block" }}>
             <MessBars checkFeatures={checkFeatures} isChecked={isChecked} userLocation={userLocation}  coords={handleCoordinatesChange} />
             <Map isChecked={isChecked} coordinates={coordinates} />

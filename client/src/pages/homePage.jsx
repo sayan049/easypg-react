@@ -89,7 +89,8 @@ const HomePage = () => {
     }
     console.log("✅ Passing Location to MessFind:", selectedLocation);
 
-    navigate("/MessFind", { state: { userLocation: selectedLocation } });
+    navigate("/MessFind", { state: { userLocation: selectedLocation, item: searchItem } });
+    setSearchItem(""); // Clear the input field after search
 
   };
   
