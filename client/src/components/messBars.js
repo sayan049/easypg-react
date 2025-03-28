@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { baseurl, findMessUrl } from "../constant/urls";
 import { useNavigate } from "react-router-dom";
 
-function MessBars({ isChecked, checkFeatures, userLocation ,coords }) {
+function MessBars({ isChecked, checkFeatures, userLocation ,coords ,setPgCount }) {
   const [messData, setMessData] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -69,6 +69,7 @@ function MessBars({ isChecked, checkFeatures, userLocation ,coords }) {
         console.log("🔎 Filtered PGs:", filteredData);
 
         setMessData(filteredData);
+        setPgCount(filteredData.length);
       } catch (err) {
         console.error("❌ Error fetching data", err);
         setError("Failed to fetch PG owners");
@@ -76,7 +77,7 @@ function MessBars({ isChecked, checkFeatures, userLocation ,coords }) {
     };
 
     fetchData();
-  }, [checkFeatures, userLocation]);
+  }, [checkFeatures, userLocation,setPgCount]);
 
   if (error) {
     return <div>{error}</div>;

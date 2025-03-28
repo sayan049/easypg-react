@@ -68,6 +68,7 @@ const MessFind = () => {
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [tempCheckFeatures, setTempCheckFeatures] = useState([]);
   const [coordinates, setCoordinates] = useState({ lat: 0, lng: 0 });
+  const [pgCount, setPgCount] = useState(0); 
 
   const handleCoordinatesChange = (newCoords) => {
     setCoordinates(newCoords);
@@ -151,7 +152,7 @@ const MessFind = () => {
       <div className="w-full md:w-3/4 md:mt-0 md:ml-6">
         <div className="flex justify-between items-center bg-white p-4 shadow rounded-md">
           <h2 className="text-lg font-bold hidden md:block">
-            20 Mess in {item}
+          {pgCount} Mess in {item}
           </h2>
           <div className="flex items-center gap-4">
             <Toggle isChecked={isChecked} setIsChecked={setIsChecked} />
@@ -168,9 +169,9 @@ const MessFind = () => {
 
         {/* Listings */}
         <div className="mt-6 flex flex-col gap-6">
-          <div className="text-lg font-bold md:hidden">20 Mess in {item}</div>
+          <div className="text-lg font-bold md:hidden">{pgCount} Mess in {item}</div>
           <div style={{ display: isChecked ? "flex" : "block" }}>
-            <MessBars checkFeatures={checkFeatures} isChecked={isChecked} userLocation={userLocation}  coords={handleCoordinatesChange} />
+            <MessBars checkFeatures={checkFeatures} isChecked={isChecked} userLocation={userLocation}  coords={handleCoordinatesChange}  setPgCount={setPgCount}/>
             <Map isChecked={isChecked} coordinates={coordinates} />
           </div>
         </div>
