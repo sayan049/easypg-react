@@ -77,8 +77,8 @@ function MessBars({ isChecked, checkFeatures, userLocation ,coords }) {
           className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md mb-4 sm:mb-2"
          // onClick={() => clickNavi(owner)}
          onClick={() => {
-          if (owner.location) {
-            clickCords(owner.location); // Only call clickCords if location is available
+          if (owner.location.coordinates) {
+            clickCords(owner.location.coordinates); // Only call clickCords if location is available
           } else {
             console.log('Location missing for', owner.messName);
           }
