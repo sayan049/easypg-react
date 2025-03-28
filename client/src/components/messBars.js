@@ -11,14 +11,23 @@ function MessBars({ isChecked, checkFeatures, userLocation ,coords }) {
   const clickNavi = (owner) => {
     navigate("/viewDetails", { state: { owner } });
   };
+  // const clickCords = (location) => {
+  //   // Check if location is a valid string
+  //   if (typeof location === 'string' && location.includes(',')) {
+  //     const [lat, lng] = location.split(',').map(coord => parseFloat(coord.trim()));
+  //     coords({ lat, lng });
+  //     console.log('Coordinates clicked:', { lat, lng });
+  //   } else {
+  //     console.log('Invalid location:', location); // Handle invalid location
+  //   }
+  // };
   const clickCords = (location) => {
-    // Check if location is a valid string
-    if (typeof location === 'string' && location.includes(',')) {
-      const [lat, lng] = location.split(',').map(coord => parseFloat(coord.trim()));
-      coords({ lat, lng });
+    if (Array.isArray(location) && location.length === 2) {
+      const [lng, lat] = location; // MongoDB stores as [lng, lat]
+      coords({ lat, lng }); // Correcting the order
       console.log('Coordinates clicked:', { lat, lng });
     } else {
-      console.log('Invalid location:', location); // Handle invalid location
+      console.log('Invalid location format:', location);
     }
   };
 
