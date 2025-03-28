@@ -55,6 +55,7 @@ function Settings() {
 
   const handleEditClick = (field) => {
     setEditingField(editingField === field ? null : field);
+    setIsEditing(!isEditing);
   };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
