@@ -66,6 +66,11 @@ const MessFind = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [tempCheckFeatures, setTempCheckFeatures] = useState([]);
+  const [coordinates, setCoordinates] = useState({ lat: 0, lng: 0 });
+
+  const handleCoordinatesChange = (newCoords) => {
+    setCoordinates(newCoords);
+  };
 
   useEffect(() => {
     console.log("Selected Features:", checkFeatures);
@@ -164,8 +169,8 @@ const MessFind = () => {
         <div className="mt-6 flex flex-col gap-6">
           <div className="text-lg font-bold md:hidden">20 Mess in Simhat, Nadia, West Bengal, India</div>
           <div style={{ display: isChecked ? "flex" : "block" }}>
-            <MessBars checkFeatures={checkFeatures} isChecked={isChecked} userLocation={userLocation} />
-            <Map isChecked={isChecked} />
+            <MessBars checkFeatures={checkFeatures} isChecked={isChecked} userLocation={userLocation}  coords={handleCoordinatesChange} />
+            <Map isChecked={isChecked} coordinates={coordinates} />
           </div>
         </div>
       </div>

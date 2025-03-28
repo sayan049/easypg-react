@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { baseurl, findMessUrl } from "../constant/urls";
 import { useNavigate } from "react-router-dom";
 
-function MessBars({ isChecked, checkFeatures, userLocation }) {
+function MessBars({ isChecked, checkFeatures, userLocation ,coords }) {
   const [messData, setMessData] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -11,6 +11,23 @@ function MessBars({ isChecked, checkFeatures, userLocation }) {
   const clickNavi = (owner) => {
     navigate("/viewDetails", { state: { owner } });
   };
+  const clickCords = (location) => {
+    // Check if location is a valid string
+    if (typeof location === 'string' && location.includes(',')) {
+      const [lat, lng] = location.split(',').map(coord => parseFloat(coord.trim()));
+      coords({ lat, lng });
+      console.log('Coordinates clicked:', { lat, lng });
+    } else {
+      console.log('Invalid location:', location); // Handle invalid location
+    }
+  };
+
+  useEffect(() => {
+    console.log("Selected Features:", checkFeatures);
+    if (userLocation) {
+      console.log("User Location:", userLocation); // Debugging
+    }
+  }, [checkFeatures, userLocation]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,6 +76,13 @@ function MessBars({ isChecked, checkFeatures, userLocation }) {
           key={owner._id}
           className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md mb-4 sm:mb-2"
          // onClick={() => clickNavi(owner)}
+         onClick={() => {
+          if (owner.location) {
+            clickCords(owner.location); // Only call clickCords if location is available
+          } else {
+            console.log('Location missing for', owner.messName);
+          }
+        }}
         >
           {/* Image Section */}
           {!isChecked && (
