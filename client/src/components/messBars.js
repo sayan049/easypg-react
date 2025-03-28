@@ -3,7 +3,13 @@ import React, { useEffect, useState } from "react";
 import { baseurl, findMessUrl } from "../constant/urls";
 import { useNavigate } from "react-router-dom";
 
-function MessBars({ isChecked, checkFeatures, userLocation ,coords ,setPgCount }) {
+function MessBars({
+  isChecked,
+  checkFeatures,
+  userLocation,
+  coords,
+  setPgCount,
+}) {
   const [messData, setMessData] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -23,9 +29,13 @@ function MessBars({ isChecked, checkFeatures, userLocation ,coords ,setPgCount }
   // };
   const clickCords = (location) => {
     console.log("Clicked Location Data:", location); // Debugging
-    
-    if (Array.isArray(location) && location.length === 2 && 
-        typeof location[0] === "number" && typeof location[1] === "number") {
+
+    if (
+      Array.isArray(location) &&
+      location.length === 2 &&
+      typeof location[0] === "number" &&
+      typeof location[1] === "number"
+    ) {
       const [lng, lat] = location; // MongoDB stores [lng, lat]
       coords({ lat, lng }); // Send correctly ordered data
       console.log("✅ Valid Coordinates Clicked:", { lat, lng });
@@ -33,7 +43,6 @@ function MessBars({ isChecked, checkFeatures, userLocation ,coords ,setPgCount }
       console.log("❌ Invalid location format:", location);
     }
   };
-  
 
   useEffect(() => {
     console.log("Selected Features:", checkFeatures);
@@ -50,7 +59,11 @@ function MessBars({ isChecked, checkFeatures, userLocation ,coords ,setPgCount }
           return;
         }
 
-        console.log("📍 Fetching PGs near:", userLocation.lat, userLocation.lng);
+        console.log(
+          "📍 Fetching PGs near:",
+          userLocation.lat,
+          userLocation.lng
+        );
 
         // Fetch PGs near selected location
         const res = await axios.get(findMessUrl, {
@@ -60,11 +73,15 @@ function MessBars({ isChecked, checkFeatures, userLocation ,coords ,setPgCount }
         console.log("🛎 PGs Found:", res.data);
 
         // Filter PGs based on selected features
-        const filteredData = res.data.filter((owner) =>
-          checkFeatures.length > 0
-            ? checkFeatures.some((feature) => owner.facility?.includes(feature))
-            : true
-        );
+        const filteredData = Array.isArray(res.data)
+          ? res.data.filter((owner) =>
+              checkFeatures.length > 0
+                ? checkFeatures.some((feature) =>
+                    owner.facility?.includes(feature)
+                  )
+                : true
+            )
+          : [];
 
         console.log("🔎 Filtered PGs:", filteredData);
 
@@ -77,7 +94,7 @@ function MessBars({ isChecked, checkFeatures, userLocation ,coords ,setPgCount }
     };
 
     fetchData();
-  }, [checkFeatures, userLocation,setPgCount]);
+  }, [checkFeatures, userLocation]);
 
   if (error) {
     return <div>{error}</div>;
@@ -89,19 +106,20 @@ function MessBars({ isChecked, checkFeatures, userLocation ,coords ,setPgCount }
         <div
           key={owner._id}
           className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md mb-4 sm:mb-2"
-         // onClick={() => clickNavi(owner)}
-         onClick={() => {
-          if (owner.location.coordinates) {
-            clickCords(owner.location.coordinates); // Only call clickCords if location is available
-          } else {
-            console.log('Location missing for', owner.messName);
-          }
-        }}
+          // onClick={() => clickNavi(owner)}
+          onClick={() => {
+            if (owner?.location?.coordinates) {
+              clickCords(owner.location.coordinates);
+            } else {
+              console.log("Location missing for", owner.messName);
+            }
+          }}
         >
           {/* Image Section */}
           {!isChecked && (
             <div className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0">
               <img
+                loading="lazy"
                 src={owner.profilePhoto}
                 alt="Mess"
                 className="w-full h-48 md:h-full object-cover rounded-md"
@@ -122,7 +140,9 @@ function MessBars({ isChecked, checkFeatures, userLocation ,coords ,setPgCount }
             }}
           >
             <h3 className="font-medium text-lg">{owner.messName}, In Simhat</h3>
-            <p className="text-sm text-gray-600 mt-2">Near MAKAUT University • 15 Km</p>
+            <p className="text-sm text-gray-600 mt-2">
+              Near MAKAUT University • 15 Km
+            </p>
             <div className="flex items-center mt-4 text-sm text-gray-500">
               {owner.facility?.map((feature, index) => (
                 <span key={index}>
@@ -134,10 +154,15 @@ function MessBars({ isChecked, checkFeatures, userLocation ,coords ,setPgCount }
               <span>Price: 2.5k/Month</span>
             </div>
             <div className="flex gap-4 mt-4">
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-md" onClick={() => clickNavi(owner)}>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                onClick={() => clickNavi(owner)}
+              >
                 View Details
               </button>
-              <button className="bg-green-500 text-white px-4 py-2 rounded-md">Book Now</button>
+              <button className="bg-green-500 text-white px-4 py-2 rounded-md">
+                Book Now
+              </button>
             </div>
           </div>
         </div>

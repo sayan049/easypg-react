@@ -92,11 +92,14 @@ const MessFind = () => {
   ];
 
   const featureChanges = (e) => {
-    const { value, checked } = e.target;
-    setTempCheckFeatures((prev) =>
-      checked ? [...prev, value] : prev.filter((feature) => feature !== value)
-    );
+    const { value } = e.target;
+    setTempCheckFeatures((prev) => {
+      const newSet = new Set(prev);
+      newSet.has(value) ? newSet.delete(value) : newSet.add(value);
+      return Array.from(newSet);
+    });
   };
+  
 
   const onApplyFilters = () => {
     setCheckFeatures(tempCheckFeatures);
@@ -171,7 +174,7 @@ const MessFind = () => {
         <div className="mt-6 flex flex-col gap-6">
           <div className="text-lg font-bold md:hidden">{pgCount} Mess in {item}</div>
           <div style={{ display: isChecked ? "flex" : "block" }}>
-            <MessBars checkFeatures={checkFeatures} isChecked={isChecked} userLocation={userLocation}  coords={handleCoordinatesChange}  setPgCount={setPgCount}/>
+            <MessBars checkFeatures={checkFeatures} isChecked={isChecked} userLocation={userLocation}  coords={handleCoordinatesChange}  setPgCount={pgCount}/>
             <Map isChecked={isChecked} coordinates={coordinates} />
           </div>
         </div>
