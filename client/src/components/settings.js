@@ -17,6 +17,7 @@ function Settings() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [isLocationChanged, setIsLocationChanged] = useState(false);
 
   const {
     userName,
@@ -50,6 +51,11 @@ function Settings() {
     hideContact: false,
   });
 
+  const [editingField, setEditingField] = useState(null);
+
+  const handleEditClick = (field) => {
+    setEditingField(editingField === field ? null : field);
+  };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setPersonalInfo({ ...personalInfo, [name]: value });
@@ -117,12 +123,12 @@ function Settings() {
           );
           const data = await response.json();
 
-          const address =
-            data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
+          const address =data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
           setPersonalInfo((prevData) => ({
             ...prevData,
             location: address,
           }));
+          setIsLocationChanged(true);
         } catch (error) {
           console.error("Error fetching location:", error);
         }
@@ -169,7 +175,7 @@ function Settings() {
     };
 
     fetchDetails();
-   // console.log(user?.image + "xxxx");
+    // console.log(user?.image + "xxxx");
   }, [type, user, owner]);
 
   return (
@@ -272,26 +278,27 @@ function Settings() {
             {Object.entries(personalInfo)
               .filter(([key]) => key !== "password" && key !== "location")
               .map(([key, value]) => (
-                <div className="relative">
+                <div key={key} className="relative">
                   <input
-                    key={key}
                     type="text"
                     name={key}
                     placeholder={`Enter your ${key}`}
                     value={value}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 w-full"
-                    readOnly={!isEditing}
+                    readOnly={editingField !== key}
                   />
                   <button
-                    onClick={() => setIsEditing(!isEditing)}
-                    //className="absolute right-2 top-2 text-blue-500"
-                    className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-2xl text-green-600"
+                    onClick={() => handleEditClick(key)}
+                    className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-2xl text-blue-500"
                   >
-                    <FontAwesomeIcon icon={isEditing ? faSave : faEdit} />
+                    <FontAwesomeIcon
+                      icon={editingField === key ? faSave : faEdit}
+                    />
                   </button>
                 </div>
               ))}
+
             <div className="relative">
               <input
                 type="text"
@@ -299,6 +306,7 @@ function Settings() {
                 placeholder={user?.location || "Add your location"}
                 value={personalInfo.location}
                 onChange={handleInputChange}
+                disabled
                 className="border border-gray-300 rounded-md p-2 w-full pr-10"
               />
               <div
@@ -323,7 +331,7 @@ function Settings() {
               <option value="co-ed">Co-ed Mess</option>
             </select>
           </div>
-          {isEditing && (
+          {(isEditing||isLocationChanged) && (
             <button
               onClick={handleSaveChanges}
               className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md"
