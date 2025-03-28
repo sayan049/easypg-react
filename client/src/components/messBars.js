@@ -22,14 +22,18 @@ function MessBars({ isChecked, checkFeatures, userLocation ,coords }) {
   //   }
   // };
   const clickCords = (location) => {
-    if (Array.isArray(location) && location.length === 2) {
-      const [lng, lat] = location; // MongoDB stores as [lng, lat]
-      coords({ lat, lng }); // Correcting the order
-      console.log('Coordinates clicked:', { lat, lng });
+    console.log("Clicked Location Data:", location); // Debugging
+    
+    if (Array.isArray(location) && location.length === 2 && 
+        typeof location[0] === "number" && typeof location[1] === "number") {
+      const [lng, lat] = location; // MongoDB stores [lng, lat]
+      coords({ lat, lng }); // Send correctly ordered data
+      console.log("✅ Valid Coordinates Clicked:", { lat, lng });
     } else {
-      console.log('Invalid location format:', location);
+      console.log("❌ Invalid location format:", location);
     }
   };
+  
 
   useEffect(() => {
     console.log("Selected Features:", checkFeatures);
