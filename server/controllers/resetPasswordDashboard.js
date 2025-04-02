@@ -1,4 +1,6 @@
 const bcrypt = require("bcrypt");
+const User = require("../models/User"); // Import the User model
+const PgOwner = require("../models/PgOwner"); // Import the PgOwner model
 
 exports.resetPassword = async (req, res) => {
     const { type, userId, currentPassword, newPassword } = req.body;
@@ -12,8 +14,7 @@ exports.resetPassword = async (req, res) => {
         if (!isMatch) return res.status(400).json({ error: "Incorrect current password" });
 
         // Hash new password
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(newPassword, salt);
+        user.password = await bcrypt.hash(newPassword, 10);
 
         await user.save();
         res.status(200).json({ message: "Password updated successfully" });
