@@ -204,12 +204,12 @@ function Settings() {
           /> */}
 
           {IsAuthenticated || isOwnerAuthenticated ? <UserProfile className="h-36" /> : null}
-          <label
+          {/* <label
             htmlFor="file"
             className="cursor-pointer text-xl text-blue-600 text-white relative top-[-34px] left-[18px] "
           >
             ➕
-          </label>
+          </label> */}
           <div className="mt-2 text-gray-600">Upload Your Profile Photo</div>
         </div>
       </div>
