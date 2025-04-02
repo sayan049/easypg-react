@@ -4,7 +4,7 @@ import ToggleSwitch from "./toggle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import UserProfile from "../components/UserProfile";
 import { useAuth } from "../contexts/AuthContext";
-import { fetchDetailsUrl, updateDetailsUrl } from "../constant/urls";
+import { fetchDetailsUrl, updateDetailsUrl,resetPasswordDashboard } from "../constant/urls";
 import {
   faMapMarkerAlt,
   faEdit,
@@ -165,7 +165,7 @@ function Settings() {
     }
   
     try {
-      const response = await fetch(updateDetailsUrl, {
+      const response = await fetch(resetPasswordDashboard, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
