@@ -247,7 +247,7 @@ function Settings() {
       <div className="relative mb-4"></div>
       {/* Profile Picture Section (First Row) */}
       <div className="flex justify-center mb-6">
-        <div className="text-center flex items-centre flex-col">
+        <div className="text-center flex items-center flex-col">
           <input
             type="file"
             accept="image/*"
