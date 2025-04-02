@@ -254,7 +254,7 @@ function Settings() {
             name="profilePhoto"
             id="file"
             onChange={loadfile}
-            className="hidden"
+            className="hidden flex slign-centre flex-col"
           />
         
           {/* <img
