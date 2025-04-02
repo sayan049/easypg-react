@@ -18,6 +18,7 @@ function Settings() {
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [isLocationChanged, setIsLocationChanged] = useState(false);
+  const [intialData,setInitialData]=useState({});
 
   const {
     userName,
@@ -108,6 +109,10 @@ function Settings() {
     }
   };
 
+  const handleReset=()=>{
+    setPersonalInfo(intialData);
+  }
+
   const loadfile = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -164,6 +169,12 @@ function Settings() {
 
         const data = await response.json();
         setPersonalInfo({
+          fullName: `${data.firstName} ${data.lastName}`.trim(),
+          email: data.email,
+          pin: data.pin || "",
+          phone: data.phone || "",
+        });
+        setInitialData({
           fullName: `${data.firstName} ${data.lastName}`.trim(),
           email: data.email,
           pin: data.pin || "",
@@ -474,7 +485,7 @@ function Settings() {
         </button>
       </div>
       <div className="flex justify-end">
-        <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mr-2">
+        <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mr-2" onClick={handleReset}>
           Reset to Default
         </button>
         <button className="bg-blue-500 text-white px-4 py-2 rounded-md" onClick={handleSaveChanges}>
