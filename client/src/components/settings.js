@@ -474,7 +474,7 @@ function Settings() {
         <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mr-2">
           Reset to Default
         </button>
-        <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
+        <button className="bg-blue-500 text-white px-4 py-2 rounded-md" onClick={handleSaveChanges}>
           Save All Changes
         </button>
       </div>
