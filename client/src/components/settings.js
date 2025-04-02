@@ -84,7 +84,7 @@ function Settings() {
         formData.append(key, personalInfo[key]);
       }
       setEditingField(editingField === key ? null : key);
-      setIsEditing(!isEditing);
+     // setIsEditing(!isEditing);
     });
 
     try {
@@ -320,7 +320,7 @@ function Settings() {
               <option value="co-ed">Co-ed Mess</option>
             </select>
           </div>
-          {isLocationChanged && (
+          {(isEditing||isLocationChanged) && (
             <button
               onClick={handleSaveChanges}
               className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md"
