@@ -19,6 +19,12 @@ function Settings() {
   const [isEditing, setIsEditing] = useState(false);
   const [isLocationChanged, setIsLocationChanged] = useState(false);
   const [intialData,setInitialData]=useState({});
+  const [passwords, setPasswords] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  
 
   const {
     userName,
@@ -37,11 +43,7 @@ function Settings() {
     location: user?.location || "",
   });
 
-  const [passwords, setPasswords] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
+
   const [notifications, setNotifications] = useState({
     email: true,
     sms: true,
@@ -68,6 +70,8 @@ function Settings() {
     const { name, value } = e.target;
     setPasswords({ ...passwords, [name]: value });
   };
+
+
 
   const handleToggle = (section, field) => {
     if (section === "notifications") {
@@ -147,6 +151,42 @@ function Settings() {
     }
   };
 
+  const handlePasswordReset = async () => {
+    const { currentPassword, newPassword, confirmPassword } = passwords;
+  
+    // Validate passwords
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      alert("All fields are required!");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      alert("New password and confirm password do not match!");
+      return;
+    }
+  
+    try {
+      const response = await fetch(updateDetailsUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: type === "student" ? user?.id : owner?.id,
+          type,
+          currentPassword,
+          newPassword,
+        }),
+      });
+  
+      if (!response.ok) throw new Error("Password update failed");
+  
+      alert("Password updated successfully!");
+      setPasswords({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    } catch (error) {
+      console.error("Error updating password:", error);
+      alert("Failed to update password. Try again.");
+    }
+  };
+  
+
   useEffect(() => {
     const fetchDetails = async () => {
       setIsLoading(true);
@@ -191,6 +231,7 @@ function Settings() {
 
     fetchDetails();
     // console.log(user?.image + "xxxx");
+
   }, [type, user, owner]);
 
   return (
@@ -371,7 +412,7 @@ function Settings() {
               className="border border-gray-300 rounded-md p-2 w-full"
             />
           </div>
-          <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md">
+          <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md"  onClick={handlePasswordReset}>
             Update Password
           </button>
         </section>
