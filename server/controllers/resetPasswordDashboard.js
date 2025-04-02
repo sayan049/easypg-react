@@ -1,8 +1,9 @@
 const bcrypt = require("bcrypt");
 const User = require("../modules/user"); // Ensure you import the User model
 const PgOwner = require("../modules/pgProvider");
+// const { resetPasswordDashboard } = require("../../client/src/constant/urls");
 
-exports.resetPassword = async (req, res) => {
+exports.resetPasswordDashboard = async (req, res) => {
     const { type, userId, currentPassword, newPassword } = req.body;
 
     try {
@@ -39,3 +40,5 @@ exports.resetPassword = async (req, res) => {
         res.status(500).json({ error: "An error occurred while updating password" });
     }
 };
+
+module.exports=resetPasswordDashboard;
