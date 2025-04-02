@@ -153,39 +153,46 @@ function Settings() {
 
   const handlePasswordReset = async () => {
     const { currentPassword, newPassword, confirmPassword } = passwords;
-  
-    // Validate passwords
+
+    // Validate fields
     if (!currentPassword || !newPassword || !confirmPassword) {
-      alert("All fields are required!");
-      return;
+        alert("All fields are required!");
+        return;
+    }
+    if (newPassword.length < 6) {
+        alert("New password must be at least 6 characters long!");
+        return;
     }
     if (newPassword !== confirmPassword) {
-      alert("New password and confirm password do not match!");
-      return;
+        alert("New password and confirm password do not match!");
+        return;
     }
-  
+
     try {
-      const response = await fetch(resetPasswordDashboard, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: type === "student" ? user?.id : owner?.id,
-          type,
-          currentPassword,
-          newPassword,
-        }),
-      });
-  
-      if (!response.ok) throw new Error("Password update failed");
-  
-      alert("Password updated successfully!");
-      setPasswords({ currentPassword: "", newPassword: "", confirmPassword: "" });
+        const response = await fetch(resetPasswordDashboard, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                userId: type === "student" ? user?.id : owner?.id,
+                type,
+                currentPassword,
+                newPassword,
+            }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) throw new Error(data.error || "Password update failed");
+
+        alert("Password updated successfully!");
+        setPasswords({ currentPassword: "", newPassword: "", confirmPassword: "" });
+
     } catch (error) {
-      console.error("Error updating password:", error);
-      alert("Failed to update password. Try again.");
+        console.error("Error updating password:", error);
+        alert(error.message);
     }
-  };
-  
+};
+
 
   useEffect(() => {
     const fetchDetails = async () => {
