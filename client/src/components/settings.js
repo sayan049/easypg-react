@@ -83,6 +83,7 @@ function Settings() {
       if (personalInfo[key]) {
         formData.append(key, personalInfo[key]);
       }
+      setIsEditing(false);
     });
 
     try {
