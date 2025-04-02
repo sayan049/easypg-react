@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
-const User = require("../models/User"); // Ensure you import the User model
-const PgOwner = require("../models/PgOwner");
+const User = require("../modules/user"); // Ensure you import the User model
+const PgOwner = require("../modules/PgOwner");
 
 exports.resetPassword = async (req, res) => {
     const { type, userId, currentPassword, newPassword } = req.body;
