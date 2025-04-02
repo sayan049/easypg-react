@@ -320,7 +320,7 @@ function Settings() {
               <option value="co-ed">Co-ed Mess</option>
             </select>
           </div>
-          {(isEditing||isLocationChanged) && (
+          {isLocationChanged && (
             <button
               onClick={handleSaveChanges}
               className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md"
