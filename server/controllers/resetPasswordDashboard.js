@@ -3,7 +3,7 @@ const User = require("../modules/user"); // Ensure you import the User model
 const PgOwner = require("../modules/pgProvider");
 // const { resetPasswordDashboard } = require("../../client/src/constant/urls");
 
-exports.resetPasswordDashboard = async (req, res) => {
+resetPasswordDashboard = async (req, res) => {
     const { type, userId, currentPassword, newPassword } = req.body;
 
     try {
