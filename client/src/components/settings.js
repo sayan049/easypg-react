@@ -265,7 +265,7 @@ function Settings() {
             className="w-36 h-36 rounded-full object-cover mx-auto mt-4 border-4 border-[#2ca4b5]"
           /> */}
 
-          {IsAuthenticated || isOwnerAuthenticated ? <UserProfile className="h-36" /> : null}
+          {IsAuthenticated || isOwnerAuthenticated ? <UserProfile className="h-36 w-36" /> : null}
           {/* <label
             htmlFor="file"
             className="cursor-pointer text-xl text-blue-600 text-white relative top-[-34px] left-[18px] "
