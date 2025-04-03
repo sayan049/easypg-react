@@ -37,7 +37,12 @@ function MessBars({
       typeof location[1] === "number"
     ) {
       const [lng, lat] = location; // MongoDB stores [lng, lat]
-      coords({ lat, lng }); // Send correctly ordered data
+      if (typeof coords === "function") {
+        coords({ lat, lng });
+      } else {
+        console.error("❌ coords is not a function:", coords);
+      }
+      // coords({ lat, lng });      
       console.log("✅ Valid Coordinates Clicked:", { lat, lng });
     } else {
       console.log("❌ Invalid location format:", location);
@@ -84,9 +89,14 @@ function MessBars({
           : [];
 
         console.log("🔎 Filtered PGs:", filteredData);
-
+        if (typeof setPgCount === "function") {
+          setPgCount(filteredData.length);
+        } else {
+          console.error("❌ setPgCount is not a function", setPgCount);
+        }
+        
         setMessData(filteredData);
-        setPgCount(filteredData.length);
+        // setPgCount(filteredData.length);
       } catch (err) {
         console.error("❌ Error fetching data", err);
         setError("Failed to fetch PG owners");
