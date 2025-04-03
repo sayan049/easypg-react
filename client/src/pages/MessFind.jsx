@@ -94,17 +94,23 @@ const MessFind = () => {
   const featureChanges = (e) => {
     const { value } = e.target;
     setTempCheckFeatures((prev) => {
-      const newSet = new Set(prev);
-      newSet.has(value) ? newSet.delete(value) : newSet.add(value);
-      return Array.from(newSet);
+      const newFeatures = prev.includes(value)
+        ? prev.filter((feature) => feature !== value)
+        : [...prev, value];
+  
+      console.log("🛠 Updated Temp Features:", newFeatures);
+      return newFeatures;
     });
   };
   
+  
 
   const onApplyFilters = () => {
-    setCheckFeatures(tempCheckFeatures);
+    console.log("📢 Applying Filters:", tempCheckFeatures);
+    setCheckFeatures(tempCheckFeatures);  // ✅ Ensure checkFeatures updates
     setFilterModalOpen(false);
   };
+  
 
   return (
     <div className="flex flex-col md:flex-row p-4 bg-gray-50 min-h-screen overflow-hidden">
