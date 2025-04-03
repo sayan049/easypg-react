@@ -74,6 +74,8 @@ function MessBars({
         console.log("🛎 PGs Found:", res.data);
   
         // Ensure `facility` is an array before filtering
+        console.log("🔍 Facility Data Type:", typeof owner.facility, owner.facility);
+
         const filteredData = Array.isArray(res.data)
         ? res.data.filter((owner) => {
             // Convert facility string into an array
