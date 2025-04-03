@@ -89,14 +89,14 @@ function MessBars({
           : [];
 
         console.log("🔎 Filtered PGs:", filteredData);
-        if (typeof setPgCount === "function") {
-          setPgCount(filteredData.length);
-        } else {
-          console.error("❌ setPgCount is not a function", setPgCount);
-        }
+        // if (typeof setPgCount === "function") {
+        //   setPgCount(filteredData.length);
+        // } else {
+        //   console.error("❌ setPgCount is not a function", setPgCount);
+        // }
         
         setMessData(filteredData);
-        // setPgCount(filteredData.length);
+         setPgCount(filteredData.length);
       } catch (err) {
         console.error("❌ Error fetching data", err);
         setError("Failed to fetch PG owners");
