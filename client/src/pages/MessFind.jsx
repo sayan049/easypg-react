@@ -92,11 +92,11 @@ const MessFind = () => {
   ];
 
   const featureChanges = (e) => {
-    const { value } = e.target;
+    const { value, checked } = e.target;
     setTempCheckFeatures((prev) => {
-      const newFeatures = prev.includes(value)
-        ? prev.filter((feature) => feature !== value)
-        : [...prev, value];
+      const newFeatures = checked
+        ? [...prev, value] // Add if checked
+        : prev.filter((feature) => feature !== value); // Remove if unchecked
   
       console.log("🛠 Updated Temp Features:", newFeatures);
       return newFeatures;
@@ -107,7 +107,7 @@ const MessFind = () => {
 
   const onApplyFilters = () => {
     console.log("📢 Applying Filters:", tempCheckFeatures);
-    setCheckFeatures(tempCheckFeatures);  // ✅ Ensure checkFeatures updates
+    setCheckFeatures([...tempCheckFeatures]); // ✅ Ensure checkFeatures updates before closing modal
     setFilterModalOpen(false);
   };
   

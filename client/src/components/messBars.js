@@ -63,48 +63,44 @@ function MessBars({
           console.error("❌ No valid location provided.");
           return;
         }
-
-        console.log(
-          "📍 Fetching PGs near:",
-          userLocation.lat,
-          userLocation.lng
-        );
-
+  
+        console.log("📍 Fetching PGs near:", userLocation.lat, userLocation.lng);
+  
         // Fetch PGs near selected location
         const res = await axios.get(findMessUrl, {
           params: { lat: userLocation.lat, lng: userLocation.lng },
         });
-
+  
         console.log("🛎 PGs Found:", res.data);
-
-        // Filter PGs based on selected features
+  
+        // Ensure `facility` is an array before filtering
         const filteredData = Array.isArray(res.data)
-          ? res.data.filter((owner) =>
-              checkFeatures.length > 0
-                ? checkFeatures.some((feature) =>
-                    owner.facility?.includes(feature)
-                  )
-                : true
-            )
+          ? res.data.filter((owner) => {
+              const facilities = Array.isArray(owner.facility) ? owner.facility.map(f => f.toLowerCase()) : [];
+  
+              // Apply filter only if checkFeatures has values
+              if (checkFeatures.length > 0) {
+                return checkFeatures.some((feature) =>
+                  facilities.includes(feature.toLowerCase())
+                );
+              }
+              return true; // If no filter is selected, show all PGs
+            })
           : [];
-
+  
         console.log("🔎 Filtered PGs:", filteredData);
-        // if (typeof setPgCount === "function") {
-        //   setPgCount(filteredData.length);
-        // } else {
-        //   console.error("❌ setPgCount is not a function", setPgCount);
-        // }
-        
+  
         setMessData(filteredData);
-         setPgCount(filteredData.length);
+        setPgCount(filteredData.length);
       } catch (err) {
         console.error("❌ Error fetching data", err);
         setError("Failed to fetch PG owners");
       }
     };
-
+  
     fetchData();
   }, [checkFeatures, userLocation]);
+  
 
   if (error) {
     return <div>{error}</div>;
