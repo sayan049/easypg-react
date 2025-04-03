@@ -4,7 +4,7 @@ import ToggleSwitch from "./toggle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import UserProfile from "../components/UserProfile";
 import { useAuth } from "../contexts/AuthContext";
-import { fetchDetailsUrl, updateDetailsUrl } from "../constant/urls";
+import { fetchDetailsUrl, updateDetailsUrl,resetPasswordDashboard } from "../constant/urls";
 import {
   faMapMarkerAlt,
   faEdit,
@@ -17,6 +17,14 @@ function Settings() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [isLocationChanged, setIsLocationChanged] = useState(false);
+  const [intialData,setInitialData]=useState({});
+  const [passwords, setPasswords] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  
 
   const {
     userName,
@@ -35,11 +43,7 @@ function Settings() {
     location: user?.location || "",
   });
 
-  const [passwords, setPasswords] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
+
   const [notifications, setNotifications] = useState({
     email: true,
     sms: true,
@@ -50,6 +54,13 @@ function Settings() {
     hideContact: false,
   });
 
+  const [editingField, setEditingField] = useState(null);
+
+  const handleEditClick = (field) => {
+    setEditingField(editingField === field ? null : field);
+    //setIsEditing(!isEditing);
+    setIsEditing(true);
+  };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setPersonalInfo({ ...personalInfo, [name]: value });
@@ -59,6 +70,8 @@ function Settings() {
     const { name, value } = e.target;
     setPasswords({ ...passwords, [name]: value });
   };
+
+
 
   const handleToggle = (section, field) => {
     if (section === "notifications") {
@@ -76,6 +89,8 @@ function Settings() {
       if (personalInfo[key]) {
         formData.append(key, personalInfo[key]);
       }
+      setEditingField(null);
+      setIsEditing(false);
     });
 
     try {
@@ -98,6 +113,10 @@ function Settings() {
     }
   };
 
+  const handleReset=()=>{
+    setPersonalInfo(intialData);
+  }
+
   const loadfile = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -117,12 +136,12 @@ function Settings() {
           );
           const data = await response.json();
 
-          const address =
-            data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
+          const address =data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
           setPersonalInfo((prevData) => ({
             ...prevData,
             location: address,
           }));
+          setIsLocationChanged(true);
         } catch (error) {
           console.error("Error fetching location:", error);
         }
@@ -131,6 +150,49 @@ function Settings() {
       alert("Geolocation is not supported by this browser.");
     }
   };
+
+  const handlePasswordReset = async () => {
+    const { currentPassword, newPassword, confirmPassword } = passwords;
+
+    // Validate fields
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        alert("All fields are required!");
+        return;
+    }
+    if (newPassword.length < 6) {
+        alert("New password must be at least 6 characters long!");
+        return;
+    }
+    if (newPassword !== confirmPassword) {
+        alert("New password and confirm password do not match!");
+        return;
+    }
+
+    try {
+        const response = await fetch(resetPasswordDashboard, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                userId: type === "student" ? user?.id : owner?.id,
+                type,
+                currentPassword,
+                newPassword,
+            }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) throw new Error(data.error || "Password update failed");
+
+        alert("Password updated successfully!");
+        setPasswords({ currentPassword: "", newPassword: "", confirmPassword: "" });
+
+    } catch (error) {
+        console.error("Error updating password:", error);
+        alert(error.message);
+    }
+};
+
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -159,6 +221,12 @@ function Settings() {
           pin: data.pin || "",
           phone: data.phone || "",
         });
+        setInitialData({
+          fullName: `${data.firstName} ${data.lastName}`.trim(),
+          email: data.email,
+          pin: data.pin || "",
+          phone: data.phone || "",
+        });
 
         console.log("Fetched data:", data);
       } catch (error) {
@@ -169,7 +237,8 @@ function Settings() {
     };
 
     fetchDetails();
-    console.log(user?.image + "xxxx");
+    // console.log(user?.image + "xxxx");
+
   }, [type, user, owner]);
 
   return (
@@ -178,7 +247,7 @@ function Settings() {
       <div className="relative mb-4"></div>
       {/* Profile Picture Section (First Row) */}
       <div className="flex justify-center mb-6">
-        <div className="text-center">
+        <div className="text-center flex items-center flex-col">
           <input
             type="file"
             accept="image/*"
@@ -187,36 +256,22 @@ function Settings() {
             onChange={loadfile}
             className="hidden"
           />
-          {/* {image || user?.image ? (
-            <img
-              src={image ? URL.createObjectURL(image) : user?.image}
-              alt="Profile"
-              className="w-36 h-36 rounded-full object-cover mx-auto mt-4 border-4 border-[#2ca4b5]"
-            />
-          ) : (
-            <div className="w-36 h-36 rounded-full mx-auto mt-4 flex items-center justify-center">
-              <img
-                src="/assets/Component 2.png"
-                alt="Default"
-                className="w-40 h-[13rem] object-cover relative top-[34px]"
-              />
-            </div>
-          )} */}
-          <img
+        
+          {/* <img
             src={
               image instanceof File ? URL.createObjectURL(image) : user?.image
             }
             alt="Profile"
             className="w-36 h-36 rounded-full object-cover mx-auto mt-4 border-4 border-[#2ca4b5]"
-          />
+          /> */}
 
-          {/* {IsAuthenticated || isOwnerAuthenticated ? <UserProfile /> : null} */}
-          <label
+          {IsAuthenticated || isOwnerAuthenticated ? <UserProfile className="!h-36 !w-36" /> : null}
+          {/* <label
             htmlFor="file"
             className="cursor-pointer text-xl text-blue-600 text-white relative top-[-34px] left-[18px] "
           >
             ➕
-          </label>
+          </label> */}
           <div className="mt-2 text-gray-600">Upload Your Profile Photo</div>
         </div>
       </div>
@@ -272,25 +327,27 @@ function Settings() {
             {Object.entries(personalInfo)
               .filter(([key]) => key !== "password" && key !== "location")
               .map(([key, value]) => (
-                <>
+                <div key={key} className="relative">
                   <input
-                    key={key}
                     type="text"
                     name={key}
                     placeholder={`Enter your ${key}`}
                     value={value}
                     onChange={handleInputChange}
                     className="border border-gray-300 rounded-md p-2 w-full"
-                    readOnly={!isEditing}
+                    readOnly={editingField !== key}
                   />
                   <button
-                    onClick={() => setIsEditing(!isEditing)}
-                    className="absolute right-2 top-2 text-blue-500"
+                    onClick={() => handleEditClick(key)}
+                    className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-2xl text-blue-500"
                   >
-                    <FontAwesomeIcon icon={isEditing ? faSave : faEdit} />
+                    <FontAwesomeIcon
+                      icon={editingField === key ? faSave : faEdit}
+                    />
                   </button>
-                </>
+                </div>
               ))}
+
             <div className="relative">
               <input
                 type="text"
@@ -298,6 +355,7 @@ function Settings() {
                 placeholder={user?.location || "Add your location"}
                 value={personalInfo.location}
                 onChange={handleInputChange}
+                disabled
                 className="border border-gray-300 rounded-md p-2 w-full pr-10"
               />
               <div
@@ -322,7 +380,7 @@ function Settings() {
               <option value="co-ed">Co-ed Mess</option>
             </select>
           </div>
-          {isEditing && (
+          {(isEditing||isLocationChanged) && (
             <button
               onClick={handleSaveChanges}
               className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md"
@@ -361,7 +419,7 @@ function Settings() {
               className="border border-gray-300 rounded-md p-2 w-full"
             />
           </div>
-          <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md">
+          <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md"  onClick={handlePasswordReset}>
             Update Password
           </button>
         </section>
@@ -475,10 +533,10 @@ function Settings() {
         </button>
       </div>
       <div className="flex justify-end">
-        <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mr-2">
+        <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mr-2" onClick={handleReset}>
           Reset to Default
         </button>
-        <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
+        <button className="bg-blue-500 text-white px-4 py-2 rounded-md" onClick={handleSaveChanges}>
           Save All Changes
         </button>
       </div>

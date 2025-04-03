@@ -186,7 +186,7 @@ const HomePage = () => {
                 className="imageProfile"
                 onClick={() => setShowDropdown(!showDropdown)}
               >
-                <UserProfile />
+                <UserProfile className="h-16 w-16" />
 
                 <div className="dropdown-content">
                   <p className="">

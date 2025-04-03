@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
-const UserProfile = () => {
+const UserProfile = ({className}) => {
   const [profileData, setProfileData] = useState(null);
   const { userName, userImage, IsAuthenticated, isOwnerAuthenticated, ownerImage, ownerName } = useAuth();
 
@@ -84,9 +84,9 @@ const UserProfile = () => {
   }
 
   return (
-    <div className="user-profile" style={{ backgroundColor: profileData.backgroundColor }}>
+    <div className={`user-profile ${className}`} style={{ backgroundColor: profileData.backgroundColor }}>
       {profileData.imageUrl? (
-        <img src={profileData.imageUrl} alt="Profile" className="profile-image" />
+        <img src={profileData.imageUrl} alt="Profile" className="profile-image " />
       ) : (
         <div className="initials">{profileData.initials}</div>
       )}

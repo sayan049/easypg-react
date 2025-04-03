@@ -11,6 +11,7 @@ const resetPasswordUser = require("../controllers/resetPasswordUser")
 const authenticateJWT = require("../middleware/is-auth")
 const forgotPasswordOwner = require("../controllers/forgotPasswordOwner")
 const resetPasswordOwner = require("../controllers/resetPasswordOwner")
+const resetPasswordDashboard=require("../controllers/resetPasswordDashboard")
 const jwt = require('jsonwebtoken');
 
 
@@ -187,6 +188,7 @@ router.get('/LoginOwner/owner/reset-password/:resetToken', (req, res) => {
 
 
 router.post("/owner/reset-password",resetPasswordOwner);
+router.post("/resetPasswordDashboard",resetPasswordDashboard);
 
 
 
