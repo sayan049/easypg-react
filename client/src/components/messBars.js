@@ -74,21 +74,15 @@ function MessBars({
         console.log("🛎 PGs Found:", res.data);
   
         // Ensure `facility` is an array before filtering
-        console.log("🔍 Facility Data Type:", typeof owner.facility, owner.facility);
-
         const filteredData = Array.isArray(res.data)
         ? res.data.filter((owner) => {
-            // Convert facility string into an array
-            const facilitiesArray = owner.facility
-              ? owner.facility.split(",").map(f => f.trim().toLowerCase()) // Ensure proper casing
-              : [];
+            const facilitiesArray = owner.facility?.split(",").map(f => f.trim()) || [];
       
             return checkFeatures.length > 0
-              ? checkFeatures.some((feature) => facilitiesArray.includes(feature.toLowerCase()))
+              ? checkFeatures.some((feature) => facilitiesArray.includes(feature))
               : true;
           })
         : [];
-      
       
       console.log("🔎 Filtered PGs based on:", checkFeatures);
       console.log("✅ Final Filtered Data:", filteredData);
