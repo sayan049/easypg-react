@@ -75,18 +75,18 @@ function MessBars({
   
         // Ensure `facility` is an array before filtering
         const filteredData = Array.isArray(res.data)
-        ? res.data.filter((owner) => {
-            const facilitiesArray = owner.facility?.split(",").map(f => f.trim()) || [];
-      
-            return checkFeatures.length > 0
-              ? checkFeatures.some((feature) => facilitiesArray.includes(feature))
-              : true;
-          })
-        : [];
-      
-      console.log("🔎 Filtered PGs based on:", checkFeatures);
-      console.log("✅ Final Filtered Data:", filteredData);
-      
+          ? res.data.filter((owner) => {
+              const facilities = Array.isArray(owner.facility) ? owner.facility.map(f => f.toLowerCase()) : [];
+            console.log("Facilities:", facilities);
+              // Apply filter only if checkFeatures has values
+              if (checkFeatures.length > 0) {
+                return checkFeatures.some((feature) =>
+                  facilities.includes(feature.toLowerCase())
+                );
+              }
+              return true; // If no filter is selected, show all PGs
+            })
+          : [];
   
         console.log("🔎 Filtered PGs:", filteredData);
   
