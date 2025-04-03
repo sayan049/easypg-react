@@ -77,7 +77,7 @@ function MessBars({
         const filteredData = Array.isArray(res.data)
           ? res.data.filter((owner) => {
               const facilities = Array.isArray(owner.facility) ? owner.facility.map(f => f.toLowerCase()) : [];
-  
+            console.log("Facilities:", facilities);
               // Apply filter only if checkFeatures has values
               if (checkFeatures.length > 0) {
                 return checkFeatures.some((feature) =>
