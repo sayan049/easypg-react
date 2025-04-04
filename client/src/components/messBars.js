@@ -91,7 +91,7 @@ function MessBars({
       
   
         console.log("🔎 Filtered PGs:", filteredData);
-        console.log("🔍 Facility Data Type:", typeof owner.facility, owner.facility);
+        // console.log("🔍 Facility Data Type:", typeof owner.facility, owner.facility);
 
         setMessData(filteredData);
         setPgCount(filteredData.length);
