@@ -91,23 +91,36 @@ const MessFind = () => {
     { id: "test7", label: "Double Bed", icon: "🛏️" },
   ];
 
-  const featureChanges = (e) => {
-    const { value, checked } = e.target;
+  // const featureChanges = (e) => {
+  //   const { value, checked } = e.target;
    
   
+  //   setTempCheckFeatures((prev) => {
+  //     if (checked) {
+  //       // Add feature if checked
+  //       return [...prev, value];
+  //     } else {
+  //       // Remove feature if unchecked
+  //       return prev.filter((feature) => feature !== value);
+  //     }
+  //   });
+  
+  //   console.log("🛠 Selected Features:", tempCheckFeatures);
+  //   console.log("value:", value);
+  // };
+  const featureChanges = (e) => {
+    const { value, checked } = e.target;
+  
     setTempCheckFeatures((prev) => {
-      if (checked) {
-        // Add feature if checked
-        return [...prev, value];
-      } else {
-        // Remove feature if unchecked
-        return prev.filter((feature) => feature !== value);
-      }
+      const updated = checked ? [...prev, value] : prev.filter((f) => f !== value);
+      
+      console.log("🛠 Will Set Features To:", updated); // This reflects what will be set
+      return updated;
     });
   
-    console.log("🛠 Selected Features:", tempCheckFeatures);
-    console.log("value:", value);
+    console.log("Clicked Value:", value);
   };
+  
   
   
 
