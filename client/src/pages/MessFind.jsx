@@ -93,6 +93,7 @@ const MessFind = () => {
 
   const featureChanges = (e) => {
     const { value, checked } = e.target;
+    console.log("value:", value);
   
     setTempCheckFeatures((prev) => {
       if (checked) {
