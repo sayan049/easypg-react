@@ -21,7 +21,7 @@ import MailVerify from "./pages/mailVerify";
 import ProtectedRoute from "./pages/protectedRoute";
 import SecurityCheck from "./pages/securityCheck";
 import MailVerifyOwner from "./pages/mailVerifyOwner";
-import UserDashboard from "./pages/Dashboard";
+// import UserDashboard from "./pages/Dashboard";
 import IsAuth from "./pages/isAuth";
 import ViewDetails from "./pages/viewDetails";
 import DashboardOwner from "./pages/DashboardOwner";

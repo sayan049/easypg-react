@@ -1,6 +1,8 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { Home, CalendarCheck, CreditCard, Settings as Gear } from "lucide-react";
 import { cn } from "../lib/utils";
+import {dashboardContentOwner} from "../components/dashboardContentOwner";
 
 const navItems = [
   { name: "Dashboard", icon: <Home />, key: "dashboard" },
@@ -9,7 +11,7 @@ const navItems = [
   { name: "Settings", icon: <Gear />, key: "settings" },
 ];
 
-const Dashboard = () => <div className="p-4">Dashboard Component</div>;
+// const Dashboard = () => <div className="p-4">Dashboard Component</div>;
 const BookingStatus = () => <div className="p-4">Booking Status Component</div>;
 const Payments = () => <div className="p-4">Payments Component</div>;
 const Settings = () => <div className="p-4">Settings Component</div>;
@@ -20,7 +22,7 @@ export default function DashboardOwner() {
   const renderComponent = () => {
     switch (activeTab) {
       case "dashboard":
-        return <Dashboard />;
+        return <dashboardContentOwner />;
       case "booking":
         return <BookingStatus />;
       case "payments":
