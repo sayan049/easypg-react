@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Home, CalendarCheck, CreditCard, Settings as Gear } from "lucide-react";
 import { cn } from "../lib/utils";
-import {DashboardContentOwner} from "../components/dashboardContentOwner";
+import DashboardContentOwner from "../components/dashboardContentOwner";
 
 const navItems = [
   { name: "Dashboard", icon: <Home />, key: "dashboard" },
