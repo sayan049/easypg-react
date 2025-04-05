@@ -261,8 +261,9 @@ function Settings() {
     };
 
     fetchDetails();
+    console.log("Updated location:", personalInfo.location);
     // console.log(user?.image + "xxxx");
-  }, [type, user, owner]);
+  }, [type, user, owner,personalInfo.location]);
 
   return (
     <div className="bg-white pb-16 pr-6 pt-6 pl-6 shadow rounded-md">
