@@ -118,7 +118,7 @@ const HomePage = () => {
       try {
         // Decode token
 
-        console.log("user name:", ownerName);
+        console.log("owner name:", ownerName);
       } catch (error) {
         console.error("Error decoding or accessing token:", error);
       }
