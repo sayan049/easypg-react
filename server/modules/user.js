@@ -15,6 +15,18 @@ const userSchema = new mongoose.Schema({
     unique: true,
     match: [/.+\@.+\..+/, "Please fill a valid email address"],
   },
+  phone: {
+    type: String,
+  },
+  location: {
+    type: {
+        type: String,
+        enum: ['Point'], 
+    },
+    coordinates: {
+        type: [Number], 
+    }
+},
   address: {
     type: String,
     required: function() {

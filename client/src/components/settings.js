@@ -220,12 +220,14 @@ function Settings() {
           email: data.email,
           pin: data.pin || "",
           phone: data.phone || "",
+          location:data.location||"",
         });
         setInitialData({
           fullName: `${data.firstName} ${data.lastName}`.trim(),
           email: data.email,
           pin: data.pin || "",
           phone: data.phone || "",
+          location:data.location||"",
         });
 
         console.log("Fetched data:", data);
@@ -257,13 +259,7 @@ function Settings() {
             className="hidden"
           />
         
-          {/* <img
-            src={
-              image instanceof File ? URL.createObjectURL(image) : user?.image
-            }
-            alt="Profile"
-            className="w-36 h-36 rounded-full object-cover mx-auto mt-4 border-4 border-[#2ca4b5]"
-          /> */}
+        
 
           {IsAuthenticated || isOwnerAuthenticated ? <UserProfile className="!h-36 !w-36" /> : null}
           {/* <label
@@ -284,46 +280,7 @@ function Settings() {
             Edit Personal Information
           </h3>
           <div className="grid grid-cols-1 gap-4">
-            {/* <input
-              type="text"
-              name="fullName"
-              placeholder={type === "student" ? user?.name : owner?.name}
-              value={personalInfo.fullName}
-              onChange={handleInputChange}
-              className="border border-gray-300 rounded-md p-2 w-full"
-              readOnly={!isEditing}
-            />
-             <button onClick={() => setIsEditing(!isEditing)} className="absolute right-2 top-2 text-blue-500">
-          <FontAwesomeIcon icon={isEditing ? faSave : faEdit} />
-        </button>
-            
-            <input
-              type="email"
-              name="email"
-              placeholder={type === "student" ? user?.email : owner?.email}
-              value={personalInfo.email}
-              onChange={handleInputChange}
-              className="border border-gray-300 rounded-md p-2 w-full"
-              onClick={() => setIsEditing(!isEditing)}
-            />
-            <input
-              type="text"
-              name="phone"
-              placeholder= "Phone number"
-              value={personalInfo.phone}
-              onChange={handleInputChange}
-              className="border border-gray-300 rounded-md p-2 w-full"
-              onClick={() => setIsEditing(!isEditing)}
-            />
-            <input
-              type="text"
-              name="pincode"
-              placeholder= "Add your pin"
-              value={personalInfo.pin}
-              onChange={handleInputChange}
-              className="border border-gray-300 rounded-md p-2 w-full"
-              onClick={() => setIsEditing(!isEditing)}
-            /> */}
+          
             {Object.entries(personalInfo)
               .filter(([key]) => key !== "password" && key !== "location")
               .map(([key, value]) => (
