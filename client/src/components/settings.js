@@ -44,6 +44,7 @@ function Settings() {
     phone: user?.phone || "",
     pin: user?.pin || "",
     location: user?.location || { type: "Point", coordinates: [], address: "" },
+    
   });
 
   const [notifications, setNotifications] = useState({
@@ -65,8 +66,10 @@ function Settings() {
   };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    if (name === "location") return; // prevent overriding the object
     setPersonalInfo({ ...personalInfo, [name]: value });
   };
+  
 
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
@@ -125,7 +128,7 @@ function Settings() {
     }
   };
 
-  const mapMake = () => {
+ // const mapMake = () => {
     // if (navigator.geolocation) {
     //   navigator.geolocation.getCurrentPosition(async (position) => {
     //     const { latitude, longitude } = position.coords;
@@ -149,31 +152,34 @@ function Settings() {
     // } else {
     //   alert("Geolocation is not supported by this browser.");
     // }
-    navigator.geolocation.getCurrentPosition(async (position) => {
-      const { latitude, longitude } = position.coords;
+ // };
+ const mapMake = () => {
+  navigator.geolocation.getCurrentPosition(async (position) => {
+    const { latitude, longitude } = position.coords;
 
-      try {
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.Google_apiKey}`
-        );
-        const data = await response.json();
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.Google_apiKey}`
+      );
+      const data = await response.json();
+      const address = data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
 
-        const address =
-          data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
-        setPersonalInfo((prevData) => ({
-          ...prevData,
-          location: {
-            type: "Point",
-            coordinates: [longitude, latitude],
-            address, // optional field for UI display
-          },
-        }));
-        setIsLocationChanged(true);
-      } catch (error) {
-        console.error("Error fetching location:", error);
-      }
-    });
-  };
+      setPersonalInfo((prevData) => ({
+        ...prevData,
+        location: {
+          type: "Point",
+          coordinates: [longitude, latitude],
+          address: address,
+        },
+      }));
+
+      setIsLocationChanged(true);
+    } catch (error) {
+      console.error("Error fetching location:", error);
+    }
+  });
+};
+
 
   const handlePasswordReset = async () => {
     const { currentPassword, newPassword, confirmPassword } = passwords;
@@ -249,9 +255,10 @@ function Settings() {
           // location: data.location || "",
           location: {
             type: "Point",
-            coordinates: [longitude, latitude],
-            address, // optional field for UI display
+            coordinates: data.location?.coordinates || [0, 0],
+            address: data.location?.address || "",
           },
+          
         });
         setInitialData({
           fullName: `${data.firstName} ${data.lastName}`.trim(),
@@ -261,9 +268,10 @@ function Settings() {
           // location: data.location || "",
           location: {
             type: "Point",
-            coordinates: [longitude, latitude],
-            address, // optional field for UI display
+            coordinates: data.location?.coordinates || [0, 0],
+            address: data.location?.address || "",
           },
+          
         });
 
         console.log("Fetched data:", data);
@@ -357,6 +365,7 @@ function Settings() {
                 onChange={handleInputChange}
                 disabled
                 className="border border-gray-300 rounded-md p-2 w-full pr-10"
+                onClick={mapMake}
               />
               <div
                 onClick={mapMake}
