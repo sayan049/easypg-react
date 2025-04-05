@@ -76,25 +76,21 @@ function Settings() {
     setPasswords({ ...passwords, [name]: value });
   };
 
-  const handleToggle = (section, field) => {
-    if (section === "notifications") {
-      setNotifications({ ...notifications, [field]: !notifications[field] });
-    } else if (section === "privacy") {
-      setPrivacy({ ...privacy, [field]: !privacy[field] });
-    }
-  };
+
   const handleSaveChanges = async () => {
     const formData = new FormData();
     formData.append("userId", type === "student" ? user?.id : owner?.id);
     formData.append("type", type);
 
     Object.keys(personalInfo).forEach((key) => {
+      
       if (personalInfo[key]) {
         formData.append(key, personalInfo[key]);
       }
       setEditingField(null);
       setIsEditing(false);
     });
+    
 
     try {
       const response = await fetch(updateDetailsUrl, {
@@ -164,15 +160,18 @@ function Settings() {
       const data = await response.json();
       const address = data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
 
+      const updatedLocation = {
+        type: "Point",
+        coordinates: [longitude, latitude],
+        address,
+      };
       setPersonalInfo((prevData) => ({
         ...prevData,
-        location: {
-          type: "Point",
-          coordinates: [longitude, latitude],
-          address: address,
-        },
+        location: updatedLocation,
       }));
-      console.log("personal",personalInfo.location);
+      console.log("New location being set:", updatedLocation);
+      
+      console.log("personal",personalInfo.location); //printing empty object
       setIsLocationChanged(true);
     } catch (error) {
       console.error("Error fetching location:", error);
