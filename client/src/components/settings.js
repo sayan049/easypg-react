@@ -83,11 +83,6 @@ function Settings() {
     formData.append("type", type);
 
     Object.keys(personalInfo).forEach((key) => {
-      if (key === "location") {
-        formData.append("location", JSON.stringify(personalInfo.location));
-      } else {
-        formData.append(key, personalInfo[key]);
-      }
       
       if (personalInfo[key]) {
         formData.append(key, personalInfo[key]);
@@ -96,7 +91,6 @@ function Settings() {
       setIsEditing(false);
     });
     
-    console.log("plks",formData);
 
     try {
       const response = await fetch(updateDetailsUrl, {
@@ -166,15 +160,18 @@ function Settings() {
       const data = await response.json();
       const address = data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
 
+      const updatedLocation = {
+        type: "Point",
+        coordinates: [longitude, latitude],
+        address,
+      };
       setPersonalInfo((prevData) => ({
         ...prevData,
-        location: {
-          type: "Point",
-          coordinates: [longitude, latitude],
-          address: address,
-        },
+        location: updatedLocation,
       }));
-      console.log("personal",personalInfo.location);
+      console.log("New location being set:", updatedLocation);
+      
+      console.log("personal",personalInfo.location); //printing empty object
       setIsLocationChanged(true);
     } catch (error) {
       console.error("Error fetching location:", error);
