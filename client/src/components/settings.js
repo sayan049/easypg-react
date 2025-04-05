@@ -40,8 +40,9 @@ function Settings() {
     email: user?.email || "",
     phone: user?.phone || "",
     pin: user?.pin || "",
-    location: user?.location || "",
+    location: user?.location || { type: "Point", coordinates: [], address: "" },
   });
+  
 
 
   const [notifications, setNotifications] = useState({
