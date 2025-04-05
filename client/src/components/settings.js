@@ -76,25 +76,27 @@ function Settings() {
     setPasswords({ ...passwords, [name]: value });
   };
 
-  const handleToggle = (section, field) => {
-    if (section === "notifications") {
-      setNotifications({ ...notifications, [field]: !notifications[field] });
-    } else if (section === "privacy") {
-      setPrivacy({ ...privacy, [field]: !privacy[field] });
-    }
-  };
+
   const handleSaveChanges = async () => {
     const formData = new FormData();
     formData.append("userId", type === "student" ? user?.id : owner?.id);
     formData.append("type", type);
 
     Object.keys(personalInfo).forEach((key) => {
+      if (key === "location") {
+        formData.append("location", JSON.stringify(personalInfo.location));
+      } else {
+        formData.append(key, personalInfo[key]);
+      }
+      
       if (personalInfo[key]) {
         formData.append(key, personalInfo[key]);
       }
       setEditingField(null);
       setIsEditing(false);
     });
+    
+    console.log("plks",formData);
 
     try {
       const response = await fetch(updateDetailsUrl, {
