@@ -81,6 +81,7 @@ function Settings() {
 
     Object.keys(personalInfo).forEach((key) => {
       if (personalInfo[key]) {
+        conseol.log(key,personalInfo[key]);
         formData.append(key, personalInfo[key]);
       }
       setEditingField(null);
@@ -261,9 +262,9 @@ function Settings() {
     };
 
     fetchDetails();
-    console.log("Updated location:", personalInfo.location);
+    
     // console.log(user?.image + "xxxx");
-  }, [type, user, owner,personalInfo.location]);
+  }, [type, user, owner]);
 
   return (
     <div className="bg-white pb-16 pr-6 pt-6 pl-6 shadow rounded-md">
