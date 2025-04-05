@@ -172,7 +172,7 @@ function Settings() {
           address: address,
         },
       }));
-
+      console.log("personal",personalInfo.location);
       setIsLocationChanged(true);
     } catch (error) {
       console.error("Error fetching location:", error);
