@@ -20,7 +20,7 @@ exports.updateDetails = async (req, res) => {
             }
 
             // Update allowed fields
-            const allowedUpdates = ["address", "pin"];
+            const allowedUpdates = ["address", "pin","location"];
             for (const key in updateData) {
                 if (allowedUpdates.includes(key)) {
                    console.log(key,"key")
