@@ -152,6 +152,7 @@ function Settings() {
         type: "Point",
         coordinates: [longitude, latitude],
       };
+      console.log("pers",updatedLocation);
 
       setPersonalInfo((prevData) => ({
         ...prevData,
