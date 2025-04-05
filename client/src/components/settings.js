@@ -79,15 +79,24 @@ function Settings() {
     formData.append("userId", type === "student" ? user?.id : owner?.id);
     formData.append("type", type);
 
+    // Object.keys(personalInfo).forEach((key) => {
+    //   if (personalInfo[key]) {
+    //     console.log(key,personalInfo[key]);
+    //     formData.append(key, personalInfo[key]);
+    //   }
+    //   setEditingField(null);
+    //   setIsEditing(false);
+    // });
     Object.keys(personalInfo).forEach((key) => {
       if (personalInfo[key]) {
-        console.log(key,personalInfo[key]);
-        formData.append(key, personalInfo[key]);
+        if (key === "location") {
+          formData.append(key, JSON.stringify(personalInfo[key]));
+        } else {
+          formData.append(key, personalInfo[key]);
+        }
       }
-      setEditingField(null);
-      setIsEditing(false);
     });
-
+    
     try {
       const response = await fetch(updateDetailsUrl, {
         method: "POST",
