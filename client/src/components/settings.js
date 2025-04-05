@@ -128,7 +128,7 @@ function Settings() {
     }
   };
 
-  const mapMake = () => {
+ // const mapMake = () => {
     // if (navigator.geolocation) {
     //   navigator.geolocation.getCurrentPosition(async (position) => {
     //     const { latitude, longitude } = position.coords;
@@ -152,35 +152,34 @@ function Settings() {
     // } else {
     //   alert("Geolocation is not supported by this browser.");
     // }
-    const mapMake = () => {
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        const { latitude, longitude } = position.coords;
-    
-        try {
-          const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.Google_apiKey}`
-          );
-          const data = await response.json();
-    
-          const address = data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
-    
-          setPersonalInfo((prevData) => ({
-            ...prevData,
-            location: {
-              type: "Point",
-              coordinates: [longitude, latitude], // GeoJSON format: [lng, lat]
-              address: address,
-            },
-          }));
-          console.log("fsdfsd",personalInfo.location);
-    
-          setIsLocationChanged(true);
-        } catch (error) {
-          console.error("Error fetching location:", error);
-        }
-      });
-    };
-  };
+ // };
+ const mapMake = () => {
+  navigator.geolocation.getCurrentPosition(async (position) => {
+    const { latitude, longitude } = position.coords;
+
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.Google_apiKey}`
+      );
+      const data = await response.json();
+      const address = data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
+
+      setPersonalInfo((prevData) => ({
+        ...prevData,
+        location: {
+          type: "Point",
+          coordinates: [longitude, latitude],
+          address: address,
+        },
+      }));
+
+      setIsLocationChanged(true);
+    } catch (error) {
+      console.error("Error fetching location:", error);
+    }
+  });
+};
+
 
   const handlePasswordReset = async () => {
     const { currentPassword, newPassword, confirmPassword } = passwords;
