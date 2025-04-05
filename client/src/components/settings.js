@@ -43,8 +43,7 @@ function Settings() {
     email: user?.email || "",
     phone: user?.phone || "",
     pin: user?.pin || "",
-    location: user?.location || { type: "Point", coordinates: [], address: "" },
-    
+    location: user?.location || { type: "Point", coordinates: [] },
   });
 
   const [notifications, setNotifications] = useState({
@@ -69,13 +68,11 @@ function Settings() {
     if (name === "location") return; // prevent overriding the object
     setPersonalInfo({ ...personalInfo, [name]: value });
   };
-  
 
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
     setPasswords({ ...passwords, [name]: value });
   };
-
 
   const handleSaveChanges = async () => {
     const formData = new FormData();
@@ -83,14 +80,12 @@ function Settings() {
     formData.append("type", type);
 
     Object.keys(personalInfo).forEach((key) => {
-      
       if (personalInfo[key]) {
         formData.append(key, personalInfo[key]);
       }
       setEditingField(null);
       setIsEditing(false);
     });
-    
 
     try {
       const response = await fetch(updateDetailsUrl, {
@@ -124,61 +119,47 @@ function Settings() {
     }
   };
 
- // const mapMake = () => {
-    // if (navigator.geolocation) {
-    //   navigator.geolocation.getCurrentPosition(async (position) => {
-    //     const { latitude, longitude } = position.coords;
+  // const mapMake = () => {
+  // if (navigator.geolocation) {
+  //   navigator.geolocation.getCurrentPosition(async (position) => {
+  //     const { latitude, longitude } = position.coords;
 
-    //     try {
-    //       const response = await fetch(
-    //         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.Google_apiKey}`
-    //       );
-    //       const data = await response.json();
+  //     try {
+  //       const response = await fetch(
+  //         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.Google_apiKey}`
+  //       );
+  //       const data = await response.json();
 
-    //       const address =data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
-    //       setPersonalInfo((prevData) => ({
-    //         ...prevData,
-    //         location: address,
-    //       }));
-    //       setIsLocationChanged(true);
-    //     } catch (error) {
-    //       console.error("Error fetching location:", error);
-    //     }
-    //   });
-    // } else {
-    //   alert("Geolocation is not supported by this browser.");
-    // }
- // };
- const mapMake = () => {
-  navigator.geolocation.getCurrentPosition(async (position) => {
-    const { latitude, longitude } = position.coords;
-
-    try {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.Google_apiKey}`
-      );
-      const data = await response.json();
-      const address = data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
+  //       const address =data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
+  //       setPersonalInfo((prevData) => ({
+  //         ...prevData,
+  //         location: address,
+  //       }));
+  //       setIsLocationChanged(true);
+  //     } catch (error) {
+  //       console.error("Error fetching location:", error);
+  //     }
+  //   });
+  // } else {
+  //   alert("Geolocation is not supported by this browser.");
+  // }
+  // };
+  const mapMake = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const { latitude, longitude } = position.coords;
 
       const updatedLocation = {
         type: "Point",
         coordinates: [longitude, latitude],
-        address,
       };
+
       setPersonalInfo((prevData) => ({
         ...prevData,
         location: updatedLocation,
       }));
-      console.log("New location being set:", updatedLocation);
-      
-      console.log("personal",personalInfo.location); //printing empty object
       setIsLocationChanged(true);
-    } catch (error) {
-      console.error("Error fetching location:", error);
-    }
-  });
-};
-
+    });
+  };
 
   const handlePasswordReset = async () => {
     const { currentPassword, newPassword, confirmPassword } = passwords;
@@ -255,9 +236,7 @@ function Settings() {
           location: {
             type: "Point",
             coordinates: data.location?.coordinates || [0, 0],
-            address: data.location?.address || "",
           },
-          
         });
         setInitialData({
           fullName: `${data.firstName} ${data.lastName}`.trim(),
@@ -270,7 +249,6 @@ function Settings() {
             coordinates: data.location?.coordinates || [0, 0],
             address: data.location?.address || "",
           },
-          
         });
 
         console.log("Fetched data:", data);
@@ -359,8 +337,12 @@ function Settings() {
               <input
                 type="text"
                 name="location"
-                placeholder={user?.location?.address || "Add your location"}
-                value={personalInfo.location?.address || ""}
+                placeholder="Click to get location"
+                value={
+                  personalInfo.location?.coordinates?.length
+                    ? personalInfo.location.coordinates.join(", ")
+                    : ""
+                }
                 onChange={handleInputChange}
                 disabled
                 className="border border-gray-300 rounded-md p-2 w-full pr-10"
