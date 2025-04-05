@@ -172,6 +172,7 @@ function Settings() {
               address: address,
             },
           }));
+          console.log("fsdfsd",personalInfo.location);
     
           setIsLocationChanged(true);
         } catch (error) {
