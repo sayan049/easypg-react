@@ -81,7 +81,7 @@ function Settings() {
 
     Object.keys(personalInfo).forEach((key) => {
       if (personalInfo[key]) {
-        conseol.log(key,personalInfo[key]);
+        console.log(key,personalInfo[key]);
         formData.append(key, personalInfo[key]);
       }
       setEditingField(null);
