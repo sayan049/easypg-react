@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Home, CalendarCheck, CreditCard, Settings as Gear } from "lucide-react";
 import { cn } from "../lib/utils";
 import DashboardContentOwner from "../components/dashboardContentOwner";
+import BookingStatus from "../components/BookingStatus";
 
 const navItems = [
   { name: "Dashboard", icon: <Home />, key: "dashboard" },
@@ -12,7 +13,7 @@ const navItems = [
 ];
 
 // const Dashboard = () => <div className="p-4">Dashboard Component</div>;
-const BookingStatus = () => <div className="p-4">Booking Status Component</div>;
+// const BookingStatus = () => <div className="p-4">Booking Status Component</div>;
 const Payments = () => <div className="p-4">Payments Component</div>;
 const Settings = () => <div className="p-4">Settings Component</div>;
 
@@ -24,7 +25,7 @@ export default function DashboardOwner() {
       case "dashboard":
         return <DashboardContentOwner/>;
       case "booking":
-        return <BookingStatus />;
+        return <BookingStatus/>;
       case "payments":
         return <Payments />;
       case "settings":
