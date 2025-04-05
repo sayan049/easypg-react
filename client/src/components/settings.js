@@ -44,6 +44,7 @@ function Settings() {
     phone: user?.phone || "",
     pin: user?.pin || "",
     location: user?.location || { type: "Point", coordinates: [], address: "" },
+    
   });
 
   const [notifications, setNotifications] = useState({
@@ -164,9 +165,10 @@ function Settings() {
           ...prevData,
           location: {
             type: "Point",
-            coordinates: [longitude, latitude],
-            address, // optional field for UI display
+            coordinates: data.location?.coordinates || [0, 0],
+            address: data.location?.address || "",
           },
+          
         }));
         setIsLocationChanged(true);
       } catch (error) {
@@ -249,9 +251,10 @@ function Settings() {
           // location: data.location || "",
           location: {
             type: "Point",
-            coordinates: [longitude, latitude],
-            address, // optional field for UI display
+            coordinates: data.location?.coordinates || [0, 0],
+            address: data.location?.address || "",
           },
+          
         });
         setInitialData({
           fullName: `${data.firstName} ${data.lastName}`.trim(),
@@ -261,9 +264,10 @@ function Settings() {
           // location: data.location || "",
           location: {
             type: "Point",
-            coordinates: [longitude, latitude],
-            address, // optional field for UI display
+            coordinates: data.location?.coordinates || [0, 0],
+            address: data.location?.address || "",
           },
+          
         });
 
         console.log("Fetched data:", data);
