@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import Footer from "../components/footer";
 import { Link, useNavigate } from "react-router-dom";
@@ -10,7 +9,7 @@ import UserProfile from "../components/UserProfile";
 import "../designs/UserProfile.css";
 
 import { useAuth } from "../contexts/AuthContext";
-import { baseurl,LocationIqurl } from "../constant/urls";
+import { baseurl, LocationIqurl } from "../constant/urls";
 const HomePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,25 +37,26 @@ const HomePage = () => {
   let debounceTimeout; // Variable for debounce timeout
 
   const handleInputChange = async (event) => {
-    const query = event.target.value; 
+    const query = event.target.value;
     console.log("User Input:", query);
     setSearchItem(query);
-  
-    if (query.length > 3) { // Only search if input has 4+ characters
+
+    if (query.length > 3) {
+      // Only search if input has 4+ characters
       // Clear any previous debounce timeout
       clearTimeout(debounceTimeout);
-  
+
       // Set a debounce delay of 2 seconds
       debounceTimeout = setTimeout(async () => {
         const fetchUrl = `${LocationIqurl}?input=${encodeURIComponent(query)}`;
         console.log("Fetch URL:", fetchUrl); // Log the URL for debugging
-  
+
         try {
           const response = await fetch(fetchUrl);
           console.log("Backend Response Status:", response.status); // Check response status
           const data = await response.json();
           console.log("Autocomplete Suggestions:", data);
-  
+
           // Set the suggestions based on API response
           setSuggestions(data || []);
         } catch (error) {
@@ -67,9 +67,6 @@ const HomePage = () => {
       setSuggestions([]); // Clear suggestions for short queries
     }
   };
-  
-  
- 
 
   const handleSuggestionClick = (suggestion) => {
     setSearchItem(suggestion.display_name);
@@ -77,10 +74,9 @@ const HomePage = () => {
       lat: suggestion.lat,
       lng: suggestion.lon,
     });
-    
+
     setSuggestions([]); // Clear suggestions
   };
-  
 
   const performSearch = () => {
     if (!selectedLocation) {
@@ -89,11 +85,11 @@ const HomePage = () => {
     }
     console.log("✅ Passing Location to MessFind:", selectedLocation);
 
-    navigate("/MessFind", { state: { userLocation: selectedLocation, item: searchItem } });
+    navigate("/MessFind", {
+      state: { userLocation: selectedLocation, item: searchItem },
+    });
     setSearchItem(""); // Clear the input field after search
-
   };
-  
 
   useEffect(() => {
     const storedMessage = localStorage.getItem("sId_message");
@@ -189,9 +185,11 @@ const HomePage = () => {
                 <UserProfile className="h-16 w-16" />
 
                 <div className="dropdown-content">
-                  <p className="">
-                    {" "}
-                    <Link style={{ fontSize: "16  px" }} to="/newDashboard">
+                  <p>
+                    <Link
+                      style={{ fontSize: "16px" }}
+                      to={IsAuthenticated ? "/newDashboard" : "/DashboardOwner"}
+                    >
                       Profile
                     </Link>
                   </p>
@@ -203,7 +201,7 @@ const HomePage = () => {
               </div>
             </>
           ) : (
-            <button className="hidden lg:block rounded-full bg-white text-black px-6 py-2 border border-black hover:bg-gray-100  ">
+            <button className="hidden lg:block rounded-full bg-white text-black px-6 py-2 border border-black hover:bg-gray-100">
               <Link to="/ProviderSeeker" className="font-semibold text-xs">
                 House Owner / Student
               </Link>
@@ -363,53 +361,51 @@ const HomePage = () => {
         >
           {/* Left Content */}
           <div className="text-center lg:text-left max-w-lg">
-  <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
-    Find Your Perfect Student Home -{" "}
-    <span className="text-[#2CA4B5] lg:text-white">Hassle-Free!</span>
-  </h1>
-  <p className="text-black lg:text-white mt-4">
-    Search for Student Accommodation Website
-  </p>
-  <div className="mt-6 relative">
-    <div className="flex border-[3px] rounded-full  border-[#2CA4B5]">
-      <img
-        src="./assets/Map_Pin.png"
-        alt="map_pin"
-        className="absolute left-4 top-4"
-      />
-      <input
-        type="text"
-        placeholder="Search city or University"
-        className="w-full py-4 px-12 rounded-full shadow-lg flex-1 outline-none bg-white text-black placeholder-[#CCCCCC] focus:ring-2 focus:ring-teal-500"
-        value={searchItem}
-        onChange={handleInputChange}
-      />
-    </div>
-    <button
-      className="absolute top-2 right-3 h-11 w-11 text-white bg-[#2CA4B5] rounded-full flex items-center justify-center"
-      onClick={performSearch}
-    >
-      {/* <span>🔍</span> */}
-    </button>
+            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
+              Find Your Perfect Student Home -{" "}
+              <span className="text-[#2CA4B5] lg:text-white">Hassle-Free!</span>
+            </h1>
+            <p className="text-black lg:text-white mt-4">
+              Search for Student Accommodation Website
+            </p>
+            <div className="mt-6 relative">
+              <div className="flex border-[3px] rounded-full  border-[#2CA4B5]">
+                <img
+                  src="./assets/Map_Pin.png"
+                  alt="map_pin"
+                  className="absolute left-4 top-4"
+                />
+                <input
+                  type="text"
+                  placeholder="Search city or University"
+                  className="w-full py-4 px-12 rounded-full shadow-lg flex-1 outline-none bg-white text-black placeholder-[#CCCCCC] focus:ring-2 focus:ring-teal-500"
+                  value={searchItem}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <button
+                className="absolute top-2 right-3 h-11 w-11 text-white bg-[#2CA4B5] rounded-full flex items-center justify-center"
+                onClick={performSearch}
+              >
+                {/* <span>🔍</span> */}
+              </button>
 
-    {/* Suggestions Dropdown */}
-    {suggestions.length > 0 && (
-      <div className="absolute w-full mt-1 bg-white shadow-lg rounded-lg">
-        {suggestions.map((suggestion, index) => (
-          <div
-            key={index}
-            className="p-2 cursor-pointer hover:bg-[#2CA4B5] hover:text-white"
-            onClick={() => handleSuggestionClick(suggestion)}
-          >
-            {suggestion.display_name}
+              {/* Suggestions Dropdown */}
+              {suggestions.length > 0 && (
+                <div className="absolute w-full mt-1 bg-white shadow-lg rounded-lg">
+                  {suggestions.map((suggestion, index) => (
+                    <div
+                      key={index}
+                      className="p-2 cursor-pointer hover:bg-[#2CA4B5] hover:text-white"
+                      onClick={() => handleSuggestionClick(suggestion)}
+                    >
+                      {suggestion.display_name}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        ))}
-      </div>
-    )}
-  </div>
-</div>
-
-
 
           {/* Right Image */}
           <div className="max-w-sm lg:max-w-md mt-10 lg:mt-0 lg:order-2">
