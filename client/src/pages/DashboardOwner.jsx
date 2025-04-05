@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Home, CalendarCheck, CreditCard, Settings as Gear } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "../lib/utils";
 
 const navItems = [
   { name: "Dashboard", icon: <Home />, key: "dashboard" },
@@ -14,7 +14,7 @@ const BookingStatus = () => <div className="p-4">Booking Status Component</div>;
 const Payments = () => <div className="p-4">Payments Component</div>;
 const Settings = () => <div className="p-4">Settings Component</div>;
 
-export default function App() {
+export default function DashboardOwner() {
   const [activeTab, setActiveTab] = useState("dashboard");
 
   const renderComponent = () => {

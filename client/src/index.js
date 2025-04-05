@@ -24,6 +24,7 @@ import MailVerifyOwner from "./pages/mailVerifyOwner";
 import UserDashboard from "./pages/Dashboard";
 import IsAuth from "./pages/isAuth";
 import ViewDetails from "./pages/viewDetails";
+import DashboardOwner from "./pages/DashboardOwner";
 
 
 
@@ -98,9 +99,9 @@ root.render(
             </IsAuth>
           } />
 
-            <Route path="/userDashboard" element={
+            <Route path="/DashboardOwner" element={
               <IsAuth>
-              <UserDashboard />
+              <DashboardOwner />
               </IsAuth>
           } />
 
