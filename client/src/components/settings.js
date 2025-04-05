@@ -126,29 +126,53 @@ function Settings() {
   };
 
   const mapMake = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        const { latitude, longitude } = position.coords;
+    // if (navigator.geolocation) {
+    //   navigator.geolocation.getCurrentPosition(async (position) => {
+    //     const { latitude, longitude } = position.coords;
 
-        try {
-          const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.Google_apiKey}`
-          );
-          const data = await response.json();
+    //     try {
+    //       const response = await fetch(
+    //         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.Google_apiKey}`
+    //       );
+    //       const data = await response.json();
 
-          const address =data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
-          setPersonalInfo((prevData) => ({
-            ...prevData,
-            location: address,
-          }));
-          setIsLocationChanged(true);
-        } catch (error) {
-          console.error("Error fetching location:", error);
-        }
-      });
-    } else {
-      alert("Geolocation is not supported by this browser.");
-    }
+    //       const address =data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
+    //       setPersonalInfo((prevData) => ({
+    //         ...prevData,
+    //         location: address,
+    //       }));
+    //       setIsLocationChanged(true);
+    //     } catch (error) {
+    //       console.error("Error fetching location:", error);
+    //     }
+    //   });
+    // } else {
+    //   alert("Geolocation is not supported by this browser.");
+    // }
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const { latitude, longitude } = position.coords;
+    
+      try {
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.Google_apiKey}`
+        );
+        const data = await response.json();
+    
+        const address = data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
+        setPersonalInfo((prevData) => ({
+          ...prevData,
+          location: {
+            type: "Point",
+            coordinates: [longitude, latitude],
+            address, // optional field for UI display
+          },
+        }));
+        setIsLocationChanged(true);
+      } catch (error) {
+        console.error("Error fetching location:", error);
+      }
+    });
+    
   };
 
   const handlePasswordReset = async () => {
