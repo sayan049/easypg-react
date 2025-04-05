@@ -366,6 +366,7 @@ function Settings() {
                 onChange={handleInputChange}
                 disabled
                 className="border border-gray-300 rounded-md p-2 w-full pr-10"
+                onClick={mapMake}
               />
               <div
                 onClick={mapMake}
