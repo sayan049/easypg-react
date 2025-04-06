@@ -226,63 +226,91 @@ function Settings() {
     }
   };
 
+  // useEffect(() => {
+  //   const fetchDetails = async () => {
+  //     setIsLoading(true);
+  //     try {
+  //       const userId = type === "student" ? user?.id : owner?.id;
+  //       if (!userId) {
+  //         console.error("User ID is missing");
+  //         return;
+  //       }
+
+  //       const url = new URL(fetchDetailsUrl);
+  //       url.searchParams.append("userId", userId);
+  //       url.searchParams.append("type", type);
+
+  //       const response = await fetch(url, { method: "GET" });
+
+  //       if (!response.ok) {
+  //         throw new Error("Failed to fetch details");
+  //       }
+
+  //       const data = await response.json();
+  //       setPersonalInfo({
+  //         fullName: `${data.firstName} ${data.lastName}`.trim(),
+  //         email: data.email,
+  //         pin: data.pin || "",
+  //         phone: data.phone || "",
+  //         // location: data.location || "",
+  //         location: {
+  //           type: "Point",
+  //           coordinates: data.location?.coordinates || [0, 0],
+  //         },
+  //       });
+  //       setInitialData({
+  //         fullName: `${data.firstName} ${data.lastName}`.trim(),
+  //         email: data.email,
+  //         pin: data.pin || "",
+  //         phone: data.phone || "",
+  //         // location: data.location || "",
+  //         location: {
+  //           type: "Point",
+  //           coordinates: data.location?.coordinates || [0, 0],
+  //           address: data.location?.address || "",
+  //         },
+  //       });
+
+  //       console.log("Fetched data:", data);
+  //     } catch (error) {
+  //       console.error("Error fetching details:", error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   fetchDetails();
+
+  //   // console.log(user?.image + "xxxx");
+  // }, [type, user, owner]);
   useEffect(() => {
-    const fetchDetails = async () => {
-      setIsLoading(true);
-      try {
-        const userId = type === "student" ? user?.id : owner?.id;
-        if (!userId) {
-          console.error("User ID is missing");
-          return;
-        }
+    if (user) {
+      setPersonalInfo({
+        fullName: `${user.firstName} ${user.lastName}`.trim(),
+        email: user.email || "",
+        pin: user.pin || "",
+        phone: user.phone || "",
+        messType: user.gender || "", // use `gender` field as messType
+        location: {
+          type: "Point",
+          coordinates: user.location?.coordinates || [0, 0],
+        },
+      });
 
-        const url = new URL(fetchDetailsUrl);
-        url.searchParams.append("userId", userId);
-        url.searchParams.append("type", type);
-
-        const response = await fetch(url, { method: "GET" });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch details");
-        }
-
-        const data = await response.json();
-        setPersonalInfo({
-          fullName: `${data.firstName} ${data.lastName}`.trim(),
-          email: data.email,
-          pin: data.pin || "",
-          phone: data.phone || "",
-          // location: data.location || "",
-          location: {
-            type: "Point",
-            coordinates: data.location?.coordinates || [0, 0],
-          },
-        });
-        setInitialData({
-          fullName: `${data.firstName} ${data.lastName}`.trim(),
-          email: data.email,
-          pin: data.pin || "",
-          phone: data.phone || "",
-          // location: data.location || "",
-          location: {
-            type: "Point",
-            coordinates: data.location?.coordinates || [0, 0],
-            address: data.location?.address || "",
-          },
-        });
-
-        console.log("Fetched data:", data);
-      } catch (error) {
-        console.error("Error fetching details:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchDetails();
-
-    // console.log(user?.image + "xxxx");
-  }, [type, user, owner]);
+      setInitialData({
+        fullName: `${user.firstName} ${user.lastName}`.trim(),
+        email: user.email || "",
+        pin: user.pin || "",
+        phone: user.phone || "",
+        messType: user.gender || "",
+        location: {
+          type: "Point",
+          coordinates: user.location?.coordinates || [0, 0],
+          address: user.location?.address || "",
+        },
+      });
+    }
+  }, [user]);
 
   return (
     <div className="bg-white pb-16 pr-6 pt-6 pl-6 shadow rounded-md">

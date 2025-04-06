@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../components/sidebar";
 import BookingTable from "../components/BookingTable";
 import Settings from "../components/settings";
 import DashboardContent from "../components/dashboardContent";
+import { fetchDetailsUrl } from "../constant/urls";
 
 
 
@@ -11,7 +12,37 @@ function NewDashBoard() {
   const [activePage, setActivePage] = useState("Dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  useEffect(() => {
+    const fetchDetails = async () => {
+      setIsLoading(true);
+      try {
+        const userId = type === "student" ? user?.id : owner?.id;
+        if (!userId) {
+          console.error("User ID is missing");
+          return;
+        }
 
+        const url = new URL(fetchDetailsUrl);
+        url.searchParams.append("userId", userId);
+        url.searchParams.append("type", type);
+
+        const response = await fetch(url, { method: "GET" });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch details");
+        }
+
+        const data = await response.json();
+        setUserDetails(data); // Pass this to Settings
+      } catch (error) {
+        console.error("Error fetching details:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDetails();
+  }, [type, user, owner]);
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-800">
@@ -70,7 +101,7 @@ function NewDashBoard() {
             {activePage === "My Bookings" && <BookingTable />}
             {activePage === "Dashboard" && <DashboardContent/>}
             {activePage === "Payments" && <div>Payments Content</div>}
-            {activePage === "Settings" && <Settings />}
+            {activePage === "Settings" && <Settings user={userDetails} />}
           </div>
         </div>
       </div>
