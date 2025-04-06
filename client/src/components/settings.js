@@ -173,6 +173,7 @@ function Settings({ user }) {
 
   const handlePasswordReset = async () => {
     const { currentPassword, newPassword, confirmPassword } = passwords;
+    console.log(passwords);
 
     // Validate fields
     if (!currentPassword || !newPassword || !confirmPassword) {
