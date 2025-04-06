@@ -72,7 +72,8 @@ function Settings({ user }) {
       return; // Exit the entire function
     }
     const formData = new FormData();
-    formData.append("userId", user._id);
+    const userId = type === "student" ? user?.id : owner?.id;
+    formData.append("userId",userId);
     console.log("userid",user._id);
     formData.append("type", type);
 
