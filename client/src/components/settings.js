@@ -78,6 +78,7 @@ function Settings() {
     const formData = new FormData();
     formData.append("userId", type === "student" ? user?.id : owner?.id);
     formData.append("type", type);
+    
 
     // Object.keys(personalInfo).forEach((key) => {
     //   if (personalInfo[key]) {
@@ -88,6 +89,15 @@ function Settings() {
     //   setIsEditing(false);
     // });
     Object.keys(personalInfo).forEach((key) => {
+      if(key==="phone"){
+        const phone = personalInfo.phone;
+        const phoneRegex = /^[0-9]{10}$/;
+      
+        if (phone && !phoneRegex.test(phone)) {
+          alert("Please enter a valid 10-digit phone number.");
+          return;
+        }
+      }
       if (personalInfo[key]) {
         if (key === "location") {
           formData.append(key, JSON.stringify(personalInfo[key]));
