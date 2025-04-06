@@ -90,7 +90,7 @@ function Settings({ user }) {
         } else if (key !== "fullName") {
           formData.append(key, personalInfo[key]);
         }
-        console.log("key", personalInfo.get("key"),key);
+        console.log("key", personalInfo[key],key);
       }
     });
 
