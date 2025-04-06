@@ -44,6 +44,7 @@ function Settings() {
     phone: user?.phone || "",
     pin: user?.pin || "",
     location: user?.location || { type: "Point", coordinates: [] },
+    messType: user?.messType || "",
   });
 
   const [notifications, setNotifications] = useState({
@@ -75,6 +76,13 @@ function Settings() {
   };
 
   const handleSaveChanges = async () => {
+    const phone = personalInfo.phone;
+    const phoneRegex = /^[0-9]{10}$/;
+
+    if (phone && !phoneRegex.test(phone)) {
+      alert("Please enter a valid 10-digit phone number.");
+      return; // Exit the entire function
+    }
     const formData = new FormData();
     formData.append("userId", type === "student" ? user?.id : owner?.id);
     formData.append("type", type);
@@ -92,13 +100,12 @@ function Settings() {
         if (key === "location") {
           formData.append(key, JSON.stringify(personalInfo[key]));
           console.log("dd", formData.get("location"));
-
         } else {
           formData.append(key, personalInfo[key]);
         }
       }
     });
-    
+
     try {
       const response = await fetch(updateDetailsUrl, {
         method: "POST",
@@ -164,7 +171,7 @@ function Settings() {
         type: "Point",
         coordinates: [longitude, latitude],
       };
-      console.log("pers",updatedLocation);
+      console.log("pers", updatedLocation);
 
       setPersonalInfo((prevData) => ({
         ...prevData,
@@ -219,63 +226,91 @@ function Settings() {
     }
   };
 
+  // useEffect(() => {
+  //   const fetchDetails = async () => {
+  //     setIsLoading(true);
+  //     try {
+  //       const userId = type === "student" ? user?.id : owner?.id;
+  //       if (!userId) {
+  //         console.error("User ID is missing");
+  //         return;
+  //       }
+
+  //       const url = new URL(fetchDetailsUrl);
+  //       url.searchParams.append("userId", userId);
+  //       url.searchParams.append("type", type);
+
+  //       const response = await fetch(url, { method: "GET" });
+
+  //       if (!response.ok) {
+  //         throw new Error("Failed to fetch details");
+  //       }
+
+  //       const data = await response.json();
+  //       setPersonalInfo({
+  //         fullName: `${data.firstName} ${data.lastName}`.trim(),
+  //         email: data.email,
+  //         pin: data.pin || "",
+  //         phone: data.phone || "",
+  //         // location: data.location || "",
+  //         location: {
+  //           type: "Point",
+  //           coordinates: data.location?.coordinates || [0, 0],
+  //         },
+  //       });
+  //       setInitialData({
+  //         fullName: `${data.firstName} ${data.lastName}`.trim(),
+  //         email: data.email,
+  //         pin: data.pin || "",
+  //         phone: data.phone || "",
+  //         // location: data.location || "",
+  //         location: {
+  //           type: "Point",
+  //           coordinates: data.location?.coordinates || [0, 0],
+  //           address: data.location?.address || "",
+  //         },
+  //       });
+
+  //       console.log("Fetched data:", data);
+  //     } catch (error) {
+  //       console.error("Error fetching details:", error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   fetchDetails();
+
+  //   // console.log(user?.image + "xxxx");
+  // }, [type, user, owner]);
   useEffect(() => {
-    const fetchDetails = async () => {
-      setIsLoading(true);
-      try {
-        const userId = type === "student" ? user?.id : owner?.id;
-        if (!userId) {
-          console.error("User ID is missing");
-          return;
-        }
+    if (user) {
+      setPersonalInfo({
+        fullName: `${user.firstName} ${user.lastName}`.trim(),
+        email: user.email || "",
+        pin: user.pin || "",
+        phone: user.phone || "",
+        messType: user.gender || "", // use `gender` field as messType
+        location: {
+          type: "Point",
+          coordinates: user.location?.coordinates || [0, 0],
+        },
+      });
 
-        const url = new URL(fetchDetailsUrl);
-        url.searchParams.append("userId", userId);
-        url.searchParams.append("type", type);
-
-        const response = await fetch(url, { method: "GET" });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch details");
-        }
-
-        const data = await response.json();
-        setPersonalInfo({
-          fullName: `${data.firstName} ${data.lastName}`.trim(),
-          email: data.email,
-          pin: data.pin || "",
-          phone: data.phone || "",
-          // location: data.location || "",
-          location: {
-            type: "Point",
-            coordinates: data.location?.coordinates || [0, 0],
-          },
-        });
-        setInitialData({
-          fullName: `${data.firstName} ${data.lastName}`.trim(),
-          email: data.email,
-          pin: data.pin || "",
-          phone: data.phone || "",
-          // location: data.location || "",
-          location: {
-            type: "Point",
-            coordinates: data.location?.coordinates || [0, 0],
-            address: data.location?.address || "",
-          },
-        });
-
-        console.log("Fetched data:", data);
-      } catch (error) {
-        console.error("Error fetching details:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchDetails();
-    
-    // console.log(user?.image + "xxxx");
-  }, [type, user, owner]);
+      setInitialData({
+        fullName: `${user.firstName} ${user.lastName}`.trim(),
+        email: user.email || "",
+        pin: user.pin || "",
+        phone: user.phone || "",
+        messType: user.gender || "",
+        location: {
+          type: "Point",
+          coordinates: user.location?.coordinates || [0, 0],
+          address: user.location?.address || "",
+        },
+      });
+    }
+  }, [user]);
 
   return (
     <div className="bg-white pb-16 pr-6 pt-6 pl-6 shadow rounded-md">
@@ -379,9 +414,9 @@ function Settings() {
               <option value="" disabled>
                 Select Mess Type
               </option>
-              <option value="boys">Boys Mess</option>
-              <option value="girls">Girls Mess</option>
-              <option value="co-ed">Co-ed Mess</option>
+              <option value="Boys Pg">Boys PG</option>
+              <option value="Girls Pg">Girls PG</option>
+              <option value="Coed Pg">Co-ed PG</option>
             </select>
           </div>
           {(isEditing || isLocationChanged) && (

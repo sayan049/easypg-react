@@ -21,6 +21,13 @@ const userSchema = new mongoose.Schema({
     //   return !this.googleId; 
     // },
   },
+  messType: {
+    type: String,
+        enum: ['Girls Pg', 'Boys Pg', 'Coed Pg'], // "Coed" for mixed-gender mess
+    // required: function() {
+    //   return !this.googleId; 
+    // },
+  },
   phone: {
     type: String,
   },
