@@ -15,7 +15,7 @@ import {
   faSave,
 } from "@fortawesome/free-solid-svg-icons";
 
-function Settings() {
+function Settings({user}) {
   const [image, setImage] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,9 +32,6 @@ function Settings() {
   const {
     userName,
     IsAuthenticated,
-    isOwnerAuthenticated,
-    ownerName,
-    user,
     owner,
     type,
   } = useAuth();
@@ -328,7 +325,7 @@ function Settings() {
             className="hidden"
           />
 
-          {IsAuthenticated || isOwnerAuthenticated ? (
+          {IsAuthenticated  ? (
             <UserProfile className="!h-36 !w-36" />
           ) : null}
           {/* <label
