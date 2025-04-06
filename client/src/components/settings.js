@@ -9,6 +9,7 @@ import {
   faMapMarkerAlt,
   faEdit,
   faSave,
+  faCheck
 } from "@fortawesome/free-solid-svg-icons";
 
 function Settings({ user }) {
