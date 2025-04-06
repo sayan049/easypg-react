@@ -74,7 +74,7 @@ function Settings({ user }) {
     const formData = new FormData();
     const userId = type === "student" ? user?.id : owner?.id;
     formData.append("userId",userId);
-    console.log("userid",user._id);
+    console.log("userid",user._id,userId);
     formData.append("type", type);
 
     // Object.keys(personalInfo).forEach((key) => {
