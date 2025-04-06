@@ -78,7 +78,7 @@ function Settings() {
   const handleSaveChanges = async () => {
     const phone = personalInfo.phone;
     const phoneRegex = /^[0-9]{10}$/;
-  
+
     if (phone && !phoneRegex.test(phone)) {
       alert("Please enter a valid 10-digit phone number.");
       return; // Exit the entire function
@@ -86,7 +86,6 @@ function Settings() {
     const formData = new FormData();
     formData.append("userId", type === "student" ? user?.id : owner?.id);
     formData.append("type", type);
-    
 
     // Object.keys(personalInfo).forEach((key) => {
     //   if (personalInfo[key]) {
@@ -97,18 +96,16 @@ function Settings() {
     //   setIsEditing(false);
     // });
     Object.keys(personalInfo).forEach((key) => {
-     
       if (personalInfo[key]) {
         if (key === "location") {
           formData.append(key, JSON.stringify(personalInfo[key]));
           console.log("dd", formData.get("location"));
-
         } else {
           formData.append(key, personalInfo[key]);
         }
       }
     });
-    
+
     try {
       const response = await fetch(updateDetailsUrl, {
         method: "POST",
@@ -174,7 +171,7 @@ function Settings() {
         type: "Point",
         coordinates: [longitude, latitude],
       };
-      console.log("pers",updatedLocation);
+      console.log("pers", updatedLocation);
 
       setPersonalInfo((prevData) => ({
         ...prevData,
@@ -283,7 +280,7 @@ function Settings() {
     };
 
     fetchDetails();
-    
+
     // console.log(user?.image + "xxxx");
   }, [type, user, owner]);
 
@@ -389,9 +386,9 @@ function Settings() {
               <option value="" disabled>
                 Select Mess Type
               </option>
-              <option value="boys">Boys Mess</option>
-              <option value="girls">Girls Mess</option>
-              <option value="co-ed">Co-ed Mess</option>
+              <option value="Boys Pg">Boys PG</option>
+              <option value="Girls Pg">Girls PG</option>
+              <option value="Coed Pg">Co-ed PG</option>
             </select>
           </div>
           {(isEditing || isLocationChanged) && (
