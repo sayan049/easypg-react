@@ -44,6 +44,7 @@ function Settings() {
     phone: user?.phone || "",
     pin: user?.pin || "",
     location: user?.location || { type: "Point", coordinates: [] },
+    messType: user?.messType || "",
   });
 
   const [notifications, setNotifications] = useState({

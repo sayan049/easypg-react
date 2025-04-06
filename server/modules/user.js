@@ -21,6 +21,12 @@ const userSchema = new mongoose.Schema({
     //   return !this.googleId; 
     // },
   },
+  messType: {
+    type: String,
+    // required: function() {
+    //   return !this.googleId; 
+    // },
+  },
   phone: {
     type: String,
   },
