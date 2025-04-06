@@ -11,7 +11,7 @@ import {
   faSave,
 } from "@fortawesome/free-solid-svg-icons";
 
-function Settings({ userDetails }) {
+function Settings({ user }) {
   const [image, setImage] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,7 +25,7 @@ function Settings({ userDetails }) {
     confirmPassword: "",
   });
 
-  const { user,userName, IsAuthenticated, owner, type } = useAuth();
+  const { userName, IsAuthenticated, owner, type } = useAuth();
   const [personalInfo, setPersonalInfo] = useState({
     fullName: user?.name || "",
     email: user?.email || "",
@@ -200,7 +200,7 @@ function Settings({ userDetails }) {
           newPassword,
         }),
       });
-   //   console.log("passuse",type === "student" ? user?.id : owner?.id,user.id)
+      console.log("passuse",type === "student" ? user?.id : owner?.id,user._id)
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.error || "Password update failed");
@@ -275,33 +275,33 @@ function Settings({ userDetails }) {
   //   // console.log(user?.image + "xxxx");
   // }, [type, user, owner]);
   useEffect(() => {
-    if (userDetails) {
+    if (user) {
       setPersonalInfo({
-        fullName: `${userDetails.firstName} ${userDetails.lastName}`.trim(),
-        email: userDetails.email || "",
-        pin: userDetails.pin || "",
-        phone: userDetails.phone || "",
-        messType: userDetails.messType || "", // use `gender` field as messType
+        fullName: `${user.firstName} ${user.lastName}`.trim(),
+        email: user.email || "",
+        pin: user.pin || "",
+        phone: user.phone || "",
+        messType: user.messType || "", // use `gender` field as messType
         location: {
           type: "Point",
-          coordinates: userDetails.location?.coordinates || [0, 0],
+          coordinates: user.location?.coordinates || [0, 0],
         },
       });
 
       setInitialData({
-        fullName: `${userDetails.firstName} ${userDetails.lastName}`.trim(),
-        email: userDetails.email || "",
-        pin: userDetails.pin || "",
+        fullName: `${user.firstName} ${user.lastName}`.trim(),
+        email: user.email || "",
+        pin: user.pin || "",
         phone: user.phone || "",
-        messType: userDetails.messType || "",
+        messType: user.messType || "",
         location: {
           type: "Point",
-          coordinates: userDetails.location?.coordinates || [0, 0],
-          address: userDetails.location?.address || "",
+          coordinates: user.location?.coordinates || [0, 0],
+          address: user.location?.address || "",
         },
       });
     }
-  }, [userDetails]);
+  }, [user]);
 
   return (
     <div className="bg-white pb-16 pr-6 pt-6 pl-6 shadow rounded-md">
