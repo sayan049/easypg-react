@@ -289,7 +289,7 @@ function Settings({ userDetails }) {
       });
 
       setInitialData({
-        fullName: `${userDetails.firstName} ${uuserDetailsser.lastName}`.trim(),
+        fullName: `${userDetails.firstName} ${userDetails.lastName}`.trim(),
         email: userDetails.email || "",
         pin: userDetails.pin || "",
         phone: user.phone || "",
