@@ -87,10 +87,10 @@ function Settings({ user }) {
       if (personalInfo[key]) {
         if (key === "location") {
           formData.append(key, JSON.stringify(personalInfo[key]));
-        } else if (key !== "fullName") {
+        } else{
           formData.append(key, personalInfo[key]);
         }
-        console.log("key", personalInfo[key],key);
+        console.log("key", personalInfo[key],formData.get(key),key);
       }
     });
 
