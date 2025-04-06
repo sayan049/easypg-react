@@ -90,7 +90,7 @@ function Settings({ user }) {
         } else if (key !== "fullName") {
           formData.append(key, personalInfo[key]);
         }
-        console.log("key", personalInfo.get("key"),key);
+        console.log("key", personalInfo[key],key);
       }
     });
 
@@ -278,7 +278,7 @@ function Settings({ user }) {
         email: user.email || "",
         pin: user.pin || "",
         phone: user.phone || "",
-        messType: user.gender || "", // use `gender` field as messType
+        messType: user.messType || "", // use `gender` field as messType
         location: {
           type: "Point",
           coordinates: user.location?.coordinates || [0, 0],
@@ -290,7 +290,7 @@ function Settings({ user }) {
         email: user.email || "",
         pin: user.pin || "",
         phone: user.phone || "",
-        messType: user.gender || "",
+        messType: user.messType || "",
         location: {
           type: "Point",
           coordinates: user.location?.coordinates || [0, 0],
