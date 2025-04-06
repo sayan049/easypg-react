@@ -112,7 +112,7 @@ function NewDashBoard() {
             {activePage === "My Bookings" && <BookingTable />}
             {activePage === "Dashboard" && <DashboardContent/>}
             {activePage === "Payments" && <div>Payments Content</div>}
-            {activePage === "Settings" && <Settings user={userDetails} />}
+            {activePage === "Settings" && <Settings userDetails={userDetails} />}
           </div>
         </div>
       </div>

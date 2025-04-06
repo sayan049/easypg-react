@@ -11,7 +11,7 @@ import {
   faSave,
 } from "@fortawesome/free-solid-svg-icons";
 
-function Settings({ user }) {
+function Settings({ userDetails }) {
   const [image, setImage] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,7 +25,7 @@ function Settings({ user }) {
     confirmPassword: "",
   });
 
-  const { userName, IsAuthenticated, owner, type } = useAuth();
+  const { user,userName, IsAuthenticated, owner, type } = useAuth();
   const [personalInfo, setPersonalInfo] = useState({
     fullName: user?.name || "",
     email: user?.email || "",
@@ -194,13 +194,13 @@ function Settings({ user }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: type === "student" ? user?.id : owner?.id,
+          userId: type === "student" ? user?._id : owner?._id,
           type,
           currentPassword,
           newPassword,
         }),
       });
-      console.log("passuse",type === "student" ? user?.id : owner?.id,user.id)
+   //   console.log("passuse",type === "student" ? user?.id : owner?.id,user.id)
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.error || "Password update failed");
@@ -275,33 +275,33 @@ function Settings({ user }) {
   //   // console.log(user?.image + "xxxx");
   // }, [type, user, owner]);
   useEffect(() => {
-    if (user) {
+    if (userDetails) {
       setPersonalInfo({
-        fullName: `${user.firstName} ${user.lastName}`.trim(),
-        email: user.email || "",
-        pin: user.pin || "",
-        phone: user.phone || "",
-        messType: user.messType || "", // use `gender` field as messType
+        fullName: `${userDetails.firstName} ${userDetails.lastName}`.trim(),
+        email: userDetails.email || "",
+        pin: userDetails.pin || "",
+        phone: userDetails.phone || "",
+        messType: userDetails.messType || "", // use `gender` field as messType
         location: {
           type: "Point",
-          coordinates: user.location?.coordinates || [0, 0],
+          coordinates: userDetails.location?.coordinates || [0, 0],
         },
       });
 
       setInitialData({
-        fullName: `${user.firstName} ${user.lastName}`.trim(),
-        email: user.email || "",
-        pin: user.pin || "",
+        fullName: `${userDetails.firstName} ${uuserDetailsser.lastName}`.trim(),
+        email: userDetails.email || "",
+        pin: userDetails.pin || "",
         phone: user.phone || "",
-        messType: user.messType || "",
+        messType: userDetails.messType || "",
         location: {
           type: "Point",
-          coordinates: user.location?.coordinates || [0, 0],
-          address: user.location?.address || "",
+          coordinates: userDetails.location?.coordinates || [0, 0],
+          address: userDetails.location?.address || "",
         },
       });
     }
-  }, [user]);
+  }, [userDetails]);
 
   return (
     <div className="bg-white pb-16 pr-6 pt-6 pl-6 shadow rounded-md">
