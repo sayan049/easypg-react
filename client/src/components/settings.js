@@ -347,7 +347,7 @@ function Settings({user}) {
           </h3>
           <div className="grid grid-cols-1 gap-4">
             {Object.entries(personalInfo)
-              .filter(([key]) => key !== "password" && key !== "location")
+              .filter(([key]) => key !== "password" && key !== "location" && key !=="messType")
               .map(([key, value]) => (
                 <div key={key} className="relative">
                   <input
