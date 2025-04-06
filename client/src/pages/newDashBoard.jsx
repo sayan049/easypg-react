@@ -5,16 +5,27 @@ import BookingTable from "../components/BookingTable";
 import Settings from "../components/settings";
 import DashboardContent from "../components/dashboardContent";
 import { fetchDetailsUrl } from "../constant/urls";
+import { useAuth } from "../contexts/AuthContext";
 
 
 
 function NewDashBoard() {
   const [activePage, setActivePage] = useState("Dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [userDetails, setUserDetails] = useState(null);
+  const {
+      userName,
+      IsAuthenticated,
+      isOwnerAuthenticated,
+      ownerName,
+      user,
+      owner,
+      type,
+    } = useAuth();
 
   useEffect(() => {
     const fetchDetails = async () => {
-      setIsLoading(true);
+     // setIsLoading(true);
       try {
         const userId = type === "student" ? user?.id : owner?.id;
         if (!userId) {
