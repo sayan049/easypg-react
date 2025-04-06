@@ -25,7 +25,7 @@ function Settings({ user }) {
     confirmPassword: "",
   });
 
-  const { userName, IsAuthenticated, owner, type, user } = useAuth();
+  const { userName, IsAuthenticated, owner, type } = useAuth();
   const [personalInfo, setPersonalInfo] = useState({
     fullName: user?.name || "",
     email: user?.email || "",
@@ -277,6 +277,7 @@ function Settings({ user }) {
   //   // console.log(user?.image + "xxxx");
   // }, [type, user, owner]);
   useEffect(() => {
+    console.log("verify",user.is_verified);
     if (!user._id) {
       alert("something wnt wrong user id is null");
     }
