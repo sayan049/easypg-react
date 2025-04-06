@@ -72,7 +72,8 @@ function Settings({ user }) {
       return; // Exit the entire function
     }
     const formData = new FormData();
-    formData.append("userId", user?.id);
+    formData.append("userId", user.id);
+    console.log("userid",user.id);
     formData.append("type", type);
 
     // Object.keys(personalInfo).forEach((key) => {
