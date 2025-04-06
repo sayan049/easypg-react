@@ -48,7 +48,7 @@ function NewDashBoard() {
       } catch (error) {
         console.error("Error fetching details:", error);
       } finally {
-        setIsLoading(false);
+      //  setIsLoading(false);
       }
     };
 
