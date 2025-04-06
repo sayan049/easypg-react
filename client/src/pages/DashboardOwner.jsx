@@ -40,7 +40,7 @@ export default function DashboardOwner() {
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Sidebar */}
-      <div className="hidden md:flex md:flex-col w-64 bg-white shadow h-screen p-4 items-center">
+      <div className="hidden md:flex md:flex-col w-64 bg-white shadow h-auto p-4 items-center">
         <img
           src="https://via.placeholder.com/80"
           alt="Profile"
@@ -67,7 +67,7 @@ export default function DashboardOwner() {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 bg-gray-50 p-4">
+      <div className="flex-1 bg-gray-50 p-4 pb-[62px] md:pb-0 lg:pb-0">
         {renderComponent()}
       </div>
 
