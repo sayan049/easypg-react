@@ -361,7 +361,7 @@ function Settings({ user }) {
                     className="border border-gray-300 rounded-md p-2 w-full"
                     readOnly={editingField !== key}
                   />
-                  {key === "email" ? (
+                  {(key === "email" || key === "fullName") ? (
                   <button
                  
                 //  className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-2xl text-blue-500"
