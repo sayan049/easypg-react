@@ -11,7 +11,7 @@ import {
   faSave,
 } from "@fortawesome/free-solid-svg-icons";
 
-function Settings({ user }) {
+function Settings() {
   const [image, setImage] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,7 +25,7 @@ function Settings({ user }) {
     confirmPassword: "",
   });
 
-  const { userName, IsAuthenticated, owner, type } = useAuth();
+  const { userName, IsAuthenticated, owner, type ,user } = useAuth();
   const [personalInfo, setPersonalInfo] = useState({
     fullName: user?.name || "",
     email: user?.email || "",
