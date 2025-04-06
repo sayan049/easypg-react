@@ -173,8 +173,6 @@ function Settings({user}) {
 
   const handlePasswordReset = async () => {
     const { currentPassword, newPassword, confirmPassword } = passwords;
-    console.log(passwords);
-
     // Validate fields
     if (!currentPassword || !newPassword || !confirmPassword) {
       alert("All fields are required!");
@@ -275,6 +273,9 @@ function Settings({user}) {
   //   // console.log(user?.image + "xxxx");
   // }, [type, user, owner]);
   useEffect(() => {
+    if(!user._id){
+      alert("something wnt wrong user id is null");
+    }
     if (user) {
       setPersonalInfo({
         fullName: `${user.firstName} ${user.lastName}`.trim(),
