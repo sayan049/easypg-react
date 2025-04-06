@@ -40,7 +40,7 @@ export default function DashboardOwner() {
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Sidebar */}
-      <div className="hidden md:flex md:flex-col w-64 bg-white shadow h-auto p-4 items-center">
+      <div className="hidden md:flex md:flex-col w-64 bg-white shadow  p-4 items-center sticky top-0 h-screen">
         <img
           src="https://via.placeholder.com/80"
           alt="Profile"
