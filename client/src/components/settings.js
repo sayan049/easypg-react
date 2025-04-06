@@ -96,7 +96,7 @@ function Settings({user}) {
         if (key === "location") {
           formData.append(key, JSON.stringify(personalInfo[key]));
           console.log("dd", formData.get("location"));
-        } else if(key !== "name") {
+        } else if(key !== "fullName") {
           formData.append(key, personalInfo[key]);
         }
       }
