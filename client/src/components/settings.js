@@ -4,18 +4,14 @@ import ToggleSwitch from "./toggle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import UserProfile from "../components/UserProfile";
 import { useAuth } from "../contexts/AuthContext";
-import {
-  fetchDetailsUrl,
-  updateDetailsUrl,
-  resetPasswordDashboard,
-} from "../constant/urls";
+import { updateDetailsUrl, resetPasswordDashboard } from "../constant/urls";
 import {
   faMapMarkerAlt,
   faEdit,
   faSave,
 } from "@fortawesome/free-solid-svg-icons";
 
-function Settings() {
+function Settings({ user }) {
   const [image, setImage] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,15 +25,7 @@ function Settings() {
     confirmPassword: "",
   });
 
-  const {
-    userName,
-    IsAuthenticated,
-    isOwnerAuthenticated,
-    ownerName,
-    user,
-    owner,
-    type,
-  } = useAuth();
+  const { userName, IsAuthenticated, owner, type } = useAuth();
   const [personalInfo, setPersonalInfo] = useState({
     fullName: user?.name || "",
     email: user?.email || "",
@@ -99,10 +87,10 @@ function Settings() {
       if (personalInfo[key]) {
         if (key === "location") {
           formData.append(key, JSON.stringify(personalInfo[key]));
-          console.log("dd", formData.get("location"));
-        } else {
+        } else if (key !== "fullName") {
           formData.append(key, personalInfo[key]);
         }
+        console.log("key", personalInfo.get("key"),key);
       }
     });
 
@@ -328,9 +316,7 @@ function Settings() {
             className="hidden"
           />
 
-          {IsAuthenticated || isOwnerAuthenticated ? (
-            <UserProfile className="!h-36 !w-36" />
-          ) : null}
+          {IsAuthenticated ? <UserProfile className="!h-36 !w-36" /> : null}
           {/* <label
             htmlFor="file"
             className="cursor-pointer text-xl text-blue-600 text-white relative top-[-34px] left-[18px] "
@@ -350,7 +336,10 @@ function Settings() {
           </h3>
           <div className="grid grid-cols-1 gap-4">
             {Object.entries(personalInfo)
-              .filter(([key]) => key !== "password" && key !== "location")
+              .filter(
+                ([key]) =>
+                  key !== "password" && key !== "location" && key !== "messType"
+              )
               .map(([key, value]) => (
                 <div key={key} className="relative">
                   <input
@@ -408,7 +397,10 @@ function Settings() {
             <select
               name="messType"
               value={personalInfo.messType || ""}
-              onChange={handleInputChange}
+              onChange={(e) => {
+                handleInputChange(e);
+                setIsEditing(true); // this makes the Save Changes button appear
+              }}
               className="border border-gray-300 rounded-md p-2 w-full"
             >
               <option value="" disabled>
