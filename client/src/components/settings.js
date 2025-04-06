@@ -358,7 +358,7 @@ function Settings({user}) {
                   {key==="email" ?(
                       <button
                       onClick={() => handleEditClick(key)}
-                      className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-2xl bg-green-500"
+                      className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
                     >
                       Verify
                     </button>)
