@@ -277,7 +277,7 @@ function Settings({ user }) {
   //   // console.log(user?.image + "xxxx");
   // }, [type, user, owner]);
   useEffect(() => {
-    console.log("verify",user.is_verified);
+   // console.log("verify",user.is_verified);
     if (!user._id) {
       alert("something wnt wrong user id is null");
     }
@@ -361,12 +361,21 @@ function Settings({ user }) {
                     readOnly={editingField !== key}
                   />
                   {key === "email" ? (
-                    <button
+                    user?.is_verified ? (
+                      <button
+                        onClick={() => handleEditClick(key)}
+                        className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-2xl"
+                      >
+                       <FontAwesomeIcon icon={faCheck} className="text-green-500" />
+                      </button>
+                    )
+                    :
+                   ( <button
                       // onClick={() => handleEditClick(key)}
                       className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
                     >
                       Verify
-                    </button>
+                    </button>)
                   ) : (
                     <button
                       onClick={() => handleEditClick(key)}
