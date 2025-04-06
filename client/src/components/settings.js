@@ -200,7 +200,7 @@ function Settings({ user }) {
           newPassword,
         }),
       });
-
+      console.log("passuse",type === "student" ? user?.id : owner?.id,user.id)
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.error || "Password update failed");
