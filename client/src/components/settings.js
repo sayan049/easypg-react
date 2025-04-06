@@ -11,7 +11,7 @@ import {
   faSave,
 } from "@fortawesome/free-solid-svg-icons";
 
-function Settings({ user }) {
+function Settings({user}) {
   const [image, setImage] = useState(null);
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,7 +25,7 @@ function Settings({ user }) {
     confirmPassword: "",
   });
 
-  const { userName, IsAuthenticated, owner, type } = useAuth();
+  const { userName, IsAuthenticated, owner, type  } = useAuth();
   const [personalInfo, setPersonalInfo] = useState({
     fullName: user?.name || "",
     email: user?.email || "",
@@ -73,8 +73,8 @@ function Settings({ user }) {
     }
     const formData = new FormData();
     const userId = type === "student" ? user?.id : owner?.id;
-    formData.append("userId", user._id);
-    console.log("userid", user._id, userId);
+    formData.append("userId",user._id);
+    console.log("userid",user._id,userId);
     formData.append("type", type);
 
     // Object.keys(personalInfo).forEach((key) => {
@@ -89,10 +89,10 @@ function Settings({ user }) {
       if (personalInfo[key]) {
         if (key === "location") {
           formData.append(key, JSON.stringify(personalInfo[key]));
-        } else {
+        } else{
           formData.append(key, personalInfo[key]);
         }
-        console.log("key", personalInfo[key], formData.get(key), key);
+        console.log("key", personalInfo[key],formData.get(key),key);
       }
     });
 
@@ -198,11 +198,7 @@ function Settings({ user }) {
           newPassword,
         }),
       });
-      console.log(
-        "passuse",
-        type === "student" ? user?.id : owner?.id,
-        user._id
-      );
+      console.log("passuse",type === "student" ? user?.id : owner?.id,user._id)
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.error || "Password update failed");
@@ -277,7 +273,7 @@ function Settings({ user }) {
   //   // console.log(user?.image + "xxxx");
   // }, [type, user, owner]);
   useEffect(() => {
-    if (!user._id) {
+    if(!user._id){
       alert("something wnt wrong user id is null");
     }
     if (user) {
@@ -359,28 +355,32 @@ function Settings({ user }) {
                     className="border border-gray-300 rounded-md p-2 w-full"
                     readOnly={editingField !== key}
                   />
-                  {/* <button
+                  {key==="email" ?(
+                      <button
+                      onClick={() => handleEditClick(key)}
+                      className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-2xl bg-green-500"
+                    >
+                      Verify
+                    </button>)
+                    :
+                   ( <button
                     onClick={() => handleEditClick(key)}
                     className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-2xl text-blue-500"
                   >
                     <FontAwesomeIcon
                       icon={editingField === key ? faSave : faEdit}
                     />
-                  </button> */}
-                  {key === "email" ? (
-                    <button
-                      className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
-                      onClick={() =>
-                        alert("Verify email functionality goes here")
-                      }
-                    >
-                      Verify
-                    </button>
-                  ) : (
-                    <FontAwesomeIcon
-                      icon={editingField === key ? faSave : faEdit}
-                    />
+                  </button>
                   )}
+
+                  {/* <button
+                  //   onClick={() => handleEditClick(key)}
+                  //   className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-2xl text-blue-500"
+                  // >
+                  //   <FontAwesomeIcon
+                  //     icon={editingField === key ? faSave : faEdit}
+                  //   />
+                  // </button> */}
                 </div>
               ))}
 
