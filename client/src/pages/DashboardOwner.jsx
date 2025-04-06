@@ -4,6 +4,7 @@ import { Home, CalendarCheck, CreditCard, Settings as Gear } from "lucide-react"
 import { cn } from "../lib/utils";
 import DashboardContentOwner from "../components/dashboardContentOwner";
 import BookingStatus from "../components/BookingStatus";
+import Payments from "../components/paymentOwner";
 
 const navItems = [
   { name: "Dashboard", icon: <Home />, key: "dashboard" },
@@ -14,7 +15,7 @@ const navItems = [
 
 // const Dashboard = () => <div className="p-4">Dashboard Component</div>;
 // const BookingStatus = () => <div className="p-4">Booking Status Component</div>;
-const Payments = () => <div className="p-4">Payments Component</div>;
+// const Payments = () => <div className="p-4">Payments Component</div>;
 const Settings = () => <div className="p-4">Settings Component</div>;
 
 export default function DashboardOwner() {
@@ -27,7 +28,7 @@ export default function DashboardOwner() {
       case "booking":
         return <BookingStatus/>;
       case "payments":
-        return <Payments />;
+        return <Payments/>;
       case "settings":
         return <Settings />;
       default:
