@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import UserProfile from "../components/UserProfile";
 import { useAuth } from "../contexts/AuthContext";
 import {
-  fetchDetailsUrl,
   updateDetailsUrl,
   resetPasswordDashboard,
 } from "../constant/urls";
@@ -97,7 +96,7 @@ function Settings({user}) {
         if (key === "location") {
           formData.append(key, JSON.stringify(personalInfo[key]));
           console.log("dd", formData.get("location"));
-        } else {
+        } else if(key !== "name") {
           formData.append(key, personalInfo[key]);
         }
       }
