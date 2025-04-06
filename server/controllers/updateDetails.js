@@ -20,10 +20,17 @@ exports.updateDetails = async (req, res) => {
             }
 
             // Update allowed fields
-            const allowedUpdates = ["address", "pin"];
+            const allowedUpdates = ["address", "pin","location","phone"];
             for (const key in updateData) {
                 if (allowedUpdates.includes(key)) {
-                    updatedUser[key] = updateData[key];
+                   console.log(key,"key")
+                    // updatedUser[key] = updateData[key];
+                    if (key === "location") {
+                      updatedUser[key] = JSON.parse(updateData[key]); // Parse the location string
+                    } else {
+                      updatedUser[key] = updateData[key];
+                    }
+                    
                 }
             }
 

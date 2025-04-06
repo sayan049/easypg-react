@@ -17,6 +17,12 @@ const userSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
+    // required: function() {
+    //   return !this.googleId; 
+    // },
+  },
+  phone: {
+    type: String,
   },
   location: {
     type: {
