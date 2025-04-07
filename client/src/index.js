@@ -13,7 +13,7 @@ import LoginOwner from "./pages/LoginOwner";
 import SignupOwner from "./pages/signupOwner";
 import NewDashboard from "./pages/newDashBoard";
 import GoogleCallbackPage from "./pages/GoogleCallbackPage";
-import {BookingPage} from "./pages/BookingPage";
+// import {BookingPage} from "./pages/BookingPage";
 // import Test from "./pages/test";
 
 import MessFind from "./pages/MessFind";
@@ -107,7 +107,7 @@ root.render(
 
           <Route path="/ViewDetails" element={<ViewDetails />} />
 
-          <Route path="/BookingPage" element={<BookingPage />} />
+          {/* <Route path="/BookingPage" element={<BookingPage />} /> */}
 
           <Route path="/googleCallback" element={<GoogleCallbackPage />} />
 
