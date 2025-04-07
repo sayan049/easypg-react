@@ -135,11 +135,6 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 
-const room1 = "https://source.unsplash.com/800x600/?room";
-const room2 = "https://source.unsplash.com/800x600/?bedroom";
-const room3 = "https://source.unsplash.com/800x600/?interior";
-const room4 = "https://source.unsplash.com/800x600/?hotel";
-
 // Button component
 export function Button({ children, className = "", ...props }: any) {
   return (
@@ -252,10 +247,8 @@ export default function BookingPage() {
             <CardContent>
               <h2 className="text-xl font-semibold mb-4">Room Preview</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <img src={room1} alt="Room Preview 1" className="rounded-2xl w-full h-48 object-cover" />
-                <img src={room2} alt="Room Preview 2" className="rounded-2xl w-full h-48 object-cover" />
-                <img src={room3} alt="Room Preview 3" className="rounded-2xl w-full h-48 object-cover" />
-                <img src={room4} alt="Room Preview 4" className="rounded-2xl w-full h-48 object-cover" />
+                <img src="https://source.unsplash.com/featured/?room,bedroom" alt="Room Preview" className="rounded-2xl w-full h-48 object-cover" />
+                <img src="https://source.unsplash.com/featured/?interior,room" alt="Room Preview" className="rounded-2xl w-full h-48 object-cover" />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-sm text-gray-700">
                 <ul className="space-y-1">
@@ -303,7 +296,7 @@ export default function BookingPage() {
           <Card>
             <CardContent className="space-y-4">
               <h2 className="text-xl font-semibold">Payment Method</h2>
-              <RadioGroup>
+              <RadioGroup defaultValue="upi">
                 <label className="flex items-center gap-2">
                   <RadioGroupItem value="upi" id="upi" /> UPI Payment
                 </label>
