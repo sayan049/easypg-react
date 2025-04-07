@@ -9,6 +9,7 @@ import {
   faMapMarkerAlt,
   faEdit,
   faSave,
+  faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 
 function Settings({ user }) {
@@ -72,7 +73,9 @@ function Settings({ user }) {
       return; // Exit the entire function
     }
     const formData = new FormData();
-    formData.append("userId", type === "student" ? user?.id : owner?.id);
+    const userId = type === "student" ? user?.id : owner?.id;
+    formData.append("userId", user._id);
+    console.log("userid", user._id, userId);
     formData.append("type", type);
 
     // Object.keys(personalInfo).forEach((key) => {
@@ -87,10 +90,10 @@ function Settings({ user }) {
       if (personalInfo[key]) {
         if (key === "location") {
           formData.append(key, JSON.stringify(personalInfo[key]));
-        } else if (key !== "fullName") {
+        } else {
           formData.append(key, personalInfo[key]);
         }
-        console.log("key", personalInfo[key],key);
+        console.log("key", personalInfo[key], formData.get(key), key);
       }
     });
 
@@ -171,7 +174,6 @@ function Settings({ user }) {
 
   const handlePasswordReset = async () => {
     const { currentPassword, newPassword, confirmPassword } = passwords;
-
     // Validate fields
     if (!currentPassword || !newPassword || !confirmPassword) {
       alert("All fields are required!");
@@ -191,13 +193,17 @@ function Settings({ user }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: type === "student" ? user?.id : owner?.id,
+          userId: type === "student" ? user?._id : owner?._id,
           type,
           currentPassword,
           newPassword,
         }),
       });
-
+      console.log(
+        "passuse",
+        type === "student" ? user?.id : owner?.id,
+        user._id
+      );
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.error || "Password update failed");
@@ -272,6 +278,10 @@ function Settings({ user }) {
   //   // console.log(user?.image + "xxxx");
   // }, [type, user, owner]);
   useEffect(() => {
+    // console.log("verify",user.is_verified);
+    if (!user._id) {
+      alert("something wnt wrong user id is null");
+    }
     if (user) {
       setPersonalInfo({
         fullName: `${user.firstName} ${user.lastName}`.trim(),
@@ -351,14 +361,32 @@ function Settings({ user }) {
                     className="border border-gray-300 rounded-md p-2 w-full"
                     readOnly={editingField !== key}
                   />
+                  {(key === "email" || key === "fullName") ? (
                   <button
-                    onClick={() => handleEditClick(key)}
-                    className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-2xl text-blue-500"
-                  >
-                    <FontAwesomeIcon
-                      icon={editingField === key ? faSave : faEdit}
-                    />
-                  </button>
+                 
+                //  className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-2xl text-blue-500"
+                >
+                
+                </button>
+                  ) : (
+                    <button
+                      onClick={() => handleEditClick(key)}
+                      className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-2xl text-blue-500"
+                    >
+                      <FontAwesomeIcon
+                        icon={editingField === key ? faSave : faEdit}
+                      />
+                    </button>
+                  )}
+
+                  {/* <button
+                  //   onClick={() => handleEditClick(key)}
+                  //   className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-2xl text-blue-500"
+                  // >
+                  //   <FontAwesomeIcon
+                  //     icon={editingField === key ? faSave : faEdit}
+                  //   />
+                  // </button> */}
                 </div>
               ))}
 
