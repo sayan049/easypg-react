@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
 import { Link } from "react-router-dom";
 import { Home, CalendarCheck, CreditCard, Settings as Gear } from "lucide-react";
 import { cn } from "../lib/utils";
@@ -6,6 +7,8 @@ import DashboardContentOwner from "../components/dashboardContentOwner";
 import BookingStatus from "../components/BookingStatus";
 import Payments from "../components/paymentOwner";
 import SettingsOwner from "../components/settingsOwner";
+import { fetchDetailsUrl } from "../constant/urls";
+import { useAuth } from "../contexts/AuthContext";
 
 const navItems = [
   { name: "Dashboard", icon: <Home />, key: "dashboard" },
@@ -21,6 +24,7 @@ const navItems = [
 
 export default function DashboardOwner() {
   const [activeTab, setActiveTab] = useState("dashboard");
+  
 
   const renderComponent = () => {
     switch (activeTab) {
@@ -31,11 +35,52 @@ export default function DashboardOwner() {
       case "payments":
         return <Payments/>;
       case "settings":
-        return <SettingsOwner/>;
+        return <SettingsOwner userDetails={userDetails}/>;
       default:
         return null;
     }
   };
+    const [userDetails, setUserDetails] = useState(null);
+    const {
+        userName,
+        IsAuthenticated,
+        isOwnerAuthenticated,
+        ownerName,
+        user,
+        owner,
+        type,
+      } = useAuth();
+  useEffect(() => {
+          const fetchDetails = async () => {
+           // setIsLoading(true);
+            try {
+              const userId = type === "owner" ? owner?.id : user?.id;
+              if (!userId) {
+                console.error("User ID is missing");
+                return;
+              }
+      
+              const url = new URL(fetchDetailsUrl);
+              url.searchParams.append("userId", userId);
+              url.searchParams.append("type", type);
+      
+              const response = await fetch(url, { method: "GET" });
+      
+              if (!response.ok) {
+                throw new Error("Failed to fetch details");
+              }
+      
+              const data = await response.json();
+              setUserDetails(data); // Pass this to Settings
+            } catch (error) {
+              console.error("Error fetching details:", error);
+            } finally {
+            //  setIsLoading(false);
+            }
+          };
+      
+          fetchDetails();
+        }, [type, user, owner]);
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
