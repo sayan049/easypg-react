@@ -1,12 +1,4 @@
 import React, { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Calendar } from '@/components/ui/calendar';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-
-
 
 export default function BookingPage() {
   const [selectedRoom, setSelectedRoom] = useState('102');
@@ -17,8 +9,8 @@ export default function BookingPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Side */}
         <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <CardContent className="p-4 space-y-4">
+          <div className="rounded-2xl shadow-md bg-white">
+            <div className="p-4 space-y-4">
               <h2 className="text-xl font-semibold">Select a Room</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[{ id: '101', price: 12000, available: true }, { id: '102', price: 15000, available: false }].map((room) => (
@@ -43,21 +35,20 @@ export default function BookingPage() {
                       ₹{room.price.toLocaleString()}
                       <span className="text-sm font-medium text-gray-500">/mo</span>
                     </div>
-                    <Button
+                    <button
                       onClick={() => setSelectedRoom(room.id)}
-                      className="w-full"
-                      variant={selectedRoom === room.id ? 'default' : 'outline'}
+                      className={`w-full py-2 px-4 rounded-md font-semibold ${selectedRoom === room.id ? 'bg-blue-600 text-white' : 'border border-blue-600 text-blue-600'}`}
                     >
                       {selectedRoom === room.id ? 'Selected' : 'Select'}
-                    </Button>
+                    </button>
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card>
-            <CardContent className="p-4">
+          <div className="rounded-2xl shadow-md bg-white">
+            <div className="p-4">
               <h2 className="text-xl font-semibold mb-4">Room Preview</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <img src="/room-preview1.jpg" alt="Room Preview" className="rounded-2xl w-full h-48 object-cover" />
@@ -75,30 +66,25 @@ export default function BookingPage() {
                   <li>✅ 1 Bed Available</li>
                 </ul>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* Right Side */}
         <div className="space-y-6">
-          <Card>
-            <CardContent className="p-4 space-y-4">
+          <div className="rounded-2xl shadow-md bg-white">
+            <div className="p-4 space-y-4">
               <h2 className="text-xl font-semibold">Booking Summary</h2>
               <div>
                 <label className="text-sm">Check-in Date</label>
-                <Calendar className="mt-2" />
+                <input type="date" className="mt-2 border rounded-md w-full p-2" />
               </div>
               <div>
                 <label className="text-sm">Duration</label>
-                <Select>
-                  <SelectTrigger className="w-full mt-2">
-                    <SelectValue placeholder="3 months" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="3">3 months</SelectItem>
-                    <SelectItem value="6">6 months</SelectItem>
-                  </SelectContent>
-                </Select>
+                <select className="mt-2 border rounded-md w-full p-2">
+                  <option>3 months</option>
+                  <option>6 months</option>
+                </select>
               </div>
               <div className="text-sm text-gray-700">
                 <p>Room Rent (monthly): ₹15,000</p>
@@ -108,36 +94,36 @@ export default function BookingPage() {
               <div className="text-lg font-bold text-right">
                 Total: ₹1,05,000
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card>
-            <CardContent className="p-4 space-y-4">
+          <div className="rounded-2xl shadow-md bg-white">
+            <div className="p-4 space-y-4">
               <h2 className="text-xl font-semibold">Payment Method</h2>
-              <RadioGroup defaultValue="upi">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="upi" />
-                  <label>UPI Payment</label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="card" />
-                  <label>Credit/Debit Card</label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="netbanking" />
-                  <label>Net Banking</label>
-                </div>
-              </RadioGroup>
+              <div className="space-y-2">
+                <label className="flex items-center gap-2">
+                  <input type="radio" name="payment" value="upi" defaultChecked />
+                  UPI Payment
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="radio" name="payment" value="card" />
+                  Credit/Debit Card
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="radio" name="payment" value="netbanking" />
+                  Net Banking
+                </label>
+              </div>
               <div>
                 <label className="text-sm">Have a coupon?</label>
                 <div className="flex items-center gap-2 mt-2">
-                  <Input placeholder="Enter code" />
-                  <Button>Apply</Button>
+                  <input className="border p-2 rounded-md flex-1" placeholder="Enter code" />
+                  <button className="bg-blue-600 text-white px-4 py-2 rounded-md">Apply</button>
                 </div>
               </div>
-              <Button className="w-full mt-4">Proceed to Payment</Button>
-            </CardContent>
-          </Card>
+              <button className="w-full mt-4 bg-blue-600 text-white py-2 px-4 rounded-md">Proceed to Payment</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
