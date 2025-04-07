@@ -13,7 +13,7 @@ import LoginOwner from "./pages/LoginOwner";
 import SignupOwner from "./pages/signupOwner";
 import NewDashboard from "./pages/newDashBoard";
 import GoogleCallbackPage from "./pages/GoogleCallbackPage";
-// import {BookingPage} from "./pages/BookingPage";
+import BookingPage from "./pages/BookingPage"; 
 // import Test from "./pages/test";
 
 import MessFind from "./pages/MessFind";
@@ -79,6 +79,7 @@ root.render(
 
           <Route path="/MailVerify" element={<MailVerify />} />
           <Route path="/MailVerifyOwner" element={<MailVerifyOwner />} />
+          <Route path="/booking" element={<BookingPage />} />
           <Route
             path="/protected"
             element={
