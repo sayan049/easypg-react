@@ -247,8 +247,8 @@ export default function BookingPage() {
             <CardContent>
               <h2 className="text-xl font-semibold mb-4">Room Preview</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <img src="https://source.unsplash.com/featured/?room,bedroom" alt="Room Preview" className="rounded-2xl w-full h-48 object-cover" />
-                <img src="https://source.unsplash.com/featured/?interior,room" alt="Room Preview" className="rounded-2xl w-full h-48 object-cover" />
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" alt="Room Preview" className="rounded-2xl w-full h-48 object-cover" />
+                <img src="https://images.unsplash.com/photo-1600585154083-0e8f9e9ac90b?auto=format&fit=crop&w=800&q=80" alt="Room Preview" className="rounded-2xl w-full h-48 object-cover" />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-sm text-gray-700">
                 <ul className="space-y-1">
