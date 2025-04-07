@@ -133,6 +133,7 @@
 
 // 1. button.tsx
 import React, { useState } from 'react';
+import { format } from 'date-fns';
 
 // Button component
 export function Button({ children, className = "", ...props }: any) {
@@ -175,8 +176,6 @@ export function RadioGroupItem({ value, id }: any) {
 }
 
 // Calendar component
-import { format } from "date-fns";
-
 export function Calendar({ selected, onSelect }: any) {
   const [date, setDate] = useState(selected || new Date());
 
