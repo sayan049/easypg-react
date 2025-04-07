@@ -16,32 +16,31 @@ const SettingsOwner = ({ userDetails }) => {
     aboutMess: "",
     gender: "",
     facility: [],
-    roomNo: "",
-    bedContains: "",
-    pricePerHead: "",
-    roomAvailable: false,
+    roomInfo: [], // not an object
+
+    
     messPhoto: [],
   });
 
   useEffect(() => {
     if (userDetails) {
-      setDetails({
+      setDetails((prev) => ({
+        ...prev,
         mobile: userDetails?.mobile || "",
         address: userDetails?.address || "",
         pincode: userDetails?.pincode || "",
         messName: userDetails?.messName || "",
         location: userDetails?.location || "",
-        about: userDetails?.about || "",
-        pgType: userDetails?.pgType || "",
-        amenities: userDetails?.amenities || [],
-        roomNo: userDetails?.roomNo || "",
-        bedType: userDetails?.bedType || "2 Bed",
-        price: userDetails?.price || "",
         aboutMess: userDetails?.aboutMess || "",
-        roomAvailable: userDetails?.roomAvailable || false,
-      });
+        gender: userDetails?.gender || "",
+        facility: userDetails?.facility || [],
+        roomInfo: Array.isArray(userDetails?.roomInfo) ? userDetails.roomInfo : [],
+        messPhoto: userDetails?.messPhoto || [],
+      }));
     }
   }, [userDetails]);
+  
+  
   return (
     <div className="p-4 max-w-6xl mx-auto space-y-8">
       <div className="flex flex-col items-center space-y-2">
@@ -203,7 +202,8 @@ const SettingsOwner = ({ userDetails }) => {
             <label key={idx} className="flex items-center space-x-2">
               <input
                 type="checkbox"
-                checked={details.facility.includes(item)}
+                checked={details.facility?.includes(item)}
+
                 onChange={(e) => {
                   if (e.target.checked) {
                     setDetails({
@@ -228,64 +228,72 @@ const SettingsOwner = ({ userDetails }) => {
       <div className="space-y-4">
   <h3 className="font-semibold text-lg">Room Information</h3>
 
-  {details.roomInfo?.map((room, index) => (
-    <div key={index} className="grid grid-cols-1 sm:grid-cols-3 gap-4 border p-4 rounded">
-      {/* Room No (readonly) */}
-      <input
-        type="text"
-        placeholder="Room No."
-        className={input}
-        value={room.room}
-        disabled
-      />
-
-      {/* Bed Contains */}
-      <select
-        className={input}
-        value={room.bedContains}
-        onChange={(e) => {
-          const updatedRooms = [...details.roomInfo];
-          updatedRooms[index].bedContains = e.target.value;
-          setDetails({ ...details, roomInfo: updatedRooms });
-        }}
+  {Array.isArray(details.roomInfo) && details.roomInfo.length > 0 ? (
+    details.roomInfo.map((room, index) => (
+      <div
+        key={index}
+        className="grid grid-cols-1 sm:grid-cols-3 gap-4 border p-4 rounded bg-white shadow-sm"
       >
-        <option value="">Select Bed Count</option>
-        <option value="one">Single</option>
-        <option value="two">Double</option>
-        <option value="three">Triple</option>
-        <option value="four">Four</option>
-        <option value="five">Five</option>
-      </select>
-
-      {/* Price per head */}
-      <input
-        type="number"
-        placeholder="Price per head"
-        className={input}
-        value={room.pricePerHead}
-        onChange={(e) => {
-          const updatedRooms = [...details.roomInfo];
-          updatedRooms[index].pricePerHead = parseInt(e.target.value);
-          setDetails({ ...details, roomInfo: updatedRooms });
-        }}
-      />
-
-      {/* Room Available */}
-      <label className="inline-flex items-center space-x-2 col-span-3 mt-2">
+        {/* Room No (readonly) */}
         <input
-          type="checkbox"
-          checked={room.roomAvailable}
+          type="text"
+          placeholder="Room No."
+          className={input}
+          value={room.room}
+          disabled
+        />
+
+        {/* Bed Contains */}
+        <select
+          className={input}
+          value={room.bedContains}
           onChange={(e) => {
             const updatedRooms = [...details.roomInfo];
-            updatedRooms[index].roomAvailable = e.target.checked;
+            updatedRooms[index].bedContains = e.target.value;
+            setDetails({ ...details, roomInfo: updatedRooms });
+          }}
+        >
+          <option value="">Select Bed Count</option>
+          <option value="one">Single</option>
+          <option value="two">Double</option>
+          <option value="three">Triple</option>
+          <option value="four">Four</option>
+          <option value="five">Five</option>
+        </select>
+
+        {/* Price per head */}
+        <input
+          type="number"
+          placeholder="Price per head"
+          className={input}
+          value={room.pricePerHead}
+          onChange={(e) => {
+            const updatedRooms = [...details.roomInfo];
+            updatedRooms[index].pricePerHead = parseInt(e.target.value) || 0;
             setDetails({ ...details, roomInfo: updatedRooms });
           }}
         />
-        <span>Room Available</span>
-      </label>
-    </div>
-  ))}
+
+        {/* Room Available */}
+        <label className="inline-flex items-center space-x-2 col-span-3 mt-2">
+          <input
+            type="checkbox"
+            checked={room.roomAvailable}
+            onChange={(e) => {
+              const updatedRooms = [...details.roomInfo];
+              updatedRooms[index].roomAvailable = e.target.checked;
+              setDetails({ ...details, roomInfo: updatedRooms });
+            }}
+          />
+          <span>Room Available</span>
+        </label>
+      </div>
+    ))
+  ) : (
+    <p className="text-gray-500">No room data available.</p>
+  )}
 </div>
+
 
 
       {/* Mess Photos */}
