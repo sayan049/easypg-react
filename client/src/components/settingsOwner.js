@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import UserProfile from "./UserProfile";
 
 const input =
   "border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300";
@@ -8,7 +8,7 @@ const SettingsOwner = ({ userDetails }) => {
   const [details, setDetails] = useState({
     name: "",
     email: "",
-    mobile: "",
+    mobileNo: "",
     address: "",
     pincode: "",
     messName: "",
@@ -18,7 +18,6 @@ const SettingsOwner = ({ userDetails }) => {
     facility: [],
     roomInfo: [], // not an object
 
-    
     messPhoto: [],
   });
 
@@ -26,7 +25,9 @@ const SettingsOwner = ({ userDetails }) => {
     if (userDetails) {
       setDetails((prev) => ({
         ...prev,
-        mobile: userDetails?.mobile || "",
+        name: userDetails?.firstName + " " + userDetails?.lastName || "",
+        email: userDetails?.email || "",
+        mobileNo: userDetails?.mobile || "",
         address: userDetails?.address || "",
         pincode: userDetails?.pincode || "",
         messName: userDetails?.messName || "",
@@ -34,21 +35,18 @@ const SettingsOwner = ({ userDetails }) => {
         aboutMess: userDetails?.aboutMess || "",
         gender: userDetails?.gender || "",
         facility: userDetails?.facility || [],
-        roomInfo: Array.isArray(userDetails?.roomInfo) ? userDetails.roomInfo : [],
+        roomInfo: Array.isArray(userDetails?.roomInfo)
+          ? userDetails.roomInfo
+          : [],
         messPhoto: userDetails?.messPhoto || [],
       }));
     }
   }, [userDetails]);
-  
-  
+console.log(details);
   return (
     <div className="p-4 max-w-6xl mx-auto space-y-8">
       <div className="flex flex-col items-center space-y-2">
-        <img
-          src="https://i.pravatar.cc/100?img=1"
-          alt="Owner Avatar"
-          className="w-24 h-24 rounded-full"
-        />
+        <UserProfile className="w-24 h-24 rounded-full" />
         <h2 className="text-lg font-semibold">Owner</h2>
       </div>
 
@@ -60,9 +58,10 @@ const SettingsOwner = ({ userDetails }) => {
             type="text"
             placeholder="Name"
             className={input}
-            value={details.firstName + details.lastName}
+            value={details.name}
             onChange={(e) => setDetails({ ...details, name: e.target.value })}
           />
+
           <input
             type="email"
             placeholder="Email"
@@ -74,8 +73,8 @@ const SettingsOwner = ({ userDetails }) => {
             type="text"
             placeholder="Mobile Number"
             className={input}
-            value={details.mobile}
-            onChange={(e) => setDetails({ ...details, mobile: e.target.value })}
+            value={details.mobileNo}
+            onChange={(e) => setDetails({ ...details, mobileNo: e.target.value })}
           />
           <input
             type="text"
@@ -203,7 +202,6 @@ const SettingsOwner = ({ userDetails }) => {
               <input
                 type="checkbox"
                 checked={details.facility?.includes(item)}
-
                 onChange={(e) => {
                   if (e.target.checked) {
                     setDetails({
@@ -226,106 +224,106 @@ const SettingsOwner = ({ userDetails }) => {
 
       {/* Room Information */}
       <div className="space-y-4">
-  <h3 className="font-semibold text-lg">Room Information</h3>
+        <h3 className="font-semibold text-lg">Room Information</h3>
 
-  {Array.isArray(details.roomInfo) && details.roomInfo.length > 0 ? (
-    details.roomInfo.map((room, index) => (
-      <div
-        key={index}
-        className="grid grid-cols-1 sm:grid-cols-3 gap-4 border p-4 rounded bg-white shadow-sm"
-      >
-        {/* Room No (readonly) */}
-        <input
-          type="text"
-          placeholder="Room No."
-          className={input}
-          value={room.room}
-          disabled
-        />
+        {Array.isArray(details.roomInfo) && details.roomInfo.length > 0 ? (
+          details.roomInfo.map((room, index) => (
+            <div
+              key={index}
+              className="grid grid-cols-1 sm:grid-cols-3 gap-4 border p-4 rounded bg-white shadow-sm"
+            >
+              {/* Room No (readonly) */}
+              <input
+                type="text"
+                placeholder="Room No."
+                className={input}
+                value={room.room}
+                disabled
+              />
 
-        {/* Bed Contains */}
-        <select
-          className={input}
-          value={room.bedContains}
-          onChange={(e) => {
-            const updatedRooms = [...details.roomInfo];
-            updatedRooms[index].bedContains = e.target.value;
-            setDetails({ ...details, roomInfo: updatedRooms });
-          }}
-        >
-          <option value="">Select Bed Count</option>
-          <option value="one">Single</option>
-          <option value="two">Double</option>
-          <option value="three">Triple</option>
-          <option value="four">Four</option>
-          <option value="five">Five</option>
-        </select>
+              {/* Bed Contains */}
+              <select
+                className={input}
+                value={room.bedContains}
+                onChange={(e) => {
+                  const updatedRooms = [...details.roomInfo];
+                  updatedRooms[index].bedContains = e.target.value;
+                  setDetails({ ...details, roomInfo: updatedRooms });
+                }}
+              >
+                <option value="">Select Bed Count</option>
+                <option value="one">Single</option>
+                <option value="two">Double</option>
+                <option value="three">Triple</option>
+                <option value="four">Four</option>
+                <option value="five">Five</option>
+              </select>
 
-        {/* Price per head */}
-        <input
-          type="number"
-          placeholder="Price per head"
-          className={input}
-          value={room.pricePerHead}
-          onChange={(e) => {
-            const updatedRooms = [...details.roomInfo];
-            updatedRooms[index].pricePerHead = parseInt(e.target.value) || 0;
-            setDetails({ ...details, roomInfo: updatedRooms });
-          }}
-        />
+              {/* Price per head */}
+              <input
+                type="number"
+                placeholder="Price per head"
+                className={input}
+                value={room.pricePerHead}
+                onChange={(e) => {
+                  const updatedRooms = [...details.roomInfo];
+                  updatedRooms[index].pricePerHead =
+                    parseInt(e.target.value) || 0;
+                  setDetails({ ...details, roomInfo: updatedRooms });
+                }}
+              />
 
-        {/* Room Available */}
-        <label className="inline-flex items-center space-x-2 col-span-3 mt-2">
-          <input
-            type="checkbox"
-            checked={room.roomAvailable}
-            onChange={(e) => {
-              const updatedRooms = [...details.roomInfo];
-              updatedRooms[index].roomAvailable = e.target.checked;
-              setDetails({ ...details, roomInfo: updatedRooms });
-            }}
-          />
-          <span>Room Available</span>
-        </label>
+              {/* Room Available */}
+              <label className="inline-flex items-center space-x-2 col-span-3 mt-2">
+                <input
+                  type="checkbox"
+                  checked={room.roomAvailable}
+                  onChange={(e) => {
+                    const updatedRooms = [...details.roomInfo];
+                    updatedRooms[index].roomAvailable = e.target.checked;
+                    setDetails({ ...details, roomInfo: updatedRooms });
+                  }}
+                />
+                <span>Room Available</span>
+              </label>
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-500">No room data available.</p>
+        )}
       </div>
-    ))
-  ) : (
-    <p className="text-gray-500">No room data available.</p>
-  )}
-</div>
-
-
 
       {/* Mess Photos */}
       <div className="space-y-4">
-  <h3 className="font-semibold text-lg">Mess Photos</h3>
-  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-    {/* Add Photo Box */}
-    <div
-      className="flex items-center justify-center h-24 border rounded bg-gray-100 cursor-pointer hover:bg-gray-200"
-      onClick={() => {
-        // Add image upload logic here (e.g. file picker + uploading to cloudinary, then updating details)
-      }}
-    >
-      Add Photo
-    </div>
+        <h3 className="font-semibold text-lg">Mess Photos</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {/* Add Photo Box */}
+          <div
+            className="flex items-center justify-center h-24 border rounded bg-gray-100 cursor-pointer hover:bg-gray-200"
+            onClick={() => {
+              // Add image upload logic here (e.g. file picker + uploading to cloudinary, then updating details)
+            }}
+          >
+            Add Photo
+          </div>
 
-    {/* Render fetched mess photos */}
-    {details.messPhoto?.length > 0 ? (
-      details.messPhoto.map((photo, idx) => (
-        <img
-          key={idx}
-          className="h-24 w-full object-cover rounded"
-          src={photo}
-          alt={`Mess ${idx + 1}`}
-        />
-      ))
-    ) : (
-      <p className="text-sm text-gray-500 col-span-3 sm:col-span-3">No photos uploaded yet.</p>
-    )}
-  </div>
-</div>
-
+          {/* Render fetched mess photos */}
+          {details.messPhoto?.length > 0 ? (
+            details.messPhoto.map((photo, idx) => (
+              <img
+                key={idx}
+                className="h-24 w-full object-cover rounded"
+                src={photo}
+                alt={`Mess ${idx + 1}`}
+              />
+            ))
+          ) : (
+            <p className="text-sm text-gray-500 col-span-3 sm:col-span-3">
+              No photos uploaded yet.
+            </p>
+          )}
+        </div>
+      </div>
 
       {/* Footer Actions */}
       <div className="flex justify-end space-x-4">
