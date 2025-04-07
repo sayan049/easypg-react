@@ -51,8 +51,8 @@ export default function BookingPage() {
             <div className="p-4">
               <h2 className="text-xl font-semibold mb-4">Room Preview</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <img src="/room-preview1.jpg" alt="Room Preview" className="rounded-2xl w-full h-48 object-cover" />
-                <img src="/room-preview2.jpg" alt="Room Preview" className="rounded-2xl w-full h-48 object-cover" />
+                <img src="https://source.unsplash.com/featured/?room,bedroom" alt="Room Preview" className="rounded-2xl w-full h-48 object-cover" />
+                <img src="https://source.unsplash.com/featured/?interior,room" alt="Room Preview" className="rounded-2xl w-full h-48 object-cover" />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-sm text-gray-700">
                 <ul className="space-y-1">
