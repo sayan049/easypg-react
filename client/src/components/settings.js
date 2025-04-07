@@ -363,7 +363,6 @@ function Settings({ user }) {
                   />
                   {(key === "email" || key === "fullName") ? (
                   <button
-                 
                 //  className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-2xl text-blue-500"
                 >
                 

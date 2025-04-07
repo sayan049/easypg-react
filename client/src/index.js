@@ -1,5 +1,5 @@
 import React from "react";
-import { createRoot } from 'react-dom/client'; // Corrected import for createRoot
+import { createRoot } from "react-dom/client"; // Corrected import for createRoot
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
@@ -13,6 +13,7 @@ import LoginOwner from "./pages/LoginOwner";
 import SignupOwner from "./pages/signupOwner";
 import NewDashboard from "./pages/newDashBoard";
 import GoogleCallbackPage from "./pages/GoogleCallbackPage";
+import BookingPage from "./pages/BookingPage";
 // import Test from "./pages/test";
 
 import MessFind from "./pages/MessFind";
@@ -25,8 +26,6 @@ import MailVerifyOwner from "./pages/mailVerifyOwner";
 import IsAuth from "./pages/isAuth";
 import ViewDetails from "./pages/viewDetails";
 import DashboardOwner from "./pages/DashboardOwner";
-
-
 
 // Create the root once and specify the container
 const root = createRoot(document.getElementById("root")); // Using createRoot directly
@@ -49,15 +48,10 @@ root.render(
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/Secure"
-            element={<SecurityCheck />}
-          />
+          <Route path="/Secure" element={<SecurityCheck />} />
           <Route
             path="/LoginUser"
             element={
-
-
               <ProtectedRoute>
                 <LoginUser />
               </ProtectedRoute>
@@ -93,29 +87,31 @@ root.render(
               </ProtectedRoute>
             }
           />
-          <Route path="/newDashboard" element={
-            <IsAuth>
-              <NewDashboard />
-            </IsAuth>
-          } />
-
-            <Route path="/DashboardOwner" element={
+          <Route
+            path="/newDashboard"
+            element={
               <IsAuth>
-              <DashboardOwner />
+                <NewDashboard />
               </IsAuth>
-          } />
+            }
+          />
 
-          <Route path="/ViewDetails" element={
+          <Route
+            path="/DashboardOwner"
+            element={
+              <IsAuth>
+                <DashboardOwner />
+              </IsAuth>
+            }
+          />
 
-            <ViewDetails />
+          <Route path="/ViewDetails" element={<ViewDetails />} />
 
-          } />
-        <Route path="/googleCallback" element={
-          <GoogleCallbackPage/>
-        }/>
-       
-     
-        {/* <Route path="/test" element={
+          <Route path="/BookingPage" element={<BookingPage />} />
+
+          <Route path="/googleCallback" element={<GoogleCallbackPage />} />
+
+          {/* <Route path="/test" element={
           <Test/>
         }/> */}
         </Routes>
