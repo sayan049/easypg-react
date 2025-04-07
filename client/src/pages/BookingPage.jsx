@@ -4,7 +4,7 @@ export default function BookingPage() {
   const [selectedRoom, setSelectedRoom] = useState('102');
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 font-sans">
       <h1 className="text-2xl font-bold">Confirm Your Booking</h1>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Side */}
