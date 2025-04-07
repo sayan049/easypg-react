@@ -16,7 +16,7 @@ export default function BookingPage() {
                 {[{ id: '101', price: 12000, available: true }, { id: '102', price: 15000, available: false }].map((room) => (
                   <div
                     key={room.id}
-                    className={`border rounded-2xl p-4 space-y-2 hover:border-blue-500 ${selectedRoom === room.id ? 'border-blue-500' : 'border-gray-200'}`}
+                    className={`border rounded-2xl p-4 space-y-2 hover:border-#2CA4B5 ${selectedRoom === room.id ? 'border-#2CA4B5' : 'border-gray-200'}`}
                   >
                     <div className="flex justify-between items-center">
                       <h3 className="font-semibold text-lg">Room {room.id}</h3>
