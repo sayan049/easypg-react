@@ -1,168 +1,141 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Calendar } from '@/components/ui/calendar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function BookingPage() {
-  const [selectedRoom, setSelectedRoom] = useState("Room 102");
-  const [paymentMethod, setPaymentMethod] = useState("");
+  const [selectedRoom, setSelectedRoom] = useState('102');
 
   return (
-    <div className="p-4 md:p-10 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="mb-4">
-        <h1 className="text-xl md:text-2xl font-semibold">Confirm Your Booking</h1>
-        <h2 className="text-lg font-bold mt-2">Sunshine PG & Mess</h2>
-        <p className="text-sm text-gray-600">
-          123 Main Street, Koramangala, Bangalore • +91 98765 43210
-        </p>
-      </div>
-
-      {/* Main content */}
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Left Section */}
-        <div className="flex-1 space-y-6">
-          {/* Select Room */}
-          <div className="bg-white shadow rounded-xl p-4">
-            <h3 className="text-lg font-semibold mb-4">Select a Room</h3>
-            <div className="grid sm:grid-cols-2 gap-4">
-              {[
-                { name: "Room 101", price: 12000, available: true },
-                { name: "Room 102", price: 15000, available: false },
-              ].map((room) => (
-                <div
-                  key={room.name}
-                  className={`border rounded-lg p-4 flex flex-col gap-2 ${
-                    selectedRoom === room.name ? "border-blue-500" : ""
-                  }`}
-                >
-                  <img
-                    src="https://via.placeholder.com/300x150"
-                    alt="room"
-                    className="rounded-md"
-                  />
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="font-medium">{room.name}</p>
-                      <p className="text-blue-600 font-bold">
-                        ₹{room.price.toLocaleString()}
-                      </p>
+    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6">
+      <h1 className="text-2xl font-bold">Confirm Your Booking</h1>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Side */}
+        <div className="lg:col-span-2 space-y-6">
+          <Card>
+            <CardContent className="p-4 space-y-4">
+              <h2 className="text-xl font-semibold">Select a Room</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[{ id: '101', price: 12000, available: true }, { id: '102', price: 15000, available: false }].map((room) => (
+                  <div
+                    key={room.id}
+                    className={`border rounded-2xl p-4 space-y-2 ${selectedRoom === room.id ? 'border-blue-500' : 'border-gray-200'}`}
+                  >
+                    <div className="flex justify-between items-center">
+                      <h3 className="font-semibold text-lg">Room {room.id}</h3>
+                      <span
+                        className={`text-sm px-2 py-1 rounded-full ${room.available ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}
+                      >
+                        {room.available ? 'Available' : '1 Bed Left'}
+                      </span>
                     </div>
-                    <button
-                      onClick={() => setSelectedRoom(room.name)}
-                      className={`px-3 py-1 rounded-md text-sm font-medium ${
-                        selectedRoom === room.name
-                          ? "bg-gray-300 text-gray-600"
-                          : "bg-blue-600 text-white"
-                      }`}
+                    <div className="flex items-center space-x-2 text-gray-600 text-sm">
+                      <span>WiFi</span>
+                      <span>AC</span>
+                      <span>{room.id === '102' ? 'Double' : 'TV'}</span>
+                    </div>
+                    <div className="text-lg font-bold text-blue-600">
+                      ₹{room.price.toLocaleString()}
+                      <span className="text-sm font-medium text-gray-500">/mo</span>
+                    </div>
+                    <Button
+                      onClick={() => setSelectedRoom(room.id)}
+                      className="w-full"
+                      variant={selectedRoom === room.id ? 'default' : 'outline'}
                     >
-                      {selectedRoom === room.name ? "Selected" : "Select"}
-                    </button>
+                      {selectedRoom === room.id ? 'Selected' : 'Select'}
+                    </Button>
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
-          {/* Room Preview */}
-          <div className="bg-white shadow rounded-xl p-4">
-            <h3 className="text-lg font-semibold mb-4">Room Preview</h3>
-            <div className="grid sm:grid-cols-2 gap-4">
-              <img
-                src="https://via.placeholder.com/300x200"
-                className="rounded-md w-full"
-                alt="Room Preview"
-              />
-              <div>
-                <p className="mb-2 font-medium">Room Features</p>
-                <ul className="text-sm space-y-1">
+          <Card>
+            <CardContent className="p-4">
+              <h2 className="text-xl font-semibold mb-4">Room Preview</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <img src="/room-preview1.jpg" alt="Room Preview" className="rounded-2xl w-full h-48 object-cover" />
+                <img src="/room-preview2.jpg" alt="Room Preview" className="rounded-2xl w-full h-48 object-cover" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-sm text-gray-700">
+                <ul className="space-y-1">
                   <li>🛏️ Double Bed</li>
-                  <li>🛁 Attached Bathroom</li>
-                  <li>🔌 Power Backup</li>
+                  <li>🚿 Attached Bathroom</li>
+                  <li>⚡ Power Backup</li>
                 </ul>
-                <p className="mt-4 mb-2 font-medium">Room Details</p>
-                <ul className="text-sm space-y-1">
+                <ul className="space-y-1">
                   <li>👥 2 Person Sharing</li>
                   <li>📅 Available from June 1</li>
-                  <li>🛏️ 1 Bed Available</li>
+                  <li>✅ 1 Bed Available</li>
                 </ul>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Right Section */}
-        <div className="w-full lg:w-[350px] space-y-6">
-          <div className="bg-white shadow rounded-xl p-4 space-y-3">
-            <h3 className="text-lg font-semibold">Booking Summary</h3>
-            <div className="text-sm space-y-1">
+        {/* Right Side */}
+        <div className="space-y-6">
+          <Card>
+            <CardContent className="p-4 space-y-4">
+              <h2 className="text-xl font-semibold">Booking Summary</h2>
               <div>
-                <label className="block font-medium">Check-in Date</label>
-                <input type="date" className="border w-full p-2 rounded" />
+                <label className="text-sm">Check-in Date</label>
+                <Calendar className="mt-2" />
               </div>
               <div>
-                <label className="block font-medium mt-2">Duration</label>
-                <select className="border w-full p-2 rounded">
-                  <option>3 months</option>
-                  <option>6 months</option>
-                  <option>12 months</option>
-                </select>
+                <label className="text-sm">Duration</label>
+                <Select>
+                  <SelectTrigger className="w-full mt-2">
+                    <SelectValue placeholder="3 months" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="3">3 months</SelectItem>
+                    <SelectItem value="6">6 months</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-              <p className="pt-2">Room Rent (monthly): ₹15,000</p>
-              <p>Duration: 6 months</p>
-              <p>Security Deposit: ₹15,000</p>
-              <p className="font-bold">Total Amount: ₹1,05,000</p>
-            </div>
-          </div>
+              <div className="text-sm text-gray-700">
+                <p>Room Rent (monthly): ₹15,000</p>
+                <p>Duration: 6 months</p>
+                <p>Security Deposit: ₹15,000</p>
+              </div>
+              <div className="text-lg font-bold text-right">
+                Total: ₹1,05,000
+              </div>
+            </CardContent>
+          </Card>
 
-          <div className="bg-white shadow rounded-xl p-4 space-y-3">
-            <h3 className="text-lg font-semibold">Payment Method</h3>
-            <div className="space-y-2 text-sm">
-              <label className="block">
-                <input
-                  type="radio"
-                  name="payment"
-                  value="UPI"
-                  checked={paymentMethod === "UPI"}
-                  onChange={() => setPaymentMethod("UPI")}
-                  className="mr-2"
-                />
-                UPI Payment
-              </label>
-              <label className="block">
-                <input
-                  type="radio"
-                  name="payment"
-                  value="Card"
-                  checked={paymentMethod === "Card"}
-                  onChange={() => setPaymentMethod("Card")}
-                  className="mr-2"
-                />
-                Credit/Debit Card
-              </label>
-              <label className="block">
-                <input
-                  type="radio"
-                  name="payment"
-                  value="NetBanking"
-                  checked={paymentMethod === "NetBanking"}
-                  onChange={() => setPaymentMethod("NetBanking")}
-                  className="mr-2"
-                />
-                Net Banking
-              </label>
+          <Card>
+            <CardContent className="p-4 space-y-4">
+              <h2 className="text-xl font-semibold">Payment Method</h2>
+              <RadioGroup defaultValue="upi">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="upi" />
+                  <label>UPI Payment</label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="card" />
+                  <label>Credit/Debit Card</label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="netbanking" />
+                  <label>Net Banking</label>
+                </div>
+              </RadioGroup>
               <div>
-                <input
-                  type="text"
-                  placeholder="Enter code"
-                  className="border p-2 w-full rounded mt-2"
-                />
-                <button className="bg-gray-200 text-sm mt-2 px-3 py-1 rounded">
-                  Apply
-                </button>
+                <label className="text-sm">Have a coupon?</label>
+                <div className="flex items-center gap-2 mt-2">
+                  <Input placeholder="Enter code" />
+                  <Button>Apply</Button>
+                </div>
               </div>
-            </div>
-            <button className="w-full bg-blue-600 text-white py-2 rounded font-medium mt-3">
-              Proceed to Payment
-            </button>
-          </div>
+              <Button className="w-full mt-4">Proceed to Payment</Button>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
