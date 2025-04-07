@@ -27,7 +27,7 @@ const SettingsOwner = ({ userDetails }) => {
         ...prev,
         name: userDetails?.firstName + " " + userDetails?.lastName || "",
         email: userDetails?.email || "",
-        mobileNo: userDetails?.mobile || "",
+        mobileNo: userDetails?.mobileNo || "",
         address: userDetails?.address || "",
         pincode: userDetails?.pincode || "",
         messName: userDetails?.messName || "",
