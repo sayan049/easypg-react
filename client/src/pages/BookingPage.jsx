@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 
 export default function BookingPage() {
-  const [selectedRoom, setSelectedRoom] = useState(owner?.roomInfo?.[0]?._id || "");
+ 
   const location = useLocation();
   const { owner } = location.state || {};
+  const [selectedRoom, setSelectedRoom] = useState(owner?.roomInfo?.[0]?._id || "");
   console.log(owner, owner.roomInfo, "room");
 
   const primaryColor = "#2CA4B5";
