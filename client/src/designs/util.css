@@ -9,3 +9,12 @@
 .inlineblock{
     display: inline-block;
 }
+
+::-webkit-scrollbar {
+    height: 6px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2CA4B5;
+    border-radius: 9999px;
+  }
+  
