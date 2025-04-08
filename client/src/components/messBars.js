@@ -17,6 +17,9 @@ function MessBars({
   const clickNavi = (owner) => {
     navigate("/viewDetails", { state: { owner } });
   };
+  const clickBook = (owner) => {
+    navigate("/booking", { state: { owner } });
+  };
   // const clickCords = (location) => {
   //   // Check if location is a valid string
   //   if (typeof location === 'string' && location.includes(',')) {
@@ -169,7 +172,9 @@ function MessBars({
               >
                 View Details
               </button>
-              <button className="bg-green-500 text-white px-4 py-2 rounded-md">
+              <button className="bg-green-500 text-white px-4 py-2 rounded-md"
+              onClick={()=>clickBook(owner)}
+              >
                 Book Now
               </button>
             </div>
