@@ -108,7 +108,7 @@ export default function BookingPage() {
           <div className="rounded-2xl shadow-md bg-white">
             <div className="p-4">
               <h2 className="text-xl font-semibold mb-4">Room Preview</h2>
-              <div className="flex gap-4 overflow-x-auto pb-2">
+              {/* <div className="flex gap-4 overflow-x-auto pb-2">
                 {(showAllPhotos
                   ? owner?.messPhoto
                   : owner?.messPhoto?.slice(0, 4)
@@ -120,7 +120,30 @@ export default function BookingPage() {
                     className="rounded-2xl w-64 h-48 object-cover flex-shrink-0"
                   />
                 ))}
+              </div> */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {(showAllPhotos
+                  ? owner?.messPhoto
+                  : owner?.messPhoto?.slice(0, 4)
+                )?.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image}
+                    alt={`Room ${index + 1}`}
+                    className="rounded-2xl w-full h-48 object-cover"
+                  />
+                ))}
               </div>
+
+              {owner?.messPhoto?.length > 4 && (
+                <button
+                  onClick={() => setShowAllPhotos(!showAllPhotos)}
+                  className="text-blue-600 underline text-sm mt-2 w-full text-left"
+                >
+                  {showAllPhotos ? "View Less" : "View More"}
+                </button>
+              )}
+
               {owner?.messPhoto?.length > 4 && (
                 <button
                   onClick={() => setShowAllPhotos(!showAllPhotos)}
