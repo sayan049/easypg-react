@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 
 export default function BookingPage() {
- 
   const location = useLocation();
   const { owner } = location.state || {};
-  const [selectedRoom, setSelectedRoom] = useState(owner?.roomInfo?.[0]?._id || "");
+  const [selectedRoom, setSelectedRoom] = useState(
+    owner?.roomInfo?.[0]?._id || ""
+  );
+  const [showAllPhotos, setShowAllPhotos] = useState(false);
+
   console.log(owner, owner.roomInfo, "room");
 
   const primaryColor = "#2CA4B5";
@@ -153,14 +156,26 @@ export default function BookingPage() {
                   alt="Room Preview"
                   className="rounded-2xl w-full h-48 object-cover"
                 /> */}
-                {owner?.messPhoto?.map((image, index) => (
+                {(showAllPhotos
+                  ? owner?.messPhoto
+                  : owner?.messPhoto?.slice(0, 4)
+                )?.map((image, index) => (
                   <img
                     key={index}
                     src={image}
-                    alt="Room Preview"
+                    alt={`Room ${index + 1}`}
                     className="rounded-2xl w-full h-48 object-cover"
                   />
                 ))}
+
+                {owner?.messPhoto?.length > 4 && (
+                  <button
+                    onClick={() => setShowAllPhotos(!showAllPhotos)}
+                    className="text-blue-600 underline text-sm mt-2"
+                  >
+                    {showAllPhotos ? "View Less" : "View More"}
+                  </button>
+                )}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-sm text-gray-700">
                 <ul className="space-y-1">
