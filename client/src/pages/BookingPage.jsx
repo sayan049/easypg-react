@@ -129,10 +129,11 @@
 //     </div>
 //   );
 // }
-import React, { useState } from 'react';
+import React, { useState, useLocation } from 'react';
 
 export default function BookingPage() {
   const [selectedRoom, setSelectedRoom] = useState('102');
+    const location = useLocation();
   const { owner } = location.state || {};
   
 
