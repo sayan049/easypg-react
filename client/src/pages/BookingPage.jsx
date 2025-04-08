@@ -171,7 +171,7 @@ export default function BookingPage() {
                 {owner?.messPhoto?.length > 4 && (
                   <button
                     onClick={() => setShowAllPhotos(!showAllPhotos)}
-                    className="text-blue-600 underline text-sm mt-2 w-[200%]"
+                    className="text-blue-600 underline text-sm mt-2 w-[100%] md:w-[200%]"
                   >
                     {showAllPhotos ? "View Less" : "View More"}
                   </button>
