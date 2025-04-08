@@ -95,7 +95,7 @@ export default function BookingPage() {
                                 : "bg-orange-100 text-orange-700"
                             }`}
                           >
-                            {room.roomAvailable ? "Available" : "1 Bed Left"}
+                            {room.roomAvailable ? "Available" : "Not Available"}
                           </span>
                         </div>
                         <div className="flex items-center space-x-2 text-gray-600 text-sm">
