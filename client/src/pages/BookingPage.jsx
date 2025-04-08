@@ -91,12 +91,12 @@ export default function BookingPage() {
                       </span>
                     </div>
                     <div className="flex items-center space-x-2 text-gray-600 text-sm">
-                      {/* <span>WiFi</span>
+                      <span>WiFi</span>
                       <span>AC</span>
-                      <span>{room._id === "102" ? "Double" : "TV"}</span> */}
-                      {owner?.facility?.map((aminities)=>{
+                      <span>{room._id === "102" ? "Double" : "TV"}</span>
+                      {/* {owner?.facility?.map((aminities)=>{
                         <span>{aminities}</span>
-                      })}
+                      })} */}
 
                     </div>
                     <div
@@ -137,7 +137,7 @@ export default function BookingPage() {
             <div className="p-4">
               <h2 className="text-xl font-semibold mb-4">Room Preview</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <img
+                {/* <img
                   src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"
                   alt="Room Preview"
                   className="rounded-2xl w-full h-48 object-cover"
@@ -146,7 +146,14 @@ export default function BookingPage() {
                   src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"
                   alt="Room Preview"
                   className="rounded-2xl w-full h-48 object-cover"
+                /> */}
+                {owner?.messPhoto?.map((image)=>{
+                  <img
+                  src={image}
+                  alt="Room Preview"
+                  className="rounded-2xl w-full h-48 object-cover"
                 />
+                })}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-sm text-gray-700">
                 <ul className="space-y-1">
