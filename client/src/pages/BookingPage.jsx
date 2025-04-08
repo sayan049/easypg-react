@@ -79,7 +79,7 @@ export default function BookingPage() {
                     }}
                   >
                     <div className="flex justify-between items-center">
-                      <h3 className="font-semibold text-lg">Room {room._id}</h3>
+                      <h3 className="font-semibold text-lg">{room.room}</h3>
                       <span
                         className={`text-sm px-2 py-1 rounded-full ${
                           room.roomAvailable
@@ -91,9 +91,13 @@ export default function BookingPage() {
                       </span>
                     </div>
                     <div className="flex items-center space-x-2 text-gray-600 text-sm">
-                      <span>WiFi</span>
+                      {/* <span>WiFi</span>
                       <span>AC</span>
-                      <span>{room._id === "102" ? "Double" : "TV"}</span>
+                      <span>{room._id === "102" ? "Double" : "TV"}</span> */}
+                      {owner?.facility?.map((aminities)=>{
+                        <span>{aminities}</span>
+                      })}
+
                     </div>
                     <div
                       className="text-lg font-bold"
