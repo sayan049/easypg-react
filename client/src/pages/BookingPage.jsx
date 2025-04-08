@@ -8,6 +8,7 @@ export default function BookingPage() {
     owner?.roomInfo?.[0]?._id || ""
   );
   const [showAllPhotos, setShowAllPhotos] = useState(false);
+  const [duration, setDuration] = useState(6); // in months
 
   console.log(owner, owner.roomInfo, "room");
 
@@ -158,22 +159,35 @@ export default function BookingPage() {
               </div>
               <div>
                 <label className="text-sm">Duration</label>
-                <select className="mt-2 border rounded-md w-full p-2">
-                  <option>3 months</option>
-                  <option>6 months</option>
+                <select
+                  className="mt-2 border rounded-md w-full p-2"
+                  value={duration}
+                  onChange={(e) => setDuration(Number(e.target.value))}
+                >
+                  <option value={3}>3 months</option>
+                  <option value={6}>6 months</option>
                 </select>
               </div>
-              <div className="text-sm text-gray-700">
-                <p>Room Rent (monthly): ₹15,000</p>
-                <p>Duration: 6 months</p>
-                <p>Security Deposit: ₹15,000</p>
-              </div>
-              <div
-                className="text-lg font-bold text-right"
-                style={{ color: primaryColor }}
-              >
-                Total: ₹1,05,000
-              </div>
+              {(() => {
+                const room = owner?.roomInfo?.find(
+                  (r) => r._id === selectedRoom
+                );
+                const monthly = room?.pricePerHead || 0;
+                const total = monthly * duration + monthly; // deposit = 1 month rent
+                return (
+                  <>
+                    <p>Room Rent (monthly): ₹{monthly.toLocaleString()}</p>
+                    <p>Duration: {duration} months</p>
+                    <p>Security Deposit: ₹{monthly.toLocaleString()}</p>
+                    <div
+                      className="text-lg font-bold text-right"
+                      style={{ color: primaryColor }}
+                    >
+                      Total: ₹{total.toLocaleString()}
+                    </div>
+                  </>
+                );
+              })()}
             </div>
           </div>
 
