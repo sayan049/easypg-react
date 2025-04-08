@@ -67,7 +67,7 @@ export default function BookingPage() {
                     </button>
                   </div>
                 ))} */}
-                {owner?.roomInfo?.map((room) => (
+                {owner?.roomInfo?.map((room , idx) => room && (
                   <div
                     key={room._id}
                     className={`border rounded-2xl p-4 space-y-2 ${
@@ -99,7 +99,9 @@ export default function BookingPage() {
                       className="text-lg font-bold"
                       style={{ color: primaryColor }}
                     >
-                      ₹{room.price.toLocaleString()}
+                      {/* ₹{room.price.toLocaleString()} */}
+                      ₹{room.pricePerHead?.toLocaleString()}
+
                       <span className="text-sm font-medium text-gray-500">
                         /mo
                       </span>
