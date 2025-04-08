@@ -23,67 +23,24 @@ export default function BookingPage() {
             <div className="p-4 space-y-4">
               <h2 className="text-xl font-semibold">Select a Room</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* {[{ id: '101', price: 12000, available: true }, { id: '102', price: 15000, available: false }].map((room) => (
-                  <div
-                    key={room.id}
-                    className={`border rounded-2xl p-4 space-y-2 ${
-                      selectedRoom === room.id ? '' : 'border-gray-200'
-                    }`}
-                    style={{
-                      borderColor: selectedRoom === room.id ? primaryColor : undefined,
-                    }}
-                  >
-                    <div className="flex justify-between items-center">
-                      <h3 className="font-semibold text-lg">Room {room.id}</h3>
-                      <span
-                        className={`text-sm px-2 py-1 rounded-full ${
-                          room.available
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-orange-100 text-orange-700'
-                        }`}
-                      >
-                        {room.available ? 'Available' : '1 Bed Left'}
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-2 text-gray-600 text-sm">
-                      <span>WiFi</span>
-                      <span>AC</span>
-                      <span>{room.id === '102' ? 'Double' : 'TV'}</span>
-                    </div>
-                    <div className="text-lg font-bold" style={{ color: primaryColor }}>
-                      ₹{room.price.toLocaleString()}
-                      <span className="text-sm font-medium text-gray-500">/mo</span>
-                    </div>
-                    <button
-                      onClick={() => setSelectedRoom(room.id)}
-                      className={`w-full py-2 px-4 rounded-md font-semibold ${
-                        selectedRoom === room.id
-                          ? 'text-white'
-                          : 'border'
-                      }`}
-                      style={{
-                        backgroundColor: selectedRoom === room.id ? primaryColor : 'transparent',
-                        borderColor: primaryColor,
-                        color: selectedRoom === room.id ? 'white' : primaryColor,
-                      }}
-                    >
-                      {selectedRoom === room.id ? 'Selected' : 'Select'}
-                    </button>
-                  </div>
-                ))} */}
                 {owner?.roomInfo?.map(
-                  (room, idx) =>
+                  (room) =>
                     room && (
                       <div
                         key={room._id}
                         className={`border rounded-2xl p-4 space-y-2 ${
-                          selectedRoom === room._id ? "" : "border-gray-200"
+                          room.roomAvailable
+                            ? selectedRoom === room._id
+                              ? ""
+                              : "border-gray-200"
+                            : "border-red-500"
                         }`}
                         style={{
-                          borderColor:
-                            selectedRoom === room._id
-                              ? primaryColor
-                              : undefined,
+                          borderColor: !room.roomAvailable
+                            ? "red"
+                            : selectedRoom === room._id
+                            ? primaryColor
+                            : undefined,
                         }}
                       >
                         <div className="flex justify-between items-center">
@@ -92,7 +49,7 @@ export default function BookingPage() {
                             className={`text-sm px-2 py-1 rounded-full ${
                               room.roomAvailable
                                 ? "bg-green-100 text-green-700"
-                                : "bg-orange-100 text-orange-700"
+                                : "bg-red-100 text-red-700"
                             }`}
                           >
                             {room.roomAvailable ? "Available" : "Not Available"}
@@ -102,33 +59,38 @@ export default function BookingPage() {
                           <span>WiFi</span>
                           <span>AC</span>
                           <span>{room._id === "102" ? "Double" : "TV"}</span>
-                          {/* {owner?.facility?.map((aminities)=>{
-                        <span>{aminities}</span>
-                      })} */}
                         </div>
                         <div
                           className="text-lg font-bold"
                           style={{ color: primaryColor }}
                         >
-                          {/* ₹{room.price.toLocaleString()} */}₹
-                          {room.pricePerHead?.toLocaleString()}
+                          ₹{room.pricePerHead?.toLocaleString()}
                           <span className="text-sm font-medium text-gray-500">
                             /mo
                           </span>
                         </div>
                         <button
-                          onClick={() => setSelectedRoom(room._id)}
+                          onClick={() =>
+                            room.roomAvailable && setSelectedRoom(room._id)
+                          }
+                          disabled={!room.roomAvailable}
                           className={`w-full py-2 px-4 rounded-md font-semibold ${
                             selectedRoom === room._id ? "text-white" : "border"
+                          } ${
+                            !room.roomAvailable
+                              ? "opacity-50 cursor-not-allowed"
+                              : ""
                           }`}
                           style={{
                             backgroundColor:
-                              selectedRoom === room._id
+                              selectedRoom === room._id && room.roomAvailable
                                 ? primaryColor
                                 : "transparent",
-                            borderColor: primaryColor,
+                            borderColor: !room.roomAvailable
+                              ? "red"
+                              : primaryColor,
                             color:
-                              selectedRoom === room._id
+                              selectedRoom === room._id && room.roomAvailable
                                 ? "white"
                                 : primaryColor,
                           }}
@@ -145,17 +107,7 @@ export default function BookingPage() {
           <div className="rounded-2xl shadow-md bg-white">
             <div className="p-4">
               <h2 className="text-xl font-semibold mb-4">Room Preview</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* <img
-                  src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"
-                  alt="Room Preview"
-                  className="rounded-2xl w-full h-48 object-cover"
-                />
-                <img
-                  src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"
-                  alt="Room Preview"
-                  className="rounded-2xl w-full h-48 object-cover"
-                /> */}
+              <div className="flex gap-4 overflow-x-auto pb-2">
                 {(showAllPhotos
                   ? owner?.messPhoto
                   : owner?.messPhoto?.slice(0, 4)
@@ -164,19 +116,18 @@ export default function BookingPage() {
                     key={index}
                     src={image}
                     alt={`Room ${index + 1}`}
-                    className="rounded-2xl w-full h-48 object-cover"
+                    className="rounded-2xl w-64 h-48 object-cover flex-shrink-0"
                   />
                 ))}
-
-                {owner?.messPhoto?.length > 4 && (
-                  <button
-                    onClick={() => setShowAllPhotos(!showAllPhotos)}
-                    className="text-blue-600 underline text-sm mt-2 w-[100%] md:w-[200%]"
-                  >
-                    {showAllPhotos ? "View Less" : "View More"}
-                  </button>
-                )}
               </div>
+              {owner?.messPhoto?.length > 4 && (
+                <button
+                  onClick={() => setShowAllPhotos(!showAllPhotos)}
+                  className="text-blue-600 underline text-sm mt-2 w-full md:w-[200%]"
+                >
+                  {showAllPhotos ? "View Less" : "View More"}
+                </button>
+              )}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-sm text-gray-700">
                 <ul className="space-y-1">
                   <li>🛏️ Double Bed</li>
