@@ -67,68 +67,73 @@ export default function BookingPage() {
                     </button>
                   </div>
                 ))} */}
-                {owner?.roomInfo?.map((room , idx) => room && (
-                  <div
-                    key={room._id}
-                    className={`border rounded-2xl p-4 space-y-2 ${
-                      selectedRoom === room._id ? "" : "border-gray-200"
-                    }`}
-                    style={{
-                      borderColor:
-                        selectedRoom === room._id ? primaryColor : undefined,
-                    }}
-                  >
-                    <div className="flex justify-between items-center">
-                      <h3 className="font-semibold text-lg">{room.room}</h3>
-                      <span
-                        className={`text-sm px-2 py-1 rounded-full ${
-                          room.roomAvailable
-                            ? "bg-green-100 text-green-700"
-                            : "bg-orange-100 text-orange-700"
+                {owner?.roomInfo?.map(
+                  (room, idx) =>
+                    room && (
+                      <div
+                        key={room._id}
+                        className={`border rounded-2xl p-4 space-y-2 ${
+                          selectedRoom === room._id ? "" : "border-gray-200"
                         }`}
+                        style={{
+                          borderColor:
+                            selectedRoom === room._id
+                              ? primaryColor
+                              : undefined,
+                        }}
                       >
-                        {room.roomAvailable ? "Available" : "1 Bed Left"}
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-2 text-gray-600 text-sm">
-                      <span>WiFi</span>
-                      <span>AC</span>
-                      <span>{room._id === "102" ? "Double" : "TV"}</span>
-                      {/* {owner?.facility?.map((aminities)=>{
+                        <div className="flex justify-between items-center">
+                          <h3 className="font-semibold text-lg">{room.room}</h3>
+                          <span
+                            className={`text-sm px-2 py-1 rounded-full ${
+                              room.roomAvailable
+                                ? "bg-green-100 text-green-700"
+                                : "bg-orange-100 text-orange-700"
+                            }`}
+                          >
+                            {room.roomAvailable ? "Available" : "1 Bed Left"}
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-gray-600 text-sm">
+                          <span>WiFi</span>
+                          <span>AC</span>
+                          <span>{room._id === "102" ? "Double" : "TV"}</span>
+                          {/* {owner?.facility?.map((aminities)=>{
                         <span>{aminities}</span>
                       })} */}
-
-                    </div>
-                    <div
-                      className="text-lg font-bold"
-                      style={{ color: primaryColor }}
-                    >
-                      {/* ₹{room.price.toLocaleString()} */}
-                      ₹{room.pricePerHead?.toLocaleString()}
-
-                      <span className="text-sm font-medium text-gray-500">
-                        /mo
-                      </span>
-                    </div>
-                    <button
-                      onClick={() => setSelectedRoom(room._id)}
-                      className={`w-full py-2 px-4 rounded-md font-semibold ${
-                        selectedRoom === room._id ? "text-white" : "border"
-                      }`}
-                      style={{
-                        backgroundColor:
-                          selectedRoom === room._id
-                            ? primaryColor
-                            : "transparent",
-                        borderColor: primaryColor,
-                        color:
-                          selectedRoom === room._id ? "white" : primaryColor,
-                      }}
-                    >
-                      {selectedRoom === room._id ? "Selected" : "Select"}
-                    </button>
-                  </div>
-                ))}
+                        </div>
+                        <div
+                          className="text-lg font-bold"
+                          style={{ color: primaryColor }}
+                        >
+                          {/* ₹{room.price.toLocaleString()} */}₹
+                          {room.pricePerHead?.toLocaleString()}
+                          <span className="text-sm font-medium text-gray-500">
+                            /mo
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => setSelectedRoom(room._id)}
+                          className={`w-full py-2 px-4 rounded-md font-semibold ${
+                            selectedRoom === room._id ? "text-white" : "border"
+                          }`}
+                          style={{
+                            backgroundColor:
+                              selectedRoom === room._id
+                                ? primaryColor
+                                : "transparent",
+                            borderColor: primaryColor,
+                            color:
+                              selectedRoom === room._id
+                                ? "white"
+                                : primaryColor,
+                          }}
+                        >
+                          {selectedRoom === room._id ? "Selected" : "Select"}
+                        </button>
+                      </div>
+                    )
+                )}
               </div>
             </div>
           </div>
@@ -147,13 +152,14 @@ export default function BookingPage() {
                   alt="Room Preview"
                   className="rounded-2xl w-full h-48 object-cover"
                 /> */}
-                {owner?.messPhoto?.map((image)=>{
+                {owner?.messPhoto?.map((image, index) => (
                   <img
-                  src={image}
-                  alt="Room Preview"
-                  className="rounded-2xl w-full h-48 object-cover"
-                />
-                })}
+                    key={index}
+                    src={image}
+                    alt="Room Preview"
+                    className="rounded-2xl w-full h-48 object-cover"
+                  />
+                ))}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-sm text-gray-700">
                 <ul className="space-y-1">
