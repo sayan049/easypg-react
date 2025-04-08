@@ -140,7 +140,6 @@ export default function BookingPage() {
                   onClick={() => setShowAllPhotos(!showAllPhotos)}
                   className="text-blue-600 underline text-sm mt-2 w-full text-left"
                 >
-                  {showAllPhotos ? "View Less" : "View More"}
                 </button>
               )}
 
