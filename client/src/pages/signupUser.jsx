@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { signupUrl } from "../constant/urls";
-import flashMessage from "../components/flashMessage";
+import FlashMessage from "../components/flashMessage";
 
 function SignUpForm() {
   useEffect(() => {
@@ -72,7 +72,7 @@ function SignUpForm() {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
-      <flashMessage message={message}/>
+     {message && <FlashMessage message={message}/>} 
       {/* Left Section */}
       <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6">
         <div className="w-full max-w-lg p-8">
