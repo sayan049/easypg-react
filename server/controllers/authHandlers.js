@@ -19,9 +19,22 @@ exports.signupHandler = async (req, res) => {
   const existnigUser = await User.findOne({ email: email });
 
   if (existnigUser) {
-    return console.log(`${email} already used`);
+    return res.status(409).json({ message: "Email already exists" });
+   // return console.log(`${email} already used`);
   }
   try {
+    // Validate email format (basic)
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!isValidEmail) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
+
+    // Validate password length
+    if (!password || password.length < 8) {
+      return res.status(400).json({ message: "Password must be at least 8 characters" });
+    }
+
+    
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const newUser = await User.create({
       ...req.body,
