@@ -10,7 +10,7 @@ function FlashMessage({ message, type = 'info' }) {
   };
 
   return (
-    <div className={`${baseStyles} ${typeStyles[type]} max-w-md mx-auto my-4`}>
+    <div className={`${baseStyles} ${typeStyles[type]} max-w-md mx-auto my-4 absolute`}>
       <span className="material-icons-outlined">
         {type === 'success' && 'check_circle'}
         {type === 'error' && 'error'}
