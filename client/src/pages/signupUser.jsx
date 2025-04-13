@@ -52,21 +52,31 @@ function SignUpForm() {
       }
     }  catch (error) {
       if (error.response) {
-        // Backend sent specific validation errors
-        if (typeof error.response.data === 'string') {
-          setmessage(error.response.data);
-        } else if (error.response.data.message) {
-          setmessage(error.response.data.message);
-        } else if (Array.isArray(error.response.data.errors)) {
-          // Assuming an array of validation errors
-          setmessage(error.response.data.errors.join(', '));
+        const res = error.response;
+    
+        // Handle common backend validation errors
+        if (res.status === 400) {
+          if (res.data.message) {
+            setmessage(res.data.message); // e.g. "Invalid email"
+          } else if (res.data.errors) {
+            // If errors are sent as a list
+            setmessage(res.data.errors.join(', '));
+          } else {
+            setmessage("Please check your input.");
+          }
+        } else if (res.status === 409) {
+          // Conflict - e.g. email already exists
+          setmessage("Email already exists.");
+        } else if (res.status === 401) {
+          setmessage("Incorrect password.");
         } else {
-          setmessage("Signup failed. Please try again.");
+          setmessage("Signup failed. Try again.");
         }
+    
       } else if (error.request) {
-        setmessage("No response from server. Please check your internet.");
+        setmessage("Server not responding. Check your internet.");
       } else {
-        setmessage("Unexpected error: " + error.message);
+        setmessage("Error: " + error.message);
       }
     }
   };
