@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { signupUrl } from "../constant/urls";
+import flashMessage from "../components/flashMessage";
 
 function SignUpForm() {
   useEffect(() => {
@@ -19,6 +20,7 @@ function SignUpForm() {
   const [isFormFilled, setIsFormFilled] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Disable button after first click
+  const [message,setmessage]=useState("");
 
   const navigate = useNavigate();
 
@@ -45,9 +47,11 @@ function SignUpForm() {
         localStorage.setItem("loginMessage", message);
         navigate("/LoginUser", { state: { message } });
       } else {
+        setmessage(response.data);
  console.error("Signup failed:", response.data);
       }
     } catch (error) {
+      setmessage(error);
   console.error("Error sending JSON data:", error);
     } finally {
       // Re-enable the button after 5 seconds
@@ -68,6 +72,7 @@ function SignUpForm() {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
+      <flashMessage message={message}/>
       {/* Left Section */}
       <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6">
         <div className="w-full max-w-lg p-8">
