@@ -50,16 +50,24 @@ function SignUpForm() {
         setmessage(response.data);
  console.error("Signup failed:", response.data);
       }
-    } catch (error) {
-      const errorMsg = error.response?.data?.message || error.message || "Signup failed";
-      setmessage(errorMsg);
-  console.error("Error sending JSON data:", error);
-    } finally {
-      // Re-enable the button after 5 seconds
-      setTimeout(() => {
-        setIsButtonDisabled(false); // Re-enable the button
-        setIsSubmitting(false); // Set submitting to false after 5 seconds
-      }, 5000);
+    }  catch (error) {
+      if (error.response) {
+        // Backend sent specific validation errors
+        if (typeof error.response.data === 'string') {
+          setmessage(error.response.data);
+        } else if (error.response.data.message) {
+          setmessage(error.response.data.message);
+        } else if (Array.isArray(error.response.data.errors)) {
+          // Assuming an array of validation errors
+          setmessage(error.response.data.errors.join(', '));
+        } else {
+          setmessage("Signup failed. Please try again.");
+        }
+      } else if (error.request) {
+        setmessage("No response from server. Please check your internet.");
+      } else {
+        setmessage("Unexpected error: " + error.message);
+      }
     }
   };
 
