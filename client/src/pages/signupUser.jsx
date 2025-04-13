@@ -51,7 +51,8 @@ function SignUpForm() {
  console.error("Signup failed:", response.data);
       }
     } catch (error) {
-      setmessage(error);
+      const errorMsg = error.response?.data?.message || error.message || "Signup failed";
+      setmessage(errorMsg);
   console.error("Error sending JSON data:", error);
     } finally {
       // Re-enable the button after 5 seconds
