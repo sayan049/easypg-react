@@ -12,7 +12,7 @@ const SettingsOwner = ({ userDetails }) => {
     address: "",
     pincode: "",
     messName: "",
-    location: "",
+    location: { type: "Point", coordinates: [] },
     aboutMess: "",
     gender: "",
     facility: [],
@@ -31,7 +31,7 @@ const SettingsOwner = ({ userDetails }) => {
         address: userDetails?.address || "",
         pincode: userDetails?.pincode || "",
         messName: userDetails?.messName || "",
-        location: userDetails?.location || "",
+        location: userDetails?.location || { type: "Point", coordinates: [] },
         aboutMess: userDetails?.aboutMess || "",
         gender: userDetails?.gender || "",
         facility: userDetails?.facility || [],
@@ -42,7 +42,7 @@ const SettingsOwner = ({ userDetails }) => {
       }));
     }
   }, [userDetails]);
-console.log(details);
+  console.log(details);
   return (
     <div className="p-4 max-w-6xl mx-auto space-y-8">
       <div className="flex flex-col items-center space-y-2">
@@ -74,7 +74,9 @@ console.log(details);
             placeholder="Mobile Number"
             className={input}
             value={details.mobileNo}
-            onChange={(e) => setDetails({ ...details, mobileNo: e.target.value })}
+            onChange={(e) =>
+              setDetails({ ...details, mobileNo: e.target.value })
+            }
           />
           <input
             type="text"
@@ -135,7 +137,32 @@ console.log(details);
               setDetails({ ...details, messName: e.target.value })
             }
           />
-          <input type="text" placeholder="Location" className={input} />
+          <input
+            type="text"
+            placeholder="Latitude, Longitude"
+            className={input}
+            value={
+              details.location?.coordinates?.length === 2
+                ? `${details.location.coordinates[1]}, ${details.location.coordinates[0]}`
+                : ""
+            }
+            onChange={(e) => {
+              const value = e.target.value;
+              const [lat, lng] = value
+                .split(",")
+                .map((v) => parseFloat(v.trim()));
+
+              if (!isNaN(lat) && !isNaN(lng)) {
+                setDetails((prev) => ({
+                  ...prev,
+                  location: {
+                    type: "Point",
+                    coordinates: [lng, lat], // MongoDB expects [lng, lat]
+                  },
+                }));
+              }
+            }}
+          />
         </div>
         <textarea
           placeholder="About Mess"
