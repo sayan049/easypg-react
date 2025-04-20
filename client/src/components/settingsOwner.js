@@ -35,8 +35,8 @@ const SettingsOwner = ({ userDetails }) => {
         aboutMess: userDetails?.aboutMess || "",
         gender: userDetails?.gender || "",
         facility: userDetails?.facility?.[0]
-        ? userDetails.facility[0].split(",").map(f => f.trim())
-        : [],
+          ? userDetails.facility[0].split(",").map((f) => f.trim())
+          : [],
 
         roomInfo: Array.isArray(userDetails?.roomInfo)
           ? userDetails.roomInfo
@@ -276,12 +276,48 @@ const SettingsOwner = ({ userDetails }) => {
       <div className="space-y-4">
         <h3 className="font-semibold text-lg">Room Information</h3>
 
+        {/* Add Room Button */}
+        <button
+          type="button"
+          onClick={() => {
+            const nextRoomNumber = details.roomInfo.length + 1;
+            setDetails((prev) => ({
+              ...prev,
+              roomInfo: [
+                ...prev.roomInfo,
+                {
+                  room: `RoomNo-${nextRoomNumber}`,
+                  bedContains: "",
+                  pricePerHead: 0,
+                  roomAvailable: false,
+                },
+              ],
+            }));
+          }}
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          Add Room
+        </button>
+
         {Array.isArray(details.roomInfo) && details.roomInfo.length > 0 ? (
           details.roomInfo.map((room, index) => (
             <div
               key={index}
-              className="grid grid-cols-1 sm:grid-cols-3 gap-4 border p-4 rounded bg-white shadow-sm"
+              className="relative grid grid-cols-1 sm:grid-cols-3 gap-4 border p-4 rounded bg-white shadow-sm"
             >
+              {/* Remove Room Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  const updatedRooms = [...details.roomInfo];
+                  updatedRooms.splice(index, 1);
+                  setDetails({ ...details, roomInfo: updatedRooms });
+                }}
+                className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm"
+              >
+                Remove
+              </button>
+
               {/* Room No (readonly) */}
               <input
                 type="text"
