@@ -1,7 +1,8 @@
 import React from 'react';
 
-function FlashMessage({ message, type = 'info' }) {
+function FlashMessage({ message='hi', type = 'info' }) {
   console.log('FlashMessage', message, type);
+  const [show, setShow] = React.useState(true);
   const baseStyles = 'p-4 rounded-2xl shadow-md flex items-center gap-3 text-sm sm:text-base';
   const typeStyles = {
     success: 'bg-green-100 text-green-800 border border-green-300',
@@ -9,9 +10,9 @@ function FlashMessage({ message, type = 'info' }) {
     warning: 'bg-yellow-100 text-yellow-800 border border-yellow-300',
     info: 'bg-blue-100 text-blue-800 border border-blue-300',
   };
-  if (message == null){
-    return null;
-  }
+  // if (message == null){
+  //   return null;
+  // }
 
   if(type === 'error'){
 
@@ -42,7 +43,7 @@ function FlashMessage({ message, type = 'info' }) {
 
 
   return (
-    <div role="alert" className="rounded-md border border-gray-300 bg-white p-4 shadow-sm absolute top-0 left-1/2 transform -translate-x-1/2 mt-4">
+    <div role="alert" className={`rounded-md border border-gray-300 bg-white p-4 shadow-sm absolute top-0 left-1/2 transform -translate-x-1/2 mt-4 ${show ? 'block' : 'hidden'}`}>
     <div className="flex items-start gap-4">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -69,6 +70,7 @@ function FlashMessage({ message, type = 'info' }) {
         className="-m-3 rounded-full p-1.5 text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-700"
         type="button"
         aria-label="Dismiss alert"
+        onClick={() => setShow(false)}
       >
         <span className="sr-only">Dismiss popup</span>
   
