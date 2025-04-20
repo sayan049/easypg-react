@@ -20,7 +20,7 @@ function SignUpForm() {
   const [isFormFilled, setIsFormFilled] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Disable button after first click
-  const [message,setmessage]=useState("");
+  const [message,setmessage]=useState({Text:"",type:""}); // State to manage flash message
 
   const navigate = useNavigate();
 
@@ -47,7 +47,7 @@ function SignUpForm() {
         localStorage.setItem("loginMessage", message);
         navigate("/LoginUser", { state: { message } });
       } else {
-        setmessage(response.data);
+        setmessage({text:"signup failed",type:"error"}); // Set error message if response is not 201
  console.error("Signup failed:", response.data);
       }
     }  catch (error) {
@@ -57,26 +57,26 @@ function SignUpForm() {
         // Handle common backend validation errors
         if (res.status === 400) {
           if (res.data.message) {
-            setmessage(res.data.message); // e.g. "Invalid email"
+            setmessage({text:res.data.message,type:'error'}); // e.g. "Invalid email"
           } else if (res.data.errors) {
             // If errors are sent as a list
-            setmessage(res.data.errors.join(', '));
+            setmessage({text: res.data.errors.join(', '), type:'error'}); // e.g. "Email is required, Password is too short"
           } else {
-            setmessage("Please check your input.");
+            setmessage({text:"Please check your input.",type:'error'}); // Fallback message
           }
         } else if (res.status === 409) {
           // Conflict - e.g. email already exists
-          setmessage("Email already exists.");
+          setmessage({text:"Email already exists.",type:'error'});
         } else if (res.status === 401) {
-          setmessage("Incorrect password.");
+          setmessage({text:"Incorrect password.",type:'error'});
         } else {
-          setmessage("Signup failed. Try again.");
+          setmessage({text:"Signup failed. Try again.",type:'error'}); // General error message
         }
     
       } else if (error.request) {
-        setmessage("Server not responding. Check your internet.");
+        setmessage({text:"Server not responding. Check your internet.",type:'error'}); // Network error
       } else {
-        setmessage("Error: " + error.message);
+        setmessage({text: "Error: " + error.message,type:'error',type:"error"}); // Other errors
       }
     }
   };
@@ -91,7 +91,7 @@ function SignUpForm() {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
-     {message && <FlashMessage message={message}/>} 
+     {message && <FlashMessage message={message.text} type={message.type}/>} 
       {/* Left Section */}
       <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6">
         <div className="w-full max-w-lg p-8">
