@@ -1,6 +1,7 @@
 import React from 'react';
 
 function FlashMessage({ message, type = 'info' }) {
+  console.log('FlashMessage', message, type);
   const baseStyles = 'p-4 rounded-2xl shadow-md flex items-center gap-3 text-sm sm:text-base';
   const typeStyles = {
     success: 'bg-green-100 text-green-800 border border-green-300',
