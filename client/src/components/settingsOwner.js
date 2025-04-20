@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import UserProfile from "./UserProfile";
-
+import { FaMapMarkerAlt } from "react-icons/fa";
 const input =
   "border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300";
 
@@ -43,6 +43,7 @@ const SettingsOwner = ({ userDetails }) => {
     }
   }, [userDetails]);
   console.log(details);
+
   return (
     <div className="p-4 max-w-6xl mx-auto space-y-8">
       <div className="flex flex-col items-center space-y-2">
@@ -137,32 +138,51 @@ const SettingsOwner = ({ userDetails }) => {
               setDetails({ ...details, messName: e.target.value })
             }
           />
-          <input
-            type="text"
-            placeholder="Latitude, Longitude"
-            className={input}
-            value={
-              details.location?.coordinates?.length === 2
-                ? `${details.location.coordinates[1]}, ${details.location.coordinates[0]}`
-                : ""
-            }
-            onChange={(e) => {
-              const value = e.target.value;
-              const [lat, lng] = value
-                .split(",")
-                .map((v) => parseFloat(v.trim()));
-
-              if (!isNaN(lat) && !isNaN(lng)) {
-                setDetails((prev) => ({
-                  ...prev,
-                  location: {
-                    type: "Point",
-                    coordinates: [lng, lat], // MongoDB expects [lng, lat]
-                  },
-                }));
+          <div className="flex gap-2 items-center">
+            <input
+              type="text"
+              placeholder="Latitude, Longitude"
+              className={`${input} bg-gray-100 cursor-not-allowed`}
+              readOnly
+              value={
+                details.location?.coordinates?.length === 2
+                  ? `${details.location.coordinates[1]}, ${details.location.coordinates[0]}`
+                  : ""
               }
-            }}
-          />
+            />
+            <button
+              type="button"
+              onClick={() => {
+                if (!navigator.geolocation) {
+                  alert("Geolocation is not supported by your browser.");
+                  return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                  (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setDetails((prev) => ({
+                      ...prev,
+                      location: {
+                        type: "Point",
+                        coordinates: [longitude, latitude],
+                      },
+                    }));
+                  },
+                  (error) => {
+                    console.error("Location error:", error);
+                    alert(
+                      "Unable to fetch location. Please allow location access."
+                    );
+                  }
+                );
+              }}
+              className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
+              title="Get Current Location"
+            >
+              <FaMapMarkerAlt />
+            </button>
+          </div>
         </div>
         <textarea
           placeholder="About Mess"
