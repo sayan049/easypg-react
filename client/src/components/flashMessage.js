@@ -9,6 +9,10 @@ function FlashMessage({ message, type = 'info' }) {
     warning: 'bg-yellow-100 text-yellow-800 border border-yellow-300',
     info: 'bg-blue-100 text-blue-800 border border-blue-300',
   };
+  if (message == null){
+    return null;
+  }
+
   if(type === 'error'){
 
   return (
@@ -35,9 +39,7 @@ function FlashMessage({ message, type = 'info' }) {
 
   );}
 
-if (message === null){
-  return null;
-}
+
 
   return (
     <div role="alert" className="rounded-md border border-gray-300 bg-white p-4 shadow-sm absolute top-0 left-1/2 transform -translate-x-1/2 mt-4">
