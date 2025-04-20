@@ -34,10 +34,9 @@ const SettingsOwner = ({ userDetails }) => {
         location: userDetails?.location || { type: "Point", coordinates: [] },
         aboutMess: userDetails?.aboutMess || "",
         gender: userDetails?.gender || "",
-        facility:
-          typeof userDetails?.facility === "string"
-            ? userDetails.facility.split(",").map((f) => f.trim())
-            : userDetails?.facility || [],
+        facility: userDetails?.facility?.[0]
+        ? userDetails.facility[0].split(",").map(f => f.trim())
+        : [],
 
         roomInfo: Array.isArray(userDetails?.roomInfo)
           ? userDetails.roomInfo
