@@ -7,6 +7,7 @@ const sendmail = require("../controllers/emailSender");
 const sendmailOwner = require("./emailSenderOwner");
 const jwt = require("jsonwebtoken");
 const geohash = require('ngeohash');
+const { type } = require("os");
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
@@ -19,19 +20,22 @@ exports.signupHandler = async (req, res) => {
   const existnigUser = await User.findOne({ email: email });
 
   if (existnigUser) {
-    return res.status(409).json({ message: "Email already exists" });
+    return res.status(409).json({ message: "Email already exists", type: "error" });
    // return console.log(`${email} already used`);
   }
   try {
     // Validate email format (basic)
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     if (!isValidEmail) {
-      return res.status(400).json({ message: "Invalid email format" });
+      return res.status(400).json({ message: "Invalid email format" , type: "error" });
     }
 
     // Validate password length
     if (!password || password.length < 8) {
-      return res.status(400).json({ message: "Password must be at least 8 characters" });
+      return res.status(400).json({ message: "Password must be at least 8 characters" , type: "error" });
+    }
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ message: "Incorrect email or password" ,type: "error" });
     }
 
     
@@ -44,12 +48,12 @@ exports.signupHandler = async (req, res) => {
 
     sendmail(req.body.firstName, email, newUser._id);
     
-    res.status(201).json({ message: "User registered. Please verify your email." });
+    res.status(201).json({ message: "User registered. Please verify your email.", type: "success" });
     
   } catch (error) {
     console.error("Error during signup:", error);
 
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error" , type: "error" });
   }
 };
 
