@@ -1,6 +1,6 @@
 import React from 'react';
 
-function FlashMessage({ message, type = 'info' }) {
+function FlashMessage({ message='hi', type = 'info' }) {
   console.log('FlashMessage', message, type);
   const [show, setShow] = React.useState(true);
   const baseStyles = 'p-4 rounded-2xl shadow-md flex items-center gap-3 text-sm sm:text-base';
