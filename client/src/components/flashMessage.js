@@ -38,7 +38,7 @@ function FlashMessage({ message, type = 'info' }) {
 
 
   return (
-    <div role="alert" className="rounded-md border border-gray-300 bg-white p-4 shadow-sm">
+    <div role="alert" className="rounded-md border border-gray-300 bg-white p-4 shadow-sm absolute top-0 left-1/2 transform -translate-x-1/2 mt-4">
     <div className="flex items-start gap-4">
       <svg
         xmlns="http://www.w3.org/2000/svg"
