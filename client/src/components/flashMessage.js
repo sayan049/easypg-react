@@ -1,7 +1,7 @@
 import React from 'react';
 
-function FlashMessage({ message='xxx', type = 'error', show: {false} }) {
-
+function FlashMessage({ message='xxx', type = 'error' }) {
+  const [show, setShow] = React.useState(true);
   useEffect(() => {
     const timer = setTimeout(() => {
       onDismiss(); // Hide the message after 2 seconds
@@ -12,7 +12,6 @@ function FlashMessage({ message='xxx', type = 'error', show: {false} }) {
 
 
   console.log('FlashMessage', message, type);
-  const [show, setShow] = React.useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
