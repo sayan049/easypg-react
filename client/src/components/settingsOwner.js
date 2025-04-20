@@ -46,6 +46,28 @@ const SettingsOwner = ({ userDetails }) => {
     }
   }, [userDetails]);
   console.log(details);
+  const handleAddRoom = () => {
+    const nextRoomNumber = details.roomInfo.length + 1;
+    setDetails((prev) => ({
+      ...prev,
+      roomInfo: [
+        ...prev.roomInfo,
+        {
+          room: `RoomNo-${nextRoomNumber}`,
+          bedContains: "",
+          pricePerHead: 0,
+          roomAvailable: false,
+        },
+      ],
+    }));
+  };
+
+  // Function to handle removing a room
+  const handleRemoveRoom = (index) => {
+    const updatedRooms = [...details.roomInfo];
+    updatedRooms.splice(index, 1);
+    setDetails({ ...details, roomInfo: updatedRooms });
+  };
 
   return (
     <div className="p-4 max-w-6xl mx-auto space-y-8">
@@ -279,21 +301,7 @@ const SettingsOwner = ({ userDetails }) => {
         {/* Add Room Button */}
         <button
           type="button"
-          onClick={() => {
-            const nextRoomNumber = details.roomInfo.length + 1;
-            setDetails((prev) => ({
-              ...prev,
-              roomInfo: [
-                ...prev.roomInfo,
-                {
-                  room: `RoomNo-${nextRoomNumber}`,
-                  bedContains: "",
-                  pricePerHead: 0,
-                  roomAvailable: false,
-                },
-              ],
-            }));
-          }}
+          onClick={handleAddRoom}
           className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
         >
           Add Room
@@ -308,11 +316,7 @@ const SettingsOwner = ({ userDetails }) => {
               {/* Remove Room Button */}
               <button
                 type="button"
-                onClick={() => {
-                  const updatedRooms = [...details.roomInfo];
-                  updatedRooms.splice(index, 1);
-                  setDetails({ ...details, roomInfo: updatedRooms });
-                }}
+                onClick={() => handleRemoveRoom(index)}
                 className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm"
               >
                 Remove
@@ -378,7 +382,6 @@ const SettingsOwner = ({ userDetails }) => {
           <p className="text-gray-500">No room data available.</p>
         )}
       </div>
-
       {/* Mess Photos */}
       <div className="space-y-4">
         <h3 className="font-semibold text-lg">Mess Photos</h3>
