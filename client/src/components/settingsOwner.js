@@ -34,7 +34,11 @@ const SettingsOwner = ({ userDetails }) => {
         location: userDetails?.location || { type: "Point", coordinates: [] },
         aboutMess: userDetails?.aboutMess || "",
         gender: userDetails?.gender || "",
-        facility: userDetails?.facility || [],
+        facility:
+          typeof userDetails?.facility === "string"
+            ? userDetails.facility.split(",").map((f) => f.trim())
+            : userDetails?.facility || [],
+
         roomInfo: Array.isArray(userDetails?.roomInfo)
           ? userDetails.roomInfo
           : [],
@@ -237,7 +241,7 @@ const SettingsOwner = ({ userDetails }) => {
         <h3 className="font-semibold text-lg">Amenities</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {[
-            "AC",
+            "A/C",
             "TV",
             "Power Backup",
             "WiFi",
