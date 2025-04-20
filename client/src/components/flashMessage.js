@@ -1,25 +1,19 @@
 import React from 'react';
+import { useEffect } from 'react';
 
 function FlashMessage({ message='xxx', type = 'error' }) {
   const [show, setShow] = React.useState(true);
   useEffect(() => {
     const timer = setTimeout(() => {
-      onDismiss(); // Hide the message after 2 seconds
+      //onDismiss(); // Hide the message after 2 seconds
     }, 2000);
 
     return () => clearTimeout(timer); // Cleanup on unmount
-  }, [message, onDismiss]);
+  }, [message]);
 
 
   console.log('FlashMessage', message, type);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onDismiss(); // Hide the message after 2 seconds
-    }, 2000);
-
-    return () => clearTimeout(timer); // Cleanup on unmount
-  }, [message, onDismiss]);
 
 
   const baseStyles = 'p-4 rounded-2xl shadow-md flex items-center gap-3 text-sm sm:text-base';
@@ -38,7 +32,7 @@ function FlashMessage({ message='xxx', type = 'error' }) {
   return (
 
       <>
-    <div role="alert" className={`border-s-4 border-red-700 bg-red-50 p-4 absolute top-0 left-1/2 transform -translate-x-1/2 mt-4 rounded-md shadow-md ${show ? 'block' : 'hidden'}`} onDismiss={() => setShow( false )}>
+    <div role="alert" className={`border-s-4 border-red-700 bg-red-50 p-4 absolute top-0 left-1/2 transform -translate-x-1/2 mt-4 rounded-md shadow-md ${show ? 'block' : 'hidden'}`} >
   <div className="flex items-center gap-2 text-red-700">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-5">
       <path
