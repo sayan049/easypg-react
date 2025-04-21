@@ -95,7 +95,7 @@ const SettingsOwner = ({ userDetails }) => {
 
     // Required identifiers
     formData.append("type", "owner");
-    formData.append("userId", userDetails._id); // use actual user ID
+    formData.append("userId", userDetails._id); 
 
     // Append editable fields
     formData.append("address", details.address);

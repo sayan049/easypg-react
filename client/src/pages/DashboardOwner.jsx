@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 
+
 import { Link } from "react-router-dom";
-import { Home, CalendarCheck, CreditCard, Settings as Gear } from "lucide-react";
+import {
+  Home,
+  CalendarCheck,
+  CreditCard,
+  Settings as Gear,
+} from "lucide-react";
 import { cn } from "../lib/utils";
 import DashboardContentOwner from "../components/dashboardContentOwner";
 import BookingStatus from "../components/BookingStatus";
@@ -24,63 +30,62 @@ const navItems = [
 
 export default function DashboardOwner() {
   const [activeTab, setActiveTab] = useState("dashboard");
-  
 
   const renderComponent = () => {
     switch (activeTab) {
       case "dashboard":
-        return <DashboardContentOwner/>;
+        return <DashboardContentOwner />;
       case "booking":
-        return <BookingStatus/>;
+        return <BookingStatus />;
       case "payments":
-        return <Payments/>;
+        return <Payments />;
       case "settings":
-        return <SettingsOwner userDetails={userDetails}/>;
+        return <SettingsOwner userDetails={userDetails} />;
       default:
         return null;
     }
   };
-    const [userDetails, setUserDetails] = useState(null);
-    const {
-        userName,
-        IsAuthenticated,
-        isOwnerAuthenticated,
-        ownerName,
-        user,
-        owner,
-        type,
-      } = useAuth();
+  const [userDetails, setUserDetails] = useState(null);
+  const {
+    userName,
+    IsAuthenticated,
+    isOwnerAuthenticated,
+    ownerName,
+    user,
+    owner,
+    type,
+  } = useAuth();
   useEffect(() => {
-          const fetchDetails = async () => {
-           // setIsLoading(true);
-            try {
-              const userId = type === "owner" ? owner?.id : user?.id;
-              if (!userId) {
-                console.error("User ID is missing");
-                return;
-              }
-      
-              const url = new URL(fetchDetailsUrl);
-              url.searchParams.append("userId", userId);
-              url.searchParams.append("type", type);
-      
-              const response = await fetch(url, { method: "GET" });
-      
-              if (!response.ok) {
-                throw new Error("Failed to fetch details");
-              }
-      
-              const data = await response.json();
-              setUserDetails(data); // Pass this to Settings
-            } catch (error) {
-              console.error("Error fetching details:", error);
-            } finally {
-            //  setIsLoading(false);
-            }
-          };
-      
-          fetchDetails();
-        }, [type, user, owner]);
+    const fetchDetails = async () => {
+      // setIsLoading(true);
+      try {
+        const userId = type === "owner" ? owner?.id : user?.id;
+        if (!userId) {
+          console.error("User ID is missing");
+          return;
+        }
+
+        const url = new URL(fetchDetailsUrl);
+        url.searchParams.append("userId", userId);
+        url.searchParams.append("type", type);
+
+        const response = await fetch(url, { method: "GET" });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch details");
+        }
+
+        const data = await response.json();
+        setUserDetails(data); // Pass this to Settings
+      } catch (error) {
+        console.error("Error fetching details:", error);
+      } finally {
+        //  setIsLoading(false);
+      }
+    };
+
+    fetchDetails();
+  }, [type, user, owner]);
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
@@ -91,15 +96,16 @@ export default function DashboardOwner() {
           alt="Profile"
           className="w-20 h-20 rounded-full mb-2"
         /> */}
-         <svg
-      className="w-20 h-20 rounded-full mb-2 bg-gray-200"
-      viewBox="0 0 100 100"
-    >
-      <circle cx="50" cy="40" r="20" fill="#4F46E5" /> {/* Head */}
-      <circle cx="50" cy="80" r="25" fill="#4F46E5" /> {/* Body */}
-    </svg>
+        <svg
+          className="w-10 h-10 rounded-full mb-2 bg-gray-200"
+          viewBox="0 0 100 100"
+        >
+          <circle cx="50" cy="40" r="20" fill="#4F46E5" /> {/* Head */}
+          <circle cx="50" cy="80" r="25" fill="#4F46E5" /> {/* Body */}
+        </svg>
+
         <div className="text-center mb-6">
-          <div className="text-base font-semibold">John Smith</div>
+          <div className="text-base font-semibold">{owner.firstName +owner.lastName} </div>
           <div className="text-sm text-gray-500">Property Owner</div>
         </div>
         <nav className="flex flex-col gap-2 w-full">
