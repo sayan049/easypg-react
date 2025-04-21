@@ -35,8 +35,8 @@ const SettingsOwner = ({ userDetails }) => {
         location: userDetails?.location || { type: "Point", coordinates: [] },
         aboutMess: userDetails?.aboutMess || "",
         gender: userDetails?.gender || "",
-        facility: userDetails?.facility?.[0]
-          ? userDetails.facility[0].split(",").map((f) => f.trim())
+        facility: Array.isArray(userDetails?.facility)
+          ? userDetails.facility
           : [],
 
         roomInfo: Array.isArray(userDetails?.roomInfo)
@@ -82,18 +82,16 @@ const SettingsOwner = ({ userDetails }) => {
   const handleUpdate = async () => {
     const formData = new FormData();
 
- 
     const existingUrls = details.messPhoto
-    .filter(photo => typeof photo === 'string')
-    .map(photo => photo);
+      .filter((photo) => typeof photo === "string")
+      .map((photo) => photo);
 
-  const newFiles = details.messPhoto
-    .filter(photo => photo instanceof File);
+    const newFiles = details.messPhoto.filter((photo) => photo instanceof File);
 
-  // Append new files
-  newFiles.forEach(file => {
-    formData.append('messPhoto', file);  // Field name must match multer config
-  });
+    // Append new files
+    newFiles.forEach((file) => {
+      formData.append("messPhoto", file); // Field name must match multer config
+    });
 
     // Required identifiers
     formData.append("type", "owner");
@@ -352,17 +350,14 @@ const SettingsOwner = ({ userDetails }) => {
                 type="checkbox"
                 checked={details.facility?.includes(item)}
                 onChange={(e) => {
-                  if (e.target.checked) {
-                    setDetails({
-                      ...details,
-                      facility: [...details.facility, item],
-                    });
-                  } else {
-                    setDetails({
-                      ...details,
-                      facility: details.facility.filter((a) => a !== item),
-                    });
-                  }
+                  const newFacilities = e.target.checked
+                    ? [...details.facility, item]
+                    : details.facility.filter((f) => f !== item);
+
+                  setDetails({
+                    ...details,
+                    facility: newFacilities,
+                  });
                 }}
               />
               <span>{item}</span>
@@ -370,7 +365,6 @@ const SettingsOwner = ({ userDetails }) => {
           ))}
         </div>
       </div>
-
       {/* Room Information */}
       <div className="space-y-4">
         <h3 className="font-semibold text-lg">Room Information</h3>
