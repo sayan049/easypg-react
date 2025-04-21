@@ -20,7 +20,7 @@ function SignUpForm() {
   const [isFormFilled, setIsFormFilled] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Disable button after first click
-  const [message,setmessage]=useState({Text:"",type:"success"}); // State to manage flash message
+  const [message, setmessage] = useState({ Text: "", type: "success" }); // State to manage flash message
 
   const navigate = useNavigate();
 
@@ -29,17 +29,66 @@ function SignUpForm() {
   };
 
   const signupHandler = async () => {
-    if (isButtonDisabled) return; // Prevents multiple submissions while waiting
+    //     if (isButtonDisabled) return; // Prevents multiple submissions while waiting
+
+    //     const jsonData = { firstName, lastName, email, address, password, pin };
+    //     try {
+    //       setIsSubmitting(true); // Disable button during submission
+    //       setIsButtonDisabled(true); // Disable button immediately
+
+    //       const response = await axios.post(signupUrl, jsonData, {
+    //         headers: {
+    //           "Content-Type": "application/json",
+    //         },
+    //       });
+
+    //       if (response.status === 201) {
+    //         const message = "Please verify your email to log in";
+    //         localStorage.setItem("loginMessage", message);
+    //         navigate("/LoginUser", { state: { message } });
+    //       } else {
+    //         setmessage({text:"signup failed",type:"error"}); // Set error message if response is not 201
+    //  console.error("Signup failed:", response.data);
+    //       }
+    //     }  catch (error) {
+    //       if (error.response) {
+    //         const res = error.response;
+
+    //         // Handle common backend validation errors
+    //         if (res.status === 400) {
+    //           if (res.data.message) {
+    //             setmessage({text:res.data.message,type:'error'}); // e.g. "Invalid email"
+    //           } else if (res.data.errors) {
+    //             // If errors are sent as a list
+    //             setmessage({text: res.data.errors.join(', '), type:'error'}); // e.g. "Email is required, Password is too short"
+    //           } else {
+    //             setmessage({text:"Please check your input.",type:'error'}); // Fallback message
+    //           }
+    //         } else if (res.status === 409) {
+    //           // Conflict - e.g. email already exists
+    //           setmessage({text:"Email already exists.",type:'error'});
+    //         } else if (res.status === 401) {
+    //           setmessage({text:"Incorrect password.",type:'error'});
+    //         } else {
+    //           setmessage({text:"Signup failed. Try again.",type:'error'}); // General error message
+    //         }
+
+    //       } else if (error.request) {
+    //         setmessage({text:"Server not responding. Check your internet.",type:'error'}); // Network error
+    //       } else {
+    //         setmessage({text: "Error: " + error.message,type:'error',type:"error"}); // Other errors
+    //       }
+    //     }
+    if (isButtonDisabled) return;
 
     const jsonData = { firstName, lastName, email, address, password, pin };
+
     try {
-      setIsSubmitting(true); // Disable button during submission
-      setIsButtonDisabled(true); // Disable button immediately
+      setIsSubmitting(true);
+      setIsButtonDisabled(true);
 
       const response = await axios.post(signupUrl, jsonData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
 
       if (response.status === 201) {
@@ -47,37 +96,28 @@ function SignUpForm() {
         localStorage.setItem("loginMessage", message);
         navigate("/LoginUser", { state: { message } });
       } else {
-        setmessage({text:"signup failed",type:"error"}); // Set error message if response is not 201
- console.error("Signup failed:", response.data);
+        setmessage({ text: "Signup failed", type: "error" });
       }
-    }  catch (error) {
+    } catch (error) {
+      let errorMsg = "Signup failed. Try again.";
       if (error.response) {
         const res = error.response;
-    
-        // Handle common backend validation errors
-        if (res.status === 400) {
-          if (res.data.message) {
-            setmessage({text:res.data.message,type:'error'}); // e.g. "Invalid email"
-          } else if (res.data.errors) {
-            // If errors are sent as a list
-            setmessage({text: res.data.errors.join(', '), type:'error'}); // e.g. "Email is required, Password is too short"
-          } else {
-            setmessage({text:"Please check your input.",type:'error'}); // Fallback message
-          }
-        } else if (res.status === 409) {
-          // Conflict - e.g. email already exists
-          setmessage({text:"Email already exists.",type:'error'});
-        } else if (res.status === 401) {
-          setmessage({text:"Incorrect password.",type:'error'});
-        } else {
-          setmessage({text:"Signup failed. Try again.",type:'error'}); // General error message
-        }
-    
+        if (res.data.message) errorMsg = res.data.message;
+        else if (res.data.errors) errorMsg = res.data.errors.join(", ");
       } else if (error.request) {
-        setmessage({text:"Server not responding. Check your internet.",type:'error'}); // Network error
+        errorMsg = "Server not responding. Check your internet.";
       } else {
-        setmessage({text: "Error: " + error.message,type:'error',type:"error"}); // Other errors
+        errorMsg = "Error: " + error.message;
       }
+
+      setmessage({ text: errorMsg, type: "error" });
+
+      // Re-enable button after 2s
+      setTimeout(() => {
+        setIsButtonDisabled(false);
+      }, 2000);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -91,13 +131,15 @@ function SignUpForm() {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
-     {message && <FlashMessage message={message.text} type={message.type}/>} 
+      {message && <FlashMessage message={message.text} type={message.type} />}
       {/* Left Section */}
       <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6">
         <div className="w-full max-w-lg p-8">
           {/* Header Section */}
           <div className="lg:absolute lg:top-6 lg:left-6 flex flex-col items-center lg:items-start space-y-2 lg:space-y-0">
-            <h1 className="text-3xl sm:text-4xl font-bold text-[#2ca4b5]">Sign Up</h1>
+            <h1 className="text-3xl sm:text-4xl font-bold text-[#2ca4b5]">
+              Sign Up
+            </h1>
             <h2 className="text-sm sm:text-lg font-normal text-center lg:text-left">
               User
             </h2>
@@ -110,8 +152,13 @@ function SignUpForm() {
 
           <form className="space-y-4" autoComplete="off">
             {/* Hidden field trick to disable autofill */}
-            <input type="text" name="hidden" style={{ display: "none" }} autoComplete="off" />
-            
+            <input
+              type="text"
+              name="hidden"
+              style={{ display: "none" }}
+              autoComplete="off"
+            />
+
             <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
               <input
                 type="text"
@@ -199,15 +246,14 @@ function SignUpForm() {
             <button
               type="button"
               onClick={signupHandler}
-              disabled={!isFormValid || isButtonDisabled }
+              disabled={!isFormValid || isButtonDisabled || isSubmitting}
               className={`w-full py-2 rounded-full font-semibold transition tracking-wide ${
-                isFormValid 
+                isFormValid && !isSubmitting
                   ? "bg-[#2ca4b5] text-white hover:bg-[#238b96]"
                   : "bg-gray-300 text-gray-600 cursor-not-allowed"
               }`}
             >
-              {/* {isSubmitting ? "Submitting..." : "Create Account"} */}
-              Create Account
+              {isSubmitting ? "Submitting..." : "Create Account"}
             </button>
           </form>
 
@@ -239,7 +285,8 @@ function SignUpForm() {
           className="mt-2 text-lg font-bold text-[35px] text-center"
           style={{
             WebkitTextFillColor: "#0000",
-            background: "linear-gradient(121deg, #2ca4b5 2.49%, #006d7b 59.71%)",
+            background:
+              "linear-gradient(121deg, #2ca4b5 2.49%, #006d7b 59.71%)",
             WebkitBackgroundClip: "text",
             backgroundClip: "text",
           }}
