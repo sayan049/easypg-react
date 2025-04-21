@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import UserProfile from "./UserProfile";
 import { FaMapMarkerAlt } from "react-icons/fa";
+import {updateDetailsUrl} from "../constant/urls";
 const input =
   "border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300";
 
@@ -67,6 +68,54 @@ const SettingsOwner = ({ userDetails }) => {
       roomInfo: prev.roomInfo.filter((_, index) => index !== indexToRemove),
     }));
   };
+  const handleUpdate = async () => {
+    const formData = new FormData();
+  
+    // Required identifiers
+    formData.append("type", "owner");
+    formData.append("userId", userDetails._id); // use actual user ID
+  
+    // Append editable fields
+    formData.append("address", details.address);
+    formData.append("pincode", details.pincode);
+    formData.append("mobileNo", details.mobileNo);
+    formData.append("messName", details.messName);
+    formData.append("aboutMess", details.aboutMess);
+    formData.append("facility", details.facility.join(","));
+    formData.append("location", JSON.stringify(details.location));
+    formData.append("roomInfo", JSON.stringify(details.roomInfo));
+
+  
+    // Optional: Append profile photo if changed
+    // example: details.profilePhoto (set this if you're letting them update it)
+    // formData.append("profilePhoto", details.profilePhoto);
+  
+    // Append mess photos (only newly added File objects)
+    details.messPhoto.forEach((photo) => {
+      if (photo instanceof File) {
+        formData.append("messPhoto", photo);
+      }
+    });
+  
+    try {
+      const res = await fetch({updateDetailsUrl}, {
+        method: "POST",
+        body: formData,
+      });
+  
+      const result = await res.json();
+      if (res.ok) {
+        alert("Updated successfully!");
+        console.log(result.data);
+      } else {
+        alert(result.error || "Update failed.");
+      }
+    } catch (err) {
+      console.error("Update error:", err);
+      alert("An error occurred during update.");
+    }
+  };
+  
 
   return (
     <div className="p-4 max-w-6xl mx-auto space-y-8">
@@ -83,6 +132,7 @@ const SettingsOwner = ({ userDetails }) => {
             type="text"
             placeholder="Name"
             className={input}
+            readOnly
             value={details.name}
             onChange={(e) => setDetails({ ...details, name: e.target.value })}
           />
@@ -91,6 +141,7 @@ const SettingsOwner = ({ userDetails }) => {
             type="email"
             placeholder="Email"
             className={input}
+            readOnly
             value={details.email}
             onChange={(e) => setDetails({ ...details, email: e.target.value })}
           />
@@ -461,7 +512,8 @@ const SettingsOwner = ({ userDetails }) => {
       {/* Footer Actions */}
       <div className="flex justify-end space-x-4">
         <button className="px-4 py-2 border rounded">Reset</button>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+        <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"   onClick={handleUpdate}
+        >
           Update Settings
         </button>
       </div>
