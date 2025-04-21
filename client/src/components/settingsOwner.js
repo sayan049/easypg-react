@@ -387,51 +387,73 @@ const SettingsOwner = ({ userDetails }) => {
       <div className="space-y-4">
         <h3 className="font-semibold text-lg">Mess Photos</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {/* Preview Mess Photos */}
-          {details.messPhoto.map((photo, idx) => (
-            <div key={idx} className="relative group">
-              <img
-                src={
-                  typeof photo === "string" ? photo : URL.createObjectURL(photo)
-                }
-                alt={`Mess ${idx + 1}`}
-                className="h-24 w-full object-cover rounded"
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  const updatedPhotos = details.messPhoto.filter(
-                    (_, i) => i !== idx
-                  );
-                  setDetails({ ...details, messPhoto: updatedPhotos });
-                }}
-                className="absolute top-1 right-1 bg-red-600 text-white rounded-full px-2 py-1 text-xs opacity-0 group-hover:opacity-100 transition"
-              >
-                ✖
-              </button>
-            </div>
-          ))}
-
-          {/* Add Photo Button */}
+          {/* Add Photo Box (only show if less than 10 photos) */}
           {details.messPhoto.length < 10 && (
-            <label className="flex items-center justify-center h-24 border rounded bg-gray-100 cursor-pointer hover:bg-gray-200 text-gray-600">
-              + Add Photo
+            <div
+              className="flex items-center justify-center h-24 border rounded bg-gray-100 cursor-pointer hover:bg-gray-200 relative"
+              onClick={() => document.getElementById("photoInput").click()}
+            >
+              <span className="text-xl font-bold text-gray-600">+</span>
               <input
                 type="file"
+                id="photoInput"
                 accept="image/*"
+                multiple
                 className="hidden"
                 onChange={(e) => {
-                  const file = e.target.files[0];
-                  if (file) {
+                  const files = Array.from(e.target.files);
+                  if (files.length) {
+                    const updatedPhotos = [
+                      ...details.messPhoto,
+                      ...files,
+                    ].slice(0, 10);
                     setDetails((prev) => ({
                       ...prev,
-                      messPhoto: [...prev.messPhoto, file],
+                      messPhoto: updatedPhotos,
                     }));
                     e.target.value = ""; // reset input
                   }
                 }}
               />
-            </label>
+            </div>
+          )}
+
+          {/* Render Photos */}
+          {details.messPhoto.length > 0 ? (
+            details.messPhoto.map((photo, idx) => {
+              const isFileObject = photo instanceof File;
+              const imageUrl = isFileObject
+                ? URL.createObjectURL(photo)
+                : photo;
+
+              return (
+                <div key={idx} className="relative">
+                  <img
+                    className="h-24 w-full object-cover rounded"
+                    src={imageUrl}
+                    alt={`Mess ${idx + 1}`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = [...details.messPhoto];
+                      updated.splice(idx, 1);
+                      setDetails((prev) => ({
+                        ...prev,
+                        messPhoto: updated,
+                      }));
+                    }}
+                    className="absolute top-1 right-1 bg-white rounded-full text-red-500 hover:text-red-700 px-1.5"
+                  >
+                    ×
+                  </button>
+                </div>
+              );
+            })
+          ) : (
+            <p className="text-sm text-gray-500 col-span-3 sm:col-span-3">
+              No photos uploaded yet.
+            </p>
           )}
         </div>
       </div>
