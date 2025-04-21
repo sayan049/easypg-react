@@ -192,7 +192,7 @@ dotenv.config();
 
 exports.updateDetails = async (req, res) => {
   const { type, userId, ...updateData } = req.body;
-  const { profilePhoto, messPhoto } = req.files;
+  const {  messPhoto } = req.files;
   
   console.log("Uploaded files:", req.files);
   console.log("Cloudinary results:", req.cloudinaryResults);
@@ -224,9 +224,9 @@ exports.updateDetails = async (req, res) => {
       }
 
       // Handle profile photo
-      if (req.cloudinaryResults?.profilePhoto?.[0]) {
-        updatedUser.profilePhoto = req.cloudinaryResults.profilePhoto[0];
-      }
+      // if (req.cloudinaryResults?.profilePhoto?.[0]) {
+      //   updatedUser.profilePhoto = req.cloudinaryResults.profilePhoto[0];
+      // }
 
     } else if (type === "owner") {
       updatedUser = await PgOwner.findById(userId);
@@ -276,9 +276,9 @@ exports.updateDetails = async (req, res) => {
       }
 
       // Handle profile photo
-      if (req.cloudinaryResults?.profilePhoto?.[0]) {
-        updatedUser.profilePhoto = req.cloudinaryResults.profilePhoto[0];
-      }
+      // if (req.cloudinaryResults?.profilePhoto?.[0]) {
+      //   updatedUser.profilePhoto = req.cloudinaryResults.profilePhoto[0];
+      // }
 
       // Handle mess photos - combine existing and new ones
       const existingUrls = typeof updateData.existingPhotoUrls === "string"

@@ -147,7 +147,7 @@ const SettingsOwner = ({ userDetails }) => {
   return (
     <div className="p-4 max-w-6xl mx-auto space-y-8">
       <div className="flex flex-col items-center space-y-2">
-        <UserProfile className="w-24 h-24 rounded-full" />
+        <UserProfile className="w-24 h-24 rounded-full" readOnly />
         <h2 className="text-lg font-semibold">Owner</h2>
       </div>
 
