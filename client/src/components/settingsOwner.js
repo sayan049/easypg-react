@@ -98,7 +98,7 @@ const SettingsOwner = ({ userDetails }) => {
     });
   
     try {
-      const res = await fetch({updateDetailsUrl}, {
+      const res = await fetch(updateDetailsUrl, {
         method: "POST",
         body: formData,
       });
