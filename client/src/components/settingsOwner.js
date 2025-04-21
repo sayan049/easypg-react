@@ -94,7 +94,7 @@ const SettingsOwner = ({ userDetails }) => {
     formData.append("aboutMess", details.aboutMess);
     formData.append("facility", details.facility.join(","));
     formData.append("location", JSON.stringify(details.location));
-
+    formData.append("gender", details.gender)
     formData.append("roomInfo", JSON.stringify(details.roomInfo));
     formData.append("existingPhotoUrls", JSON.stringify(existingUrls)); // this is important
   
@@ -281,7 +281,7 @@ const SettingsOwner = ({ userDetails }) => {
               type="radio"
               name="pgType"
               value="Girls"
-              checked={details.gender === "Girls Pg"}
+              checked={details.gender}
               onChange={(e) =>
                 setDetails({ ...details, pgType: e.target.value })
               }
