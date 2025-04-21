@@ -17,8 +17,9 @@ function FlashMessage({ message='xxx', type = 'success' }) {
       
       const timer = setTimeout(() => {
         setShow(false);
+        setCurrentMessage('');
       }, 2000);
-      message = null;
+      
       return () => clearTimeout(timer);
     }
   }, [message, currentMessage]);
