@@ -32,7 +32,7 @@ function FlashMessage({ message='xxx', type = 'success' }) {
   return (
 
       <>
-   {(type==='error') && <div role="alert" className={`border-s-4 border-red-700 bg-red-50 p-4 absolute top-0 left-1/2 transform -translate-x-1/2 mt-4 rounded-md shadow-md ${show ? "block" : "hidden"} `} >
+   {(type==='error') ? <div role="alert" className={`border-s-4 border-red-700 bg-red-50 p-4 absolute top-0 left-1/2 transform -translate-x-1/2 mt-4 rounded-md shadow-md ${show ? "block" : "hidden"} `} >
   <div className="flex items-center gap-2 text-red-700">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-5">
       <path
@@ -48,8 +48,10 @@ function FlashMessage({ message='xxx', type = 'success' }) {
   <p className="mt-2 text-sm text-red-700">
    {message}
   </p>
-</div>}
-{ (type !== 'error') &&
+</div>
+
+:
+
   <div role="alert" className={`rounded-md border border-gray-300 bg-white p-4 shadow-sm absolute top-0 left-1/2 transform -translate-x-1/2 mt-4  ${show ? "block" : "hidden"} `}>
     <div className="flex items-start gap-4">
       <svg
@@ -93,7 +95,9 @@ function FlashMessage({ message='xxx', type = 'success' }) {
         </svg>
       </button>
     </div>
-  </div>}
+  </div>
+}
+
 </>
 
   );}
