@@ -37,7 +37,9 @@ const path = require('path');
 const fs = require('fs');
 
 // Temporary local folder for processing files
-const tempDir = './temp';
+// const tempDir = './temp';
+const tempDir = path.join(__dirname, '../temp');
+
 if (!fs.existsSync(tempDir)) {
     fs.mkdirSync(tempDir);
 }
@@ -105,8 +107,10 @@ const uploadToCloudinary = async (req, res, next) => {
                 cloudinaryResults[field].push(result.secure_url);
 
                 // Clean up temporary files
-                fs.unlinkSync(file.path); // Original file
-                fs.unlinkSync(compressedPath); // Compressed file
+                try { fs.unlinkSync(file.path); } catch (e) { console.warn("Original file not found", e); }
+                try { fs.unlinkSync(compressedPath); } catch (e) { console.warn("Compressed file not found", e); }
+                
+              
             }
         }
 
