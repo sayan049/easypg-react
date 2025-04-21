@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import UserProfile from "./UserProfile";
 import { FaMapMarkerAlt } from "react-icons/fa";
-import {updateDetailsUrl} from "../constant/urls";
+import { updateDetailsUrl } from "../constant/urls";
 const input =
   "border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300";
 
@@ -70,10 +70,10 @@ const SettingsOwner = ({ userDetails }) => {
   };
   const handleUpdate = async () => {
     const formData = new FormData();
-    
+
     const existingUrls = [];
 
-    details.messPhoto.forEach(photo => {
+    details.messPhoto.forEach((photo) => {
       if (photo instanceof File) {
         formData.append("messPhoto", photo); // new photos to upload
       } else {
@@ -81,11 +81,10 @@ const SettingsOwner = ({ userDetails }) => {
       }
     });
 
-  
     // Required identifiers
     formData.append("type", "owner");
     formData.append("userId", userDetails._id); // use actual user ID
-  
+
     // Append editable fields
     formData.append("address", details.address);
     formData.append("pincode", details.pincode);
@@ -93,24 +92,31 @@ const SettingsOwner = ({ userDetails }) => {
     formData.append("messName", details.messName);
     formData.append("aboutMess", details.aboutMess);
     formData.append("facility", details.facility.join(","));
-    formData.append("location", JSON.stringify(details.location));
-    formData.append("gender", details.gender)
+    formData.append("location[type]", details.location.type);
+    formData.append(
+      "location[coordinates][0]",
+      details.location.coordinates[0]
+    );
+    formData.append(
+      "location[coordinates][1]",
+      details.location.coordinates[1]
+    );
+    formData.append("gender", details.gender);
     formData.append("roomInfo", JSON.stringify(details.roomInfo));
     formData.append("existingPhotoUrls", JSON.stringify(existingUrls)); // this is important
-  
+
     // Optional: Append profile photo if changed
     // example: details.profilePhoto (set this if you're letting them update it)
     // formData.append("profilePhoto", details.profilePhoto);
-  
+
     // Append mess photos (only newly added File objects)
 
-  
     try {
       const res = await fetch(updateDetailsUrl, {
         method: "POST",
         body: formData,
       });
-  
+
       const result = await res.json();
       if (res.ok) {
         alert("Updated successfully!");
@@ -123,7 +129,6 @@ const SettingsOwner = ({ userDetails }) => {
       alert("An error occurred during update.");
     }
   };
-  
 
   return (
     <div className="p-4 max-w-6xl mx-auto space-y-8">
@@ -520,7 +525,9 @@ const SettingsOwner = ({ userDetails }) => {
       {/* Footer Actions */}
       <div className="flex justify-end space-x-4">
         <button className="px-4 py-2 border rounded">Reset</button>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"   onClick={handleUpdate}
+        <button
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          onClick={handleUpdate}
         >
           Update Settings
         </button>
