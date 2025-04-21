@@ -247,6 +247,8 @@ exports.signupHandlerOwner = async (req, res) => {
  if (!Array.isArray(facilities)) {
    facilities = [facilities];
  }
+
+ 
   try {
     // Check if the user already exists
     const existingUser = await PgOwner.findOne({ email });
