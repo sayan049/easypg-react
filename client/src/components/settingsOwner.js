@@ -370,7 +370,7 @@ const SettingsOwner = ({ userDetails }) => {
               <button
                 type="button"
                 onClick={() => handleRemoveRoom(index)}
-                className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm text-center"
+                className={input + " bg-red-600 text-white rounded hover:bg-red-700 mt-2"}
               >
                 Remove Room
               </button>
