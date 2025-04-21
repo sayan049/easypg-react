@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 function FlashMessage({ message='xxx', type = 'success' }) {
   const [show, setShow] = React.useState(true);
   
-  // const [currentMessage, setCurrentMessage] = React.useState(message);
+ // const [currentMessage, setCurrentMessage] = React.useState(message);
 
   // const isError = type === 'error';
 
@@ -12,11 +12,12 @@ function FlashMessage({ message='xxx', type = 'success' }) {
   useEffect(() => {
 
     if (message ) {
-     
+    //  setCurrentMessage(message);
       setShow(true);
       
       const timer = setTimeout(() => {
         setShow(false);
+        //setCurrentMessage('');
       }, 2000);
       
       return () => clearTimeout(timer);
@@ -52,7 +53,7 @@ function FlashMessage({ message='xxx', type = 'success' }) {
 
 :
 
-  <div role="alert" className={`rounded-md border border-gray-300 bg-white p-4 shadow-sm absolute top-0 left-1/2 transform -translate-x-1/2 mt-4  ${show ? "absolute" : "hidden"} `}>
+  <div role="alert" className={`rounded-md border border-gray-300 bg-white p-4 shadow-sm absolute top-0 left-1/2 transform -translate-x-1/2 mt-4  ${show ? "block" : "hidden"} `}>
     <div className="flex items-start gap-4">
       <svg
         xmlns="http://www.w3.org/2000/svg"

@@ -206,7 +206,8 @@ function SignUpForm() {
                   : "bg-gray-300 text-gray-600 cursor-not-allowed"
               }`}
             >
-              {isSubmitting ? "Submitting..." : "Create Account"}
+              {/* {isSubmitting ? "Submitting..." : "Create Account"} */}
+              "Create Account"
             </button>
           </form>
 
