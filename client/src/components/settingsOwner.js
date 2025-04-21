@@ -354,7 +354,7 @@ const SettingsOwner = ({ userDetails }) => {
               />
 
               {/* Room Available */}
-              <label className="inline-flex items-center space-x-2 col-span-3 mt-2">
+              <label className="inline-flex items-center space-x-2  mt-2">
                 <input
                   type="checkbox"
                   checked={room.roomAvailable}
@@ -370,9 +370,9 @@ const SettingsOwner = ({ userDetails }) => {
               <button
                 type="button"
                 onClick={() => handleRemoveRoom(index)}
-                className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm"
+                className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm text-center"
               >
-                Remove
+                Remove Room
               </button>
             </div>
           ))
