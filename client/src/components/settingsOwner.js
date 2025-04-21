@@ -82,15 +82,18 @@ const SettingsOwner = ({ userDetails }) => {
   const handleUpdate = async () => {
     const formData = new FormData();
 
-    const existingUrls = [];
+ 
+    const existingUrls = details.messPhoto
+    .filter(photo => typeof photo === 'string')
+    .map(photo => photo);
 
-    details.messPhoto.forEach((photo) => {
-      if (photo instanceof File) {
-        formData.append("messPhoto", photo); // new photos to upload
-      } else {
-        existingUrls.push(photo); // already uploaded photo URLs
-      }
-    });
+  const newFiles = details.messPhoto
+    .filter(photo => photo instanceof File);
+
+  // Append new files
+  newFiles.forEach(file => {
+    formData.append('messPhoto', file);  // Field name must match multer config
+  });
 
     // Required identifiers
     formData.append("type", "owner");
