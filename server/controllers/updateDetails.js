@@ -46,7 +46,7 @@ exports.updateDetails = async (req, res) => {
             }
 
             // Update allowed fields
-            const allowedUpdates = ["address", "pincode", "mobileNo", "facility", "messName", "aboutMess", "location"];
+            const allowedUpdates = ["address", "pincode", "mobileNo", "facility", "messName", "aboutMess", "location","romInfo","gender","existingPhotoUrls"];
             for (const key in updateData) {
                 if (allowedUpdates.includes(key)) {
                     updatedUser[key] = updateData[key];
