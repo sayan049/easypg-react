@@ -20,7 +20,7 @@ function SignUpForm() {
   const [isFormFilled, setIsFormFilled] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Disable button after first click
-  const [message,setmessage]=useState({Text:"",type:""}); // State to manage flash message
+  const [message,setmessage]=useState({Text:"",type:"success"}); // State to manage flash message
 
   const navigate = useNavigate();
 
