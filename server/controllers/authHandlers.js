@@ -231,7 +231,22 @@ exports.signupHandlerOwner = async (req, res) => {
   } = req.body;
 
   console.log(req.body.location);  // Log location to check the format
+ // Process facility array
+ let facilities = req.body.facility;
+    
+ // Handle case where facility might come as string
+ if (typeof facilities === 'string') {
+   try {
+     facilities = JSON.parse(facilities);
+   } catch (e) {
+     facilities = facilities.split(',').map(item => item.trim());
+   }
+ }
 
+ // Ensure it's an array
+ if (!Array.isArray(facilities)) {
+   facilities = [facilities];
+ }
   try {
     // Check if the user already exists
     const existingUser = await PgOwner.findOne({ email });
@@ -295,7 +310,7 @@ exports.signupHandlerOwner = async (req, res) => {
       geoHash,  // ✅ Store computed GeoHash
       profilePhoto,
       messPhoto,
-      facility,
+      facility:facilities,
       gender,
       roomInfo: parsedRoomInfo,
     });

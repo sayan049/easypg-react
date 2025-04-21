@@ -81,12 +81,12 @@ const pgOwnerSchema = new mongoose.Schema({
             return !this.googleId;
         }
     }],
-    facility: [{
-        type: String,
+    facility: {
+        type: [String],
         required: function() {
             return !this.googleId;
         }
-    }],
+    },
     gender: {
         type: String,
         enum: ['Girls Pg', 'Boys Pg', 'Coed Pg'], // "Coed" for mixed-gender mess
