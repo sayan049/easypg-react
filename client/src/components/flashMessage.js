@@ -3,20 +3,25 @@ import { useEffect } from 'react';
 
 function FlashMessage({ message='xxx', type = 'error' }) {
   const [show, setShow] = React.useState(true);
+  
+  const [currentMessage, setCurrentMessage] = React.useState(message);
+
   const isError = type === 'error';
+
+  
   useEffect(() => {
-    const timer = setTimeout(() => {
+
+    if (message !== currentMessage) {
+      setCurrentMessage(message);
       setShow(true);
-      //onDismiss(); // Hide the message after 2 seconds
-      if (message) {
-        setShow(false); // Hide the message after 2 seconds
-      }
       
-    }, 2000);
+      const timer = setTimeout(() => {
+        setShow(false);
+      }, 2000);
 
-    return () => clearTimeout(timer); // Cleanup on unmount
-  }, [message]);
-
+      return () => clearTimeout(timer);
+    }
+  }, [message, currentMessage]);
 
   console.log('FlashMessage', message, type , type === 'error', show);
 
