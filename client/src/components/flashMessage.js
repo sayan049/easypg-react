@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect } from 'react';
 
-function FlashMessage({ message='xxx', type = error }) {
+function FlashMessage({ message='xxx', type = "error" }) {
   const [show, setShow] = React.useState(true);
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -22,7 +22,7 @@ function FlashMessage({ message='xxx', type = error }) {
   //   return null;
   // }
 
-  if(type === 'error'){
+  if(type == 'error'){
 
   return (
 
