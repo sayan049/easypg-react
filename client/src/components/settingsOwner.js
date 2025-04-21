@@ -370,7 +370,9 @@ const SettingsOwner = ({ userDetails }) => {
               <button
                 type="button"
                 onClick={() => handleRemoveRoom(index)}
-                className={input + " bg-red-600 text-white rounded hover:bg-red-700 mt-2"}
+                className={
+                  input + " bg-red-600 text-white rounded hover:bg-red-700 mt-2"
+                }
               >
                 Remove Room
               </button>
@@ -385,30 +387,51 @@ const SettingsOwner = ({ userDetails }) => {
       <div className="space-y-4">
         <h3 className="font-semibold text-lg">Mess Photos</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {/* Add Photo Box */}
-          <div
-            className="flex items-center justify-center h-24 border rounded bg-gray-100 cursor-pointer hover:bg-gray-200"
-            onClick={() => {
-              // Add image upload logic here (e.g. file picker + uploading to cloudinary, then updating details)
-            }}
-          >
-            Add Photo
-          </div>
-
-          {/* Render fetched mess photos */}
-          {details.messPhoto?.length > 0 ? (
-            details.messPhoto.map((photo, idx) => (
+          {/* Preview Mess Photos */}
+          {details.messPhoto.map((photo, idx) => (
+            <div key={idx} className="relative group">
               <img
-                key={idx}
-                className="h-24 w-full object-cover rounded"
-                src={photo}
+                src={
+                  typeof photo === "string" ? photo : URL.createObjectURL(photo)
+                }
                 alt={`Mess ${idx + 1}`}
+                className="h-24 w-full object-cover rounded"
               />
-            ))
-          ) : (
-            <p className="text-sm text-gray-500 col-span-3 sm:col-span-3">
-              No photos uploaded yet.
-            </p>
+              <button
+                type="button"
+                onClick={() => {
+                  const updatedPhotos = details.messPhoto.filter(
+                    (_, i) => i !== idx
+                  );
+                  setDetails({ ...details, messPhoto: updatedPhotos });
+                }}
+                className="absolute top-1 right-1 bg-red-600 text-white rounded-full px-2 py-1 text-xs opacity-0 group-hover:opacity-100 transition"
+              >
+                ✖
+              </button>
+            </div>
+          ))}
+
+          {/* Add Photo Button */}
+          {details.messPhoto.length < 10 && (
+            <label className="flex items-center justify-center h-24 border rounded bg-gray-100 cursor-pointer hover:bg-gray-200 text-gray-600">
+              + Add Photo
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    setDetails((prev) => ({
+                      ...prev,
+                      messPhoto: [...prev.messPhoto, file],
+                    }));
+                    e.target.value = ""; // reset input
+                  }
+                }}
+              />
+            </label>
           )}
         </div>
       </div>
