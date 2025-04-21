@@ -54,6 +54,7 @@ const SettingsOwner = ({ userDetails }) => {
       roomInfo: [
         ...prev.roomInfo,
         {
+          room: `RoomNo-${prev.roomInfo.length + 1}`, // Add this line
           bedContains: "",
           pricePerHead: 0,
           roomAvailable: false,
@@ -381,8 +382,13 @@ const SettingsOwner = ({ userDetails }) => {
                 type="text"
                 placeholder="Room No."
                 className={input}
-                value={`RoomNo-${index + 1}`}
-                disabled
+                value={room.room || `RoomNo-${index + 1}`} // Use room.room if it exis
+                readOnly
+                onChange={(e) => {
+                  const updatedRooms = [...details.roomInfo];
+                  updatedRooms[index].room = e.target.value;
+                  setDetails({ ...details, roomInfo: updatedRooms });
+                }}
               />
 
               {/* Bed Contains */}
