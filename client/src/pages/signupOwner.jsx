@@ -111,13 +111,12 @@ function SignupOwner() {
 
   const handleFacilityChange = (e) => {
     const { value, checked } = e.target;
-    setFormData((prevData) => {
-      const facilities = checked
-        ? [...prevData.facility, value]
-        : prevData.facility.filter((facility) => facility !== value);
-
-      return { ...prevData, facility: facilities };
-    });
+    setFormData(prev => ({
+      ...prev,
+      facility: checked
+        ? [...prev.facility, value]
+        : prev.facility.filter(f => f !== value)
+    }));
   };
   const handleRoomChange = (index, e) => {
     const updatedRooms = formData.roomInfo.map((room, i) => {
@@ -209,6 +208,7 @@ function SignupOwner() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(formData.facility);
     try {
       const formDataToSend = new FormData();
       for (const key in formData) {
