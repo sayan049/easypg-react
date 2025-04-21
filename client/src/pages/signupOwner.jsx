@@ -112,11 +112,23 @@ function SignupOwner() {
   const handleFacilityChange = (e) => {
     const { value, checked } = e.target;
     setFormData((prevData) => {
-      const facilities = checked
-        ? [...prevData.facility, value]
-        : prevData.facility.filter((facility) => facility !== value);
-
-      return { ...prevData, facility: facilities };
+      // Make sure we're working with an array (defensive programming)
+      const currentFacilities = Array.isArray(prevData.facility) ? [...prevData.facility] : [];
+      
+      if (checked) {
+        // Add the value if it's not already present
+        if (!currentFacilities.includes(value)) {
+          currentFacilities.push(value);
+        }
+      } else {
+        // Remove the value if it exists
+        const index = currentFacilities.indexOf(value);
+        if (index !== -1) {
+          currentFacilities.splice(index, 1);
+        }
+      }
+      
+      return { ...prevData, facility: currentFacilities };
     });
   };
   const handleRoomChange = (index, e) => {
@@ -209,6 +221,7 @@ function SignupOwner() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     try {
       const formDataToSend = new FormData();
       for (const key in formData) {
@@ -252,7 +265,7 @@ function SignupOwner() {
     setIsPasswordVisible(!isPasswordVisible);
   };
   const isFormComplete = () => {
-    console.log(formData);  // Log the form data to check if all fields are filled
+    console.log(formData.facility); // Log the form data to check if all fields are filled
     
     return (
       formData.mobileNo &&

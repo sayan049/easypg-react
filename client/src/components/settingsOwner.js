@@ -3,7 +3,7 @@ import UserProfile from "./UserProfile";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { updateDetailsUrl } from "../constant/urls";
 const input =
-  "border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300";
+  "border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300 bg-text-bg bg-clip-text text-transparent";
 
 const SettingsOwner = ({ userDetails }) => {
   const [details, setDetails] = useState({
@@ -35,8 +35,8 @@ const SettingsOwner = ({ userDetails }) => {
         location: userDetails?.location || { type: "Point", coordinates: [] },
         aboutMess: userDetails?.aboutMess || "",
         gender: userDetails?.gender || "",
-        facility: userDetails?.facility?.[0]
-          ? userDetails.facility[0].split(",").map((f) => f.trim())
+        facility: Array.isArray(userDetails?.facility)
+          ? userDetails.facility
           : [],
 
         roomInfo: Array.isArray(userDetails?.roomInfo)
@@ -82,19 +82,20 @@ const SettingsOwner = ({ userDetails }) => {
   const handleUpdate = async () => {
     const formData = new FormData();
 
-    const existingUrls = [];
+    const existingUrls = details.messPhoto
+      .filter((photo) => typeof photo === "string")
+      .map((photo) => photo);
 
-    details.messPhoto.forEach((photo) => {
-      if (photo instanceof File) {
-        formData.append("messPhoto", photo); // new photos to upload
-      } else {
-        existingUrls.push(photo); // already uploaded photo URLs
-      }
+    const newFiles = details.messPhoto.filter((photo) => photo instanceof File);
+
+    // Append new files
+    newFiles.forEach((file) => {
+      formData.append("messPhoto", file); // Field name must match multer config
     });
 
     // Required identifiers
     formData.append("type", "owner");
-    formData.append("userId", userDetails._id); // use actual user ID
+    formData.append("userId", userDetails._id); 
 
     // Append editable fields
     formData.append("address", details.address);
@@ -144,7 +145,7 @@ const SettingsOwner = ({ userDetails }) => {
   return (
     <div className="p-4 max-w-6xl mx-auto space-y-8">
       <div className="flex flex-col items-center space-y-2">
-        <UserProfile className="w-24 h-24 rounded-full" />
+        <UserProfile className="w-24 h-24 rounded-full" readOnly />
         <h2 className="text-lg font-semibold">Owner</h2>
       </div>
 
@@ -349,17 +350,14 @@ const SettingsOwner = ({ userDetails }) => {
                 type="checkbox"
                 checked={details.facility?.includes(item)}
                 onChange={(e) => {
-                  if (e.target.checked) {
-                    setDetails({
-                      ...details,
-                      facility: [...details.facility, item],
-                    });
-                  } else {
-                    setDetails({
-                      ...details,
-                      facility: details.facility.filter((a) => a !== item),
-                    });
-                  }
+                  const newFacilities = e.target.checked
+                    ? [...details.facility, item]
+                    : details.facility.filter((f) => f !== item);
+
+                  setDetails({
+                    ...details,
+                    facility: newFacilities,
+                  });
                 }}
               />
               <span>{item}</span>
@@ -367,7 +365,6 @@ const SettingsOwner = ({ userDetails }) => {
           ))}
         </div>
       </div>
-
       {/* Room Information */}
       <div className="space-y-4">
         <h3 className="font-semibold text-lg">Room Information</h3>
@@ -446,7 +443,7 @@ const SettingsOwner = ({ userDetails }) => {
                 type="button"
                 onClick={() => handleRemoveRoom(index)}
                 className={
-                  input + " bg-red-600 text-white rounded hover:bg-red-700 mt-2"
+                   "border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300 bg-red-600 text-white rounded hover:bg-red-700 mt-2"
                 }
               >
                 Remove Room
@@ -535,7 +532,7 @@ const SettingsOwner = ({ userDetails }) => {
 
       {/* Footer Actions */}
       <div className="flex justify-end space-x-4">
-        <button className="px-4 py-2 border rounded">Reset</button>
+        {/* <button className="px-4 py-2 border rounded">Reset</button> */}
         <button
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           onClick={handleUpdate}
