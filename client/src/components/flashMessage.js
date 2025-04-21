@@ -6,6 +6,9 @@ function FlashMessage({ message='xxx', type = 'error' }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       //onDismiss(); // Hide the message after 2 seconds
+      if (message) {
+        setShow(false); // Hide the message after 2 seconds
+      }
     }, 2000);
 
     return () => clearTimeout(timer); // Cleanup on unmount
