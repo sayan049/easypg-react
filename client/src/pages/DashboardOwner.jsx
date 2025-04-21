@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-
 import { Link } from "react-router-dom";
 import {
   Home,
@@ -105,7 +104,10 @@ export default function DashboardOwner() {
         </svg>
 
         <div className="text-center mb-6">
-          <div className="text-base font-semibold">{owner.firstName +owner.lastName} </div>
+          <div className="text-base font-semibold">
+            {`${owner.firstName} ${owner.lastName}`}
+          </div>
+
           <div className="text-sm text-gray-500">Property Owner</div>
         </div>
         <nav className="flex flex-col gap-2 w-full">
