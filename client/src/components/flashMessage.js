@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect } from 'react';
 
-function FlashMessage({ message='xxx', type = 'error' }) {
+function FlashMessage({ message='xxx', type = 'success' }) {
   const [show, setShow] = React.useState(true);
   
   const [currentMessage, setCurrentMessage] = React.useState(message);
