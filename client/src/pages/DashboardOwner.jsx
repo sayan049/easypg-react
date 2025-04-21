@@ -53,6 +53,7 @@ export default function DashboardOwner() {
     user,
     owner,
     type,
+    
   } = useAuth();
   useEffect(() => {
     const fetchDetails = async () => {
@@ -99,13 +100,13 @@ export default function DashboardOwner() {
           className="w-10 h-10 rounded-full mb-2 bg-gray-200"
           viewBox="0 0 100 100"
         >
-          <circle cx="50" cy="40" r="20" fill="#4F46E5" /> {/* Head */}
-          <circle cx="50" cy="80" r="25" fill="#4F46E5" /> {/* Body */}
+          <circle cx="50" cy="40" r="20" fill="#4F46E5" /> 
+          <circle cx="50" cy="80" r="25" fill="#4F46E5" /> 
         </svg>
 
         <div className="text-center mb-6">
           <div className="text-base font-semibold">
-            {`${owner.firstName} ${owner.lastName}`}
+           {ownerName}
           </div>
 
           <div className="text-sm text-gray-500">Property Owner</div>
