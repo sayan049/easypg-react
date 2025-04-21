@@ -11,7 +11,7 @@ function FlashMessage({ message='xxx', type = 'success' ,hit= false }) {
 
   useEffect(() => {
 
-    if (message || hit ) {
+    if (hit ) {
     //  setCurrentMessage(message);
       setShow(true);
       
@@ -24,7 +24,7 @@ function FlashMessage({ message='xxx', type = 'success' ,hit= false }) {
     }
   }, [message,]);
 
-  console.log('FlashMessage', message, type , type === 'error', show);
+  console.log('FlashMessage', message, type , type === 'error', show,"hit", hit);
 
   // if (!message || !show) return null;
 
