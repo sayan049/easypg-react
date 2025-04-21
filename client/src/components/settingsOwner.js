@@ -443,7 +443,7 @@ const SettingsOwner = ({ userDetails }) => {
                 type="button"
                 onClick={() => handleRemoveRoom(index)}
                 className={
-                  input + " bg-red-600 text-white rounded hover:bg-red-700 mt-2"
+                   "border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300 bg-red-600 text-white rounded hover:bg-red-700 mt-2"
                 }
               >
                 Remove Room
@@ -532,7 +532,7 @@ const SettingsOwner = ({ userDetails }) => {
 
       {/* Footer Actions */}
       <div className="flex justify-end space-x-4">
-        <button className="px-4 py-2 border rounded">Reset</button>
+        {/* <button className="px-4 py-2 border rounded">Reset</button> */}
         <button
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           onClick={handleUpdate}
