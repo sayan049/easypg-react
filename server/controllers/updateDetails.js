@@ -8,7 +8,7 @@ dotenv.config();
 exports.updateDetails = async (req, res) => {
     const { type, userId, ...updateData } = req.body;
     const { profilePhoto, messPhoto } = req.files;
- 
+    console.log('Uploaded files:', req.files);
 
     try {
         let updatedUser;

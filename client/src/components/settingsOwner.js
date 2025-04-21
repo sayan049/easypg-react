@@ -75,7 +75,7 @@ const SettingsOwner = ({ userDetails }) => {
 
     details.messPhoto.forEach(photo => {
       if (photo instanceof File) {
-        formData.append("photos", photo); // new photos to upload
+        formData.append("messPhoto", photo); // new photos to upload
       } else {
         existingUrls.push(photo); // already uploaded photo URLs
       }
@@ -94,6 +94,7 @@ const SettingsOwner = ({ userDetails }) => {
     formData.append("aboutMess", details.aboutMess);
     formData.append("facility", details.facility.join(","));
     formData.append("location", JSON.stringify(details.location));
+
     formData.append("roomInfo", JSON.stringify(details.roomInfo));
     formData.append("existingPhotoUrls", JSON.stringify(existingUrls)); // this is important
   
