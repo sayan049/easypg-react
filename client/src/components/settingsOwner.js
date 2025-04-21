@@ -46,14 +46,13 @@ const SettingsOwner = ({ userDetails }) => {
     }
   }, [userDetails]);
   console.log(details);
+  // Inside your component
   const handleAddRoom = () => {
-    const nextRoomNumber = details.roomInfo.length + 1;
     setDetails((prev) => ({
       ...prev,
       roomInfo: [
         ...prev.roomInfo,
         {
-          room: `RoomNo-${nextRoomNumber}`,
           bedContains: "",
           pricePerHead: 0,
           roomAvailable: false,
@@ -62,12 +61,13 @@ const SettingsOwner = ({ userDetails }) => {
     }));
   };
 
-  // Function to handle removing a room
-  const handleRemoveRoom = (index) => {
-    const updatedRooms = [...details.roomInfo];
-    updatedRooms.splice(index, 1);
-    setDetails({ ...details, roomInfo: updatedRooms });
+  const handleRemoveRoom = (indexToRemove) => {
+    setDetails((prev) => ({
+      ...prev,
+      roomInfo: prev.roomInfo.filter((_, index) => index !== indexToRemove),
+    }));
   };
+
 
   return (
     <div className="p-4 max-w-6xl mx-auto space-y-8">
@@ -322,12 +322,12 @@ const SettingsOwner = ({ userDetails }) => {
                 Remove
               </button>
 
-              {/* Room No (readonly) */}
+              {/* Room No (readonly and auto-generated) */}
               <input
                 type="text"
                 placeholder="Room No."
                 className={input}
-                value={room.room}
+                value={`RoomNo-${index + 1}`}
                 disabled
               />
 
@@ -382,6 +382,7 @@ const SettingsOwner = ({ userDetails }) => {
           <p className="text-gray-500">No room data available.</p>
         )}
       </div>
+
       {/* Mess Photos */}
       <div className="space-y-4">
         <h3 className="font-semibold text-lg">Mess Photos</h3>
