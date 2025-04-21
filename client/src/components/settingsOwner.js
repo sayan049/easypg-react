@@ -68,7 +68,6 @@ const SettingsOwner = ({ userDetails }) => {
     }));
   };
 
-
   return (
     <div className="p-4 max-w-6xl mx-auto space-y-8">
       <div className="flex flex-col items-center space-y-2">
@@ -313,15 +312,6 @@ const SettingsOwner = ({ userDetails }) => {
               key={index}
               className="relative grid grid-cols-1 sm:grid-cols-3 gap-4 border p-4 rounded bg-white shadow-sm"
             >
-              {/* Remove Room Button */}
-              <button
-                type="button"
-                onClick={() => handleRemoveRoom(index)}
-                className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm"
-              >
-                Remove
-              </button>
-
               {/* Room No (readonly and auto-generated) */}
               <input
                 type="text"
@@ -376,6 +366,14 @@ const SettingsOwner = ({ userDetails }) => {
                 />
                 <span>Room Available</span>
               </label>
+              {/* Remove Room Button */}
+              <button
+                type="button"
+                onClick={() => handleRemoveRoom(index)}
+                className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm"
+              >
+                Remove
+              </button>
             </div>
           ))
         ) : (
