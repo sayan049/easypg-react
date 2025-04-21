@@ -8,7 +8,7 @@ function FlashMessage({ message='xxx', type = 'error' }) {
 
   const isError = type === 'error';
 
-  
+
   useEffect(() => {
 
     if (message !== currentMessage) {
@@ -26,9 +26,9 @@ function FlashMessage({ message='xxx', type = 'error' }) {
   console.log('FlashMessage', message, type , type === 'error', show);
 
 
-  // if (message == null){
-  //   return null;
-  // }
+  if (message == null){
+    return null;
+  }
 
   if(type === 'error'){
 
@@ -53,7 +53,7 @@ function FlashMessage({ message='xxx', type = 'error' }) {
   </p>
 </div>}
 {!isError && 
-  <div role="alert" className={`rounded-md border border-gray-300 bg-white p-4 shadow-sm absolute top-0 left-1/2 transform -translate-x-1/2 mt-4 ${show ? '' : 'hidden'}`}>
+  <div role="alert" className={`rounded-md border border-gray-300 bg-white p-4 shadow-sm absolute top-0 left-1/2 transform -translate-x-1/2 mt-4 ${show ? 'block' : 'hidden'}`}>
     <div className="flex items-start gap-4">
       <svg
         xmlns="http://www.w3.org/2000/svg"
