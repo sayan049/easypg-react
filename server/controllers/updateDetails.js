@@ -61,16 +61,17 @@ exports.updateDetails = async (req, res) => {
             }
            // console.log(updatedUser.profilePhoto);
             // Upload mess photos to Cloudinary
+            const existingPhotoUrls = JSON.parse(updateData.existingPhotoUrls || "[]");
+            const newMessPhotoUrls = [];
+        
             if (messPhoto && messPhoto.length > 0) {
-                const messPhotoUrls = [];
                 for (const photo of messPhoto) {
                     const result = await cloudinary.uploader.upload(photo.path);
-                    messPhotoUrls.push(result.secure_url); // Save Cloudinary URLs
-                    //console.log(result);
+                    newMessPhotoUrls.push(result.secure_url);
                 }
-                updatedUser.messPhoto = messPhotoUrls;
-                
             }
+        
+            updatedUser.messPhoto = [...existingPhotoUrls, ...newMessPhotoUrls]; // Combine both
            // console.log(updatedUser.messPhoto);
         } else {
             return res.status(400).json({ error: "Invalid user type" });

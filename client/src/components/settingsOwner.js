@@ -70,6 +70,17 @@ const SettingsOwner = ({ userDetails }) => {
   };
   const handleUpdate = async () => {
     const formData = new FormData();
+    
+    const existingUrls = [];
+
+    details.messPhoto.forEach(photo => {
+      if (photo instanceof File) {
+        formData.append("photos", photo); // new photos to upload
+      } else {
+        existingUrls.push(photo); // already uploaded photo URLs
+      }
+    });
+
   
     // Required identifiers
     formData.append("type", "owner");
@@ -84,22 +95,14 @@ const SettingsOwner = ({ userDetails }) => {
     formData.append("facility", details.facility.join(","));
     formData.append("location", JSON.stringify(details.location));
     formData.append("roomInfo", JSON.stringify(details.roomInfo));
-
+    formData.append("existingPhotoUrls", JSON.stringify(existingUrls)); // this is important
   
     // Optional: Append profile photo if changed
     // example: details.profilePhoto (set this if you're letting them update it)
     // formData.append("profilePhoto", details.profilePhoto);
   
     // Append mess photos (only newly added File objects)
- 
-    details.messPhoto.forEach(photo => {
-      if (photo instanceof File) {
-        formData.append("photos", photo); // or whatever your field is
-      } else {
-        existingUrls.push(photo);
-      }
-    });
-    
+
   
     try {
       const res = await fetch(updateDetailsUrl, {
