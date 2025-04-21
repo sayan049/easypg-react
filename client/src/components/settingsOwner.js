@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import UserProfile from "./UserProfile";
 import { FaMapMarkerAlt } from "react-icons/fa";
+import {updateDetailsUrl} from "../constant/urls";
 const input =
   "border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300";
 
@@ -46,14 +47,13 @@ const SettingsOwner = ({ userDetails }) => {
     }
   }, [userDetails]);
   console.log(details);
+  // Inside your component
   const handleAddRoom = () => {
-    const nextRoomNumber = details.roomInfo.length + 1;
     setDetails((prev) => ({
       ...prev,
       roomInfo: [
         ...prev.roomInfo,
         {
-          room: `RoomNo-${nextRoomNumber}`,
           bedContains: "",
           pricePerHead: 0,
           roomAvailable: false,
@@ -62,12 +62,60 @@ const SettingsOwner = ({ userDetails }) => {
     }));
   };
 
-  // Function to handle removing a room
-  const handleRemoveRoom = (index) => {
-    const updatedRooms = [...details.roomInfo];
-    updatedRooms.splice(index, 1);
-    setDetails({ ...details, roomInfo: updatedRooms });
+  const handleRemoveRoom = (indexToRemove) => {
+    setDetails((prev) => ({
+      ...prev,
+      roomInfo: prev.roomInfo.filter((_, index) => index !== indexToRemove),
+    }));
   };
+  const handleUpdate = async () => {
+    const formData = new FormData();
+  
+    // Required identifiers
+    formData.append("type", "owner");
+    formData.append("userId", userDetails._id); // use actual user ID
+  
+    // Append editable fields
+    formData.append("address", details.address);
+    formData.append("pincode", details.pincode);
+    formData.append("mobileNo", details.mobileNo);
+    formData.append("messName", details.messName);
+    formData.append("aboutMess", details.aboutMess);
+    formData.append("facility", details.facility.join(","));
+    formData.append("location", JSON.stringify(details.location));
+    formData.append("roomInfo", JSON.stringify(details.roomInfo));
+
+  
+    // Optional: Append profile photo if changed
+    // example: details.profilePhoto (set this if you're letting them update it)
+    // formData.append("profilePhoto", details.profilePhoto);
+  
+    // Append mess photos (only newly added File objects)
+    details.messPhoto.forEach((photo) => {
+      if (photo instanceof File) {
+        formData.append("messPhoto", photo);
+      }
+    });
+  
+    try {
+      const res = await fetch(updateDetailsUrl, {
+        method: "POST",
+        body: formData,
+      });
+  
+      const result = await res.json();
+      if (res.ok) {
+        alert("Updated successfully!");
+        console.log(result.data);
+      } else {
+        alert(result.error || "Update failed.");
+      }
+    } catch (err) {
+      console.error("Update error:", err);
+      alert("An error occurred during update.");
+    }
+  };
+  
 
   return (
     <div className="p-4 max-w-6xl mx-auto space-y-8">
@@ -84,6 +132,7 @@ const SettingsOwner = ({ userDetails }) => {
             type="text"
             placeholder="Name"
             className={input}
+            readOnly
             value={details.name}
             onChange={(e) => setDetails({ ...details, name: e.target.value })}
           />
@@ -92,6 +141,7 @@ const SettingsOwner = ({ userDetails }) => {
             type="email"
             placeholder="Email"
             className={input}
+            readOnly
             value={details.email}
             onChange={(e) => setDetails({ ...details, email: e.target.value })}
           />
@@ -313,21 +363,12 @@ const SettingsOwner = ({ userDetails }) => {
               key={index}
               className="relative grid grid-cols-1 sm:grid-cols-3 gap-4 border p-4 rounded bg-white shadow-sm"
             >
-              {/* Remove Room Button */}
-              <button
-                type="button"
-                onClick={() => handleRemoveRoom(index)}
-                className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm"
-              >
-                Remove
-              </button>
-
-              {/* Room No (readonly) */}
+              {/* Room No (readonly and auto-generated) */}
               <input
                 type="text"
                 placeholder="Room No."
                 className={input}
-                value={room.room}
+                value={`RoomNo-${index + 1}`}
                 disabled
               />
 
@@ -364,7 +405,7 @@ const SettingsOwner = ({ userDetails }) => {
               />
 
               {/* Room Available */}
-              <label className="inline-flex items-center space-x-2 col-span-3 mt-2">
+              <label className="inline-flex items-center space-x-2  mt-2">
                 <input
                   type="checkbox"
                   checked={room.roomAvailable}
@@ -376,36 +417,90 @@ const SettingsOwner = ({ userDetails }) => {
                 />
                 <span>Room Available</span>
               </label>
+              {/* Remove Room Button */}
+              <button
+                type="button"
+                onClick={() => handleRemoveRoom(index)}
+                className={
+                  input + " bg-red-600 text-white rounded hover:bg-red-700 mt-2"
+                }
+              >
+                Remove Room
+              </button>
             </div>
           ))
         ) : (
           <p className="text-gray-500">No room data available.</p>
         )}
       </div>
+
       {/* Mess Photos */}
       <div className="space-y-4">
         <h3 className="font-semibold text-lg">Mess Photos</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {/* Add Photo Box */}
-          <div
-            className="flex items-center justify-center h-24 border rounded bg-gray-100 cursor-pointer hover:bg-gray-200"
-            onClick={() => {
-              // Add image upload logic here (e.g. file picker + uploading to cloudinary, then updating details)
-            }}
-          >
-            Add Photo
-          </div>
-
-          {/* Render fetched mess photos */}
-          {details.messPhoto?.length > 0 ? (
-            details.messPhoto.map((photo, idx) => (
-              <img
-                key={idx}
-                className="h-24 w-full object-cover rounded"
-                src={photo}
-                alt={`Mess ${idx + 1}`}
+          {/* Add Photo Box (only show if less than 10 photos) */}
+          {details.messPhoto.length < 10 && (
+            <div
+              className="flex items-center justify-center h-24 border rounded bg-gray-100 cursor-pointer hover:bg-gray-200 relative"
+              onClick={() => document.getElementById("photoInput").click()}
+            >
+              <span className="text-xl font-bold text-gray-600">+</span>
+              <input
+                type="file"
+                id="photoInput"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={(e) => {
+                  const files = Array.from(e.target.files);
+                  if (files.length) {
+                    const updatedPhotos = [
+                      ...details.messPhoto,
+                      ...files,
+                    ].slice(0, 10);
+                    setDetails((prev) => ({
+                      ...prev,
+                      messPhoto: updatedPhotos,
+                    }));
+                    e.target.value = ""; // reset input
+                  }
+                }}
               />
-            ))
+            </div>
+          )}
+
+          {/* Render Photos */}
+          {details.messPhoto.length > 0 ? (
+            details.messPhoto.map((photo, idx) => {
+              const isFileObject = photo instanceof File;
+              const imageUrl = isFileObject
+                ? URL.createObjectURL(photo)
+                : photo;
+
+              return (
+                <div key={idx} className="relative">
+                  <img
+                    className="h-24 w-full object-cover rounded"
+                    src={imageUrl}
+                    alt={`Mess ${idx + 1}`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = [...details.messPhoto];
+                      updated.splice(idx, 1);
+                      setDetails((prev) => ({
+                        ...prev,
+                        messPhoto: updated,
+                      }));
+                    }}
+                    className="absolute top-1 right-1 bg-white rounded-full text-red-500 hover:text-red-700 px-1.5"
+                  >
+                    ×
+                  </button>
+                </div>
+              );
+            })
           ) : (
             <p className="text-sm text-gray-500 col-span-3 sm:col-span-3">
               No photos uploaded yet.
@@ -417,7 +512,8 @@ const SettingsOwner = ({ userDetails }) => {
       {/* Footer Actions */}
       <div className="flex justify-end space-x-4">
         <button className="px-4 py-2 border rounded">Reset</button>
-        <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+        <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"   onClick={handleUpdate}
+        >
           Update Settings
         </button>
       </div>
