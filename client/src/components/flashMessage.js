@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 function FlashMessage({ message='xxx', type = 'success' }) {
   const [show, setShow] = React.useState(true);
   
-  // const [currentMessage, setCurrentMessage] = React.useState(message);
+ // const [currentMessage, setCurrentMessage] = React.useState(message);
 
   // const isError = type === 'error';
 
@@ -12,11 +12,12 @@ function FlashMessage({ message='xxx', type = 'success' }) {
   useEffect(() => {
 
     if (message ) {
-     
+    //  setCurrentMessage(message);
       setShow(true);
       
       const timer = setTimeout(() => {
         setShow(false);
+        //setCurrentMessage('');
       }, 2000);
       
       return () => clearTimeout(timer);
