@@ -91,11 +91,15 @@ const SettingsOwner = ({ userDetails }) => {
     // formData.append("profilePhoto", details.profilePhoto);
   
     // Append mess photos (only newly added File objects)
-    details.messPhoto.forEach((photo) => {
+ 
+    details.messPhoto.forEach(photo => {
       if (photo instanceof File) {
-        formData.append("messPhoto", photo);
+        formData.append("photos", photo); // or whatever your field is
+      } else {
+        existingUrls.push(photo);
       }
     });
+    
   
     try {
       const res = await fetch(updateDetailsUrl, {
