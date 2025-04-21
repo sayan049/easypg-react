@@ -95,7 +95,7 @@ exports.updateDetails = async (req, res) => {
 
               // Validate each room info object
               roomInfoData = roomInfoData.map((room, idx) => ({
-                room: room.room || `RoomNo-${idx + 1}`,
+                room:  `RoomNo-${idx + 1}`,
                 bedContains: room.bedContains || "",
                 pricePerHead: room.pricePerHead || 0,
                 roomAvailable: room.roomAvailable || false,

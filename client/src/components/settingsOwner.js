@@ -48,26 +48,36 @@ const SettingsOwner = ({ userDetails }) => {
   }, [userDetails]);
   console.log(details);
   // Inside your component
-  const handleAddRoom = () => {
-    setDetails((prev) => ({
-      ...prev,
-      roomInfo: [
-        ...prev.roomInfo,
-        {
-          room: `RoomNo-${prev.roomInfo.length + 1}`, // Add this line
-          bedContains: "",
-          pricePerHead: 0,
-          roomAvailable: false,
-        },
-      ],
+  const renumberRooms = (rooms) => {
+    return rooms.map((room, index) => ({
+      ...room,
+      room: `RoomNo-${index + 1}`, // Always use current index + 1
     }));
   };
-
+  const handleAddRoom = () => {
+    setDetails((prev) => {
+      const newRoom = {
+        room: `RoomNo-${prev.roomInfo.length + 1}`,
+        bedContains: "",
+        pricePerHead: 0,
+        roomAvailable: false,
+      };
+      return {
+        ...prev,
+        roomInfo: [...prev.roomInfo, newRoom],
+      };
+    });
+  };
   const handleRemoveRoom = (indexToRemove) => {
-    setDetails((prev) => ({
-      ...prev,
-      roomInfo: prev.roomInfo.filter((_, index) => index !== indexToRemove),
-    }));
+    setDetails((prev) => {
+      const newRooms = prev.roomInfo.filter(
+        (_, index) => index !== indexToRemove
+      );
+      return {
+        ...prev,
+        roomInfo: renumberRooms(newRooms), // Renumber after removal
+      };
+    });
   };
   const handleUpdate = async () => {
     const formData = new FormData();
@@ -286,10 +296,10 @@ const SettingsOwner = ({ userDetails }) => {
             <input
               type="radio"
               name="pgType"
-              value="Girls"
-              checked={details.gender}
+              value="Girls Pg"
+              checked={details.gender === "Girls Pg"}
               onChange={(e) =>
-                setDetails({ ...details, pgType: e.target.value })
+                setDetails({ ...details, gender: e.target.value })
               }
             />{" "}
             Girls
@@ -298,10 +308,10 @@ const SettingsOwner = ({ userDetails }) => {
             <input
               type="radio"
               name="pgType"
-              value="Boys"
+              value="Boys Pg"
               checked={details.gender === "Boys Pg"}
               onChange={(e) =>
-                setDetails({ ...details, pgType: e.target.value })
+                setDetails({ ...details, gender: e.target.value })
               }
             />{" "}
             Boys
@@ -310,10 +320,10 @@ const SettingsOwner = ({ userDetails }) => {
             <input
               type="radio"
               name="pgType"
-              value="Co-ed"
+              value="Coed Pg"
               checked={details.gender === "Coed Pg"}
               onChange={(e) =>
-                setDetails({ ...details, pgType: e.target.value })
+                setDetails({ ...details, gender: e.target.value })
               }
             />{" "}
             Co-ed
@@ -382,13 +392,8 @@ const SettingsOwner = ({ userDetails }) => {
                 type="text"
                 placeholder="Room No."
                 className={input}
-                value={room.room || `RoomNo-${index + 1}`} // Use room.room if it exis
+                value={`RoomNo-${index + 1}`} // Always show current position
                 readOnly
-                onChange={(e) => {
-                  const updatedRooms = [...details.roomInfo];
-                  updatedRooms[index].room = e.target.value;
-                  setDetails({ ...details, roomInfo: updatedRooms });
-                }}
               />
 
               {/* Bed Contains */}
