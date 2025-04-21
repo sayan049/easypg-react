@@ -199,15 +199,15 @@ function SignUpForm() {
             <button
               type="button"
               onClick={signupHandler}
-              disabled={!isFormValid || isButtonDisabled || isSubmitting}
+              disabled={!isFormValid || isButtonDisabled }
               className={`w-full py-2 rounded-full font-semibold transition tracking-wide ${
-                isFormValid && !isSubmitting
+                isFormValid 
                   ? "bg-[#2ca4b5] text-white hover:bg-[#238b96]"
                   : "bg-gray-300 text-gray-600 cursor-not-allowed"
               }`}
             >
               {/* {isSubmitting ? "Submitting..." : "Create Account"} */}
-              "Create Account"
+              Create Account
             </button>
           </form>
 
