@@ -49,5 +49,6 @@ bookingSchema.index({ studentId: 1 });
 bookingSchema.index({ "roomSnapshot.room": 1 });
 bookingSchema.index({ checkInDate: 1 });
 
-const Booking = mongoose.model("Booking", bookingSchema);
+const Booking = mongoose.models.Booking || mongoose.model('Booking', bookingSchema);
+
 module.exports = Booking;
