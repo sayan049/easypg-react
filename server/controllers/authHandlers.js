@@ -15,6 +15,7 @@ const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
 exports.signupHandler = async (req, res) => {
   const email = req.body.email;
+  const password = req.body.password;
 
 
   const existnigUser = await User.findOne({ email: email });
