@@ -23,19 +23,16 @@ const numberToBedCount = {
 
 // Create booking request
 exports.createBookingRequest = async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-  
   try {
     const { 
       student, 
       pgOwner, 
       room, 
-      bedsBooked = 1, // Default to 1 bed
+      bedsBooked = 1,
       originalBedCount, 
-      pricePerHead, // Changed from pricePerMonth
+      pricePerHead,
       period,
-      payment // Added payment object from frontend
+      payment
     } = req.body;
 
     // Validate input
@@ -66,23 +63,31 @@ exports.createBookingRequest = async (req, res) => {
       });
     }
 
-    // Find owner and room (with session for transaction)
-    const owner = await PgOwner.findById(pgOwner).session(session);
+    // Find owner and room
+    const owner = await PgOwner.findById(pgOwner);
     if (!owner) {
-      await session.abortTransaction();
       return res.status(404).json({ success: false, message: 'Owner not found' });
     }
 
     const roomInfo = owner.roomInfo.find(r => r.room === room);
-    if (!roomInfo || !roomInfo.roomAvailable) {
-      await session.abortTransaction();
+    if (!roomInfo) {
+      return res.status(400).json({ success: false, message: 'Room not found' });
+    }
+
+    // Validate room availability and bed configuration
+    if (!roomInfo.roomAvailable) {
       return res.status(400).json({ success: false, message: 'Room not available' });
     }
 
-    // Check bed availability
+    if (!roomInfo.bedContains || !bedCountToNumber[roomInfo.bedContains]) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Invalid room configuration - missing bed count'
+      });
+    }
+
     const availableBeds = bedCountToNumber[roomInfo.bedContains];
     if (availableBeds < bedsBooked) {
-      await session.abortTransaction();
       return res.status(400).json({ 
         success: false, 
         message: `Only ${availableBeds} bed${availableBeds !== 1 ? 's' : ''} available`,
@@ -90,38 +95,35 @@ exports.createBookingRequest = async (req, res) => {
       });
     }
 
-    // Create booking with simplified structure
+    // Create booking
     const booking = new Booking({
       student,
       pgOwner,
       room,
       bedsBooked,
       originalBedCount,
-      pricePerHead, // Changed from pricePerMonth
+      pricePerHead,
       period: {
         startDate: period.startDate,
-        durationMonths: period.durationMonths || 6 // Default to 6 months
+        durationMonths: period.durationMonths || 6
       },
-      payment: payment || { // Use provided payment or default
-        totalAmount: pricePerHead * ((period.durationMonths || 6) + 1), // Rent + deposit
+      payment: payment || {
+        totalAmount: pricePerHead * ((period.durationMonths || 6) + 1),
         deposit: pricePerHead,
         status: 'pending'
       },
       status: 'pending'
     });
 
-    await booking.save({ session });
+    await booking.save();
 
-    // Update room availability (reduce available beds)
+    // Update room availability
     const updatedBeds = availableBeds - bedsBooked;
-    roomInfo.bedContains = numberToBedCount[updatedBeds];
+    roomInfo.bedContains = numberToBedCount[updatedBeds] || 'one';
     roomInfo.roomAvailable = updatedBeds > 0;
-    await owner.save({ session });
+    await owner.save();
 
-    // Commit transaction
-    await session.commitTransaction();
-
-    // Send notifications (outside transaction)
+    // Send notifications
     const notificationPromises = [
       sendNotification(
         owner._id, 
@@ -166,23 +168,17 @@ exports.createBookingRequest = async (req, res) => {
     });
 
   } catch (error) {
-    await session.abortTransaction();
     console.error('Booking creation error:', error);
     res.status(500).json({ 
       success: false,
       message: 'Failed to create booking',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
-  } finally {
-    session.endSession();
   }
 };
 
 // Handle booking approval/rejection
 exports.handleBookingApproval = async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
   try {
     const { id } = req.params;
     const { status, rejectionReason } = req.body;
@@ -204,18 +200,13 @@ exports.handleBookingApproval = async (req, res) => {
       });
     }
 
-    const booking = await Booking.findById(id)
-      .populate('student pgOwner')
-      .session(session);
-      
+    const booking = await Booking.findById(id).populate('student pgOwner');
     if (!booking) {
-      await session.abortTransaction();
       return res.status(404).json({ success: false, message: 'Booking not found' });
     }
 
     // Validate booking can be updated
     if (booking.status !== 'pending') {
-      await session.abortTransaction();
       return res.status(400).json({
         success: false,
         message: `Booking cannot be updated from ${booking.status} status`
@@ -228,25 +219,21 @@ exports.handleBookingApproval = async (req, res) => {
       booking.rejectionReason = rejectionReason;
       
       // Restore bed availability
-      const owner = await PgOwner.findById(booking.pgOwner._id).session(session);
+      const owner = await PgOwner.findById(booking.pgOwner._id);
       const room = owner.roomInfo.find(r => r.room === booking.room);
       
       if (room) {
-        const currentBeds = bedCountToNumber[room.bedContains];
+        const currentBeds = bedCountToNumber[room.bedContains] || 0;
         const newBeds = currentBeds + booking.bedsBooked;
-        
-        if (newBeds <= bedCountToNumber[booking.originalBedCount]) {
-          room.bedContains = numberToBedCount[newBeds];
-          room.roomAvailable = true;
-          await owner.save({ session });
-        }
+        room.bedContains = numberToBedCount[newBeds] || 'one';
+        room.roomAvailable = true;
+        await owner.save();
       }
     }
 
-    await booking.save({ session });
-    await session.commitTransaction();
+    await booking.save();
 
-    // Send notifications (outside transaction)
+    // Send notifications
     const notificationMessage = status === 'confirmed' 
       ? `Your booking for ${booking.pgOwner.messName} (Room: ${booking.room}) has been confirmed!` 
       : `Your booking request for ${booking.pgOwner.messName} was rejected. Reason: ${rejectionReason}`;
@@ -274,39 +261,28 @@ exports.handleBookingApproval = async (req, res) => {
     });
 
   } catch (error) {
-    await session.abortTransaction();
     console.error('Booking approval error:', error);
     res.status(500).json({ 
       success: false,
       message: 'Failed to update booking status',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
-  } finally {
-    session.endSession();
   }
 };
 
 // Cancel booking
 exports.cancelBooking = async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
   try {
     const { id } = req.params;
     const { cancellationReason } = req.body;
 
-    const booking = await Booking.findById(id)
-      .populate('student pgOwner')
-      .session(session);
-      
+    const booking = await Booking.findById(id).populate('student pgOwner');
     if (!booking) {
-      await session.abortTransaction();
       return res.status(404).json({ success: false, message: 'Booking not found' });
     }
 
     // Validate booking can be cancelled
     if (!['pending', 'confirmed'].includes(booking.status)) {
-      await session.abortTransaction();
       return res.status(400).json({
         success: false,
         message: `Booking cannot be cancelled in ${booking.status} status`
@@ -315,18 +291,15 @@ exports.cancelBooking = async (req, res) => {
 
     // Restore bed availability if booking was confirmed
     if (booking.status === 'confirmed') {
-      const owner = await PgOwner.findById(booking.pgOwner._id).session(session);
+      const owner = await PgOwner.findById(booking.pgOwner._id);
       const room = owner.roomInfo.find(r => r.room === booking.room);
       
       if (room) {
-        const currentBeds = bedCountToNumber[room.bedContains];
+        const currentBeds = bedCountToNumber[room.bedContains] || 0;
         const newBeds = currentBeds + booking.bedsBooked;
-        
-        if (newBeds <= bedCountToNumber[booking.originalBedCount]) {
-          room.bedContains = numberToBedCount[newBeds];
-          room.roomAvailable = true;
-          await owner.save({ session });
-        }
+        room.bedContains = numberToBedCount[newBeds] || 'one';
+        room.roomAvailable = true;
+        await owner.save();
       }
     }
 
@@ -339,10 +312,9 @@ exports.cancelBooking = async (req, res) => {
       booking.payment.status = 'refund_pending';
     }
     
-    await booking.save({ session });
-    await session.commitTransaction();
+    await booking.save();
 
-    // Send notifications (outside transaction)
+    // Send notifications
     const notificationMessage = cancellationReason
       ? `Your booking has been cancelled. Reason: ${cancellationReason}`
       : 'Your booking has been cancelled';
@@ -386,14 +358,11 @@ exports.cancelBooking = async (req, res) => {
     });
 
   } catch (error) {
-    await session.abortTransaction();
     console.error('Booking cancellation error:', error);
     res.status(500).json({ 
       success: false,
       message: 'Failed to cancel booking',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
-  } finally {
-    session.endSession();
   }
 };
