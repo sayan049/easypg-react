@@ -12,7 +12,7 @@ const authenticateJWT = require("../middleware/is-auth")
 const forgotPasswordOwner = require("../controllers/forgotPasswordOwner")
 const resetPasswordOwner = require("../controllers/resetPasswordOwner")
 const resetPasswordDashboard=require("../controllers/resetPasswordDashboard")
-import { updatePassword } from "../controllers/updatePasswordDashboardOwner";
+const  updatePassword  =require("../controllers/updatePasswordDashboardOwner");
 const jwt = require('jsonwebtoken');
 
 

@@ -44,6 +44,4 @@ const updatePassword = async (userId, currentPassword, newPassword, confirmPassw
   }
 };
 
-module.exports = {
-  updatePassword
-};
+module.exports = updatePassword;
