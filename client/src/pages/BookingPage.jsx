@@ -15,7 +15,7 @@ export default function BookingPage() {
   const primaryColor = "#2CA4B5";
 
   return (
-    <div className="p-4 md:p-8 max-w-[90rem] mx-auto space-y-6 font-sans">
+    <div className="p-4 md:p-8 max-w-[100rem] mx-auto space-y-6 font-sans">
       <div className="flex items-center gap-4 mb-6 border-b pb-4 border-gray-300 justify-between">
         <div className="flex items-center gap-2">
           <img src="assets/backIcon.png" className="h-6" alt="" />
