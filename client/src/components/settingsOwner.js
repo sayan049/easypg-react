@@ -21,6 +21,103 @@ const SettingsOwner = ({ userDetails }) => {
 
     messPhoto: [],
   });
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(0);
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
+
+  // Password strength calculation
+  const calculatePasswordStrength = (password) => {
+    let strength = 0;
+    if (password.length >= 8) strength += 1;
+    if (/[A-Z]/.test(password)) strength += 1;
+    if (/[0-9]/.test(password)) strength += 1;
+    if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+    setPasswordStrength((strength / 4) * 100);
+  };
+
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setPasswordData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    if (name === "newPassword") {
+      calculatePasswordStrength(value);
+    }
+  };
+
+  const handlePasswordUpdate = async (e) => {
+    e.preventDefault();
+    setPasswordError("");
+    setPasswordSuccess(false);
+
+    // Validation
+    if (
+      !passwordData.currentPassword ||
+      !passwordData.newPassword ||
+      !passwordData.confirmPassword
+    ) {
+      setPasswordError("All fields are required");
+      return;
+    }
+
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setPasswordError("New passwords do not match");
+      return;
+    }
+
+    if (passwordData.newPassword.length < 8) {
+      setPasswordError("Password must be at least 8 characters");
+      return;
+    }
+
+    try {
+      setIsUpdatingPassword(true);
+      const response = await fetch(updatePasswordUrlDashboardOwner, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // 'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          userId: userDetails._id,
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword,
+          confirmPassword: passwordData.confirmPassword
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to update password");
+      }
+
+      setPasswordSuccess(true);
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+    } catch (err) {
+      setPasswordError(err.message);
+    } finally {
+      setIsUpdatingPassword(false);
+    }
+  };
+
+  const getStrengthColor = () => {
+    if (passwordStrength < 30) return "bg-red-500";
+    if (passwordStrength < 70) return "bg-yellow-500";
+    return "bg-green-500";
+  };
 
   useEffect(() => {
     if (userDetails) {
@@ -95,7 +192,7 @@ const SettingsOwner = ({ userDetails }) => {
 
     // Required identifiers
     formData.append("type", "owner");
-    formData.append("userId", userDetails._id); 
+    formData.append("userId", userDetails._id);
 
     // Append editable fields
     formData.append("address", details.address);
@@ -202,26 +299,104 @@ const SettingsOwner = ({ userDetails }) => {
         {/* Update Password */}
         <div className="space-y-4">
           <h3 className="font-semibold text-lg">Update Password</h3>
-          <input
-            type="password"
-            placeholder="Current Password"
-            className={input}
-          />
-          <input type="password" placeholder="New Password" className={input} />
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            className={input}
-          />
-          <div>
-            <label className="text-sm text-gray-500">Password Strength</label>
-            <div className="h-1 w-full bg-gray-300 rounded">
-              <div className="h-1 bg-green-500 w-3/4 rounded"></div>
+
+          {/* Error/Success Messages */}
+          {passwordError && (
+            <div className="p-2 bg-red-100 text-red-700 rounded-md text-sm">
+              {passwordError}
             </div>
-          </div>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-            Update Password
-          </button>
+          )}
+
+          {passwordSuccess && (
+            <div className="p-2 bg-green-100 text-green-700 rounded-md text-sm">
+              Password updated successfully!
+            </div>
+          )}
+
+          <form onSubmit={handlePasswordUpdate} className="space-y-4">
+            <input
+              type="password"
+              name="currentPassword"
+              placeholder="Current Password"
+              className={input}
+              value={passwordData.currentPassword}
+              onChange={handlePasswordChange}
+              required
+            />
+            <input
+              type="password"
+              name="newPassword"
+              placeholder="New Password"
+              className={input}
+              value={passwordData.newPassword}
+              onChange={handlePasswordChange}
+              required
+              minLength={8}
+            />
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              className={input}
+              value={passwordData.confirmPassword}
+              onChange={handlePasswordChange}
+              required
+            />
+
+            {/* Password Strength Meter */}
+            <div>
+              <label className="text-sm text-gray-500">Password Strength</label>
+              <div className="h-1 w-full bg-gray-300 rounded">
+                <div
+                  className={`h-1 ${getStrengthColor()} rounded`}
+                  style={{ width: `${passwordStrength}%` }}
+                ></div>
+              </div>
+              {passwordData.newPassword && (
+                <p className="text-xs mt-1 text-gray-500">
+                  {passwordStrength < 30
+                    ? "Weak"
+                    : passwordStrength < 70
+                    ? "Moderate"
+                    : "Strong"}
+                </p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50 w-full"
+              disabled={isUpdatingPassword}
+            >
+              {isUpdatingPassword ? (
+                <span className="flex items-center justify-center">
+                  <svg
+                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Updating...
+                </span>
+              ) : (
+                "Update Password"
+              )}
+            </button>
+          </form>
         </div>
       </div>
 
@@ -443,7 +618,7 @@ const SettingsOwner = ({ userDetails }) => {
                 type="button"
                 onClick={() => handleRemoveRoom(index)}
                 className={
-                   "border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300 bg-red-600 text-white rounded hover:bg-red-700 mt-2"
+                  "border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300 bg-red-600 text-white rounded hover:bg-red-700 mt-2"
                 }
               >
                 Remove Room

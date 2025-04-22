@@ -12,6 +12,7 @@ const authenticateJWT = require("../middleware/is-auth")
 const forgotPasswordOwner = require("../controllers/forgotPasswordOwner")
 const resetPasswordOwner = require("../controllers/resetPasswordOwner")
 const resetPasswordDashboard=require("../controllers/resetPasswordDashboard")
+import { updatePassword } from "../controllers/updatePasswordDashboardOwner";
 const jwt = require('jsonwebtoken');
 
 
@@ -142,7 +143,7 @@ router.post("/logout", authenticateJWT, async (req, res) => {
 });
 
 router.post("/user/forgot-password", forgotPasswordUser);
-// Assuming you're using Express.js
+
 
 
 router.get('/LoginUser/user/reset-password/:resetToken', (req, res) => {
@@ -168,6 +169,7 @@ router.post("/user/reset-password",resetPasswordUser);
 
 //----------------------------------------------------------------------------------->
 router.post("/owner/forgot-password", forgotPasswordOwner);
+
 router.get('/LoginOwner/owner/reset-password/:resetToken', (req, res) => {
   const resetToken = req.params.resetToken;
 
@@ -189,6 +191,18 @@ router.get('/LoginOwner/owner/reset-password/:resetToken', (req, res) => {
 
 router.post("/owner/reset-password",resetPasswordOwner);
 router.post("/resetPasswordDashboard",resetPasswordDashboard);
+router.post("/updatePasswordDashboardOwner",  async (req, res) => {
+  const { userId,currentPassword, newPassword, confirmPassword } = req.body;
+
+
+  try {
+    const result = await updatePassword(userId, currentPassword, newPassword, confirmPassword);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res.status(500).json({ error: "An error occurred while updating password" });
+  }
+});
 
 
 

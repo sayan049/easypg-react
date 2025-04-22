@@ -58,30 +58,36 @@ export default function DashboardOwner() {
   useEffect(() => {
     const fetchDetails = async () => {
       // setIsLoading(true);
-      try {
-        const userId = type === "owner" ? owner?.id : user?.id;
-        if (!userId) {
-          console.error("User ID is missing");
-          return;
+      if(isOwnerAuthenticated){
+        try {
+          const userId = type === "owner" ? owner?.id : user?.id;
+          if (!userId) {
+            console.error("User ID is missing");
+            return;
+          }
+  
+          const url = new URL(fetchDetailsUrl);
+          url.searchParams.append("userId", userId);
+          url.searchParams.append("type", type);
+  
+          const response = await fetch(url, { method: "GET" });
+  
+          if (!response.ok) {
+            throw new Error("Failed to fetch details");
+          }
+  
+          const data = await response.json();
+          setUserDetails(data); // Pass this to Settings
+        } catch (error) {
+          console.error("Error fetching details:", error);
+        } finally {
+          //  setIsLoading(false);
         }
-
-        const url = new URL(fetchDetailsUrl);
-        url.searchParams.append("userId", userId);
-        url.searchParams.append("type", type);
-
-        const response = await fetch(url, { method: "GET" });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch details");
-        }
-
-        const data = await response.json();
-        setUserDetails(data); // Pass this to Settings
-      } catch (error) {
-        console.error("Error fetching details:", error);
-      } finally {
-        //  setIsLoading(false);
+      }else
+      {
+        console.error("User is not authenticated as owner");
       }
+     
     };
 
     fetchDetails();
