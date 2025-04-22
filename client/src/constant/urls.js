@@ -24,4 +24,6 @@ export const tokenVerifyOwnerUrl = `${baseUrl}/auth/LoginOwner/owner/reset-passw
 export const refreshTokenHandler = `${baseUrl}/auth/refresh-token`
 export const LocationIqurl = `${baseUrl}/auth/api/autocomplete`;
 export const baseurl =`${baseUrl}`;
-export const resetPasswordDashboard= `${baseUrl}/auth/resetPasswordDashboard`
+export const resetPasswordDashboard= `${baseUrl}/auth/resetPasswordDashboard`;
+
+export const updatePasswordDashboardOwner= `${baseUrl}/auth/updatePasswordDashboardOwner`;
