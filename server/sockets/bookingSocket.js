@@ -1,18 +1,21 @@
-// sockets/bookingSocket.js
 const { Server } = require("socket.io");
 
 class SocketManager {
   constructor() {
     this.io = null;
-    this.ownerRooms = new Map(); // ownerId -> socketId
-    this.studentRooms = new Map(); // studentId -> socketId
+    this.ownerSockets = new Map(); // ownerId -> Set of socketIds
+    this.studentSockets = new Map(); // studentId -> Set of socketIds
   }
 
   init(server) {
     this.io = new Server(server, {
       cors: {
         origin: process.env.CLIENT_URL || "http://localhost:3000",
-        methods: ["GET", "POST"]
+        methods: ["GET", "POST"],
+        credentials: true
+      },
+      connectionStateRecovery: {
+        maxDisconnectionDuration: 120000 // 2 minutes
       }
     });
 
@@ -21,19 +24,31 @@ class SocketManager {
 
       // Owner joins their room
       socket.on("owner-join", (ownerId) => {
-        this.ownerRooms.set(ownerId, socket.id);
+        if (!this.ownerSockets.has(ownerId)) {
+          this.ownerSockets.set(ownerId, new Set());
+        }
+        this.ownerSockets.get(ownerId).add(socket.id);
+        socket.join(`owner-${ownerId}`);
         console.log(`Owner ${ownerId} joined with socket ID: ${socket.id}`);
       });
 
       // Student joins their room
       socket.on("student-join", (studentId) => {
-        this.studentRooms.set(studentId, socket.id);
+        if (!this.studentSockets.has(studentId)) {
+          this.studentSockets.set(studentId, new Set());
+        }
+        this.studentSockets.get(studentId).add(socket.id);
+        socket.join(`student-${studentId}`);
         console.log(`Student ${studentId} joined with socket ID: ${socket.id}`);
       });
 
-      socket.on("disconnect", () => {
-        console.log("Client disconnected:", socket.id);
+      socket.on("disconnect", (reason) => {
+        console.log(`Client disconnected (${reason}):`, socket.id);
         this._cleanUpDisconnectedSocket(socket.id);
+      });
+
+      socket.on("error", (err) => {
+        console.error("Socket error:", err);
       });
     });
 
@@ -41,37 +56,52 @@ class SocketManager {
   }
 
   _cleanUpDisconnectedSocket(socketId) {
-    for (const [ownerId, sid] of this.ownerRooms.entries()) {
-      if (sid === socketId) {
-        this.ownerRooms.delete(ownerId);
-        console.log(`Owner ${ownerId} disconnected`);
+    // Clean up owner connections
+    for (const [ownerId, socketSet] of this.ownerSockets.entries()) {
+      if (socketSet.has(socketId)) {
+        socketSet.delete(socketId);
+        console.log(`Owner ${ownerId} disconnected from socket ${socketId}`);
+        if (socketSet.size === 0) {
+          this.ownerSockets.delete(ownerId);
+        }
       }
     }
-    for (const [studentId, sid] of this.studentRooms.entries()) {
-      if (sid === socketId) {
-        this.studentRooms.delete(studentId);
-        console.log(`Student ${studentId} disconnected`);
+
+    // Clean up student connections
+    for (const [studentId, socketSet] of this.studentSockets.entries()) {
+      if (socketSet.has(socketId)) {
+        socketSet.delete(socketId);
+        console.log(`Student ${studentId} disconnected from socket ${socketId}`);
+        if (socketSet.size === 0) {
+          this.studentSockets.delete(studentId);
+        }
       }
     }
   }
 
   notifyOwner(ownerId, event, data) {
-    const socketId = this.ownerRooms.get(ownerId);
-    if (socketId) {
-      this.io.to(socketId).emit(event, data);
-      console.log(`Notified owner ${ownerId} with event "${event}"`);
+    if (this.io && this.ownerSockets.has(ownerId)) {
+      this.io.to(`owner-${ownerId}`).emit(event, data);
+      console.log(`Notified owner ${ownerId} with event "${event}"`, data);
     } else {
       console.warn(`Owner ${ownerId} not connected for event "${event}"`);
     }
   }
 
   notifyStudent(studentId, event, data) {
-    const socketId = this.studentRooms.get(studentId);
-    if (socketId) {
-      this.io.to(socketId).emit(event, data);
-      console.log(`Notified student ${studentId} with event "${event}"`);
+    if (this.io && this.studentSockets.has(studentId)) {
+      this.io.to(`student-${studentId}`).emit(event, data);
+      console.log(`Notified student ${studentId} with event "${event}"`, data);
     } else {
       console.warn(`Student ${studentId} not connected for event "${event}"`);
+    }
+  }
+
+  // Broadcast to all connected owners
+  notifyAllOwners(event, data) {
+    if (this.io) {
+      this.io.emit(event, data);
+      console.log(`Broadcasted to all owners: "${event}"`);
     }
   }
 }

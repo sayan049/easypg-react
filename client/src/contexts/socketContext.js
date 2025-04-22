@@ -1,28 +1,50 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { useAuth } from "./AuthContext";
+import { toast } from "sonner";
 
-// Create a Context to store the socket instance
 const SocketContext = createContext();
 
-// Hook to use the socket context
 export const useSocket = () => useContext(SocketContext);
 
-// Provider component to manage socket connection
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
+  const { user } = useAuth();
 
   useEffect(() => {
-    // Create a socket connection to the backend
-    const socketIo = io(process.env.REACT_APP_BACKEND_URL || "http://localhost:5000");
+    const socketIo = io(process.env.REACT_APP_BACKEND_URL || "http://localhost:5000", {
+      withCredentials: true,
+      autoConnect: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 3000,
+    });
 
-    // Set the socket instance
+    // Connection events
+    socketIo.on("connect", () => {
+      console.log("Socket connected:", socketIo.id);
+      if (user?._id) {
+        socketIo.emit("owner-join", user._id);
+      }
+    });
+
+    socketIo.on("disconnect", () => {
+      console.log("Socket disconnected");
+    });
+
+    socketIo.on("connect_error", (err) => {
+      console.error("Socket connection error:", err);
+      toast.error("Realtime connection failed - updates may be delayed");
+    });
+
     setSocket(socketIo);
 
-    // Cleanup when the component is unmounted
     return () => {
+      if (user?._id) {
+        socketIo.emit("owner-leave", user._id);
+      }
       socketIo.disconnect();
     };
-  }, []);
+  }, [user?._id]); // Reconnect when user changes
 
   return (
     <SocketContext.Provider value={socket}>

@@ -18,6 +18,7 @@ const {
   createBookingRequest,
   handleBookingApproval,
   cancelBooking,
+  getOwnerBookings
 } = require('../controllers/bookingController');
 
 

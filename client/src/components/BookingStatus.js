@@ -228,30 +228,67 @@ const BookingStatus = () => {
   const { user } = useAuth();
 
   useEffect(() => {
-    fetchBookings();
-    
-    if (socket && user?._id) {
-      socket.emit("owner-join", user._id);
-      
-      const handleNewBooking = (newBooking) => {
-        setBookings(prev => ({
-          ...prev,
-          pending: [newBooking, ...prev.pending]
-        }));
-        setStats(prev => ({
-          ...prev,
-          pending: prev.pending + 1,
-          total: prev.total + 1
-        }));
-        toast.info(`New booking request for ${newBooking.room}`);
-      };
+    const fetchDataAndSetupSocket = async () => {
+      try {
+        // First load existing bookings
+        await fetchBookings();
 
-      socket.on("new-booking", handleNewBooking);
+        // Then setup socket listeners
+        if (socket && user?._id) {
+          console.log("Joining owner room:", user._id);
+          socket.emit("owner-join", user._id);
 
-      return () => {
-        socket.off("new-booking", handleNewBooking);
-      };
-    }
+          socket.on("new-booking", (newBooking) => {
+            console.log("New booking received via socket:", newBooking);
+            setBookings(prev => ({
+              ...prev,
+              pending: [newBooking, ...(prev.pending || [])]
+            }));
+            setStats(prev => ({
+              ...prev,
+              pending: (prev.pending || 0) + 1,
+              total: (prev.total || 0) + 1
+            }));
+            toast.info(`New booking request for ${newBooking.room}`);
+          });
+
+          socket.on("booking-updated", (updatedBooking) => {
+            console.log("Booking update received:", updatedBooking);
+            setBookings(prev => {
+              const updatedPending = prev.pending?.filter(b => b._id !== updatedBooking._id) || [];
+              
+              if (updatedBooking.status === "confirmed") {
+                return {
+                  pending: updatedPending,
+                  confirmed: [updatedBooking, ...(prev.confirmed || [])],
+                  rejected: prev.rejected || []
+                };
+              } else if (updatedBooking.status === "rejected") {
+                return {
+                  pending: updatedPending,
+                  confirmed: prev.confirmed || [],
+                  rejected: [updatedBooking, ...(prev.rejected || [])]
+                };
+              }
+              return prev;
+            });
+          });
+        }
+      } catch (error) {
+        console.error("Initialization error:", error);
+      }
+    };
+
+    fetchDataAndSetupSocket();
+
+    return () => {
+      if (socket) {
+        console.log("Cleaning up socket listeners");
+        socket.off("new-booking");
+        socket.off("booking-updated");
+        socket.emit("owner-leave", user?._id);
+      }
+    };
   }, [socket, user?._id]);
 
   const fetchBookings = async () => {
@@ -262,6 +299,8 @@ const BookingStatus = () => {
         axios.get(`${baseurl}/bookings/owner?status=confirmed`),
         axios.get(`${baseurl}/bookings/owner?status=rejected`)
       ]);
+
+      console.log("API responses:", { pendingRes, confirmedRes, rejectedRes });
 
       setBookings({
         pending: pendingRes.data?.bookings || [],
@@ -278,8 +317,8 @@ const BookingStatus = () => {
         rejected: rejectedRes.data?.bookings?.length || 0
       });
     } catch (error) {
-      toast.error("Failed to fetch bookings");
       console.error("Fetch bookings error:", error);
+      toast.error("Failed to fetch bookings");
     } finally {
       setLoading(prev => ({ ...prev, list: false }));
     }
@@ -289,10 +328,11 @@ const BookingStatus = () => {
     try {
       setLoading(prev => ({ ...prev, action: true }));
       
-      await axios.put(`${baseurl}/bookings/${bookingId}/status`, { 
+      const response = await axios.put(`${baseurl}/bookings/${bookingId}/status`, { 
         status,
         ...(reason && { rejectionReason: reason })
       });
+      console.log("Status change response:", response.data);
 
       setBookings(prev => {
         const updatedPending = prev.pending.filter(b => b._id !== bookingId);
@@ -346,8 +386,20 @@ const BookingStatus = () => {
     }
   };
 
+  // Connection status indicator
+  const ConnectionStatus = () => (
+    <div className="fixed bottom-4 right-4 flex items-center gap-2 bg-white p-2 rounded shadow text-xs">
+      <div className={`w-3 h-3 rounded-full ${
+        socket?.connected ? 'bg-green-500' : 'bg-red-500'
+      }`} />
+      {socket?.connected ? `Connected (${socket.id})` : 'Disconnected'}
+    </div>
+  );
+
   return (
     <div className="p-4 space-y-6">
+      <ConnectionStatus />
+      
       {/* Stats Section */}
       <div className="space-y-4">
         <h1 className="text-xl font-bold">Booking Status</h1>

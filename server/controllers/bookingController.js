@@ -1,8 +1,8 @@
 const Booking = require('../modules/Booking');
 const PgOwner = require("../modules/pgProvider");
 const { sendNotification, NOTIFICATION_TYPES } = require('../services/notificationService');
-const socketManager = require("../sockets/bookingSocket");
-const mongoose = require('mongoose');
+const { notifyOwner, notifyStudent } = require("../sockets/bookingSocket");
+const { Types } = require('mongoose');
 
 // Helper functions
 const bedCountToNumber = {
@@ -146,18 +146,25 @@ exports.createBookingRequest = async (req, res) => {
     await Promise.all(notificationPromises);
 
     // Socket notifications
-    socketManager.notifyOwner(owner._id, "new-booking", { 
-      bookingId: booking._id,
+    notifyOwner(owner._id, "new-booking", { 
+      _id: booking._id,
       room,
       bedsBooked,
-      studentId: student,
-      messName: owner.messName
+      student: {
+        _id: student,
+        name: booking.student?.name || "Unknown User"
+      },
+      status: 'pending',
+      period: booking.period,
+      payment: booking.payment,
+      createdAt: booking.createdAt
     });
 
-    socketManager.notifyStudent(student, "booking-created", {
-      bookingId: booking._id,
+    notifyStudent(student, "booking-created", {
+      _id: booking._id,
       messName: owner.messName,
       room,
+      status: 'pending',
       startDate: period.startDate
     });
 
@@ -172,6 +179,46 @@ exports.createBookingRequest = async (req, res) => {
     res.status(500).json({ 
       success: false,
       message: 'Failed to create booking',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+// Get all bookings for owner dashboard
+exports.getOwnerBookings = async (req, res) => {
+  try {
+    const { status } = req.query;
+    
+    if (!['pending', 'confirmed', 'rejected', 'cancelled'].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid status parameter'
+      });
+    }
+
+    // Validate owner ID
+    if (!Types.ObjectId.isValid(req.user._id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid owner ID'
+      });
+    }
+
+    const bookings = await Booking.find({
+      pgOwner: req.user._id,
+      status: status
+    }).populate('student', 'name avatar email');
+
+    res.json({
+      success: true,
+      bookings: bookings
+    });
+
+  } catch (error) {
+    console.error('Error fetching bookings:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch bookings',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
@@ -247,12 +294,18 @@ exports.handleBookingApproval = async (req, res) => {
       booking._id
     );
 
-    socketManager.notifyStudent(booking.student._id, "booking-status-update", {
-      bookingId: booking._id,
+    // Socket notifications
+    notifyStudent(booking.student._id, "booking-status-update", {
+      _id: booking._id,
       status,
       message: notificationMessage,
       ...(status === 'rejected' && { rejectionReason })
     });
+
+    // Notify owner if needed
+    if (status === 'confirmed') {
+      notifyOwner(booking.pgOwner._id, "booking-updated", booking.toObject());
+    }
 
     res.status(200).json({ 
       success: true,
@@ -339,16 +392,17 @@ exports.cancelBooking = async (req, res) => {
     ]);
 
     // Socket notifications
-    socketManager.notifyStudent(booking.student._id, "booking-cancelled", {
-      bookingId: booking._id,
+    notifyStudent(booking.student._id, "booking-cancelled", {
+      _id: booking._id,
       message: notificationMessage,
       cancellationReason
     });
 
-    socketManager.notifyOwner(booking.pgOwner._id, "booking-cancelled", {
-      bookingId: booking._id,
+    notifyOwner(booking.pgOwner._id, "booking-cancelled", {
+      _id: booking._id,
       room: booking.room,
-      studentId: booking.student._id
+      studentId: booking.student._id,
+      status: 'cancelled'
     });
 
     res.status(200).json({ 
