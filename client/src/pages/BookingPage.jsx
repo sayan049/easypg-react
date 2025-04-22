@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation,useNavigate } from "react-router-dom";
 
 export default function BookingPage() {
+  const navigate = useNavigate();
   const location = useLocation();
   const { owner } = location.state || {};
   const [selectedRoom, setSelectedRoom] = useState(
@@ -18,7 +19,7 @@ export default function BookingPage() {
     <div className="p-4 md:p-8 max-w-[100rem] mx-auto space-y-6 font-sans">
       <div className="flex items-center gap-4 mb-6 border-b pb-4 border-gray-300 justify-between">
         <div className="flex items-center gap-2">
-          <img src="assets/backIcon.png" className="h-6" alt="" />
+          <img src="assets/backIcon.png" className="h-6" alt="" onClick={()=>(navigate(-1))} />
           <h1 className="text-xl font-bold">Confirm Your Booking</h1>
         </div>
         <div className="">share</div>
@@ -247,7 +248,7 @@ export default function BookingPage() {
               })()}
             </div>
           </div>
-
+{/* 
           <div className="rounded-2xl shadow-md bg-white">
             <div className="p-4 space-y-4">
               <h2 className="text-xl font-semibold">Payment Method</h2>
@@ -292,7 +293,7 @@ export default function BookingPage() {
                 Proceed to Payment
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
