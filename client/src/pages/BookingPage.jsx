@@ -10,13 +10,48 @@ export default function BookingPage() {
   const [showAllPhotos, setShowAllPhotos] = useState(false);
   const [duration, setDuration] = useState(6); // in months
 
-  console.log(owner, owner.roomInfo, "room");
+  // console.log(owner, owner.roomInfo, "room");
 
   const primaryColor = "#2CA4B5";
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 font-sans">
-      <h1 className="text-2xl font-bold">Confirm Your Booking</h1>
+      <div className="flex items-center gap-4 mb-6 border-b pb-4 border-gray-300 justify-between">
+        <div className="flex items-center gap-2">
+          <img src="assets/backIcon.png" className="h-6" alt="" />
+          <h1 className="text-xl font-bold">Confirm Your Booking</h1>
+        </div>
+        <div className="">share</div>
+      </div>
+      {owner?.messName && (
+        <div className="flex  mb-6 flex-col justify-start ">
+          <h2 className="text-2xl font-bold">{owner?.messName}</h2>
+          <div className="flex gap-4 flex-col md:flex-row">
+            <p className="flex items-center text-gray-600 text-base gap-2">
+              <img src="assets/greyMarker.png" className="h-4" alt="" />
+              {owner?.address}
+            </p>
+            <p className="flex items-center text-gray-600 text-base gap-2">
+              <img src="assets/phoneIcon.png" className="h-5" alt="" />
+              {owner?.mobileNo}
+            </p>
+          </div>
+        </div>
+      )}
+      {/* <div className="flex  mb-6 flex-col justify-start ">
+        <h2 className="text-2xl font-bold">xxx</h2>
+        <div className="flex gap-4 flex-col md:flex-row">
+          <p className="flex items-center text-gray-600 text-base gap-2">
+            <img src="assets/greyMarker.png" className="h-4" alt="" />
+            xx xx xxx
+          </p>
+          <p className="flex items-center text-gray-600 text-base gap-2">
+            <img src="assets/phoneIcon.png" className='h-5'alt="" />
+            445677
+          </p>
+        </div>
+      </div> */}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Side */}
         <div className="lg:col-span-2 space-y-6">
@@ -139,8 +174,7 @@ export default function BookingPage() {
                 <button
                   onClick={() => setShowAllPhotos(!showAllPhotos)}
                   className="text-blue-600 underline text-sm mt-2 w-full text-left"
-                >
-                </button>
+                ></button>
               )}
 
               {owner?.messPhoto?.length > 4 && (

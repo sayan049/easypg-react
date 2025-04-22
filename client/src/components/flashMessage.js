@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect } from 'react';
 
-function FlashMessage({ message='xxx', type = 'success' ,hit= false }) {
+function FlashMessage({ message='xxx', type = 'success' ,hit= false ,onClear }) {
   const [show, setShow] = React.useState(true);
   
  // const [currentMessage, setCurrentMessage] = React.useState(message);
@@ -10,29 +10,27 @@ function FlashMessage({ message='xxx', type = 'success' ,hit= false }) {
 
 
   useEffect(() => {
-    if(hit){
-      setShow(true);
-      //setCurrentMessage('');
-    }
 
-    if (message ) {
+
+    if (message || hit ) {
     //  setCurrentMessage(message);
       setShow(true);
       
       const timer = setTimeout(() => {
+        onClear?.();
         setShow(false);
         //setCurrentMessage('');
       }, 2000);
       
       return () => clearTimeout(timer);
     }
-  }, [message,]);
+  }, [message,hit]);
 
   console.log('FlashMessage', message, type , type === 'error', show, "hit",hit);
 
   // if (!message || !show) return null;
 
-  if(type === 'error'){
+
 
   return (
 
@@ -105,7 +103,7 @@ function FlashMessage({ message='xxx', type = 'success' ,hit= false }) {
 
 </>
 
-  );}
+  );
 
 
 
