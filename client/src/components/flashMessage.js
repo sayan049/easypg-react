@@ -10,12 +10,9 @@ function FlashMessage({ message='xxx', type = 'success' ,hit= false }) {
 
 
   useEffect(() => {
-    if(hit){
-      setShow(true);
-      //setCurrentMessage('');
-    }
 
-    if (message ) {
+
+    if (message || hit ) {
     //  setCurrentMessage(message);
       setShow(true);
       
