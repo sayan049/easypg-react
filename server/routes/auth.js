@@ -213,13 +213,13 @@ router.post("/updatePasswordDashboardOwner",  async (req, res) => {
 //booking part----------------------------------------------------------------------------------->
 
 // User initiates booking request
-router.post('/book', createBookingRequest);
+router.post('/bookings', createBookingRequest);
 
 // Owner approves or rejects booking request
-router.put('/booking/:id', handleBookingApproval);
+router.put('/bookings/:id/status', handleBookingApproval);
 
 // User cancels the booking
-router.delete('/booking/:id', cancelBooking);
+router.delete('/bookings/:id', cancelBooking);
 
 
 module.exports = router;

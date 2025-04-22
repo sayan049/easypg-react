@@ -27,3 +27,6 @@ export const baseurl =`${baseUrl}`;
 export const resetPasswordDashboard= `${baseUrl}/auth/resetPasswordDashboard`;
 
 export const updatePasswordDashboardOwner= `${baseUrl}/auth/updatePasswordDashboardOwner`;
+export const bookingRequestUrl= `${baseUrl}/auth/bookings`;
+export const bookingApprovalUrl= `${baseUrl}/auth/bookings/:id/status`;
+export const bookingCancelUrl= `${baseUrl}/auth/bookings/:id`;
