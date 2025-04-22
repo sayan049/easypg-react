@@ -24,11 +24,24 @@ export default function BookingPage() {
         <div className="">share</div>
       </div>
       {owner?.messName && (
-        <div className="flex items-center gap-4 mb-6 flex-col md:flex-row">
-          <h2 className="text-lg font-semibold">{owner?.messName}</h2>
-          <p className="text-gray-600">{owner?.address}</p>
-        </div>
+            <div className="flex  mb-6 flex-col justify-start ">
+            <h2 className="text-2xl font-bold">{owner?.messName}</h2>
+            <div className="flex gap-2 flex-col md:flex-row">
+            <p className="text-gray-600 text-base">{owner?.address}</p>
+            <p className="text-gray-600 text-base">{owner.mobileNo}</p>
+            </div>
+            
+          </div>
       )}
+
+      <div className="flex  mb-6 flex-col justify-start ">
+        <h2 className="text-2xl font-bold">xxx mess</h2>
+        <div className="flex gap-2 flex-col md:flex-row">
+        <p className="text-gray-600 text-base">xxx xcxc cccc cdcc vcvcvc</p>
+        <p className="text-gray-600 text-base">26437474848</p>
+        </div>
+        
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Side */}
