@@ -5,6 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import { SocketProvider } from "./contexts/socketContext"; // Import the SocketProvider
 import ProviderSeeker from "./pages/ProviderSeeker";
 import SignUpUser from "./pages/signupUser";
 import LoginUser from "./pages/loginUser";
@@ -34,6 +35,7 @@ const root = createRoot(document.getElementById("root")); // Using createRoot di
 root.render(
   <React.StrictMode>
     <AuthProvider>
+    <SocketProvider> 
       <Router>
         <Routes>
           <Route path="/" element={<App />} />
@@ -117,6 +119,7 @@ root.render(
         }/> */}
         </Routes>
       </Router>
+      </SocketProvider>
     </AuthProvider>
   </React.StrictMode>
 );
