@@ -399,41 +399,36 @@ export default function BookingPage() {
       if (!selectedRoom || !checkInDate) {
         throw new Error("Please select a room and check-in date");
       }
-
+  
       const selectedRoomInfo = owner?.roomInfo?.find(
         (r) => r._id === selectedRoom
       );
-
+  
       if (!selectedRoomInfo) {
         throw new Error("Selected room not found");
       }
-
-      const monthlyRent = selectedRoomInfo?.pricePerHead || 0;
-      const totalAmount = monthlyRent * duration;
-      const depositAmount = monthlyRent; // 1 month deposit
-
+  
       const bookingData = {
         student: user.id,
         pgOwner: owner._id,
         room: selectedRoomInfo.room,
-        bedsBooked: 1, // Booking 1 bed at a time
+        bedsBooked: 1,
         originalBedCount: selectedRoomInfo.bedContains,
-        pricePerMonth: monthlyRent,
+        pricePerHead: selectedRoomInfo.pricePerHead,
         period: {
           startDate: checkInDate,
           durationMonths: duration
         },
         payment: {
-          totalAmount: totalAmount,
-          deposit: depositAmount
-        }
+          totalAmount: selectedRoomInfo.pricePerHead * (duration + 1), // Rent + deposit
+          deposit: selectedRoomInfo.pricePerHead
+        },
+        status: "pending"
       };
-
-      // Make API call to create booking
+  
       const response = await axios.post(bookingRequestUrl, bookingData);
-
+  
       if (response.data) {
-        // Emit real-time notification for the owner
         socket.emit("new-booking-request", {
           ownerId: owner._id,
           bookingId: response.data._id,
@@ -442,10 +437,9 @@ export default function BookingPage() {
           bedsBooked: 1,
           pricePerHead: selectedRoomInfo.pricePerHead,
         });
-
-        // Show success message
+  
         toast.success("Booking request sent successfully!");
-        // navigate("/my-bookings"); // Redirect to bookings page
+        // navigate("/my-bookings");
       }
     } catch (error) {
       console.error("Booking error:", error);
