@@ -28,14 +28,7 @@ export default function BookingPage() {
           <h1 className="text-xl font-bold">Confirm Your Booking</h1>
         </div>
         <div className="">
-          <a
-            href="https://www.flaticon.com/free-icons/share"
-            title="share icons"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Share icons created by Freepik - Flaticon
-          </a>
+         <img src="assets/share.png" className="h-5" alt="" />
         </div>
       </div>
       {owner?.messName && (
