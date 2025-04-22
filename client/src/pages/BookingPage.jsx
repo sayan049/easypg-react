@@ -24,23 +24,32 @@ export default function BookingPage() {
         <div className="">share</div>
       </div>
       {owner?.messName && (
-            <div className="flex  mb-6 flex-col justify-start ">
-            <h2 className="text-2xl font-bold">{owner?.messName}</h2>
-            <div className="flex gap-2 flex-col md:flex-row">
-            <p className="text-gray-600 text-base">{owner?.address}</p>
-            <p className="text-gray-600 text-base">{owner.mobileNo}</p>
-            </div>
-            
+        <div className="flex  mb-6 flex-col justify-start ">
+          <h2 className="text-2xl font-bold">{owner?.messName}</h2>
+          <div className="flex gap-4 flex-col md:flex-row">
+            <p className="flex items-center text-gray-600 text-base gap-2">
+              <img src="assets/greyMarker.png" className="h-4" alt="" />
+              {owner?.address}
+            </p>
+            <p className="flex items-center text-gray-600 text-base gap-2">
+              <img src="assets/phoneIcon.png" className="h-5" alt="" />
+              {owner?.mobileNo}
+            </p>
           </div>
-      )}
-
-      {/* <div className="flex  mb-6 flex-col justify-start ">
-        <h2 className="text-2xl font-bold">xxx mess</h2>
-        <div className="flex gap-2 flex-col md:flex-row">
-        <p className="text-gray-600 text-base">xxx xcxc cccc cdcc vcvcvc</p>
-        <p className="text-gray-600 text-base">26437474848</p>
         </div>
-        
+      )}
+      {/* <div className="flex  mb-6 flex-col justify-start ">
+        <h2 className="text-2xl font-bold">xxx</h2>
+        <div className="flex gap-4 flex-col md:flex-row">
+          <p className="flex items-center text-gray-600 text-base gap-2">
+            <img src="assets/greyMarker.png" className="h-4" alt="" />
+            xx xx xxx
+          </p>
+          <p className="flex items-center text-gray-600 text-base gap-2">
+            <img src="assets/phoneIcon.png" className='h-5'alt="" />
+            445677
+          </p>
+        </div>
       </div> */}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
