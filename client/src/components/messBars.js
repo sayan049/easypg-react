@@ -13,6 +13,8 @@ function MessBars({
   const [messData, setMessData] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [selected, setSelected] = useState(messData[0]);
+  console.log("Selected Mess ID:", selected);
 
   const clickNavi = (owner) => {
     navigate("/viewDetails", { state: { owner } });
@@ -57,7 +59,10 @@ function MessBars({
     if (userLocation) {
       console.log("User Location:", userLocation); // Debugging
     }
-  }, [checkFeatures, userLocation]);
+    if (messData.length > 0 && !selected) {
+      setSelected(messData[0]);
+    }
+  }, [checkFeatures, userLocation,messData[0]]);
 
   useEffect(() => {
     const fetchData = async () => {
