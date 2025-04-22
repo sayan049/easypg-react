@@ -30,7 +30,7 @@ function FlashMessage({ message='xxx', type = 'success' ,hit= false ,onClear }) 
 
   // if (!message || !show) return null;
 
-  if(type === 'error'){
+
 
   return (
 
@@ -103,7 +103,7 @@ function FlashMessage({ message='xxx', type = 'success' ,hit= false ,onClear }) 
 
 </>
 
-  );}
+  );
 
 
 
