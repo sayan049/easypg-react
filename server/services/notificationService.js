@@ -1,5 +1,5 @@
-// services/notificationService.js
 const nodemailer = require("nodemailer");
+const mongoose = require("mongoose"); // Add this line
 const Notification = require("../modules/Notification");
 require("dotenv").config();
 
@@ -48,19 +48,21 @@ exports.sendNotification = async (recipientId, recipientType, title, message, ty
 
     // 2. Send email (if recipient email exists)
     let emailSent = false;
-    const recipient = await mongoose.model(recipientType).findById(recipientId).select('email');
-    
-    if (recipient?.email) {
-      const mailOptions = {
-        from: `PG Booking System <${process.env.USER_EMAIL}>`,
-        to: recipient.email,
-        subject: title,
-        html: generateEmailTemplate(title, message, type),
-        text: message // Fallback text version
-      };
+    if (recipientId) { // Only try to find recipient if ID is provided
+      const recipient = await mongoose.model(recipientType).findById(recipientId).select('email');
+      
+      if (recipient?.email) {
+        const mailOptions = {
+          from: `PG Booking System <${process.env.USER_EMAIL}>`,
+          to: recipient.email,
+          subject: title,
+          html: generateEmailTemplate(title, message, type),
+          text: message // Fallback text version
+        };
 
-      await transporter.sendMail(mailOptions);
-      emailSent = true;
+        await transporter.sendMail(mailOptions);
+        emailSent = true;
+      }
     }
 
     return { dbNotification, emailSent };
@@ -104,15 +106,19 @@ function generateEmailTemplate(title, message, type) {
  */
 exports.sendNotificationEmail = async (email, subject, message) => {
   try {
-    await this.sendNotification(
-      null, // No recipient ID
-      'User', // Default type
-      subject,
-      message,
-      NOTIFICATION_TYPES.SYSTEM
-    );
+    const mailOptions = {
+      from: `PG Booking System <${process.env.USER_EMAIL}>`,
+      to: email,
+      subject: subject,
+      html: generateEmailTemplate(subject, message, NOTIFICATION_TYPES.SYSTEM),
+      text: message
+    };
+
+    await transporter.sendMail(mailOptions);
+    return true;
   } catch (error) {
     console.error('Legacy email notification error:', error);
+    return false;
   }
 };
 
