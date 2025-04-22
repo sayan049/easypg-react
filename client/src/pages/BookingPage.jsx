@@ -18,12 +18,18 @@ export default function BookingPage() {
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6 font-sans">
       <div className="flex items-center gap-4 mb-6 border-b pb-4 border-gray-300 justify-between">
         <div className="flex items-center gap-2">
-        <img src="assets/backIcon.png" className="h-6" alt="" />
-        <h1 className="text-xl font-bold">Confirm Your Booking</h1>
+          <img src="assets/backIcon.png" className="h-6" alt="" />
+          <h1 className="text-xl font-bold">Confirm Your Booking</h1>
         </div>
         <div className="">share</div>
-     
       </div>
+      {owner?.messName && (
+        <div className="flex items-center gap-4 mb-6 flex-col md:flex-row">
+          <h2 className="text-lg font-semibold">{owner?.messName}</h2>
+          <p className="text-gray-600">{owner?.address}</p>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Side */}
         <div className="lg:col-span-2 space-y-6">
@@ -146,8 +152,7 @@ export default function BookingPage() {
                 <button
                   onClick={() => setShowAllPhotos(!showAllPhotos)}
                   className="text-blue-600 underline text-sm mt-2 w-full text-left"
-                >
-                </button>
+                ></button>
               )}
 
               {owner?.messPhoto?.length > 4 && (
