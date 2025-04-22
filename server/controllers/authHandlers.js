@@ -35,7 +35,7 @@ exports.signupHandler = async (req, res) => {
     if (!password || password.length < 8) {
       return res.status(400).json({ message: "Password must be at least 8 characters" , type: "error" });
     }
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    if (!User || !(await bcrypt.compare(password, User.password))) {
       return res.status(401).json({ message: "Incorrect email or password" ,type: "error" });
     }
 
