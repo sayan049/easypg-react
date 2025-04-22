@@ -131,13 +131,13 @@ function SignUpForm() {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
-      {
+      {message &&
         <FlashMessage
           message={message.text}
           type={message.type}
           hit={true}
           key={message.text + Date.now()}
-          onClear={() => setmessage({ text: "" })}
+          onClear={() => setmessage(null)}
         />
       }
       {/* Left Section */}
