@@ -20,7 +20,7 @@ function SignUpForm() {
   const [isFormFilled, setIsFormFilled] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Disable button after first click
-  const [message, setmessage] = useState({ Text: "", type: "success" }); // State to manage flash message
+  const [message, setmessage] = useState({ Text: "hi", type: "success" }); // State to manage flash message
 
   const navigate = useNavigate();
 
@@ -29,56 +29,7 @@ function SignUpForm() {
   };
 
   const signupHandler = async () => {
-    //     if (isButtonDisabled) return; // Prevents multiple submissions while waiting
 
-    //     const jsonData = { firstName, lastName, email, address, password, pin };
-    //     try {
-    //       setIsSubmitting(true); // Disable button during submission
-    //       setIsButtonDisabled(true); // Disable button immediately
-
-    //       const response = await axios.post(signupUrl, jsonData, {
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //         },
-    //       });
-
-    //       if (response.status === 201) {
-    //         const message = "Please verify your email to log in";
-    //         localStorage.setItem("loginMessage", message);
-    //         navigate("/LoginUser", { state: { message } });
-    //       } else {
-    //         setmessage({text:"signup failed",type:"error"}); // Set error message if response is not 201
-    //  console.error("Signup failed:", response.data);
-    //       }
-    //     }  catch (error) {
-    //       if (error.response) {
-    //         const res = error.response;
-
-    //         // Handle common backend validation errors
-    //         if (res.status === 400) {
-    //           if (res.data.message) {
-    //             setmessage({text:res.data.message,type:'error'}); // e.g. "Invalid email"
-    //           } else if (res.data.errors) {
-    //             // If errors are sent as a list
-    //             setmessage({text: res.data.errors.join(', '), type:'error'}); // e.g. "Email is required, Password is too short"
-    //           } else {
-    //             setmessage({text:"Please check your input.",type:'error'}); // Fallback message
-    //           }
-    //         } else if (res.status === 409) {
-    //           // Conflict - e.g. email already exists
-    //           setmessage({text:"Email already exists.",type:'error'});
-    //         } else if (res.status === 401) {
-    //           setmessage({text:"Incorrect password.",type:'error'});
-    //         } else {
-    //           setmessage({text:"Signup failed. Try again.",type:'error'}); // General error message
-    //         }
-
-    //       } else if (error.request) {
-    //         setmessage({text:"Server not responding. Check your internet.",type:'error'}); // Network error
-    //       } else {
-    //         setmessage({text: "Error: " + error.message,type:'error',type:"error"}); // Other errors
-    //       }
-    //     }
     if (isButtonDisabled) return;
 
     const jsonData = { firstName, lastName, email, address, password, pin };
