@@ -23,7 +23,7 @@ function FlashMessage({ message='xxx', type = 'success' ,hit= false }) {
       
       return () => clearTimeout(timer);
     }
-  }, [message,]);
+  }, [message,hit]);
 
   console.log('FlashMessage', message, type , type === 'error', show, "hit",hit);
 
