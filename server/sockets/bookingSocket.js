@@ -1,79 +1,176 @@
-// sockets/bookingSocket.js
-const { Server } = require("socket.io");
+const mongoose = require('mongoose');
+const geohash = require('ngeohash');
 
-class SocketManager {
-  constructor() {
-    this.io = null;
-    this.ownerRooms = new Map(); // ownerId -> socketId
-    this.studentRooms = new Map(); // studentId -> socketId
-  }
 
-  init(server) {
-    this.io = new Server(server, {
-      cors: {
-        origin: process.env.CLIENT_URL || "http://localhost:3000",
-        methods: ["GET", "POST"]
+const pgOwnerSchema = new mongoose.Schema({
+    firstName: {
+        type: String,
+        required: true,
+    },
+    lastName: {
+        type: String,
+        required: true,
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+       // match: [/.+\@.+\..+/, 'Please fill a valid email address'],
+    },
+    address: {
+        type: String,
+        required: function() {
+            return !this.googleId;
+        }
+        
+    },
+    password: {
+        type: String,
+        required: function() {
+            return !this.googleId;
+        }
+    },
+    mobileNo: {
+        type: String,
+        required: function() {
+            return !this.googleId;
+        }
+    },
+    pincode: {
+        type: String,
+        required: function() {
+            return !this.googleId;
+        }
+    },
+    messName: {
+        type: String,
+        required: function() {
+            return !this.googleId;
+        }
+    },
+    aboutMess: {
+        type: String,
+        required: function() {
+            return !this.googleId;
+        }
+    },
+   
+    location: {
+      type: {
+          type: String,
+          enum: ['Point'], 
+          required: function() { return !this.googleId; }
+      },
+      coordinates: {
+          type: [Number], 
+          required: function() { return !this.googleId; }
       }
-    });
+  },
 
-    this.io.on("connection", (socket) => {
-      console.log("New client connected:", socket.id);
+  geoHash: { type: String, index: true },
+    
+    profilePhoto: {
+        type: String,
+        required: function() {
+            return !this.googleId;
+        }
+    },
+    messPhoto: [{
+        type: String,
+        required: function() {
+            return !this.googleId;
+        }
+    }],
+    facility: {
+        type: [String],
+        required: function() {
+            return !this.googleId;
+        }
+    },
+    gender: {
+        type: String,
+        enum: ['Girls Pg', 'Boys Pg', 'Coed Pg'], // "Coed" for mixed-gender mess
+        required: function() {
+            return !this.googleId;
+        }
+    },
+    roomInfo: [
+        {
+          room: {
+            type: String, // Changed from Number to String
+            required: function() {
+                return !this.googleId;
+            }
+          },
+          bedContains: {
+            type: String,
+            enum: ['one', 'two', 'three', 'four', 'five'], // Maximum 5 beds in a room
+            required: function() {
+                return !this.googleId;
+            }
+          },
+          pricePerHead: {
+            type: Number,
+            required: function() {
+                return !this.googleId;
+            }
+          },
+          roomAvailable: {
+            type: Boolean,
+            default: true,
+            required: function() {
+                return !this.googleId;
+            }
+          },
+        },
+      ],
 
-      // Owner joins their room
-      socket.on("owner-join", (ownerId) => {
-        this.ownerRooms.set(ownerId, socket.id);
-        console.log(`Owner ${ownerId} joined with socket ID: ${socket.id}`);
-      });
+   is_verified_Owner:{
+        type: Boolean,
+        default: false
+   } ,
+   googleId: {
+    type: String,
+    unique: true,
+    sparse: true, // Allow nulls and duplicates when not provided
+  },
+  image: {
+    type: String,
+  },
+  created_at: {
+    type: Date,
+    default:Date.now
+  },
 
-      // Student joins their room
-      socket.on("student-join", (studentId) => {
-        this.studentRooms.set(studentId, socket.id);
-        console.log(`Student ${studentId} joined with socket ID: ${socket.id}`);
-      });
+  refreshTokens: [
+    {
+      token: { type: String, required: true }, // Refresh token
+      device: { type: String, required: true }, // Device info
+      createdAt: { type: Date, default: Date.now }, // Creation timestamp
+    },
+  ],
 
-      socket.on("disconnect", () => {
-        console.log("Client disconnected:", socket.id);
-        this._cleanUpDisconnectedSocket(socket.id);
-      });
-    });
-
-    return this.io;
+ 
+});
+pgOwnerSchema.pre('save', function(next) {
+  if (this.location && this.location.coordinates.length === 2) {
+      this.geoHash = geohash.encode(this.location.coordinates[1], this.location.coordinates[0], 5);
   }
+  next();
+});
 
-  _cleanUpDisconnectedSocket(socketId) {
-    for (const [ownerId, sid] of this.ownerRooms.entries()) {
-      if (sid === socketId) {
-        this.ownerRooms.delete(ownerId);
-        console.log(`Owner ${ownerId} disconnected`);
-      }
-    }
-    for (const [studentId, sid] of this.studentRooms.entries()) {
-      if (sid === socketId) {
-        this.studentRooms.delete(studentId);
-        console.log(`Student ${studentId} disconnected`);
-      }
-    }
-  }
+const PgOwner = mongoose.model('Pgowner', pgOwnerSchema);
 
-  notifyOwner(ownerId, event, data) {
-    const socketId = this.ownerRooms.get(ownerId);
-    if (socketId) {
-      this.io.to(socketId).emit(event, data);
-      console.log(`Notified owner ${ownerId} with event "${event}"`);
-    } else {
-      console.warn(`Owner ${ownerId} not connected for event "${event}"`);
-    }
-  }
+module.exports = PgOwner;
 
-  notifyStudent(studentId, event, data) {
-    const socketId = this.studentRooms.get(studentId);
-    if (socketId) {
-      this.io.to(socketId).emit(event, data);
-      console.log(`Notified student ${studentId} with event "${event}"`);
-    } else {
-      console.warn(`Student ${studentId} not connected for event "${event}"`);
-    }
-  }
-}
-
-module.exports = new SocketManager();
+// firstName: '',
+// lastName: '',
+// email: '',
+// address: '',
+// password: '',
+// pincode: '',
+// mobileNo: '',
+// messName: '',
+// aboutMess: '',
+// location: '',
+// profilePhoto:''
