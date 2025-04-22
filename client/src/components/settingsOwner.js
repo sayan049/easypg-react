@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import UserProfile from "./UserProfile";
 import { FaMapMarkerAlt } from "react-icons/fa";
-import { updateDetailsUrl } from "../constant/urls";
+import { updateDetailsUrl,updatePasswordDashboardOwner } from "../constant/urls";
 const input =
   "border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300 bg-text-bg bg-clip-text text-transparent";
 
@@ -80,7 +80,7 @@ const SettingsOwner = ({ userDetails }) => {
 
     try {
       setIsUpdatingPassword(true);
-      const response = await fetch(updatePasswordUrlDashboardOwner, {
+      const response = await fetch(updatePasswordDashboardOwner, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
