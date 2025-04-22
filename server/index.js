@@ -11,7 +11,7 @@ const mailRoute = require("./routes/mailVerifierRoute");
 const mailVerifyOwner = require("./routes/mailVerifyOwner");
 const connectDB = require("./config/mongoDB");
 const http = require('http'); // Import http to use with socket.io
-const { initSocket } = require('./sockets/bookingSocket'); // Import socket.io handler
+const socketManager = require('./sockets/bookingSocket');
 const app = express();
 const server = http.createServer(app); // Create an HTTP server using express app
 const ORIGIN = "https://easypg-react-client.onrender.com";
@@ -35,7 +35,8 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 // Initialize socket.io with the HTTP server
-const io = initSocket(server); // Pass the server to initSocket
+socketManager.init(server);
+app.set('io', socketManager.io);
 
 // app.use(sessionConfig);
 
