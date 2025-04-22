@@ -59,7 +59,10 @@ function MessBars({
     if (userLocation) {
       console.log("User Location:", userLocation); // Debugging
     }
-  }, [checkFeatures, userLocation]);
+    if (messData.length > 0 && !selected) {
+      setSelected(messData[0]);
+    }
+  }, [checkFeatures, userLocation,messData[0]]);
 
   useEffect(() => {
     const fetchData = async () => {
