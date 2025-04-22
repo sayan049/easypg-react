@@ -137,7 +137,7 @@ function SignUpForm() {
           type={message.type}
           hit={true}
           key={message.text + Date.now()}
-          onClear={() => setmessage(null)}
+          onClear={() => setmessage({ text: "" })}
         />
       }
       {/* Left Section */}
