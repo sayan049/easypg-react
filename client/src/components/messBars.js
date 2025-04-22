@@ -13,7 +13,7 @@ function MessBars({
   const [messData, setMessData] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const [selected, setSelected] = useState(messData[0]?._id);
+  const [selected, setSelected] = useState(messData[0]);
   console.log("Selected Mess ID:", selected);
 
   const clickNavi = (owner) => {
