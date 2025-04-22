@@ -19,7 +19,7 @@ export default function BookingPage() {
     <div className="p-4 md:p-8 max-w-[100rem] mx-auto space-y-6 font-sans">
       <div className="flex items-center gap-4 mb-6 border-b pb-4 border-gray-300 justify-between">
         <div className="flex items-center gap-2">
-          <img src="assets/backIcon.png" className="h-6" alt="" onClick={()=>(navigate(-1))} />
+          <img src="assets/backIcon.png" className="h-6 cursor-pointer" alt="" onClick={()=>(navigate(-1))} />
           <h1 className="text-xl font-bold">Confirm Your Booking</h1>
         </div>
         <div className="">share</div>
@@ -294,6 +294,12 @@ export default function BookingPage() {
               </button>
             </div>
           </div> */}
+           <button
+                className="w-full mt-4 py-2 px-4 rounded-md text-white"
+                style={{ backgroundColor: primaryColor }}
+              >
+                Book Request
+              </button>
         </div>
       </div>
     </div>
