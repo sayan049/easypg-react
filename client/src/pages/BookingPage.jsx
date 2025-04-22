@@ -34,14 +34,14 @@ export default function BookingPage() {
           </div>
       )}
 
-      <div className="flex  mb-6 flex-col justify-start ">
+      {/* <div className="flex  mb-6 flex-col justify-start ">
         <h2 className="text-2xl font-bold">xxx mess</h2>
         <div className="flex gap-2 flex-col md:flex-row">
         <p className="text-gray-600 text-base">xxx xcxc cccc cdcc vcvcvc</p>
         <p className="text-gray-600 text-base">26437474848</p>
         </div>
         
-      </div>
+      </div> */}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Side */}
