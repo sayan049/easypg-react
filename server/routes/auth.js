@@ -14,6 +14,11 @@ const resetPasswordOwner = require("../controllers/resetPasswordOwner")
 const resetPasswordDashboard=require("../controllers/resetPasswordDashboard")
 const  updatePassword  =require("../controllers/updatePasswordDashboardOwner");
 const jwt = require('jsonwebtoken');
+const {
+  createBookingRequest,
+  handleBookingApproval,
+  cancelBooking,
+} = require('../controllers/bookingController');
 
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -204,6 +209,17 @@ router.post("/updatePasswordDashboardOwner",  async (req, res) => {
   }
 });
 
+
+//booking part----------------------------------------------------------------------------------->
+
+// User initiates booking request
+router.post('/book', createBookingRequest);
+
+// Owner approves or rejects booking request
+router.put('/booking/:id', handleBookingApproval);
+
+// User cancels the booking
+router.delete('/booking/:id', cancelBooking);
 
 
 module.exports = router;
