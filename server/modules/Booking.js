@@ -2,52 +2,45 @@ const mongoose = require("mongoose");
 
 const bookingSchema = new mongoose.Schema(
   {
-    studentId: {
+    student: {  // Changed from studentId to match frontend
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    ownerId: {
+    pgOwner: {  // Changed from ownerId to match frontend
       type: mongoose.Schema.Types.ObjectId,
       ref: "PgOwner",
       required: true,
     },
-    roomSnapshot: {
-      room: { type: String, required: true },
-      bedContains: {
-        type: String,
-        enum: ["one", "two", "three", "four", "five"],
-        required: true,
-      },
-      pricePerHead: { type: Number, required: true },
-    },
-    checkInDate: {
-      type: Date,
+    room: { type: String, required: true },
+    bedsBooked: { type: Number, required: true, min: 1, max: 5 },
+    originalBedCount: {
+      type: String,
+      enum: ["one", "two", "three", "four", "five"],
       required: true,
     },
-    durationInMonths: {
-      type: Number,
-      required: true,
-      min: 1,
-      max: 12,
+    pricePerHead: { type: Number, required: true },  // Changed from pricePerMonth to match frontend
+    period: {
+      startDate: { type: Date, required: true },
+      durationMonths: { type: Number, required: true, min: 1, max: 24 },
+      // Removed endDate as it can be calculated when needed
     },
     status: {
       type: String,
-      enum: ["pending", "accepted", "rejected", "cancelled"],
+      enum: ["pending", "confirmed", "cancelled", "rejected"],
       default: "pending",
     },
-    requestedAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
+    payment: {
+      totalAmount: { type: Number, required: true },
+      deposit: { type: Number, required: true },  // Made required explicitly
+      status: {
+        type: String,
+        enum: ["pending", "partial", "paid", "refunded"],
+        default: "pending",
+      },
+    },
   },
   { timestamps: true }
 );
 
-// Indexes for performance
-bookingSchema.index({ status: 1 });
-bookingSchema.index({ ownerId: 1 });
-bookingSchema.index({ studentId: 1 });
-bookingSchema.index({ "roomSnapshot.room": 1 });
-bookingSchema.index({ checkInDate: 1 });
-
-const Booking = mongoose.model("Booking", bookingSchema);
-module.exports = Booking;
+module.exports = mongoose.models.Booking || mongoose.model("Booking", bookingSchema);
