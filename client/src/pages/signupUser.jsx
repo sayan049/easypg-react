@@ -22,6 +22,7 @@ function SignUpForm() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Disable button after first click
   const [message, setmessage] = useState({ Text: "hi", type: "success" }); // State to manage flash message
   const [emailError, setEmailError] = useState("");
+  const dns = require('dns');
 
   const navigate = useNavigate();
 
@@ -73,29 +74,28 @@ function SignUpForm() {
     }
   };
 
+  const validateEmailDomain = (domain) => {
+    dns.resolveMx(domain, (err, addresses) => {
+      if (err || addresses.length === 0) {
+        return false; // Invalid domain
+      } else {
+        return true; // Valid domain
+      }
+    });
+  };
+
   useEffect(() => {
 
     if (email) {
       const emailValid = /\S+@\S+\.\S+/.test(email);
-      if (!emailValid) {
+      if (!validateEmailDomain(email.split("@")[1])) {
         setEmailError("Invalid email format.");
       } else {
         setEmailError("");
-        // Check if the email already exists (API call)
-        axios
-          .get(`${signupUrl}?email=${email}`)
-          .then((response) => {
-            if (response.data.exists) {
-              setEmailError("Email already exists.");
-            } else {
-              setEmailError("");
-            }
-          })
-          .catch(() => setEmailError("Error checking email availability."));
-      }
-    } else {
-      setEmailError("");
-    }
+
+      }}
+
+   
 
     setIsFormFilled(
       firstName && lastName && email && address && password && pin
