@@ -189,10 +189,10 @@ exports.createBookingRequest = async (req, res) => {
 exports.getOwnerBookings = async (req, res) => {
   try {
     const { status, page = 1, limit = 10 } = req.query;
-    const ownerId = req.user._id; // Extracted from JWT by auth middleware
+    const ownerId = req.user._id; // From JWT
 
     // 1. Validate inputs
-    const validStatuses = ['pending', 'confirmed', 'rejected'];
+    const validStatuses = ['pending', 'confirmed', 'cancelled', 'rejected'];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({
         success: false,
@@ -200,33 +200,44 @@ exports.getOwnerBookings = async (req, res) => {
       });
     }
 
-    // 2. Calculate pagination safely
+    // 2. Calculate pagination
     const safePage = Math.max(1, parseInt(page));
-    const safeLimit = Math.min(50, parseInt(limit)); // Max 50 per page
+    const safeLimit = Math.min(50, parseInt(limit));
     const skip = (safePage - 1) * safeLimit;
 
-    // 3. Run queries with owner filtering
+    // 3. Run queries (modified for your schema)
     const [bookings, total] = await Promise.all([
       Booking.find({ 
         status, 
-        owner: ownerId // Critical security filter
+        pgOwner: ownerId // Using pgOwner field from your schema
       })
-        .populate('student', 'firstName lastName avatar email')
-        .populate('room', 'name bedCount') // Include room details
+        .populate('student', 'firstName lastName email ') // Student info
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(safeLimit),
       
       Booking.countDocuments({ 
         status, 
-        owner: ownerId // Consistent count with same filter
+        pgOwner: ownerId 
       })
     ]);
 
-    // 4. Send response
+    // 4. Format response with calculated endDate
+    const bookingsWithEndDate = bookings.map(booking => ({
+      ...booking.toObject(),
+      period: {
+        ...booking.period,
+        endDate: new Date(
+          new Date(booking.period.startDate).setMonth(
+            new Date(booking.period.startDate).getMonth() + booking.period.durationMonths
+          )
+        )
+      }
+    }));
+
     res.json({
       success: true,
-      bookings,
+      bookings: bookingsWithEndDate,
       pagination: {
         total,
         page: safePage,
@@ -239,8 +250,7 @@ exports.getOwnerBookings = async (req, res) => {
     console.error('Failed to fetch bookings:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error while fetching bookings',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      message: 'Server error while fetching bookings'
     });
   }
 };
