@@ -191,7 +191,7 @@ exports.getOwnerBookings = async (req, res) => {
     console.log("Authenticated User:", req.user); // Debug JWT payload
     
     const { status = 'pending', page = 1, limit = 10 } = req.query;
-    const ownerId = req.user._id;
+    const ownerId = req.user.id;
 
     // Debug: Check raw bookings count
     const rawCount = await Booking.countDocuments({ pgOwner: ownerId });
