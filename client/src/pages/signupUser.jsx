@@ -102,7 +102,7 @@ function SignUpForm() {
 
       }}
 
-      if(!validateEmail(email)){
+      if(!validateEmail()){
         setEmailError("Email is not valid.");
 
       }
@@ -112,7 +112,7 @@ function SignUpForm() {
     setIsFormFilled(
       firstName && lastName && email && address && password && pin
     );
-  }, [firstName, lastName, email, address, password, pin]);
+  }, [firstName, lastName, email, address, password, pin ,validateEmail]);
 
   const isFormValid = isFormFilled && isChecked;
 
