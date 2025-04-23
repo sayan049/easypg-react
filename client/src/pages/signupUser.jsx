@@ -22,7 +22,7 @@ function SignUpForm() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Disable button after first click
   const [message, setmessage] = useState({ Text: "hi", type: "success" }); // State to manage flash message
   const [emailError, setEmailError] = useState("");
-  const dns = require('dns');
+
 
   const navigate = useNavigate();
 
@@ -74,44 +74,21 @@ function SignUpForm() {
     }
   };
 
-  const validateEmailDomain = async (domain) => {
-    return new Promise((resolve, reject) => {
-      dns.resolveMx(domain, (err, addresses) => {
-        if (err || addresses.length === 0) {
-          reject("Invalid domain");
-        } else {
-          resolve("Valid domain");
-        }
-      });
-    });
-  };
+
   
 
   useEffect(() => {
 
     if (email) {
       const emailValid = /\S+@\S+\.\S+/.test(email);
-      if (!validateEmailDomain(email.split("@")[1])) {
+      if (!emailValid) {
         setEmailError("Invalid email format.");
         return;
       } else {
         setEmailError("");
 
       }}
-    const validateEmail = async () => {
-      if (email.includes("@")) {
-        const domain = email.split("@")[1];
-        try {
-          await validateEmailDomain(domain);
-          setEmailError(""); // Valid domain
-        } catch {
-          setEmailError("Invalid email domain.");
-        }
-      }
-    };
-  
-    validateEmail();
-
+   
    
 
     setIsFormFilled(
