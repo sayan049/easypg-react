@@ -6,6 +6,7 @@ require("dotenv").config();
 const USER_EMAIL = process.env.USER_EMAIL;
 const USER_PASSWORD = process.env.USER_PASSWORD;
 const JWT_SECRET = process.env.JWT_SECRET;
+const frontendUrl = process.env.CLIENT_URL || 'http://localhost:3000';
 
 const forgotPasswordUser = async (req, res) => {
   const { email } = req.body;
@@ -42,7 +43,7 @@ const forgotPasswordUser = async (req, res) => {
     });
 
     // Construct reset URL for the user
-    const resetUrl = `https://easypg-react-client.onrender.com/LoginOwner?resetToken=${resetToken}`;
+    const resetUrl = `${frontendUrl}LoginOwner?resetToken=${resetToken}`;
 
 
     const mailOptions = {

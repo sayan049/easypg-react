@@ -597,7 +597,7 @@ import {
   CheckCircleIcon,
   XCircleIcon,
 } from "lucide-react";
-import { useSocket } from "../contexts/socketContext";
+import { useSocket } from '../contexts/socketContext';
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
 import { toast } from "sonner";
@@ -1032,7 +1032,6 @@ const BookingStatus = () => {
   };
   const ConnectionStatus = () => {
     const { socket, isConnected } = useSocket();
-  
     const handleReconnect = () => {
       if (socket && !isConnected) {
         socket.connect();

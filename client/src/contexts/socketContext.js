@@ -1,3 +1,8 @@
+import React, { createContext, useEffect, useState,useContext } from 'react';
+import { useAuth } from "../contexts/AuthContext";
+import { io } from 'socket.io-client';
+import { baseurl } from '../constant/urls';
+const SocketContext = createContext();
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -74,4 +79,11 @@ export const SocketProvider = ({ children }) => {
       {children}
     </SocketContext.Provider>
   );
+};
+export const useSocket = () => {
+  const context = useContext(SocketContext);
+  if (!context) {
+    throw new Error('useSocket must be used within a SocketProvider');
+  }
+  return context;
 };
