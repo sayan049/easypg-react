@@ -154,8 +154,8 @@ const mailVerifyOwner = require("./routes/mailVerifyOwner");
 const connectDB = require("./config/mongoDB");
 const http = require('http');
 const SocketManager = require('./sockets/bookingSocket'); // Update with correct path
-const ORIGIN = process.env.CLIENT_URL || "https://easypg-react-client.onrender.com";
-const PORT = process.env.PORT || 8080;
+const ORIGIN =  "https://easypg-react-client.onrender.com";
+const PORT =  8080;
 
 // Enhanced CORS configuration
 const corsOptions = {

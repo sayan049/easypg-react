@@ -566,10 +566,10 @@ exports.createBookingRequest = async (req, res) => {
     await booking.save();
 
     // Update room availability
-    const updatedBeds = availableBeds - bedsBooked;
-    roomInfo.bedContains = numberToBedCount[updatedBeds] || 'one';
-    roomInfo.roomAvailable = updatedBeds > 0;
-    await owner.save();
+    // const updatedBeds = availableBeds - bedsBooked;
+    // roomInfo.bedContains = numberToBedCount[updatedBeds] || 'one';
+    // roomInfo.roomAvailable = updatedBeds > 0;
+    // await owner.save();
 
     // Send notifications
     const notificationPromises = [
