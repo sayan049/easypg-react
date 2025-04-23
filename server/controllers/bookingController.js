@@ -204,7 +204,7 @@ exports.getOwnerBookings = async (req, res) => {
 
     const [bookings, total] = await Promise.all([
       Booking.find({ status: status })
-        .populate('student', 'name avatar email')
+        .populate('student')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit),
