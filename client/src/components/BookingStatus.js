@@ -233,64 +233,64 @@ class BookingStatusErrorBoundary extends React.Component {
 
 const BookingStatus = () => {
   // In your BookingStatus component
-useEffect(() => {
-  if (!socket || !user?._id) return;
+// useEffect(() => {
+//   if (!socket || !user?._id) return;
 
-  const setupSocketListeners = () => {
-    console.log("Setting up socket listeners for owner:", user._id);
+//   const setupSocketListeners = () => {
+//     console.log("Setting up socket listeners for owner:", user._id);
     
-    try {
-      socket.emit("owner-join", user._id);
+//     try {
+//       socket.emit("owner-join", user._id);
 
-      const onNewBooking = (newBooking) => {
-        console.log("New booking received via socket:", newBooking);
-        setBookings(prev => ({
-          ...prev,
-          pending: {
-            ...prev.pending,
-            data: [newBooking, ...prev.pending.data],
-            total: prev.pending.total + 1
-          }
-        }));
-        setStats(prev => ({
-          ...prev,
-          pending: prev.pending + 1,
-          total: prev.total + 1
-        }));
-        toast.info(`New booking request for ${newBooking.room}`);
-      };
+//       const onNewBooking = (newBooking) => {
+//         console.log("New booking received via socket:", newBooking);
+//         setBookings(prev => ({
+//           ...prev,
+//           pending: {
+//             ...prev.pending,
+//             data: [newBooking, ...prev.pending.data],
+//             total: prev.pending.total + 1
+//           }
+//         }));
+//         setStats(prev => ({
+//           ...prev,
+//           pending: prev.pending + 1,
+//           total: prev.total + 1
+//         }));
+//         toast.info(`New booking request for ${newBooking.room}`);
+//       };
 
-      const onBookingUpdated = (updatedBooking) => {
-        console.log("Booking update received:", updatedBooking);
-        // ... existing update logic
-      };
+//       const onBookingUpdated = (updatedBooking) => {
+//         console.log("Booking update received:", updatedBooking);
+//         // ... existing update logic
+//       };
 
-      const onError = (error) => {
-        console.error("Socket error:", error);
-        toast.error("Connection problem. Reconnecting...");
-      };
+//       const onError = (error) => {
+//         console.error("Socket error:", error);
+//         toast.error("Connection problem. Reconnecting...");
+//       };
 
-      socket.on("new-booking", onNewBooking);
-      socket.on("booking-updated", onBookingUpdated);
-      socket.on("error", onError);
+//       socket.on("new-booking", onNewBooking);
+//       socket.on("booking-updated", onBookingUpdated);
+//       socket.on("error", onError);
 
-      return () => {
-        socket.off("new-booking", onNewBooking);
-        socket.off("booking-updated", onBookingUpdated);
-        socket.off("error", onError);
-        socket.emit("owner-leave", user._id);
-      };
-    } catch (error) {
-      console.error("Error setting up socket listeners:", error);
-    }
-  };
+//       return () => {
+//         socket.off("new-booking", onNewBooking);
+//         socket.off("booking-updated", onBookingUpdated);
+//         socket.off("error", onError);
+//         socket.emit("owner-leave", user._id);
+//       };
+//     } catch (error) {
+//       console.error("Error setting up socket listeners:", error);
+//     }
+//   };
 
-  const cleanup = setupSocketListeners();
+//   const cleanup = setupSocketListeners();
 
-  return () => {
-    cleanup?.();
-  };
-}, [socket, user?._id]);
+//   return () => {
+//     cleanup?.();
+//   };
+// }, [socket, user?._id]);
   const [tab, setTab] = useState("pending");
   const [bookings, setBookings] = useState({ 
     pending: { data: [], page: 1, total: 0 },
