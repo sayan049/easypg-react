@@ -3,8 +3,9 @@ const { Server } = require("socket.io");
 class SocketManager {
   constructor() {
     this.io = null;
-    this.ownerSockets = new Map(); // ownerId -> Set of socketIds
-    this.studentSockets = new Map(); // studentId -> Set of socketIds
+    this.ownerSockets = new Map();
+    this.studentSockets = new Map();
+    this.jwt = require('jsonwebtoken'); // Add this at top of file
   }
 
   init(server) {

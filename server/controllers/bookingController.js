@@ -209,7 +209,7 @@ exports.getOwnerBookings = async (req, res) => {
         pgOwner: ownerId, 
         status 
       })
-      .populate('student', 'firstName lastName email avatar')
+      .populate('student', 'firstName lastName email ')
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit)
