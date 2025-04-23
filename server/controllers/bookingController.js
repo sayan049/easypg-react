@@ -189,45 +189,49 @@ exports.createBookingRequest = async (req, res) => {
 exports.getOwnerBookings = async (req, res) => {
   try {
     const { status, page = 1, limit = 10 } = req.query;
-    
-    // Validate status parameter
-    const validStatuses = ['pending', 'confirmed', 'rejected', 'cancelled'];
+
+    // 1. Validate inputs
+    const validStatuses = ['pending', 'confirmed', 'rejected'];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({
         success: false,
-        message: `Invalid status parameter. Valid values are: ${validStatuses.join(', ')}`
+        message: `Invalid status. Use: ${validStatuses.join(', ')}`
       });
     }
 
-    // Calculate pagination
-    const skip = (page - 1) * limit;
+    // 2. Calculate pagination safely
+    const safePage = Math.max(1, parseInt(page));
+    const safeLimit = Math.min(50, parseInt(limit)); // Max 50 per page
+    const skip = (safePage - 1) * safeLimit;
 
+    // 3. Run queries
     const [bookings, total] = await Promise.all([
-      Booking.find({ status: status })
-        .populate('student')
+      Booking.find({ status })
+        .populate('student', 'name avatar email phone') // Specify fields
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(limit),
+        .limit(safeLimit),
       
-      Booking.countDocuments({ status: status })
+      Booking.countDocuments({ status })
     ]);
 
+    // 4. Send response
     res.json({
       success: true,
       bookings,
       pagination: {
         total,
-        page: Number(page),
-        pages: Math.ceil(total / limit),
-        limit: Number(limit)
+        page: safePage,
+        pages: Math.ceil(total / safeLimit),
+        limit: safeLimit
       }
     });
 
   } catch (error) {
-    console.error('Error fetching bookings:', error);
+    console.error('Failed to fetch bookings:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to fetch bookings'
+      message: 'Server error while fetching bookings'
     });
   }
 };

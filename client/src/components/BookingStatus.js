@@ -110,7 +110,13 @@
 
 // export default BookingStatus;
 import React, { useState, useEffect } from "react";
-import { BookIcon, ClockIcon, HourglassIcon, CheckCircleIcon, XCircleIcon } from "lucide-react";
+import {
+  BookIcon,
+  ClockIcon,
+  HourglassIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+} from "lucide-react";
 import { useSocket } from "../contexts/socketContext";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
@@ -121,47 +127,72 @@ const BookingCard = React.memo(({ booking, onConfirm, onReject, loading }) => {
   const statusColors = {
     pending: "bg-yellow-100 text-yellow-800",
     confirmed: "bg-green-100 text-green-800",
-    rejected: "bg-red-100 text-red-800"
+    rejected: "bg-red-100 text-red-800",
   };
 
-  const endDate = booking.period?.endDate || 
-    (booking.period?.startDate && new Date(
-      new Date(booking.period.startDate).setMonth(
-        new Date(booking.period.startDate).getMonth() + 
-        (booking.period?.durationMonths || 0)
-    )));
+  const endDate =
+    booking.period?.endDate ||
+    (booking.period?.startDate &&
+      new Date(
+        new Date(booking.period.startDate).setMonth(
+          new Date(booking.period.startDate).getMonth() +
+            (booking.period?.durationMonths || 0)
+        )
+      ));
 
   return (
     <div className="w-full md:w-[48%] bg-white rounded-xl shadow p-4">
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img 
-              src={booking.student?.avatar || `https://i.pravatar.cc/150?u=${booking.student?._id || 'user'}`} 
-              alt={booking.student?.name || "Student"} 
-              className="w-10 h-10 rounded-full" 
+            <img
+              src={
+                booking.student?.avatar ||
+                `https://i.pravatar.cc/150?u=${booking.student?._id || "user"}`
+              }
+              alt={booking.student?.name || "Student"}
+              className="w-10 h-10 rounded-full"
             />
             <div>
-              <p className="font-semibold">{booking.student?.name || "Unknown User"}</p>
-              <p className="text-xs text-gray-500">#{booking._id?.slice(-6).toUpperCase() || '------'}</p>
+              <p className="font-semibold">
+                {booking.student?.name || "Unknown User"}
+              </p>
+              <p className="text-xs text-gray-500">
+                #{booking._id?.slice(-6).toUpperCase() || "------"}
+              </p>
             </div>
           </div>
-          <span className={`${statusColors[booking.status] || 'bg-gray-100 text-gray-800'} text-xs px-2 py-1 rounded-full`}>
-            {(booking.status || 'unknown').toUpperCase()}
+          <span
+            className={`${
+              statusColors[booking.status] || "bg-gray-100 text-gray-800"
+            } text-xs px-2 py-1 rounded-full`}
+          >
+            {(booking.status || "unknown").toUpperCase()}
           </span>
         </div>
         <div className="text-sm space-y-1">
-          <p><strong>Room:</strong> {booking.room || 'N/A'}</p>
-          <p><strong>Beds:</strong> {booking.bedsBooked || 0} ({booking.originalBedCount || 'unknown'} available)</p>
-          <p><strong>Period:</strong> 
-            {booking.period?.startDate ? new Date(booking.period.startDate).toLocaleDateString() : 'N/A'} - 
-            {endDate ? new Date(endDate).toLocaleDateString() : 'N/A'}
+          <p>
+            <strong>Room:</strong> {booking.room || "N/A"}
           </p>
-          <p><strong>Amount:</strong> ₹{booking.payment?.totalAmount?.toLocaleString() || '0'}</p>
+          <p>
+            <strong>Beds:</strong> {booking.bedsBooked || 0} (
+            {booking.originalBedCount || "unknown"} available)
+          </p>
+          <p>
+            <strong>Period:</strong>
+            {booking.period?.startDate
+              ? new Date(booking.period.startDate).toLocaleDateString()
+              : "N/A"}{" "}
+            -{endDate ? new Date(endDate).toLocaleDateString() : "N/A"}
+          </p>
+          <p>
+            <strong>Amount:</strong> ₹
+            {booking.payment?.totalAmount?.toLocaleString() || "0"}
+          </p>
         </div>
         {booking.status === "pending" && (
           <div className="flex gap-2">
-            <button 
+            <button
               onClick={() => onConfirm(booking._id)}
               disabled={loading}
               className="flex-1 bg-blue-600 text-white py-1 rounded hover:bg-blue-700 disabled:bg-blue-400 flex items-center justify-center gap-1"
@@ -178,7 +209,7 @@ const BookingCard = React.memo(({ booking, onConfirm, onReject, loading }) => {
                 </>
               )}
             </button>
-            <button 
+            <button
               onClick={() => onReject(booking._id)}
               disabled={loading}
               className="flex-1 border border-red-500 text-red-500 py-1 rounded hover:bg-red-50 disabled:opacity-50 flex items-center justify-center gap-1"
@@ -208,18 +239,22 @@ const EmptyState = ({ message, icon: Icon }) => (
 
 class BookingStatusErrorBoundary extends React.Component {
   state = { hasError: false };
-  
+
   static getDerivedStateFromError() {
     return { hasError: true };
   }
-  
+
   componentDidCatch(error, errorInfo) {
     console.error("BookingStatus Error:", error, errorInfo);
   }
-  
+
   render() {
     if (this.state.hasError) {
-      return <div className="p-4 text-red-500">Something went wrong with bookings. Please refresh.</div>;
+      return (
+        <div className="p-4 text-red-500">
+          Something went wrong with bookings. Please refresh.
+        </div>
+      );
     }
     return this.props.children;
   }
@@ -227,21 +262,21 @@ class BookingStatusErrorBoundary extends React.Component {
 
 const BookingStatus = () => {
   const [tab, setTab] = useState("pending");
-  const [bookings, setBookings] = useState({ 
+  const [bookings, setBookings] = useState({
     pending: { data: [], page: 1, total: 0 },
     confirmed: { data: [], page: 1, total: 0 },
-    rejected: { data: [], page: 1, total: 0 }
+    rejected: { data: [], page: 1, total: 0 },
   });
-  const [stats, setStats] = useState({ 
-    total: 0, 
-    active: 0, 
+  const [stats, setStats] = useState({
+    total: 0,
+    active: 0,
     pending: 0,
-    rejected: 0 
+    rejected: 0,
   });
-  const [loading, setLoading] = useState({ 
-    list: true, 
+  const [loading, setLoading] = useState({
+    list: true,
     action: false,
-    tabChange: false
+    tabChange: false,
   });
   const limit = 10;
   const socket = useSocket();
@@ -249,61 +284,69 @@ const BookingStatus = () => {
 
   const fetchBookings = async (status, page = 1) => {
     try {
-      setLoading(prev => ({ ...prev, 
+      setLoading((prev) => ({
+        ...prev,
         list: true,
-        tabChange: status !== tab
+        tabChange: status !== tab,
       }));
-      
+      const requestUrl = `${baseurl}/bookings/owner?status=${status}&page=${page}&limit=${limit}`;
+      console.log("Making request to:", requestUrl);
+
       const response = await axios.get(`${baseurl}/bookings/owner`, {
-        params: { 
-          status, 
-          page, 
-          limit 
-        }
+        params: {
+          status,
+          page,
+          limit,
+        },
       });
 
-      setBookings(prev => ({
+      setBookings((prev) => ({
         ...prev,
         [status]: {
           data: response.data.bookings || [],
           page,
-          total: response.data.pagination?.total || 0
-        }
+          total: response.data.pagination?.total || 0,
+        },
       }));
 
       // Update stats when fetching first page
       if (page === 1) {
-        setStats(prev => ({
+        setStats((prev) => ({
           ...prev,
           [status]: response.data.pagination?.total || 0,
           total: Object.keys(prev.bookings).reduce((sum, key) => {
-            return sum + (key === status ? 
-              response.data.pagination?.total || 0 : 
-              prev.bookings[key].total || 0);
-          }, 0)
+            return (
+              sum +
+              (key === status
+                ? response.data.pagination?.total || 0
+                : prev.bookings[key].total || 0)
+            );
+          }, 0),
         }));
       }
 
       if (status !== tab) {
         setTab(status);
       }
-    } catch (error) {
-      console.error(`Error fetching ${status} bookings:`, error);
+    }catch (error) {
+      console.error(`Full error details:`, error);
+      if (error.response) {
+        console.error('Response data:', error.response.data);
+        console.error('Response status:', error.response.status);
+        console.error('Response headers:', error.response.headers);
+      }
       toast.error(`Failed to load ${status} bookings`);
       // Reset state on error
-      setBookings(prev => ({
+      setBookings((prev) => ({
         ...prev,
         [status]: {
           data: [],
           page: 1,
-          total: 0
-        }
+          total: 0,
+        },
       }));
     } finally {
-      setLoading(prev => ({ ...prev, 
-        list: false,
-        tabChange: false 
-      }));
+      setLoading((prev) => ({ ...prev, list: false, tabChange: false }));
     }
   };
 
@@ -317,18 +360,22 @@ const BookingStatus = () => {
 
   const handleStatusChange = async (bookingId, status, reason = "") => {
     try {
-      setLoading(prev => ({ ...prev, action: true }));
-      
-      await axios.put(`${baseurl}/bookings/${bookingId}/status`, { 
+      setLoading((prev) => ({ ...prev, action: true }));
+
+      await axios.put(`${baseurl}/bookings/${bookingId}/status`, {
         status,
-        ...(reason && { rejectionReason: reason })
+        ...(reason && { rejectionReason: reason }),
       });
 
       // Optimistic update
-      setBookings(prev => {
-        const updatedPending = prev.pending.data.filter(b => b._id !== bookingId);
-        const updatedBooking = prev.pending.data.find(b => b._id === bookingId);
-        
+      setBookings((prev) => {
+        const updatedPending = prev.pending.data.filter(
+          (b) => b._id !== bookingId
+        );
+        const updatedBooking = prev.pending.data.find(
+          (b) => b._id === bookingId
+        );
+
         if (!updatedBooking) return prev;
 
         if (status === "confirmed") {
@@ -337,13 +384,13 @@ const BookingStatus = () => {
             pending: {
               ...prev.pending,
               data: updatedPending,
-              total: prev.pending.total - 1
+              total: prev.pending.total - 1,
             },
             confirmed: {
               ...prev.confirmed,
               data: [{ ...updatedBooking, status }, ...prev.confirmed.data],
-              total: prev.confirmed.total + 1
-            }
+              total: prev.confirmed.total + 1,
+            },
           };
         } else if (status === "rejected") {
           return {
@@ -351,23 +398,26 @@ const BookingStatus = () => {
             pending: {
               ...prev.pending,
               data: updatedPending,
-              total: prev.pending.total - 1
+              total: prev.pending.total - 1,
             },
             rejected: {
               ...prev.rejected,
-              data: [{ ...updatedBooking, status, rejectionReason: reason }, ...prev.rejected.data],
-              total: prev.rejected.total + 1
-            }
+              data: [
+                { ...updatedBooking, status, rejectionReason: reason },
+                ...prev.rejected.data,
+              ],
+              total: prev.rejected.total + 1,
+            },
           };
         }
         return prev;
       });
 
-      setStats(prev => ({
+      setStats((prev) => ({
         ...prev,
         pending: prev.pending - 1,
         ...(status === "confirmed" && { active: prev.active + 1 }),
-        ...(status === "rejected" && { rejected: prev.rejected + 1 })
+        ...(status === "rejected" && { rejected: prev.rejected + 1 }),
       }));
 
       toast.success(`Booking ${status} successfully`);
@@ -377,7 +427,7 @@ const BookingStatus = () => {
       // Re-fetch data to ensure consistency
       fetchBookings(tab, bookings[tab].page);
     } finally {
-      setLoading(prev => ({ ...prev, action: false }));
+      setLoading((prev) => ({ ...prev, action: false }));
     }
   };
 
@@ -395,9 +445,9 @@ const BookingStatus = () => {
   useEffect(() => {
     const fetchInitialData = async () => {
       await Promise.all([
-        fetchBookings('pending'),
-        fetchBookings('confirmed'),
-        fetchBookings('rejected')
+        fetchBookings("pending"),
+        fetchBookings("confirmed"),
+        fetchBookings("rejected"),
       ]);
     };
 
@@ -408,53 +458,55 @@ const BookingStatus = () => {
     if (!socket || !user?._id) return;
 
     const onNewBooking = (newBooking) => {
-      setBookings(prev => ({
+      setBookings((prev) => ({
         ...prev,
         pending: {
           ...prev.pending,
           data: [newBooking, ...prev.pending.data],
-          total: prev.pending.total + 1
-        }
+          total: prev.pending.total + 1,
+        },
       }));
-      setStats(prev => ({
+      setStats((prev) => ({
         ...prev,
         pending: prev.pending + 1,
-        total: prev.total + 1
+        total: prev.total + 1,
       }));
       toast.info(`New booking request for ${newBooking.room}`);
     };
 
     const onBookingUpdated = (updatedBooking) => {
-      setBookings(prev => {
-        const updatedPending = prev.pending.data.filter(b => b._id !== updatedBooking._id);
-        
+      setBookings((prev) => {
+        const updatedPending = prev.pending.data.filter(
+          (b) => b._id !== updatedBooking._id
+        );
+
         if (updatedBooking.status === "confirmed") {
           return {
             pending: {
               ...prev.pending,
               data: updatedPending,
-              total: prev.pending.total - 1
+              total: prev.pending.total - 1,
             },
             confirmed: {
               ...prev.confirmed,
               data: [updatedBooking, ...prev.confirmed.data],
-              total: prev.confirmed.total + 1
+              total: prev.confirmed.total + 1,
             },
-            rejected: prev.rejected
+            rejected: prev.rejected,
           };
         } else if (updatedBooking.status === "rejected") {
           return {
             pending: {
               ...prev.pending,
               data: updatedPending,
-              total: prev.pending.total - 1
+              total: prev.pending.total - 1,
             },
             confirmed: prev.confirmed,
             rejected: {
               ...prev.rejected,
               data: [updatedBooking, ...prev.rejected.data],
-              total: prev.rejected.total + 1
-            }
+              total: prev.rejected.total + 1,
+            },
           };
         }
         return prev;
@@ -495,7 +547,9 @@ const BookingStatus = () => {
         >
           Previous
         </button>
-        <span>Page {current.page} of {totalPages}</span>
+        <span>
+          Page {current.page} of {totalPages}
+        </span>
         <button
           onClick={() => fetchBookings(status, current.page + 1)}
           disabled={current.page >= totalPages || loading.list}
@@ -509,10 +563,12 @@ const BookingStatus = () => {
 
   const ConnectionStatus = () => (
     <div className="fixed bottom-4 right-4 flex items-center gap-2 bg-white p-2 rounded shadow text-xs">
-      <div className={`w-3 h-3 rounded-full ${
-        socket?.connected ? 'bg-green-500' : 'bg-red-500'
-      }`} />
-      {socket?.connected ? `Connected (${socket.id})` : 'Disconnected'}
+      <div
+        className={`w-3 h-3 rounded-full ${
+          socket?.connected ? "bg-green-500" : "bg-red-500"
+        }`}
+      />
+      {socket?.connected ? `Connected (${socket.id})` : "Disconnected"}
     </div>
   );
 
@@ -520,7 +576,7 @@ const BookingStatus = () => {
     <BookingStatusErrorBoundary>
       <div className="p-4 space-y-6">
         <ConnectionStatus />
-        
+
         <div className="space-y-4">
           <h1 className="text-xl font-bold">Booking Status</h1>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -558,19 +614,31 @@ const BookingStatus = () => {
         <div className="space-y-4">
           <div className="flex gap-4 border-b">
             <button
-              className={`pb-2 border-b-2 transition font-medium ${tab === "pending" ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500"}`}
+              className={`pb-2 border-b-2 transition font-medium ${
+                tab === "pending"
+                  ? "border-blue-600 text-blue-600"
+                  : "border-transparent text-gray-500"
+              }`}
               onClick={() => handleTabChange("pending")}
             >
               Pending Requests ({bookings.pending.total})
             </button>
             <button
-              className={`pb-2 border-b-2 transition font-medium ${tab === "confirmed" ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500"}`}
+              className={`pb-2 border-b-2 transition font-medium ${
+                tab === "confirmed"
+                  ? "border-blue-600 text-blue-600"
+                  : "border-transparent text-gray-500"
+              }`}
               onClick={() => handleTabChange("confirmed")}
             >
               Confirmed Bookings ({bookings.confirmed.total})
             </button>
             <button
-              className={`pb-2 border-b-2 transition font-medium ${tab === "rejected" ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500"}`}
+              className={`pb-2 border-b-2 transition font-medium ${
+                tab === "rejected"
+                  ? "border-blue-600 text-blue-600"
+                  : "border-transparent text-gray-500"
+              }`}
               onClick={() => handleTabChange("rejected")}
             >
               Rejected Bookings ({bookings.rejected.total})
@@ -585,7 +653,7 @@ const BookingStatus = () => {
             <>
               <div className="flex flex-col md:flex-row md:flex-wrap gap-4">
                 {bookings[tab].data.length > 0 ? (
-                  bookings[tab].data.map(booking => (
+                  bookings[tab].data.map((booking) => (
                     <BookingCard
                       key={booking._id}
                       booking={booking}
@@ -595,13 +663,15 @@ const BookingStatus = () => {
                     />
                   ))
                 ) : (
-                  <EmptyState 
-                    message={`No ${tab} bookings`} 
+                  <EmptyState
+                    message={`No ${tab} bookings`}
                     icon={
-                      tab === "pending" ? HourglassIcon : 
-                      tab === "confirmed" ? CheckCircleIcon : 
-                      XCircleIcon
-                    } 
+                      tab === "pending"
+                        ? HourglassIcon
+                        : tab === "confirmed"
+                        ? CheckCircleIcon
+                        : XCircleIcon
+                    }
                   />
                 )}
               </div>
