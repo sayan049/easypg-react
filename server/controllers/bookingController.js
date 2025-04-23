@@ -189,29 +189,53 @@ exports.getOwnerBookings = async (req, res) => {
   try {
     const { status } = req.query;
     
-    if (!['pending', 'confirmed', 'rejected', 'cancelled'].includes(status)) {
+    // Validate status parameter
+    const validStatuses = ['pending', 'confirmed', 'rejected', 'cancelled'];
+    if (!validStatuses.includes(status)) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid status parameter'
+        message: `Invalid status parameter. Valid values are: ${validStatuses.join(', ')}`
       });
     }
 
     // Validate owner ID
-    if (!Types.ObjectId.isValid(req.user._id)) {
+    if (!mongoose.Types.ObjectId.isValid(req.user._id)) {
       return res.status(400).json({
         success: false,
         message: 'Invalid owner ID'
       });
     }
 
-    const bookings = await Booking.find({
-      pgOwner: req.user._id,
-      status: status
-    }).populate('student', 'name avatar email');
+    // Add pagination
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const [bookings, total] = await Promise.all([
+      Booking.find({
+        pgOwner: req.user._id,
+        status: status
+      })
+      .populate('student', 'name avatar email')
+      .sort({ createdAt: -1 }) // Newest first
+      .skip(skip)
+      .limit(limit),
+      
+      Booking.countDocuments({
+        pgOwner: req.user._id,
+        status: status
+      })
+    ]);
 
     res.json({
       success: true,
-      bookings: bookings
+      bookings,
+      pagination: {
+        total,
+        page,
+        pages: Math.ceil(total / limit),
+        limit
+      }
     });
 
   } catch (error) {

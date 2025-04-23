@@ -1,54 +1,79 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { io } from "socket.io-client";
-import { useAuth } from "./AuthContext";
-import { toast } from "sonner";
+// src/contexts/socketContext.js
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { io } from 'socket.io-client';
+import { toast } from 'sonner';
+import { useAuth } from './AuthContext';
+import { baseurl } from '../constant/urls';
 
 const SocketContext = createContext();
 
-export const useSocket = () => useContext(SocketContext);
-
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
   const { user } = useAuth();
 
   useEffect(() => {
-    const socketIo = io(process.env.REACT_APP_BACKEND_URL || "http://localhost:5000", {
-      withCredentials: true,
-      autoConnect: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 3000,
-    });
+    if (!user?._id) return;
 
-    // Connection events
-    socketIo.on("connect", () => {
-      console.log("Socket connected:", socketIo.id);
-      if (user?._id) {
-        socketIo.emit("owner-join", user._id);
+    const socketInstance = io(baseurl, {
+      transports: ['websocket', 'polling'], // Try WebSocket first, fall back to polling
+      upgrade: true,
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      timeout: 20000,
+      autoConnect: true,
+      query: {
+        userId: user._id,
+        userType: 'owner'
       }
     });
 
-    socketIo.on("disconnect", () => {
-      console.log("Socket disconnected");
-    });
+    const onConnect = () => {
+      setIsConnected(true);
+      console.log('Socket connected:', socketInstance.id);
+    };
 
-    socketIo.on("connect_error", (err) => {
-      console.error("Socket connection error:", err);
-      toast.error("Realtime connection failed - updates may be delayed");
-    });
+    const onDisconnect = (reason) => {
+      setIsConnected(false);
+      console.log('Socket disconnected:', reason);
+      if (reason === 'io server disconnect') {
+        // The server forcibly disconnected the socket
+        socketInstance.connect();
+      }
+    };
 
-    setSocket(socketIo);
+    const onConnectError = (error) => {
+      console.error('Socket connection error:', error);
+      toast.error('Connection problem. Trying to reconnect...');
+    };
+
+    socketInstance.on('connect', onConnect);
+    socketInstance.on('disconnect', onDisconnect);
+    socketInstance.on('connect_error', onConnectError);
+
+    setSocket(socketInstance);
 
     return () => {
-      if (user?._id) {
-        socketIo.emit("owner-leave", user._id);
-      }
-      socketIo.disconnect();
+      socketInstance.off('connect', onConnect);
+      socketInstance.off('disconnect', onDisconnect);
+      socketInstance.off('connect_error', onConnectError);
+      socketInstance.disconnect();
     };
-  }, [user?._id]); // Reconnect when user changes
+  }, [user?._id]);
 
   return (
-    <SocketContext.Provider value={socket}>
+    <SocketContext.Provider value={{ socket, isConnected }}>
       {children}
     </SocketContext.Provider>
   );
+};
+
+export const useSocket = () => {
+  const context = useContext(SocketContext);
+  if (!context) {
+    throw new Error('useSocket must be used within a SocketProvider');
+  }
+  return context;
 };

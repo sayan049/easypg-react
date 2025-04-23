@@ -117,14 +117,14 @@ import axios from "axios";
 import { toast } from "sonner";
 import { baseurl } from "../constant/urls";
 
-const BookingCard = ({ booking, onConfirm, onReject, loading }) => {
+// Memoized BookingCard to prevent unnecessary re-renders
+const BookingCard = React.memo(({ booking, onConfirm, onReject, loading }) => {
   const statusColors = {
     pending: "bg-yellow-100 text-yellow-800",
     confirmed: "bg-green-100 text-green-800",
     rejected: "bg-red-100 text-red-800"
   };
 
-  // Calculate end date if not provided
   const endDate = booking.period?.endDate || 
     (booking.period?.startDate && new Date(
       new Date(booking.period.startDate).setMonth(
@@ -198,7 +198,7 @@ const BookingCard = ({ booking, onConfirm, onReject, loading }) => {
       </div>
     </div>
   );
-};
+});
 
 const EmptyState = ({ message, icon: Icon }) => (
   <div className="flex flex-col items-center justify-center py-12 text-gray-500">
@@ -207,12 +207,95 @@ const EmptyState = ({ message, icon: Icon }) => (
   </div>
 );
 
+// Error boundary component
+class BookingStatusErrorBoundary extends React.Component {
+  state = { hasError: false };
+  
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  
+  componentDidCatch(error, errorInfo) {
+    console.error("BookingStatus Error:", error, errorInfo);
+  }
+  
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-4 text-red-500">
+          Something went wrong with the bookings. Please refresh the page.
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 const BookingStatus = () => {
+  // In your BookingStatus component
+useEffect(() => {
+  if (!socket || !user?._id) return;
+
+  const setupSocketListeners = () => {
+    console.log("Setting up socket listeners for owner:", user._id);
+    
+    try {
+      socket.emit("owner-join", user._id);
+
+      const onNewBooking = (newBooking) => {
+        console.log("New booking received via socket:", newBooking);
+        setBookings(prev => ({
+          ...prev,
+          pending: {
+            ...prev.pending,
+            data: [newBooking, ...prev.pending.data],
+            total: prev.pending.total + 1
+          }
+        }));
+        setStats(prev => ({
+          ...prev,
+          pending: prev.pending + 1,
+          total: prev.total + 1
+        }));
+        toast.info(`New booking request for ${newBooking.room}`);
+      };
+
+      const onBookingUpdated = (updatedBooking) => {
+        console.log("Booking update received:", updatedBooking);
+        // ... existing update logic
+      };
+
+      const onError = (error) => {
+        console.error("Socket error:", error);
+        toast.error("Connection problem. Reconnecting...");
+      };
+
+      socket.on("new-booking", onNewBooking);
+      socket.on("booking-updated", onBookingUpdated);
+      socket.on("error", onError);
+
+      return () => {
+        socket.off("new-booking", onNewBooking);
+        socket.off("booking-updated", onBookingUpdated);
+        socket.off("error", onError);
+        socket.emit("owner-leave", user._id);
+      };
+    } catch (error) {
+      console.error("Error setting up socket listeners:", error);
+    }
+  };
+
+  const cleanup = setupSocketListeners();
+
+  return () => {
+    cleanup?.();
+  };
+}, [socket, user?._id]);
   const [tab, setTab] = useState("pending");
   const [bookings, setBookings] = useState({ 
-    pending: [], 
-    confirmed: [],
-    rejected: [] 
+    pending: { data: [], page: 1, total: 0 },
+    confirmed: { data: [], page: 1, total: 0 },
+    rejected: { data: [], page: 1, total: 0 }
   });
   const [stats, setStats] = useState({ 
     total: 0, 
@@ -222,105 +305,65 @@ const BookingStatus = () => {
   });
   const [loading, setLoading] = useState({ 
     list: true, 
-    action: false 
+    action: false,
+    tabChange: false
   });
+  const limit = 10;
   const socket = useSocket();
   const { user } = useAuth();
 
-  useEffect(() => {
-    const fetchDataAndSetupSocket = async () => {
-      try {
-        // First load existing bookings
-        await fetchBookings();
-
-        // Then setup socket listeners
-        if (socket && user?._id) {
-          console.log("Joining owner room:", user._id);
-          socket.emit("owner-join", user._id);
-
-          socket.on("new-booking", (newBooking) => {
-            console.log("New booking received via socket:", newBooking);
-            setBookings(prev => ({
-              ...prev,
-              pending: [newBooking, ...(prev.pending || [])]
-            }));
-            setStats(prev => ({
-              ...prev,
-              pending: (prev.pending || 0) + 1,
-              total: (prev.total || 0) + 1
-            }));
-            toast.info(`New booking request for ${newBooking.room}`);
-          });
-
-          socket.on("booking-updated", (updatedBooking) => {
-            console.log("Booking update received:", updatedBooking);
-            setBookings(prev => {
-              const updatedPending = prev.pending?.filter(b => b._id !== updatedBooking._id) || [];
-              
-              if (updatedBooking.status === "confirmed") {
-                return {
-                  pending: updatedPending,
-                  confirmed: [updatedBooking, ...(prev.confirmed || [])],
-                  rejected: prev.rejected || []
-                };
-              } else if (updatedBooking.status === "rejected") {
-                return {
-                  pending: updatedPending,
-                  confirmed: prev.confirmed || [],
-                  rejected: [updatedBooking, ...(prev.rejected || [])]
-                };
-              }
-              return prev;
-            });
-          });
-        }
-      } catch (error) {
-        console.error("Initialization error:", error);
-      }
-    };
-
-    fetchDataAndSetupSocket();
-
-    return () => {
-      if (socket) {
-        console.log("Cleaning up socket listeners");
-        socket.off("new-booking");
-        socket.off("booking-updated");
-        socket.emit("owner-leave", user?._id);
-      }
-    };
-  }, [socket, user?._id]);
-
-  const fetchBookings = async () => {
+  const fetchBookings = async (status, page = 1) => {
     try {
-      setLoading(prev => ({ ...prev, list: true }));
-      const [pendingRes, confirmedRes, rejectedRes] = await Promise.all([
-        axios.get(`${baseurl}/bookings/owner?status=pending`),
-        axios.get(`${baseurl}/bookings/owner?status=confirmed`),
-        axios.get(`${baseurl}/bookings/owner?status=rejected`)
-      ]);
-
-      console.log("API responses:", { pendingRes, confirmedRes, rejectedRes });
-
-      setBookings({
-        pending: pendingRes.data?.bookings || [],
-        confirmed: confirmedRes.data?.bookings || [],
-        rejected: rejectedRes.data?.bookings || []
+      setLoading(prev => ({ ...prev, 
+        list: status === tab || page !== bookings[status].page,
+        tabChange: status !== tab
+      }));
+      
+      const response = await axios.get(`${baseurl}/bookings/owner`, {
+        params: { 
+          status, 
+          page, 
+          limit 
+        }
       });
 
-      setStats({
-        total: (pendingRes.data?.bookings?.length || 0) + 
-              (confirmedRes.data?.bookings?.length || 0) +
-              (rejectedRes.data?.bookings?.length || 0),
-        active: confirmedRes.data?.bookings?.length || 0,
-        pending: pendingRes.data?.bookings?.length || 0,
-        rejected: rejectedRes.data?.bookings?.length || 0
-      });
+      setBookings(prev => ({
+        ...prev,
+        [status]: {
+          data: response.data.bookings || [],
+          page,
+          total: response.data.pagination?.total || 0
+        }
+      }));
+
+      // Update stats when fetching first page
+      if (page === 1) {
+        setStats(prev => ({
+          ...prev,
+          [status]: response.data.pagination?.total || 0,
+          total: Object.values(bookings).reduce((sum, tabData) => sum + (tabData.total || 0), 0)
+        }));
+      }
+
+      if (status !== tab) {
+        setTab(status);
+      }
     } catch (error) {
-      console.error("Fetch bookings error:", error);
-      toast.error("Failed to fetch bookings");
+      console.error(`Error fetching ${status} bookings:`, error);
+      toast.error(`Failed to load ${status} bookings`);
     } finally {
-      setLoading(prev => ({ ...prev, list: false }));
+      setLoading(prev => ({ ...prev, 
+        list: false,
+        tabChange: false 
+      }));
+    }
+  };
+
+  const handleTabChange = (newTab) => {
+    if (bookings[newTab].data.length === 0) {
+      fetchBookings(newTab);
+    } else {
+      setTab(newTab);
     }
   };
 
@@ -332,31 +375,44 @@ const BookingStatus = () => {
         status,
         ...(reason && { rejectionReason: reason })
       });
-      console.log("Status change response:", response.data);
 
+      // Optimistic update
       setBookings(prev => {
-        const updatedPending = prev.pending.filter(b => b._id !== bookingId);
-        const updatedBooking = prev.pending.find(b => b._id === bookingId);
+        const updatedPending = prev.pending.data.filter(b => b._id !== bookingId);
+        const updatedBooking = prev.pending.data.find(b => b._id === bookingId);
         
         if (!updatedBooking) return prev;
 
         if (status === "confirmed") {
           return {
             ...prev,
-            pending: updatedPending,
-            confirmed: [{ ...updatedBooking, status }, ...prev.confirmed]
+            pending: {
+              ...prev.pending,
+              data: updatedPending,
+              total: prev.pending.total - 1
+            },
+            confirmed: {
+              ...prev.confirmed,
+              data: [{ ...updatedBooking, status }, ...prev.confirmed.data],
+              total: prev.confirmed.total + 1
+            }
           };
         } else if (status === "rejected") {
           return {
             ...prev,
-            pending: updatedPending,
-            rejected: [{ ...updatedBooking, status, rejectionReason: reason }, ...prev.rejected]
+            pending: {
+              ...prev.pending,
+              data: updatedPending,
+              total: prev.pending.total - 1
+            },
+            rejected: {
+              ...prev.rejected,
+              data: [{ ...updatedBooking, status, rejectionReason: reason }, ...prev.rejected.data],
+              total: prev.rejected.total + 1
+            }
           };
         }
-        return {
-          ...prev,
-          pending: updatedPending
-        };
+        return prev;
       });
 
       setStats(prev => ({
@@ -370,6 +426,8 @@ const BookingStatus = () => {
     } catch (error) {
       console.error(`Status change error (${status}):`, error);
       toast.error(`Failed to ${status} booking`);
+      // Re-fetch data to ensure consistency
+      fetchBookings(tab, bookings[tab].page);
     } finally {
       setLoading(prev => ({ ...prev, action: false }));
     }
@@ -386,7 +444,120 @@ const BookingStatus = () => {
     }
   };
 
-  // Connection status indicator
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      await Promise.all([
+        fetchBookings('pending'),
+        fetchBookings('confirmed'),
+        fetchBookings('rejected')
+      ]);
+    };
+
+    fetchInitialData();
+  }, []);
+
+  useEffect(() => {
+    const setupSocketListeners = () => {
+      if (!socket || !user?._id) return;
+
+      console.log("Joining owner room:", user._id);
+      socket.emit("owner-join", user._id);
+
+      socket.on("new-booking", (newBooking) => {
+        setBookings(prev => ({
+          ...prev,
+          pending: {
+            ...prev.pending,
+            data: [newBooking, ...prev.pending.data],
+            total: prev.pending.total + 1
+          }
+        }));
+        setStats(prev => ({
+          ...prev,
+          pending: prev.pending + 1,
+          total: prev.total + 1
+        }));
+        toast.info(`New booking request for ${newBooking.room}`);
+      });
+
+      socket.on("booking-updated", (updatedBooking) => {
+        setBookings(prev => {
+          const updatedPending = prev.pending.data.filter(b => b._id !== updatedBooking._id);
+          
+          if (updatedBooking.status === "confirmed") {
+            return {
+              pending: {
+                ...prev.pending,
+                data: updatedPending,
+                total: prev.pending.total - 1
+              },
+              confirmed: {
+                ...prev.confirmed,
+                data: [updatedBooking, ...prev.confirmed.data],
+                total: prev.confirmed.total + 1
+              },
+              rejected: prev.rejected
+            };
+          } else if (updatedBooking.status === "rejected") {
+            return {
+              pending: {
+                ...prev.pending,
+                data: updatedPending,
+                total: prev.pending.total - 1
+              },
+              confirmed: prev.confirmed,
+              rejected: {
+                ...prev.rejected,
+                data: [updatedBooking, ...prev.rejected.data],
+                total: prev.rejected.total + 1
+              }
+            };
+          }
+          return prev;
+        });
+      });
+    };
+
+    if (socket && user?._id) {
+      setupSocketListeners();
+    }
+
+    return () => {
+      if (socket) {
+        socket.off("new-booking");
+        socket.off("booking-updated");
+        socket.emit("owner-leave", user?._id);
+      }
+    };
+  }, [socket, user?._id]);
+
+  const PaginationControls = ({ status }) => {
+    const current = bookings[status];
+    const totalPages = Math.ceil(current.total / limit);
+
+    if (totalPages <= 1) return null;
+
+    return (
+      <div className="flex justify-between items-center mt-4">
+        <button
+          onClick={() => fetchBookings(status, current.page - 1)}
+          disabled={current.page <= 1 || loading.list}
+          className="px-4 py-2 border rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <span>Page {current.page} of {totalPages}</span>
+        <button
+          onClick={() => fetchBookings(status, current.page + 1)}
+          disabled={current.page >= totalPages || loading.list}
+          className="px-4 py-2 border rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
+    );
+  };
+
   const ConnectionStatus = () => (
     <div className="fixed bottom-4 right-4 flex items-center gap-2 bg-white p-2 rounded shadow text-xs">
       <div className={`w-3 h-3 rounded-full ${
@@ -397,129 +568,102 @@ const BookingStatus = () => {
   );
 
   return (
-    <div className="p-4 space-y-6">
-      <ConnectionStatus />
-      
-      {/* Stats Section */}
-      <div className="space-y-4">
-        <h1 className="text-xl font-bold">Booking Status</h1>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="bg-white rounded-xl shadow p-4 flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500">Total Bookings</p>
-              <h2 className="text-2xl font-bold">{stats.total}</h2>
+    <BookingStatusErrorBoundary>
+      <div className="p-4 space-y-6">
+        <ConnectionStatus />
+        
+        {/* Stats Section */}
+        <div className="space-y-4">
+          <h1 className="text-xl font-bold">Booking Status</h1>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="bg-white rounded-xl shadow p-4 flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Total Bookings</p>
+                <h2 className="text-2xl font-bold">{stats.total}</h2>
+              </div>
+              <BookIcon className="w-6 h-6 text-gray-400" />
             </div>
-            <BookIcon className="w-6 h-6 text-gray-400" />
-          </div>
-          <div className="bg-white rounded-xl shadow p-4 flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500">Active Bookings</p>
-              <h2 className="text-2xl font-bold">{stats.active}</h2>
+            <div className="bg-white rounded-xl shadow p-4 flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Active Bookings</p>
+                <h2 className="text-2xl font-bold">{stats.active}</h2>
+              </div>
+              <ClockIcon className="w-6 h-6 text-gray-400" />
             </div>
-            <ClockIcon className="w-6 h-6 text-gray-400" />
-          </div>
-          <div className="bg-white rounded-xl shadow p-4 flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500">Pending Requests</p>
-              <h2 className="text-2xl font-bold">{stats.pending}</h2>
+            <div className="bg-white rounded-xl shadow p-4 flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Pending Requests</p>
+                <h2 className="text-2xl font-bold">{stats.pending}</h2>
+              </div>
+              <HourglassIcon className="w-6 h-6 text-gray-400" />
             </div>
-            <HourglassIcon className="w-6 h-6 text-gray-400" />
-          </div>
-          <div className="bg-white rounded-xl shadow p-4 flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500">Rejected Bookings</p>
-              <h2 className="text-2xl font-bold">{stats.rejected}</h2>
+            <div className="bg-white rounded-xl shadow p-4 flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Rejected Bookings</p>
+                <h2 className="text-2xl font-bold">{stats.rejected}</h2>
+              </div>
+              <XCircleIcon className="w-6 h-6 text-gray-400" />
             </div>
-            <XCircleIcon className="w-6 h-6 text-gray-400" />
           </div>
         </div>
-      </div>
 
-      {/* Bookings Section */}
-      <div className="space-y-4">
-        <div className="flex gap-4 border-b">
-          <button
-            className={`pb-2 border-b-2 transition font-medium ${tab === "pending" ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500"}`}
-            onClick={() => setTab("pending")}
-          >
-            Pending Requests ({bookings.pending.length})
-          </button>
-          <button
-            className={`pb-2 border-b-2 transition font-medium ${tab === "confirmed" ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500"}`}
-            onClick={() => setTab("confirmed")}
-          >
-            Confirmed Bookings ({bookings.confirmed.length})
-          </button>
-          <button
-            className={`pb-2 border-b-2 transition font-medium ${tab === "rejected" ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500"}`}
-            onClick={() => setTab("rejected")}
-          >
-            Rejected Bookings ({bookings.rejected.length})
-          </button>
+        {/* Bookings Section */}
+        <div className="space-y-4">
+          <div className="flex gap-4 border-b">
+            <button
+              className={`pb-2 border-b-2 transition font-medium ${tab === "pending" ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500"}`}
+              onClick={() => handleTabChange("pending")}
+            >
+              Pending Requests ({bookings.pending.total})
+            </button>
+            <button
+              className={`pb-2 border-b-2 transition font-medium ${tab === "confirmed" ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500"}`}
+              onClick={() => handleTabChange("confirmed")}
+            >
+              Confirmed Bookings ({bookings.confirmed.total})
+            </button>
+            <button
+              className={`pb-2 border-b-2 transition font-medium ${tab === "rejected" ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500"}`}
+              onClick={() => handleTabChange("rejected")}
+            >
+              Rejected Bookings ({bookings.rejected.total})
+            </button>
+          </div>
+
+          {loading.list && loading.tabChange ? (
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent"></div>
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-col md:flex-row md:flex-wrap gap-4">
+                {bookings[tab].data.length > 0 ? (
+                  bookings[tab].data.map(booking => (
+                    <BookingCard
+                      key={booking._id}
+                      booking={booking}
+                      onConfirm={handleConfirm}
+                      onReject={handleReject}
+                      loading={loading.action}
+                    />
+                  ))
+                ) : (
+                  <EmptyState 
+                    message={`No ${tab} bookings`} 
+                    icon={
+                      tab === "pending" ? HourglassIcon : 
+                      tab === "confirmed" ? CheckCircleIcon : 
+                      XCircleIcon
+                    } 
+                  />
+                )}
+              </div>
+              <PaginationControls status={tab} />
+            </>
+          )}
         </div>
-
-        {loading.list ? (
-          <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent"></div>
-          </div>
-        ) : (
-          <div className="flex flex-col md:flex-row md:flex-wrap gap-4">
-            {tab === "pending" && (
-              bookings.pending.length > 0 ? (
-                bookings.pending.map(booking => (
-                  <BookingCard
-                    key={booking._id}
-                    booking={booking}
-                    onConfirm={handleConfirm}
-                    onReject={handleReject}
-                    loading={loading.action}
-                  />
-                ))
-              ) : (
-                <EmptyState 
-                  message="No pending booking requests" 
-                  icon={HourglassIcon} 
-                />
-              )
-            )}
-            
-            {tab === "confirmed" && (
-              bookings.confirmed.length > 0 ? (
-                bookings.confirmed.map(booking => (
-                  <BookingCard
-                    key={booking._id}
-                    booking={booking}
-                    loading={loading.action}
-                  />
-                ))
-              ) : (
-                <EmptyState 
-                  message="No confirmed bookings" 
-                  icon={CheckCircleIcon} 
-                />
-              )
-            )}
-            
-            {tab === "rejected" && (
-              bookings.rejected.length > 0 ? (
-                bookings.rejected.map(booking => (
-                  <BookingCard
-                    key={booking._id}
-                    booking={booking}
-                    loading={loading.action}
-                  />
-                ))
-              ) : (
-                <EmptyState 
-                  message="No rejected bookings" 
-                  icon={XCircleIcon} 
-                />
-              )
-            )}
-          </div>
-        )}
       </div>
-    </div>
+    </BookingStatusErrorBoundary>
   );
 };
 
