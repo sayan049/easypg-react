@@ -150,12 +150,14 @@ const BookingCard = React.memo(({ booking, onConfirm, onReject, loading }) => {
                 booking.student?.avatar ||
                 `https://i.pravatar.cc/150?u=${booking.student?._id || "user"}`
               }
-              alt={booking.student?.name || "Student"}
+              alt={booking.student?.firstName || "Student"}
               className="w-10 h-10 rounded-full"
             />
             <div>
               <p className="font-semibold">
-                {booking.student?.name || "Unknown User"}
+                {booking.student?.firstName && booking.student?.lastName
+                  ? `${booking.student.firstName} ${booking.student.lastName}`
+                  : "Unknown User"}
               </p>
               <p className="text-xs text-gray-500">
                 #{booking._id?.slice(-6).toUpperCase() || "------"}
@@ -316,9 +318,9 @@ const BookingStatus = () => {
           const currentBookings = prev.bookings || {
             pending: { total: 0 },
             confirmed: { total: 0 },
-            rejected: { total: 0 }
+            rejected: { total: 0 },
           };
-      
+
           return {
             ...prev,
             [status]: response.data.pagination?.total || 0,
@@ -329,7 +331,7 @@ const BookingStatus = () => {
                   ? response.data.pagination?.total || 0
                   : currentBookings[key]?.total || 0)
               );
-            }, 0)
+            }, 0),
           };
         });
       }
@@ -337,12 +339,12 @@ const BookingStatus = () => {
       if (status !== tab) {
         setTab(status);
       }
-    }catch (error) {
+    } catch (error) {
       console.error(`Full error details:`, error);
       if (error.response) {
-        console.error('Response data:', error.response.data);
-        console.error('Response status:', error.response.status);
-        console.error('Response headers:', error.response.headers);
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
+        console.error("Response headers:", error.response.headers);
       }
       toast.error(`Failed to load ${status} bookings`);
       // Reset state on error
