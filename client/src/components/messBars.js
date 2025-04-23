@@ -13,7 +13,7 @@ function MessBars({
   const [messData, setMessData] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const [selected, setSelected] = useState(messData[0]);
+  const [selected, setSelected] = useState(null);
   console.log("Selected Mess ID:", selected);
 
   const clickNavi = (owner) => {
@@ -32,8 +32,9 @@ function MessBars({
   //     console.log('Invalid location:', location); // Handle invalid location
   //   }
   // };
-  const clickCords = (location) => {
+  const clickCords = (location,id) => {
     console.log("Clicked Location Data:", location); // Debugging
+    setSelected(id);
 
     if (
       Array.isArray(location) &&
@@ -45,23 +46,30 @@ function MessBars({
       if (typeof coords === "function") {
         coords({ lat, lng });
       } else {
-        console.error("❌ coords is not a function:", coords);
+      //  console.error("❌ coords is not a function:", coords);
       }
       // coords({ lat, lng });      
       console.log("✅ Valid Coordinates Clicked:", { lat, lng });
     } else {
-      console.log("❌ Invalid location format:", location);
+      //console.log("❌ Invalid location format:", location);
     }
   };
 
   useEffect(() => {
     console.log("Selected Features:", checkFeatures);
     if (userLocation) {
-      console.log("User Location:", userLocation); // Debugging
+    //  console.log("User Location:", userLocation); // Debugging
     }
-    if (messData.length > 0 && !selected) {
-      setSelected(messData[0]);
+    if (!selected && Array.isArray(messData) && messData.length > 0 && messData[0]?._id) {
+      setSelected(messData[0]._id);
     }
+    console.log("Sel", !coords , coords);
+    if(!selected && Array.isArray(messData) && messData.length > 0 && messData[0]?.location?.coordinates){
+      const [lng, lat] = messData[0].location.coordinates; 
+      coords({ lat, lng });
+      console.log("Coordinates set to:", { lat, lng }, coords);
+    } //this is not working
+    
   }, [checkFeatures, userLocation,messData[0]]);
 
   useEffect(() => {
@@ -72,14 +80,14 @@ function MessBars({
           return;
         }
   
-        console.log("📍 Fetching PGs near:", userLocation.lat, userLocation.lng);
+    //    console.log("📍 Fetching PGs near:", userLocation.lat, userLocation.lng);
   
         // Fetch PGs near selected location
         const res = await axios.get(findMessUrl, {
           params: { lat: userLocation.lat, lng: userLocation.lng },
         });
   
-        console.log("🛎 PGs Found:", res.data);
+      //  console.log("🛎 PGs Found:", res.data);
   
         // Ensure `facility` is an array before filtering
         const filteredData = Array.isArray(res.data)
@@ -121,12 +129,12 @@ function MessBars({
     <div style={{ overflowY: "auto", height: "84vh" }}>
       {messData.map((owner) => (
         <div
-          key={owner._id}
+          key={owner?._id}
           className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md mb-4 sm:mb-2"
           // onClick={() => clickNavi(owner)}
           onClick={() => {
             if (owner?.location?.coordinates) {
-              clickCords(owner.location.coordinates);
+              clickCords(owner.location.coordinates,owner?._id);
             } else {
               console.log("Location missing for", owner.messName);
             }
@@ -147,7 +155,8 @@ function MessBars({
 
           {/* Content Section */}
           <div
-            className="flex-grow md:ml-6 mt-4 md:mt-0"
+            className={`flex-grow md:ml-6 mt-4 md:mt-0 ${(selected === owner._id && isChecked) ? "border-2 border-[rgb(44,164,181)]" : ""}
+`}
             style={{
               padding: isChecked ? "29px" : "0px",
               borderRadius: isChecked ? "10px" : "0px",
