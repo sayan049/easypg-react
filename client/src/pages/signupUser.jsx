@@ -74,37 +74,29 @@ function SignUpForm() {
     }
   };
 
-  const validateEmail = async (email) => {
-    const accessKey = "68a31d8b92dae4068c349d4fa31681a2";
-    const url = `https://apilayer.net/api/check?access_key=${accessKey}&email=${email}&smtp=1&format=1`;
-  
-    try {
-      const res = await axios.get(url);
-      console.log(res.data);
-      return true;
-    } catch (err) {
-      console.error("Error validating email:", err);
-      return false;
-    }
-  };
+  const validateEmailDebounced = useCallback(
+    debounce(async (email) => {
+      const isValid = await validateEmail(email);
+      setEmailError(isValid ? "" : "Invalid email domain");
+    }, 500), // Adjust debounce delay as needed
+    []
+  );
 
   
 
   useEffect(() => {
 
-    if (email) {
-      const emailValid = /\S+@\S+\.\S+/.test(email);
-      if (!emailValid) {
-        setEmailError("Invalid email format.");
-        return;
-      } else {
-        setEmailError("");
+    // if (email) {
+    //   const emailValid = /\S+@\S+\.\S+/.test(email);
+    //   if (!emailValid) {
+    //     setEmailError("Invalid email format.");
+    //     return;
+    //   } else {
+    //     setEmailError("");
 
-      }}
-
-      if(!validateEmail(email)){
-        setEmailError("Email is not valid.");
-
+    //   }}
+      if (email) {
+        validateEmailDebounced(email);
       }
    
    
@@ -112,7 +104,7 @@ function SignUpForm() {
     setIsFormFilled(
       firstName && lastName && email && address && password && pin
     );
-  }, [firstName, lastName, email, address, password, pin]);
+  }, [firstName, lastName, email, address, password, pin,validateEmailDebounced]);
 
   const isFormValid = isFormFilled && isChecked;
 
