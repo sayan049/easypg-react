@@ -63,7 +63,7 @@ function MessBars({
     if (!selected && Array.isArray(messData) && messData.length > 0 && messData[0]?._id) {
       setSelected(messData[0]._id);
     }
-    console.log("Sel", !coords);
+    console.log("Sel", !coords , coords);
     if(!coords && Array.isArray(messData) && messData.length > 0 && messData[0]?.location?.coordinates){
       const [lng, lat] = messData[0].location.coordinates; 
       coords({ lat, lng });
