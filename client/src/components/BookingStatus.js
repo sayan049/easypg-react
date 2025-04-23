@@ -292,7 +292,7 @@ const BookingStatus = () => {
       const requestUrl = `${baseurl}/bookings/owner?status=${status}&page=${page}&limit=${limit}`;
       console.log("Making request to:", requestUrl);
 
-      const response = await axios.get(`${baseurl}/bookings/owner`, {
+      const response = await axios.get(`${baseurl}/auth/bookings/owner`, {
         params: {
           status,
           page,
