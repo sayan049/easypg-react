@@ -16,7 +16,8 @@ export const SocketProvider = ({ children }) => {
     if (!user?._id) return;
 
     const socketInstance = io(baseurl, {
-      transports: ['websocket', 'polling'], // Try WebSocket first, fall back to polling
+      path: '/socket.io',
+      transports: ['websocket'],
       upgrade: true,
       reconnection: true,
       reconnectionAttempts: 5,
@@ -24,6 +25,9 @@ export const SocketProvider = ({ children }) => {
       reconnectionDelayMax: 5000,
       timeout: 20000,
       autoConnect: true,
+      auth: {
+        token: localStorage.getItem('accessToken')
+      },
       query: {
         userId: user._id,
         userType: 'owner'
@@ -33,6 +37,7 @@ export const SocketProvider = ({ children }) => {
     const onConnect = () => {
       setIsConnected(true);
       console.log('Socket connected:', socketInstance.id);
+      socketInstance.emit('owner-join', { userId: user._id });
     };
 
     const onDisconnect = (reason) => {
@@ -40,7 +45,9 @@ export const SocketProvider = ({ children }) => {
       console.log('Socket disconnected:', reason);
       if (reason === 'io server disconnect') {
         // The server forcibly disconnected the socket
-        socketInstance.connect();
+        setTimeout(() => {
+          socketInstance.connect();
+        }, 1000);
       }
     };
 
@@ -49,16 +56,38 @@ export const SocketProvider = ({ children }) => {
       toast.error('Connection problem. Trying to reconnect...');
     };
 
+    const onError = (error) => {
+      console.error('Socket error:', error);
+    };
+
     socketInstance.on('connect', onConnect);
     socketInstance.on('disconnect', onDisconnect);
     socketInstance.on('connect_error', onConnectError);
+    socketInstance.on('error', onError);
+    socketInstance.on('connection-status', (data) => {
+      console.log('Connection status:', data);
+    });
+
+    // Heartbeat mechanism
+    const pingInterval = setInterval(() => {
+      if (socketInstance.connected) {
+        socketInstance.emit('ping', (response) => {
+          if (response !== 'pong') {
+            console.warn('No pong received, reconnecting...');
+            socketInstance.disconnect().connect();
+          }
+        });
+      }
+    }, 20000);
 
     setSocket(socketInstance);
 
     return () => {
+      clearInterval(pingInterval);
       socketInstance.off('connect', onConnect);
       socketInstance.off('disconnect', onDisconnect);
       socketInstance.off('connect_error', onConnectError);
+      socketInstance.off('error', onError);
       socketInstance.disconnect();
     };
   }, [user?._id]);
