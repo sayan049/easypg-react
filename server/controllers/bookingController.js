@@ -188,48 +188,46 @@ exports.createBookingRequest = async (req, res) => {
 
 exports.getOwnerBookings = async (req, res) => {
   try {
-    const { status, page = 1, limit = 10 } = req.query;
-    const ownerId = req.user._id; // From JWT
+    console.log("Authenticated User:", req.user); // Debug JWT payload
+    
+    const { status = 'pending', page = 1, limit = 10 } = req.query;
+    const ownerId = req.user._id;
 
-    // 1. Validate inputs
-    const validStatuses = ['pending', 'confirmed', 'cancelled', 'rejected'];
-    if (!validStatuses.includes(status)) {
-      return res.status(400).json({
-        success: false,
-        message: `Invalid status. Use: ${validStatuses.join(', ')}`
-      });
-    }
+    // Debug: Check raw bookings count
+    const rawCount = await Booking.countDocuments({ pgOwner: ownerId });
+    console.log(`Total bookings for owner ${ownerId}:`, rawCount);
 
-    // 2. Calculate pagination
-    const safePage = Math.max(1, parseInt(page));
-    const safeLimit = Math.min(50, parseInt(limit));
-    const skip = (safePage - 1) * safeLimit;
+    // Debug: Check bookings with status filter
+    const filteredCount = await Booking.countDocuments({ 
+      pgOwner: ownerId, 
+      status 
+    });
+    console.log(`Bookings with status ${status}:`, filteredCount);
 
-    // 3. Run queries (modified for your schema)
     const [bookings, total] = await Promise.all([
       Booking.find({ 
-        status, 
-        pgOwner: ownerId // Using pgOwner field from your schema
+        pgOwner: ownerId, 
+        status 
       })
-        .populate('student', 'firstName lastName email ') // Student info
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(safeLimit),
+      .populate('student', 'firstName lastName email avatar')
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean(), // Convert to plain JS objects
       
-      Booking.countDocuments({ 
-        status, 
-        pgOwner: ownerId 
-      })
+      Booking.countDocuments({ pgOwner: ownerId, status })
     ]);
 
-    // 4. Format response with calculated endDate
+    console.log("Found bookings:", bookings.length); // Debug actual results
+
     const bookingsWithEndDate = bookings.map(booking => ({
-      ...booking.toObject(),
+      ...booking,
       period: {
         ...booking.period,
         endDate: new Date(
           new Date(booking.period.startDate).setMonth(
-            new Date(booking.period.startDate).getMonth() + booking.period.durationMonths
+            new Date(booking.period.startDate).getMonth() + 
+            booking.period.durationMonths
           )
         )
       }
@@ -240,17 +238,18 @@ exports.getOwnerBookings = async (req, res) => {
       bookings: bookingsWithEndDate,
       pagination: {
         total,
-        page: safePage,
-        pages: Math.ceil(total / safeLimit),
-        limit: safeLimit
+        page: parseInt(page),
+        pages: Math.ceil(total / limit),
+        limit: parseInt(limit)
       }
     });
 
   } catch (error) {
-    console.error('Failed to fetch bookings:', error);
+    console.error('Error details:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error while fetching bookings'
+      message: 'Server error',
+      error: error.message // Include actual error message
     });
   }
 };
