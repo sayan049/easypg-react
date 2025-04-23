@@ -149,7 +149,8 @@ function MessBars({
 
           {/* Content Section */}
           <div
-            className={`flex-grow md:ml-6 mt-4 md:mt-0 ${selected === owner._id ? "border-[rgb(44, 164, 181)]" : ""}`}
+            className={`flex-grow md:ml-6 mt-4 md:mt-0 ${selected === owner._id ? "border-2 border-[rgb(44,164,181)]" : ""}
+`}
             style={{
               padding: isChecked ? "29px" : "0px",
               borderRadius: isChecked ? "10px" : "0px",
