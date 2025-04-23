@@ -1,12 +1,3 @@
-// src/contexts/socketContext.js
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { io } from 'socket.io-client';
-import { toast } from 'sonner';
-import { useAuth } from './AuthContext';
-import { baseurl } from '../constant/urls';
-
-const SocketContext = createContext();
-
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
@@ -18,13 +9,11 @@ export const SocketProvider = ({ children }) => {
     const socketInstance = io(baseurl, {
       path: '/socket.io',
       transports: ['websocket'],
-      upgrade: true,
       reconnection: true,
-      reconnectionAttempts: 5,
+      reconnectionAttempts: Infinity,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
       timeout: 20000,
-      autoConnect: true,
       auth: {
         token: localStorage.getItem('accessToken')
       },
@@ -44,41 +33,30 @@ export const SocketProvider = ({ children }) => {
       setIsConnected(false);
       console.log('Socket disconnected:', reason);
       if (reason === 'io server disconnect') {
-        // The server forcibly disconnected the socket
-        setTimeout(() => {
-          socketInstance.connect();
-        }, 1000);
+        setTimeout(() => socketInstance.connect(), 1000);
       }
     };
 
     const onConnectError = (error) => {
-      console.error('Socket connection error:', error);
-      toast.error('Connection problem. Trying to reconnect...');
-    };
-
-    const onError = (error) => {
-      console.error('Socket error:', error);
+      console.error('Connection error:', error);
+      if (error.message.includes("Authentication error")) {
+        console.error("Auth failed - clearing tokens");
+        localStorage.removeItem('accessToken');
+      }
     };
 
     socketInstance.on('connect', onConnect);
     socketInstance.on('disconnect', onDisconnect);
     socketInstance.on('connect_error', onConnectError);
-    socketInstance.on('error', onError);
-    socketInstance.on('connection-status', (data) => {
-      console.log('Connection status:', data);
-    });
 
-    // Heartbeat mechanism
+    // Heartbeat
     const pingInterval = setInterval(() => {
       if (socketInstance.connected) {
         socketInstance.emit('ping', (response) => {
-          if (response !== 'pong') {
-            console.warn('No pong received, reconnecting...');
-            socketInstance.disconnect().connect();
-          }
+          if (response !== 'pong') socketInstance.disconnect().connect();
         });
       }
-    }, 20000);
+    }, 25000);
 
     setSocket(socketInstance);
 
@@ -87,7 +65,6 @@ export const SocketProvider = ({ children }) => {
       socketInstance.off('connect', onConnect);
       socketInstance.off('disconnect', onDisconnect);
       socketInstance.off('connect_error', onConnectError);
-      socketInstance.off('error', onError);
       socketInstance.disconnect();
     };
   }, [user?._id]);
@@ -97,12 +74,4 @@ export const SocketProvider = ({ children }) => {
       {children}
     </SocketContext.Provider>
   );
-};
-
-export const useSocket = () => {
-  const context = useContext(SocketContext);
-  if (!context) {
-    throw new Error('useSocket must be used within a SocketProvider');
-  }
-  return context;
 };

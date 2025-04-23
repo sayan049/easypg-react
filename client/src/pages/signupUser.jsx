@@ -75,12 +75,12 @@ function SignUpForm() {
   };
 
   const validateEmail = async (email) => {
-    const accessKey = "68a31d8b92dae4068c349d4fa31681a2";
+    const accessKey = "68a31d8b92dae4068c349d4fa31681a2";  //mailboxlayer
     const url = `https://apilayer.net/api/check?access_key=${accessKey}&email=${email}&smtp=1&format=1`;
   
     try {
       const res = await axios.get(url);
-      console.log(res.data);
+      console.log(res.data,url,accessKey);
       return true;
     } catch (err) {
       console.error("Error validating email:", err);
@@ -102,7 +102,7 @@ function SignUpForm() {
 
       }}
 
-      if(!validateEmail(email)){
+      if(!validateEmail()){
         setEmailError("Email is not valid.");
 
       }
@@ -112,7 +112,7 @@ function SignUpForm() {
     setIsFormFilled(
       firstName && lastName && email && address && password && pin
     );
-  }, [firstName, lastName, email, address, password, pin]);
+  }, [firstName, lastName, email, address, password, pin ,validateEmail]);
 
   const isFormValid = isFormFilled && isChecked;
 
