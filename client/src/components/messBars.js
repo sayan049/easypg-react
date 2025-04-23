@@ -63,7 +63,7 @@ function MessBars({
     if (messData.length > 0 && !selected) {
       setSelected(messData[0]._id);
     }
-  }, [checkFeatures, userLocation,messData[0]._id8]);
+  }, [checkFeatures, userLocation,messData[0]._id]);
 
   useEffect(() => {
     const fetchData = async () => {
