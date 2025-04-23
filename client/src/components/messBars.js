@@ -32,8 +32,9 @@ function MessBars({
   //     console.log('Invalid location:', location); // Handle invalid location
   //   }
   // };
-  const clickCords = (location) => {
+  const clickCords = (location,id) => {
     console.log("Clicked Location Data:", location); // Debugging
+    setSelected(id);
 
     if (
       Array.isArray(location) &&
@@ -45,24 +46,24 @@ function MessBars({
       if (typeof coords === "function") {
         coords({ lat, lng });
       } else {
-        console.error("❌ coords is not a function:", coords);
+      //  console.error("❌ coords is not a function:", coords);
       }
       // coords({ lat, lng });      
       console.log("✅ Valid Coordinates Clicked:", { lat, lng });
     } else {
-      console.log("❌ Invalid location format:", location);
+      //console.log("❌ Invalid location format:", location);
     }
   };
 
   useEffect(() => {
     console.log("Selected Features:", checkFeatures);
     if (userLocation) {
-      console.log("User Location:", userLocation); // Debugging
+    //  console.log("User Location:", userLocation); // Debugging
     }
     if (messData.length > 0 && !selected) {
-      setSelected(messData[0]);
+      setSelected(messData[0]._id);
     }
-  }, [checkFeatures, userLocation,messData[0]]);
+  }, [checkFeatures, userLocation,messData[0]._id8]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -72,14 +73,14 @@ function MessBars({
           return;
         }
   
-        console.log("📍 Fetching PGs near:", userLocation.lat, userLocation.lng);
+    //    console.log("📍 Fetching PGs near:", userLocation.lat, userLocation.lng);
   
         // Fetch PGs near selected location
         const res = await axios.get(findMessUrl, {
           params: { lat: userLocation.lat, lng: userLocation.lng },
         });
   
-        console.log("🛎 PGs Found:", res.data);
+      //  console.log("🛎 PGs Found:", res.data);
   
         // Ensure `facility` is an array before filtering
         const filteredData = Array.isArray(res.data)
@@ -126,7 +127,7 @@ function MessBars({
           // onClick={() => clickNavi(owner)}
           onClick={() => {
             if (owner?.location?.coordinates) {
-              clickCords(owner.location.coordinates);
+              clickCords(owner.location.coordinates,owner._id);
             } else {
               console.log("Location missing for", owner.messName);
             }
