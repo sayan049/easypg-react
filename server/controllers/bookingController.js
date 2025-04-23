@@ -185,9 +185,10 @@ exports.createBookingRequest = async (req, res) => {
 };
 
 // Get all bookings for owner dashboard
+
 exports.getOwnerBookings = async (req, res) => {
   try {
-    const { status } = req.query;
+    const { status, page = 1, limit = 10 } = req.query;
     
     // Validate status parameter
     const validStatuses = ['pending', 'confirmed', 'rejected', 'cancelled'];
@@ -198,33 +199,17 @@ exports.getOwnerBookings = async (req, res) => {
       });
     }
 
-    // Validate owner ID
-    if (!mongoose.Types.ObjectId.isValid(req.user._id)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid owner ID'
-      });
-    }
-
-    // Add pagination
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    // Calculate pagination
     const skip = (page - 1) * limit;
 
     const [bookings, total] = await Promise.all([
-      Booking.find({
-        pgOwner: req.user._id,
-        status: status
-      })
-      .populate('student', 'name avatar email')
-      .sort({ createdAt: -1 }) // Newest first
-      .skip(skip)
-      .limit(limit),
+      Booking.find({ status: status })
+        .populate('student', 'name avatar email')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
       
-      Booking.countDocuments({
-        pgOwner: req.user._id,
-        status: status
-      })
+      Booking.countDocuments({ status: status })
     ]);
 
     res.json({
@@ -232,9 +217,9 @@ exports.getOwnerBookings = async (req, res) => {
       bookings,
       pagination: {
         total,
-        page,
+        page: Number(page),
         pages: Math.ceil(total / limit),
-        limit
+        limit: Number(limit)
       }
     });
 
@@ -242,8 +227,7 @@ exports.getOwnerBookings = async (req, res) => {
     console.error('Error fetching bookings:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to fetch bookings',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      message: 'Failed to fetch bookings'
     });
   }
 };

@@ -117,7 +117,6 @@ import axios from "axios";
 import { toast } from "sonner";
 import { baseurl } from "../constant/urls";
 
-// Memoized BookingCard to prevent unnecessary re-renders
 const BookingCard = React.memo(({ booking, onConfirm, onReject, loading }) => {
   const statusColors = {
     pending: "bg-yellow-100 text-yellow-800",
@@ -207,7 +206,6 @@ const EmptyState = ({ message, icon: Icon }) => (
   </div>
 );
 
-// Error boundary component
 class BookingStatusErrorBoundary extends React.Component {
   state = { hasError: false };
   
@@ -221,76 +219,13 @@ class BookingStatusErrorBoundary extends React.Component {
   
   render() {
     if (this.state.hasError) {
-      return (
-        <div className="p-4 text-red-500">
-          Something went wrong with the bookings. Please refresh the page.
-        </div>
-      );
+      return <div className="p-4 text-red-500">Something went wrong with bookings. Please refresh.</div>;
     }
     return this.props.children;
   }
 }
 
 const BookingStatus = () => {
-  // In your BookingStatus component
-// useEffect(() => {
-//   if (!socket || !user?._id) return;
-
-//   const setupSocketListeners = () => {
-//     console.log("Setting up socket listeners for owner:", user._id);
-    
-//     try {
-//       socket.emit("owner-join", user._id);
-
-//       const onNewBooking = (newBooking) => {
-//         console.log("New booking received via socket:", newBooking);
-//         setBookings(prev => ({
-//           ...prev,
-//           pending: {
-//             ...prev.pending,
-//             data: [newBooking, ...prev.pending.data],
-//             total: prev.pending.total + 1
-//           }
-//         }));
-//         setStats(prev => ({
-//           ...prev,
-//           pending: prev.pending + 1,
-//           total: prev.total + 1
-//         }));
-//         toast.info(`New booking request for ${newBooking.room}`);
-//       };
-
-//       const onBookingUpdated = (updatedBooking) => {
-//         console.log("Booking update received:", updatedBooking);
-//         // ... existing update logic
-//       };
-
-//       const onError = (error) => {
-//         console.error("Socket error:", error);
-//         toast.error("Connection problem. Reconnecting...");
-//       };
-
-//       socket.on("new-booking", onNewBooking);
-//       socket.on("booking-updated", onBookingUpdated);
-//       socket.on("error", onError);
-
-//       return () => {
-//         socket.off("new-booking", onNewBooking);
-//         socket.off("booking-updated", onBookingUpdated);
-//         socket.off("error", onError);
-//         socket.emit("owner-leave", user._id);
-//       };
-//     } catch (error) {
-//       console.error("Error setting up socket listeners:", error);
-//     }
-//   };
-
-//   const cleanup = setupSocketListeners();
-
-//   return () => {
-//     cleanup?.();
-//   };
-// }, [socket, user?._id]);
   const [tab, setTab] = useState("pending");
   const [bookings, setBookings] = useState({ 
     pending: { data: [], page: 1, total: 0 },
@@ -315,7 +250,7 @@ const BookingStatus = () => {
   const fetchBookings = async (status, page = 1) => {
     try {
       setLoading(prev => ({ ...prev, 
-        list: status === tab || page !== bookings[status].page,
+        list: true,
         tabChange: status !== tab
       }));
       
@@ -341,7 +276,11 @@ const BookingStatus = () => {
         setStats(prev => ({
           ...prev,
           [status]: response.data.pagination?.total || 0,
-          total: Object.values(bookings).reduce((sum, tabData) => sum + (tabData.total || 0), 0)
+          total: Object.keys(prev.bookings).reduce((sum, key) => {
+            return sum + (key === status ? 
+              response.data.pagination?.total || 0 : 
+              prev.bookings[key].total || 0);
+          }, 0)
         }));
       }
 
@@ -351,6 +290,15 @@ const BookingStatus = () => {
     } catch (error) {
       console.error(`Error fetching ${status} bookings:`, error);
       toast.error(`Failed to load ${status} bookings`);
+      // Reset state on error
+      setBookings(prev => ({
+        ...prev,
+        [status]: {
+          data: [],
+          page: 1,
+          total: 0
+        }
+      }));
     } finally {
       setLoading(prev => ({ ...prev, 
         list: false,
@@ -360,8 +308,8 @@ const BookingStatus = () => {
   };
 
   const handleTabChange = (newTab) => {
-    if (bookings[newTab].data.length === 0) {
-      fetchBookings(newTab);
+    if (bookings[newTab].data.length === 0 || bookings[newTab].page !== 1) {
+      fetchBookings(newTab, 1);
     } else {
       setTab(newTab);
     }
@@ -371,7 +319,7 @@ const BookingStatus = () => {
     try {
       setLoading(prev => ({ ...prev, action: true }));
       
-      const response = await axios.put(`${baseurl}/bookings/${bookingId}/status`, { 
+      await axios.put(`${baseurl}/bookings/${bookingId}/status`, { 
         status,
         ...(reason && { rejectionReason: reason })
       });
@@ -457,76 +405,77 @@ const BookingStatus = () => {
   }, []);
 
   useEffect(() => {
-    const setupSocketListeners = () => {
-      if (!socket || !user?._id) return;
+    if (!socket || !user?._id) return;
 
-      console.log("Joining owner room:", user._id);
-      socket.emit("owner-join", user._id);
+    const onNewBooking = (newBooking) => {
+      setBookings(prev => ({
+        ...prev,
+        pending: {
+          ...prev.pending,
+          data: [newBooking, ...prev.pending.data],
+          total: prev.pending.total + 1
+        }
+      }));
+      setStats(prev => ({
+        ...prev,
+        pending: prev.pending + 1,
+        total: prev.total + 1
+      }));
+      toast.info(`New booking request for ${newBooking.room}`);
+    };
 
-      socket.on("new-booking", (newBooking) => {
-        setBookings(prev => ({
-          ...prev,
-          pending: {
-            ...prev.pending,
-            data: [newBooking, ...prev.pending.data],
-            total: prev.pending.total + 1
-          }
-        }));
-        setStats(prev => ({
-          ...prev,
-          pending: prev.pending + 1,
-          total: prev.total + 1
-        }));
-        toast.info(`New booking request for ${newBooking.room}`);
-      });
-
-      socket.on("booking-updated", (updatedBooking) => {
-        setBookings(prev => {
-          const updatedPending = prev.pending.data.filter(b => b._id !== updatedBooking._id);
-          
-          if (updatedBooking.status === "confirmed") {
-            return {
-              pending: {
-                ...prev.pending,
-                data: updatedPending,
-                total: prev.pending.total - 1
-              },
-              confirmed: {
-                ...prev.confirmed,
-                data: [updatedBooking, ...prev.confirmed.data],
-                total: prev.confirmed.total + 1
-              },
-              rejected: prev.rejected
-            };
-          } else if (updatedBooking.status === "rejected") {
-            return {
-              pending: {
-                ...prev.pending,
-                data: updatedPending,
-                total: prev.pending.total - 1
-              },
-              confirmed: prev.confirmed,
-              rejected: {
-                ...prev.rejected,
-                data: [updatedBooking, ...prev.rejected.data],
-                total: prev.rejected.total + 1
-              }
-            };
-          }
-          return prev;
-        });
+    const onBookingUpdated = (updatedBooking) => {
+      setBookings(prev => {
+        const updatedPending = prev.pending.data.filter(b => b._id !== updatedBooking._id);
+        
+        if (updatedBooking.status === "confirmed") {
+          return {
+            pending: {
+              ...prev.pending,
+              data: updatedPending,
+              total: prev.pending.total - 1
+            },
+            confirmed: {
+              ...prev.confirmed,
+              data: [updatedBooking, ...prev.confirmed.data],
+              total: prev.confirmed.total + 1
+            },
+            rejected: prev.rejected
+          };
+        } else if (updatedBooking.status === "rejected") {
+          return {
+            pending: {
+              ...prev.pending,
+              data: updatedPending,
+              total: prev.pending.total - 1
+            },
+            confirmed: prev.confirmed,
+            rejected: {
+              ...prev.rejected,
+              data: [updatedBooking, ...prev.rejected.data],
+              total: prev.rejected.total + 1
+            }
+          };
+        }
+        return prev;
       });
     };
 
-    if (socket && user?._id) {
-      setupSocketListeners();
-    }
+    const onError = (error) => {
+      console.error("Socket error:", error);
+    };
+
+    socket.on("new-booking", onNewBooking);
+    socket.on("booking-updated", onBookingUpdated);
+    socket.on("error", onError);
+    socket.emit("owner-join", user._id);
 
     return () => {
       if (socket) {
-        socket.off("new-booking");
-        socket.off("booking-updated");
-        socket.emit("owner-leave", user?._id);
+        socket.off("new-booking", onNewBooking);
+        socket.off("booking-updated", onBookingUpdated);
+        socket.off("error", onError);
+        socket.emit("owner-leave", user._id);
       }
     };
   }, [socket, user?._id]);
@@ -572,7 +521,6 @@ const BookingStatus = () => {
       <div className="p-4 space-y-6">
         <ConnectionStatus />
         
-        {/* Stats Section */}
         <div className="space-y-4">
           <h1 className="text-xl font-bold">Booking Status</h1>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -607,7 +555,6 @@ const BookingStatus = () => {
           </div>
         </div>
 
-        {/* Bookings Section */}
         <div className="space-y-4">
           <div className="flex gap-4 border-b">
             <button
