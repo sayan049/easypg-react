@@ -311,18 +311,27 @@ const BookingStatus = () => {
 
       // Update stats when fetching first page
       if (page === 1) {
-        setStats((prev) => ({
-          ...prev,
-          [status]: response.data.pagination?.total || 0,
-          total: Object.keys(prev.bookings).reduce((sum, key) => {
-            return (
-              sum +
-              (key === status
-                ? response.data.pagination?.total || 0
-                : prev.bookings[key].total || 0)
-            );
-          }, 0),
-        }));
+        setStats((prev) => {
+          // Safely get bookings or default to empty object
+          const currentBookings = prev.bookings || {
+            pending: { total: 0 },
+            confirmed: { total: 0 },
+            rejected: { total: 0 }
+          };
+      
+          return {
+            ...prev,
+            [status]: response.data.pagination?.total || 0,
+            total: Object.keys(currentBookings).reduce((sum, key) => {
+              return (
+                sum +
+                (key === status
+                  ? response.data.pagination?.total || 0
+                  : currentBookings[key]?.total || 0)
+              );
+            }, 0)
+          };
+        });
       }
 
       if (status !== tab) {
