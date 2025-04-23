@@ -21,6 +21,8 @@ function SignUpForm() {
   const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Disable button after first click
   const [message, setmessage] = useState({ Text: "hi", type: "success" }); // State to manage flash message
+  const [emailError, setEmailError] = useState("");
+
 
   const navigate = useNavigate();
 
@@ -72,7 +74,23 @@ function SignUpForm() {
     }
   };
 
+
+  
+
   useEffect(() => {
+
+    if (email) {
+      const emailValid = /\S+@\S+\.\S+/.test(email);
+      if (!emailValid) {
+        setEmailError("Invalid email format.");
+        return;
+      } else {
+        setEmailError("");
+
+      }}
+   
+   
+
     setIsFormFilled(
       firstName && lastName && email && address && password && pin
     );
@@ -138,13 +156,17 @@ function SignUpForm() {
                 autoComplete="off"
               />
             </div>
+            {emailError && (
+              <p className="text-red-500 text-sm">{emailError}</p>)}
             <input
               type="email"
               name="email"
               placeholder="example@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+              className={`w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a] ${
+                emailError ? "border-red-500" : ""
+              }`}
               autoComplete="off"
             />
             <input
