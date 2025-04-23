@@ -64,8 +64,9 @@ function MessBars({
       setSelected(messData[0]._id);
     }
     if(!coords && Array.isArray(messData) && messData.length > 0 && messData[0]?.location?.coordinates){
-      const [lng, lat] = messData[0].location.coordinates; // MongoDB stores [lng, lat]
+      const [lng, lat] = messData[0].location.coordinates; 
       coords({ lat, lng });
+      console.log("Coordinates set to:", { lat, lng }, coords);
     }
     
   }, [checkFeatures, userLocation,messData[0]]);
