@@ -60,9 +60,10 @@ function MessBars({
     if (userLocation) {
     //  console.log("User Location:", userLocation); // Debugging
     }
-    if (messData.length > 0 && !selected) {
+    if (!selected && Array.isArray(messData) && messData.length > 0 && messData[0]?._id) {
       setSelected(messData[0]._id);
     }
+    
   }, [checkFeatures, userLocation,messData[0]]);
 
   useEffect(() => {
