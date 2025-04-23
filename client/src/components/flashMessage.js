@@ -10,24 +10,24 @@ function FlashMessage({ message='xxx', type = 'success' ,hit= false ,onClear }) 
   // const isError = type === 'error';
 
 
-  useEffect(() => {
+  // useEffect(() => {
 
 
-    if (message || hit ) {
-    //  setCurrentMessage(message);
-      setShow(true);
+  //   if (message || hit ) {
+  //   //  setCurrentMessage(message);
+  //     setShow(true);
       
-      const timer = setTimeout(() => {
-        onClear?.();
-        setShow(false);
-        //setCurrentMessage('');
-      }, 2000);
+  //     const timer = setTimeout(() => {
+  //       onClear?.();
+  //       setShow(false);
+  //       //setCurrentMessage('');
+  //     }, 2000);
       
-      return () => clearTimeout(timer);
-    }
-  }, [message,hit]);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [message,hit]);
 
-  console.log('FlashMessage', message, type , type === 'error', show, "hit",hit);
+  // console.log('FlashMessage', message, type , type === 'error', show, "hit",hit);
 
   // if (!message || !show) return null;
 
