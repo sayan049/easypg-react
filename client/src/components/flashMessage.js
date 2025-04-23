@@ -1,39 +1,37 @@
-import React from 'react';
-import { useEffect } from 'react';
-import { toast } from 'sonner';
+// import React from 'react';
+// import { useEffect } from 'react';
+// import { toast } from 'sonner';
 
-function FlashMessage({ message='xxx', type = 'success' ,hit= false ,onClear }) {
-  const [show, setShow] = React.useState(true);
-
- // const [currentMessage, setCurrentMessage] = React.useState(message);
-
-  // const isError = type === 'error';
+// function FlashMessage({ message='xxx', type = 'success' ,hit= false ,onClear }) {
+//   const [show, setShow] = React.useState(true);
 
 
-  // useEffect(() => {
 
 
-  //   if (message || hit ) {
-  //   //  setCurrentMessage(message);
-  //     setShow(true);
+//   useEffect(() => {
+
+
+//     if (message || hit ) {
+//     //  setCurrentMessage(message);
+//       setShow(true);
       
-  //     const timer = setTimeout(() => {
-  //       onClear?.();
-  //       setShow(false);
-  //       //setCurrentMessage('');
-  //     }, 2000);
+//       const timer = setTimeout(() => {
+//         onClear?.();
+//         setShow(false);
+//         //setCurrentMessage('');
+//       }, 2000);
       
-  //     return () => clearTimeout(timer);
-  //   }
-  // }, [message,hit]);
+//       return () => clearTimeout(timer);
+//     }
+//   }, [message,hit]);
 
-  // console.log('FlashMessage', message, type , type === 'error', show, "hit",hit);
+//   console.log('FlashMessage', message, type , type === 'error', show, "hit",hit);
 
-  // if (!message || !show) return null;
+//   if (!message || !show) return null;
 
 
 
-  return (
+//   return (
 
 //       <>
 //    {(type==='error') ? <div role="alert" className={`border-s-4 border-red-700 bg-red-50 p-4 absolute top-0 left-1/2 transform -translate-x-1/2 mt-4 rounded-md shadow-md ${show ? "block" : "hidden"} `} >
@@ -103,15 +101,34 @@ function FlashMessage({ message='xxx', type = 'success' ,hit= false ,onClear }) 
 // }
 
 // </>
-<>{toast.error(message)
-}</>
-
-
-  );
 
 
 
 
+//   );
+
+
+
+
+// }
+
+// export default FlashMessage;
+import React, { useEffect } from 'react';
+import { toast } from 'sonner';
+
+function FlashMessage({ message = 'xxx', type = 'success', hit = false, onClear }) {
+  useEffect(() => {
+    if (hit && message) {
+      if (type === 'error') {
+        toast.error(message);
+      } else {
+        toast.success(message);
+      }
+      onClear?.(); // Clear after displaying the toast
+    }
+  }, [message, type, hit, onClear]);
+
+  return null; // No need to return any JSX, since toast is displayed separately
 }
 
 export default FlashMessage;
