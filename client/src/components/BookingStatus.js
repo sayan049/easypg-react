@@ -282,8 +282,8 @@ const BookingStatus = () => {
   });
   const limit = 10;
   const socket = useSocket();
-  const { user } = useAuth();
-
+  const { user,owner } = useAuth();
+  const ownerId = owner?._id;                                                             
   const fetchBookings = async (status, page = 1) => {
     try {
       setLoading((prev) => ({
@@ -300,6 +300,9 @@ const BookingStatus = () => {
           page,
           limit,
         },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+        }
       });
 
       setBookings((prev) => ({

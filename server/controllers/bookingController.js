@@ -189,6 +189,7 @@ exports.createBookingRequest = async (req, res) => {
 exports.getOwnerBookings = async (req, res) => {
   try {
     const { status, page = 1, limit = 10 } = req.query;
+    const ownerId = req.user._id; // Extracted from JWT by auth middleware
 
     // 1. Validate inputs
     const validStatuses = ['pending', 'confirmed', 'rejected'];
@@ -204,15 +205,22 @@ exports.getOwnerBookings = async (req, res) => {
     const safeLimit = Math.min(50, parseInt(limit)); // Max 50 per page
     const skip = (safePage - 1) * safeLimit;
 
-    // 3. Run queries
+    // 3. Run queries with owner filtering
     const [bookings, total] = await Promise.all([
-      Booking.find({ status })
-        .populate('student', 'name email') // Specify fields
+      Booking.find({ 
+        status, 
+        owner: ownerId // Critical security filter
+      })
+        .populate('student', 'firstName lastName avatar email')
+        .populate('room', 'name bedCount') // Include room details
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(safeLimit),
       
-      Booking.countDocuments({ status })
+      Booking.countDocuments({ 
+        status, 
+        owner: ownerId // Consistent count with same filter
+      })
     ]);
 
     // 4. Send response
@@ -231,7 +239,8 @@ exports.getOwnerBookings = async (req, res) => {
     console.error('Failed to fetch bookings:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error while fetching bookings'
+      message: 'Server error while fetching bookings',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 };
