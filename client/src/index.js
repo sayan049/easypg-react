@@ -93,18 +93,18 @@ root.render(
           <Route
             path="/newDashboard"
             element={
-              <ProtectedRoute>
+              <IsAuth>
                 <NewDashboard />
-                </ProtectedRoute>
+              </IsAuth>
             }
           />
 
           <Route
             path="/DashboardOwner"
             element={
-              <ProtectedRoute>
+              <IsAuth>
                 <DashboardOwner />
-                </ProtectedRoute>
+              </IsAuth>
             }
           />
 
