@@ -473,7 +473,7 @@ const numberToBedCount = {
   5: "five"
 };
 
-// Create booking request
+// Create booking request (NO BED DEDUCTION HERE)
 exports.createBookingRequest = async (req, res) => {
   try {
     const { 
@@ -524,18 +524,8 @@ exports.createBookingRequest = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Room not found' });
     }
 
-    if (!roomInfo.roomAvailable) {
-      return res.status(400).json({ success: false, message: 'Room not available' });
-    }
-
-    if (!roomInfo.bedContains || !bedCountToNumber[roomInfo.bedContains]) {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'Invalid room configuration - missing bed count'
-      });
-    }
-
-    const availableBeds = bedCountToNumber[roomInfo.bedContains];
+    // Only check availability, don't modify
+    const availableBeds = bedCountToNumber[roomInfo.bedContains] || 0;
     if (availableBeds < bedsBooked) {
       return res.status(400).json({ 
         success: false, 
@@ -544,6 +534,7 @@ exports.createBookingRequest = async (req, res) => {
       });
     }
 
+    // Create booking without modifying beds
     const booking = new Booking({
       student,
       pgOwner,
@@ -564,12 +555,6 @@ exports.createBookingRequest = async (req, res) => {
     });
 
     await booking.save();
-
-    // Update room availability
-    // const updatedBeds = availableBeds - bedsBooked;
-    // roomInfo.bedContains = numberToBedCount[updatedBeds] || 'one';
-    // roomInfo.roomAvailable = updatedBeds > 0;
-    // await owner.save();
 
     // Send notifications
     const notificationPromises = [
@@ -593,7 +578,7 @@ exports.createBookingRequest = async (req, res) => {
 
     await Promise.all(notificationPromises);
 
-    // Socket notifications using SocketManager
+    // Socket notifications
     const bookingPayload = {
       _id: booking._id,
       room,
@@ -609,10 +594,7 @@ exports.createBookingRequest = async (req, res) => {
       createdAt: booking.createdAt
     };
 
-    // Notify owner
     SocketManager.notifyOwnerNewBooking(owner._id, bookingPayload);
-
-    // Notify student
     SocketManager.notifyStudentBookingStatus(student, {
       ...bookingPayload,
       messName: owner.messName,
@@ -635,61 +617,7 @@ exports.createBookingRequest = async (req, res) => {
   }
 };
 
-// Get all bookings for owner dashboard
-exports.getOwnerBookings = async (req, res) => {
-  try {
-    const { status = 'pending', page = 1, limit = 10 } = req.query;
-    const ownerId = req.user.id;
-
-    const [bookings, total] = await Promise.all([
-      Booking.find({ 
-        pgOwner: ownerId, 
-        status 
-      })
-      .populate('student', 'firstName lastName email')
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .lean(),
-      
-      Booking.countDocuments({ pgOwner: ownerId, status })
-    ]);
-
-    const bookingsWithEndDate = bookings.map(booking => ({
-      ...booking,
-      period: {
-        ...booking.period,
-        endDate: new Date(
-          new Date(booking.period.startDate).setMonth(
-            new Date(booking.period.startDate).getMonth() + 
-            booking.period.durationMonths
-          )
-        )
-      }
-    }));
-
-    res.json({
-      success: true,
-      bookings: bookingsWithEndDate,
-      pagination: {
-        total,
-        page: parseInt(page),
-        pages: Math.ceil(total / limit),
-        limit: parseInt(limit)
-      }
-    });
-
-  } catch (error) {
-    console.error('Error fetching owner bookings:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error',
-      error: error.message
-    });
-  }
-};
-
-// Handle booking approval/rejection
+// Handle booking approval/rejection (BED DEDUCTION ONLY ON CONFIRMATION)
 exports.handleBookingApproval = async (req, res) => {
   try {
     const { id } = req.params;
@@ -722,24 +650,43 @@ exports.handleBookingApproval = async (req, res) => {
       });
     }
 
+    // Handle bed deduction only for confirmation
+    if (status === 'confirmed') {
+      const owner = await PgOwner.findById(booking.pgOwner._id);
+      const room = owner.roomInfo.find(r => r.room === booking.room);
+
+      if (!room) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Room no longer exists' 
+        });
+      }
+
+      // Check current availability
+      const currentAvailableBeds = bedCountToNumber[room.bedContains] || 0;
+      
+      if (currentAvailableBeds < booking.bedsBooked) {
+        return res.status(400).json({ 
+          success: false, 
+          message: `Not enough beds available (Requested: ${booking.bedsBooked}, Available: ${currentAvailableBeds})`
+        });
+      }
+
+      // Deduct beds
+      const updatedBeds = currentAvailableBeds - booking.bedsBooked;
+      room.bedContains = numberToBedCount[updatedBeds] || 'one';
+      room.roomAvailable = updatedBeds > 0;
+      await owner.save();
+    }
+
+    // Update booking status
     booking.status = status;
     if (status === 'rejected') {
       booking.rejectionReason = rejectionReason;
-      
-      const owner = await PgOwner.findById(booking.pgOwner._id);
-      const room = owner.roomInfo.find(r => r.room === booking.room);
-      
-      if (room) {
-        const currentBeds = bedCountToNumber[room.bedContains] || 0;
-        const newBeds = currentBeds + booking.bedsBooked;
-        room.bedContains = numberToBedCount[newBeds] || 'one';
-        room.roomAvailable = true;
-        await owner.save();
-      }
     }
-
     await booking.save();
 
+    // Send notifications
     const notificationMessage = status === 'confirmed' 
       ? `Your booking for ${booking.pgOwner.messName} (Room: ${booking.room}) has been confirmed!` 
       : `Your booking request for ${booking.pgOwner.messName} was rejected. Reason: ${rejectionReason}`;
@@ -783,7 +730,7 @@ exports.handleBookingApproval = async (req, res) => {
   }
 };
 
-// Cancel booking
+// Cancel booking (BED RESTORATION ONLY FOR CONFIRMED BOOKINGS)
 exports.cancelBooking = async (req, res) => {
   try {
     const { id } = req.params;
@@ -801,6 +748,7 @@ exports.cancelBooking = async (req, res) => {
       });
     }
 
+    // Restore beds only if booking was confirmed
     if (booking.status === 'confirmed') {
       const owner = await PgOwner.findById(booking.pgOwner._id);
       const room = owner.roomInfo.find(r => r.room === booking.room);
@@ -809,11 +757,12 @@ exports.cancelBooking = async (req, res) => {
         const currentBeds = bedCountToNumber[room.bedContains] || 0;
         const newBeds = currentBeds + booking.bedsBooked;
         room.bedContains = numberToBedCount[newBeds] || 'one';
-        room.roomAvailable = true;
+        room.roomAvailable = newBeds > 0;
         await owner.save();
       }
     }
 
+    // Update booking status
     booking.status = 'cancelled';
     booking.cancellationReason = cancellationReason;
     booking.cancelledAt = new Date();
@@ -824,6 +773,7 @@ exports.cancelBooking = async (req, res) => {
     
     await booking.save();
 
+    // Send notifications
     const notificationMessage = cancellationReason
       ? `Your booking has been cancelled. Reason: ${cancellationReason}`
       : 'Your booking has been cancelled';
