@@ -1,12 +1,11 @@
 import React from 'react';
 import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 function FlashMessage({ message='xxx', type = 'success' ,hit= false ,onClear }) {
   const [show, setShow] = React.useState(true);
-  
- // const [currentMessage, setCurrentMessage] = React.useState(message);
 
-  // const isError = type === 'error';
+
 
 
   useEffect(() => {
@@ -28,7 +27,7 @@ function FlashMessage({ message='xxx', type = 'success' ,hit= false ,onClear }) 
 
   console.log('FlashMessage', message, type , type === 'error', show, "hit",hit);
 
-  // if (!message || !show) return null;
+  if (!message || !show) return null;
 
 
 
@@ -102,6 +101,9 @@ function FlashMessage({ message='xxx', type = 'success' ,hit= false ,onClear }) 
 }
 
 </>
+
+
+
 
   );
 

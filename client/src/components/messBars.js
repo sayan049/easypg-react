@@ -60,15 +60,17 @@ function MessBars({
     if (userLocation) {
     //  console.log("User Location:", userLocation); // Debugging
     }
-    if (!selected && Array.isArray(messData) && messData.length > 0 && messData[0]?._id) {
-      setSelected(messData[0]._id);
-    }
-    console.log("Sel", !coords , coords);
     if(!selected && Array.isArray(messData) && messData.length > 0 && messData[0]?.location?.coordinates){
       const [lng, lat] = messData[0].location.coordinates; 
       coords({ lat, lng });
       console.log("Coordinates set to:", { lat, lng }, coords);
-    } //this is not working
+    } 
+
+    if (!selected && Array.isArray(messData) && messData.length > 0 && messData[0]?._id) {
+      setSelected(messData[0]._id);
+    }
+    console.log("Sel", !coords , coords);
+
     
   }, [checkFeatures, userLocation,messData[0]]);
 
