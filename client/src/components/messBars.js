@@ -13,7 +13,7 @@ function MessBars({
   const [messData, setMessData] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const [selected, setSelected] = useState(messData[0]);
+  const [selected, setSelected] = useState(null);
   console.log("Selected Mess ID:", selected);
 
   const clickNavi = (owner) => {
@@ -122,12 +122,12 @@ function MessBars({
     <div style={{ overflowY: "auto", height: "84vh" }}>
       {messData.map((owner) => (
         <div
-          key={owner._id}
+          key={owner?._id}
           className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md mb-4 sm:mb-2"
           // onClick={() => clickNavi(owner)}
           onClick={() => {
             if (owner?.location?.coordinates) {
-              clickCords(owner.location.coordinates,owner._id);
+              clickCords(owner.location.coordinates,owner?._id);
             } else {
               console.log("Location missing for", owner.messName);
             }
