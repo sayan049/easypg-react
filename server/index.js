@@ -174,14 +174,14 @@ const app = express();
 const server = http.createServer(app);
 
 // Initialize SocketManager with HTTP server
-const io = SocketManager.init(server);
+
 
 app.set("trust proxy", 1);
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
+const io = SocketManager.init(server);
 // Make SocketManager accessible in routes
 app.set('socketManager', SocketManager);
 
