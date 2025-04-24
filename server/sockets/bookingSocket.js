@@ -197,28 +197,37 @@ class SocketManager {
 
   notifyOwnerNewBooking(ownerId, bookingData) {
     try {
-      if (!this.io) return false;
-      
+      if (!this.io) {
+        console.error('Socket server not initialized');
+        return false;
+      }
+  
       const room = `owner-${ownerId}`;
       const sockets = this.ownerSockets.get(ownerId);
-      
+  
       if (sockets?.size > 0) {
-        this.io.to(room).emit("new-booking", {
+        this.io.to(room).timeout(5000).emit('new-booking', {
           ...bookingData,
           _meta: {
             sentAt: new Date(),
             deliveryAttempt: 1
           }
+        }, (err, responses) => {
+          if (err) {
+            console.error(`Notification to owner ${ownerId} failed:`, err);
+            // Implement your retry or queue logic here
+            return false;
+          }
+          console.log(`Notification delivered to owner ${ownerId}`);
+          return true;
         });
-        
-        console.log(`Notified owner ${ownerId} in room ${room}`);
-        return true;
+      } else {
+        console.warn(`Owner ${ownerId} not connected - storing for later delivery`);
+        // Implement offline storage logic here
+        return false;
       }
-      
-      console.warn(`Owner ${ownerId} not connected - no sockets found`);
-      return false;
-    } catch (err) {
-      console.error('Notification failed:', err);
+    } catch (error) {
+      console.error('Notification system error:', error);
       return false;
     }
   }

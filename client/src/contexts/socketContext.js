@@ -9,6 +9,7 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState('disconnected');
   const { user } = useAuth();
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export const SocketProvider = ({ children }) => {
     const onConnect = () => {
       setIsConnected(true);
       setIsInitialized(true);
+      setConnectionStatus('connected');
       console.log('Socket connected:', socketInstance.id);
       
       // Join appropriate room based on user role
@@ -52,6 +54,7 @@ export const SocketProvider = ({ children }) => {
 
     const onDisconnect = (reason) => {
       setIsConnected(false);
+      setConnectionStatus('disconnected');
       console.log('Socket disconnected:', reason);
       if (reason === 'io server disconnect') {
         setTimeout(() => socketInstance.connect(), 1000);
