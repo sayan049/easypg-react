@@ -204,6 +204,7 @@ class SocketManager {
   
       const room = `owner-${ownerId}`;
       const sockets = this.ownerSockets.get(ownerId);
+      console.log(this.ownerSockets.get(ownerId),"rooms",room,"ownerId",ownerId,"sockets",sockets);             
   
       if (sockets?.size > 0) {
         this.io.to(room).timeout(5000).emit('new-booking', {
