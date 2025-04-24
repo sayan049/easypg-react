@@ -560,7 +560,7 @@ exports.createBookingRequest = async (req, res) => {
     const notificationPromises = [
       sendNotification(
         owner._id, 
-        'Pgowner', 
+        'PgOwner', 
         'New Booking Request', 
         `New booking request for ${room} (${bedsBooked} bed${bedsBooked > 1 ? 's' : ''})`,
         NOTIFICATION_TYPES.BOOKING,
