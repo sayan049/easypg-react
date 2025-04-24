@@ -10,7 +10,7 @@ class SocketManager {
   init(server) {
     this.io = new Server(server, {
       cors: {
-        origin: process.env.CLIENT_URL || "http://localhost:3000",
+        origin: process.env.CLIENT_URL || "https://messmate-client.onrender.com",
         methods: ["GET", "POST"],
         credentials: true
       },
@@ -19,26 +19,44 @@ class SocketManager {
       },
       pingTimeout: 60000,
       pingInterval: 25000,
-      transports: ['websocket', 'polling']
+      transports: ['websocket', 'polling'],
+      allowEIO3: true // Add this for Socket.IO v2/v3 compatibility
     });
 
-    // Add authentication middleware
-    this.io.use((socket, next) => {
-      const token = socket.handshake.auth.token;
-      if (!token) {
-        return next(new Error("Authentication error"));
+    // Enhanced authentication middleware
+    this.io.use(async (socket, next) => {
+      try {
+        const token = socket.handshake.auth.token;
+        if (!token) {
+          console.log('No token provided');
+          return next(new Error("Authentication error"));
+        }
+        
+        // Verify JWT token here (example using jsonwebtoken)
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        socket.user = decoded;
+        next();
+      } catch (err) {
+        console.error('Socket auth error:', err);
+        next(new Error("Authentication failed"));
       }
-      // Verify JWT here if needed
-      next();
     });
 
     this.io.on("connection", (socket) => {
-      console.log("New client connected:", socket.id);
-      socket.emit("connection-status", { status: "connected", socketId: socket.id });
+      console.log("New client connected:", socket.id, socket.user?._id);
+      socket.emit("connection-status", { 
+        status: "connected", 
+        socketId: socket.id,
+        userId: socket.user?._id
+      });
 
-      // Handle owner connections
-      socket.on("owner-join", ({ userId }) => {
-        if (!userId) return;
+      // Handle owner connections with acknowledgement
+      socket.on("owner-join", ({ userId }, ack) => {
+        console.log('Received owner-join for:', userId);
+        if (!userId) {
+          if (ack) ack({ status: 'error', message: 'Missing userId' });
+          return;
+        }
         
         if (!this.ownerSockets.has(userId)) {
           this.ownerSockets.set(userId, new Set());
@@ -46,22 +64,26 @@ class SocketManager {
         this.ownerSockets.get(userId).add(socket.id);
         socket.join(`owner-${userId}`);
         console.log(`Owner ${userId} joined with socket ${socket.id}`);
+        
+        if (ack) ack({ status: 'success', rooms: [...socket.rooms] });
       });
 
-      // Handle disconnections
+      // Enhanced disconnection handling
       socket.on("disconnect", (reason) => {
         console.log(`Client disconnected (${reason}):`, socket.id);
         this._cleanUpDisconnectedSocket(socket.id);
       });
 
-      // Error handling
+      // Enhanced error handling
       socket.on("error", (err) => {
         console.error("Socket error:", err);
       });
 
-      // Heartbeat mechanism
+      // Heartbeat mechanism with timeout
       socket.on("ping", (cb) => {
-        if (typeof cb === "function") cb("pong");
+        if (typeof cb === "function") {
+          setTimeout(() => cb("pong"), 1000);
+        }
       });
     });
 

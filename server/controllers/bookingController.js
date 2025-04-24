@@ -477,18 +477,18 @@ const numberToBedCount = {
 exports.createBookingRequest = async (req, res) => {
   try {
     const { 
-      student, 
       pgOwner, 
       room, 
       bedsBooked = 1,
-      originalBedCount, 
       pricePerHead,
-      period,
-      payment
+      period
     } = req.body;
 
+    // Get student ID from authenticated user
+    const student = req.user.id;
+
     // Validate input
-    const requiredFields = ['student', 'pgOwner', 'room', 'originalBedCount', 'pricePerHead', 'period.startDate'];
+    const requiredFields = ['pgOwner', 'room', 'pricePerHead', 'period.startDate'];
     const missingFields = requiredFields.filter(field => {
       const parts = field.split('.');
       let value = req.body;
@@ -507,6 +507,7 @@ exports.createBookingRequest = async (req, res) => {
       });
     }
 
+    // Validate beds count
     if (bedsBooked <= 0 || bedsBooked > 5) {
       return res.status(400).json({
         success: false,
@@ -514,17 +515,27 @@ exports.createBookingRequest = async (req, res) => {
       });
     }
 
-    const owner = await PgOwner.findById(pgOwner);
+    // Get owner and room info with only necessary fields
+    const owner = await PgOwner.findById(pgOwner)
+      .select('messName roomInfo email')
+      .lean();
+    
     if (!owner) {
-      return res.status(404).json({ success: false, message: 'Owner not found' });
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Owner not found' 
+      });
     }
 
     const roomInfo = owner.roomInfo.find(r => r.room === room);
     if (!roomInfo) {
-      return res.status(400).json({ success: false, message: 'Room not found' });
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Room not found' 
+      });
     }
 
-    // Only check availability, don't modify
+    // Check bed availability
     const availableBeds = bedCountToNumber[roomInfo.bedContains] || 0;
     if (availableBeds < bedsBooked) {
       return res.status(400).json({ 
@@ -534,30 +545,39 @@ exports.createBookingRequest = async (req, res) => {
       });
     }
 
-    // Create booking without modifying beds
-    const booking = new Booking({
+    // Calculate payment amounts
+    const durationMonths = period.durationMonths || 6;
+    const totalAmount = pricePerHead * bedsBooked * durationMonths;
+    const deposit = pricePerHead * bedsBooked;
+
+    // Create booking
+    const booking = await Booking.create({
       student,
       pgOwner,
       room,
       bedsBooked,
-      originalBedCount,
+      originalBedCount: roomInfo.bedContains,
       pricePerHead,
       period: {
         startDate: period.startDate,
-        durationMonths: period.durationMonths || 6
+        durationMonths
       },
-      payment: payment || {
-        totalAmount: pricePerHead * ((period.durationMonths || 6) + 1),
-        deposit: pricePerHead,
+      payment: {
+        totalAmount,
+        deposit,
         status: 'pending'
       },
       status: 'pending'
     });
 
-    await booking.save();
+    // Get populated booking for notifications
+    const populatedBooking = await Booking.findById(booking._id)
+      .populate('student', 'firstName lastName email')
+      .populate('pgOwner', 'messName email')
+      .lean();
 
-    // Send notifications
-    const notificationPromises = [
+    // Send notifications in parallel
+    await Promise.all([
       sendNotification(
         owner._id, 
         'PgOwner', 
@@ -574,45 +594,74 @@ exports.createBookingRequest = async (req, res) => {
         NOTIFICATION_TYPES.BOOKING,
         booking._id
       )
-    ];
+    ]);
 
-    await Promise.all(notificationPromises);
-
-    // Socket notifications
-    const bookingPayload = {
-      _id: booking._id,
-      room,
-      bedsBooked,
-      student: {
-        _id: student,
-        firstName: booking.student?.firstName || "Unknown",
-        lastName: booking.student?.lastName || "User"
-      },
-      status: 'pending',
-      period: booking.period,
-      payment: booking.payment,
-      createdAt: booking.createdAt
+    // Prepare socket payload
+    const socketPayload = {
+      ...populatedBooking,
+      action: 'new',
+      timestamp: new Date()
     };
 
-    SocketManager.notifyOwnerNewBooking(owner._id, bookingPayload);
-    SocketManager.notifyStudentBookingStatus(student, {
-      ...bookingPayload,
-      messName: owner.messName,
-      startDate: period.startDate
-    });
+    // Socket notifications with error handling
+    try {
+      const socketManager = req.app.get('socketManager');
+      
+      // Notify owner
+      const ownerNotified = socketManager.notifyOwnerNewBooking(
+        pgOwner, 
+        socketPayload
+      );
+      
+      // Notify student
+      const studentNotified = socketManager.notifyStudentBookingStatus(
+        student,
+        socketPayload
+      );
+      
+      console.log('Socket notifications:', { ownerNotified, studentNotified });
+    } catch (socketError) {
+      console.error('Socket notification error:', socketError);
+      // Don't fail the request if sockets fail
+    }
 
+    // Send response with simplified booking data
     res.status(201).json({ 
       success: true,
-      booking: booking.toObject(),
+      booking: {
+        _id: booking._id,
+        status: booking.status,
+        room: booking.room,
+        bedsBooked: booking.bedsBooked,
+        startDate: booking.period.startDate,
+        durationMonths: booking.period.durationMonths,
+        totalAmount: booking.payment.totalAmount
+      },
       message: 'Booking request sent successfully' 
     });
 
   } catch (error) {
     console.error('Booking creation error:', error);
-    res.status(500).json({ 
+    
+    // More specific error handling
+    let statusCode = 500;
+    let errorMessage = 'Failed to create booking';
+    
+    if (error.name === 'ValidationError') {
+      statusCode = 400;
+      errorMessage = Object.values(error.errors).map(e => e.message).join(', ');
+    } else if (error.name === 'CastError') {
+      statusCode = 400;
+      errorMessage = 'Invalid data format';
+    }
+    
+    res.status(statusCode).json({ 
       success: false,
-      message: 'Failed to create booking',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      message: errorMessage,
+      error: process.env.NODE_ENV === 'development' ? {
+        message: error.message,
+        stack: error.stack
+      } : undefined
     });
   }
 };

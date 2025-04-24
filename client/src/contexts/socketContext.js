@@ -24,14 +24,17 @@ export const SocketProvider = ({ children }) => {
       },
       query: {
         userId: user._id,
-        userType: 'owner'
+        userType: user.role // Use the actual role from your user object
       }
     });
 
     const onConnect = () => {
       setIsConnected(true);
       console.log('Socket connected:', socketInstance.id);
-      socketInstance.emit('owner-join', { userId: user._id });
+      // Add this to verify the 'owner-join' event is being sent
+      socketInstance.emit('owner-join', { userId: user._id }, (ack) => {
+        console.log('Owner join acknowledgement:', ack);
+      });
     };
 
     const onDisconnect = (reason) => {
@@ -50,23 +53,20 @@ export const SocketProvider = ({ children }) => {
       }
     };
 
+    // Add event listeners for debugging
     socketInstance.on('connect', onConnect);
     socketInstance.on('disconnect', onDisconnect);
     socketInstance.on('connect_error', onConnectError);
-
-    // Heartbeat
-    const pingInterval = setInterval(() => {
-      if (socketInstance.connected) {
-        socketInstance.emit('ping', (response) => {
-          if (response !== 'pong') socketInstance.disconnect().connect();
-        });
-      }
-    }, 25000);
+    socketInstance.on('new-booking', (data) => {
+      console.log('Received new-booking:', data);
+    });
+    socketInstance.on('booking-updated', (data) => {
+      console.log('Received booking-updated:', data);
+    });
 
     setSocket(socketInstance);
 
     return () => {
-      clearInterval(pingInterval);
       socketInstance.off('connect', onConnect);
       socketInstance.off('disconnect', onDisconnect);
       socketInstance.off('connect_error', onConnectError);
@@ -79,11 +79,4 @@ export const SocketProvider = ({ children }) => {
       {children}
     </SocketContext.Provider>
   );
-};
-export const useSocket = () => {
-  const context = useContext(SocketContext);
-  if (!context) {
-    throw new Error('useSocket must be used within a SocketProvider');
-  }
-  return context;
 };
