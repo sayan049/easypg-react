@@ -992,13 +992,20 @@ const BookingStatus = () => {
     socket.on("new-booking", onNewBooking);
     socket.on("booking-updated", onBookingUpdated);
     socket.on("error", onError);
-    socket.emit("owner-join", { userId: user._id });
+    socket.emit("join-room", { roomType: "owner" }, (res) => {
+      if (res?.status === "success") {
+        console.log("Joined room:", res.room);
+      } else {
+        console.warn("Failed to join room:", res?.message);
+      }
+    });
+    
 
-    return () => {
+  return () => {
       socket.off("new-booking", onNewBooking);
       socket.off("booking-updated", onBookingUpdated);
       socket.off("error", onError);
-      socket.emit("owner-leave", { userId: user._id });
+      // No need to emit "owner-leave" unless you handle it on backend
     };
   }, [socket, user?._id]);
 

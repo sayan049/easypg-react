@@ -387,6 +387,10 @@ export default function BookingPage() {
   // Track if socket is ready to emit events
   const [socketReady, setSocketReady] = useState(false);
   useEffect(() => {
+    if (!isInitialized || !socketReady) {
+      toast.warning("Please wait, setting up real-time connection...");
+      return;
+    }
     if (socket) {
       const handleConnect = () => setSocketReady(true);
       const handleDisconnect = () => setSocketReady(false);
