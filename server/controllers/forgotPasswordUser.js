@@ -16,7 +16,7 @@ const forgotPasswordUser = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) {
       // Don't reveal that the user does not exist
-      return res.status(200).json({ message: "If your email exists, a password reset email will be sent." });
+      return res.status(200).json({ message: "Check your mail and reset your password" });
     }
 
     // Check if user is verified
