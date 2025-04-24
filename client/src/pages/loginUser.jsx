@@ -107,7 +107,7 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
       }
     } catch (error) {
       console.log("Error sending JSON data:", error);
-      toast.error(error.response?.data?.message || response.data.errors.join(", ")|| "Login failed. Please try again.");
+     // toast.error(error.response?.data?.message || error.response?.data?.errors?.join(", ")|| "Login failed. Please try again.");
     } finally {
       setTimeout(() => {
         setIsButtonDisabled(false);
