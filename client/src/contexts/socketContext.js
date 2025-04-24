@@ -12,7 +12,7 @@ export const SocketProvider = ({ children }) => {
     if (!user?._id) return;
 
     const socketInstance = io(baseurl, {
-      path: '/socket.io',
+      // path: '/socket.io',
       transports: ['websocket'],
       reconnection: true,
       reconnectionAttempts: Infinity,
