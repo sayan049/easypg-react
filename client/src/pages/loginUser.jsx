@@ -172,12 +172,26 @@ function LoginUser() {
       });
       if (response.status === 200) {
         setForgotPasswordMessage("Password reset email sent!");
+        toast.success("Password reset email sent!");
         setIsForgotPasswordOpen(false);
       } else {
         setForgotPasswordMessage("Error sending email. Please try again.");
+        toast.error("Error sending email. Please try again.");
       }
     } catch (error) {
+
       setForgotPasswordMessage("Error sending email. Please try again.");
+      if(error.response) {
+        const res = error.response;
+        if (res.data.message) {
+         // setForgotPasswordMessage(res.data.message); // e.g., "Invalid email or password."
+        return  toast.error(res.data.message);
+        } else if (res.data.errors) {
+         // setForgotPasswordMessage(res.data.errors.join(", ")); // Join multiple errors if present
+         return  toast.error(res.data.errors.join(", "));
+        }
+      }
+      toast.error("Error sending email. Please try again.");
     }
   };
 
