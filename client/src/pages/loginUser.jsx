@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation,useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
 import axios from "axios";
-import { loginUrl, forgotPasswordUserUrl, resetPasswordUserUrl,tokenVerifyUserUrl, baseurl } from "../constant/urls";
-import { ToastContainer,toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import {
+  loginUrl,
+  forgotPasswordUserUrl,
+  resetPasswordUserUrl,
+  tokenVerifyUserUrl,
+  baseurl,
+} from "../constant/urls";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 // import Skeleton from "react-loading-skeleton";
 // import "react-loading-skeleton/dist/skeleton.css";
 
@@ -26,8 +37,9 @@ function LoginUser() {
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
   const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
-const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
-  
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState(false);
+
   const [resetToken, setResetToken] = useState(""); // State for reset token
   const [tokenValid, setTokenValid] = useState(null); // State for token validity
   const [newPassword, setNewPassword] = useState(""); // State for new password
@@ -35,7 +47,7 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
   const [resetPasswordError, setResetPasswordError] = useState(""); // Error state for reset password
   const [loading, setLoading] = useState(true);
   const [searchParams] = useSearchParams();
-  
+
   useEffect(() => {
     const tokenFromUrl = searchParams.get("resetToken");
     if (tokenFromUrl) {
@@ -46,11 +58,11 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
     }
   }, [searchParams]);
 
-
-  
   const verifyResetToken = async (token) => {
     try {
-      const response = await axios.get(tokenVerifyUserUrl.replace(':resetToken', token));
+      const response = await axios.get(
+        tokenVerifyUserUrl.replace(":resetToken", token)
+      );
 
       setTokenValid(response.status === 200);
     } catch (error) {
@@ -60,9 +72,6 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
       setLoading(false);
     }
   };
-  
-
-
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
@@ -70,7 +79,7 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
   const toggleNewPasswordVisibility = () => {
     setIsNewPasswordVisible(!isNewPasswordVisible);
   };
-  
+
   const toggleConfirmPasswordVisibility = () => {
     setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
   };
@@ -80,34 +89,41 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
     const jsonData = { email, password };
     const deviceInfo = navigator.userAgent || "Unknown Device";
 
-  
     try {
       setIsSubmitting(true);
       setIsButtonDisabled(true);
-  
+
       // Make login request with credentials (no need for cookies anymore)
       const response = await axios.post(loginUrl, jsonData, {
-        headers: { "Content-Type": "application/json", "X-Device-Info": deviceInfo, },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Device-Info": deviceInfo,
+        },
       });
-  
+
       if (response.status === 200) {
         const userData = response.data.user;
         const { accessToken, refreshToken } = response.data;
-  
+
         // Store tokens in localStorage
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
-  
+
         // Optionally store user info in state or localStorage if needed
-       
-    // const message = Welcome ${userData.name}!;
+
+        // const message = Welcome ${userData.name}!;
         // Navigate to homepage or another page after successful login
         navigate("/", { state: { message: message } });
         window.location.reload();
       }
     } catch (error) {
       console.log("Error sending JSON data:", error);
-     // toast.error(error.response?.data?.message || error.response?.data?.errors?.join(", ")|| "Login failed. Please try again.");
+      // toast.error(error.response?.data?.message || error.response?.data?.errors?.join(", ")|| "Login failed. Please try again.");
+      const msg =
+        error.response?.data?.message ||
+        error.response?.data?.errors?.join(", ") ||
+        "Login failed. Please try again.";
+      toast.error(msg);
     } finally {
       setTimeout(() => {
         setIsButtonDisabled(false);
@@ -115,15 +131,15 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
       }, 5000);
     }
   };
-  
-
 
   const loginwithgoogle = () => {
-    const deviceInfo = navigator.userAgent;  // You can capture any other device info as needed
+    const deviceInfo = navigator.userAgent; // You can capture any other device info as needed
     const state = JSON.stringify({ type: "student", device: deviceInfo });
-    window.location.href = `${baseurl}/auth/google?state=${encodeURIComponent(state)}`;
+    window.location.href = `${baseurl}/auth/google?state=${encodeURIComponent(
+      state
+    )}`;
   };
-  
+
   const openForgotPassword = () => {
     setIsForgotPasswordOpen(true);
   };
@@ -135,10 +151,12 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
   const submitForgotPassword = async () => {
     try {
-      const response = await axios.post(forgotPasswordUserUrl, { email: forgotEmail });
+      const response = await axios.post(forgotPasswordUserUrl, {
+        email: forgotEmail,
+      });
       if (response.status === 200) {
         setForgotPasswordMessage("Password reset email sent!");
-        setIsForgotPasswordOpen(false); 
+        setIsForgotPasswordOpen(false);
       } else {
         setForgotPasswordMessage("Error sending email. Please try again.");
       }
@@ -147,8 +165,6 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
     }
   };
 
-  
-  
   // Function to submit the reset password
   const submitResetPassword = async () => {
     if (!resetToken || !newPassword || newPassword !== confirmPassword) {
@@ -157,12 +173,16 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
     }
 
     try {
-      const response = await axios.post(resetPasswordUserUrl, { token: resetToken, password: newPassword }, {headers: { "Content-Type": "application/json" }});
-     
+      const response = await axios.post(
+        resetPasswordUserUrl,
+        { token: resetToken, password: newPassword },
+        { headers: { "Content-Type": "application/json" } }
+      );
+
       if (response.status === 200) {
         alert("Password successfully reset! Redirecting to login...");
         setResetToken(null);
-        navigate("/LoginUser");  // Redirect to login page
+        navigate("/LoginUser"); // Redirect to login page
       } else {
         setResetPasswordError("Error resetting password. Please try again....");
       }
@@ -177,11 +197,10 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
   const isFormValid = isFormFilled && isChecked;
 
-
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
-      <ToastContainer/>
-      
+      <ToastContainer />
+
       {/* Left Section */}
       <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6">
         <div className="w-full max-w-lg p-8">
@@ -254,9 +273,8 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
               {/* Forgot Password Link */}
               <a
-                
                 className="text-sm lg:text-sm text-[#2ca4b5] hover:underline whitespace-nowrap "
-                onClick={openForgotPassword} 
+                onClick={openForgotPassword}
               >
                 Forgot Password?
               </a>
@@ -299,9 +317,7 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
               className="w-full  flex items-center justify-center  py-2 rounded-full hover:bg-[#0511121a] bg-[#116e7b1a]"
             >
               <img
-
                 src="/assets/googleIcon.png"
-
                 alt="Google"
                 className="w-6 h-6 mr-2 text-gray-600"
               />
@@ -311,7 +327,10 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
           <p className="text-center text-sm text-gray-600 mt-4">
             Don't have an account?{" "}
-            <Link to="/signupforUser" className="text-[#2ca4b5] hover:underline">
+            <Link
+              to="/signupforUser"
+              className="text-[#2ca4b5] hover:underline"
+            >
               Sign up
             </Link>
           </p>
@@ -347,102 +366,99 @@ const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
           <p>Nearest</p>
           <p>Mess</p>
         </div>
-      
       </div>
       {isForgotPasswordOpen && (
-  <div className="fixed top-0 left-0 z-50 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
+        <div className="fixed top-0 left-0 z-50 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white rounded-lg shadow-xl w-[22rem] p-6">
+            <h2 className="text-xl font-semibold mb-4">Forgot Password</h2>
+            <input
+              type="email"
+              value={forgotEmail}
+              onChange={(e) => setForgotEmail(e.target.value)}
+              placeholder="Enter your email"
+              className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+            />
+            <button
+              onClick={submitForgotPassword}
+              disabled={!forgotEmail}
+              className={`w-full bg-[#2ca4b5] text-white py-2 rounded-full mt-4 ${
+                !forgotEmail ? "bg-gray-300 cursor-not-allowed" : ""
+              }`}
+            >
+              Send Reset Email
+            </button>
+            <p className="text-center text-sm text-gray-600 mt-2">
+              {forgotPasswordMessage}
+            </p>
+            <button
+              onClick={closeForgotPassword}
+              className="w-full bg-gray-300 text-black py-2 rounded-full mt-2"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
 
-    <div className="bg-white rounded-lg shadow-xl w-[22rem] p-6">
+      {/* Reset Password Form */}
+      {resetToken && tokenValid && (
+        <div className="fixed top-0 left-0 z-50 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white rounded-lg shadow-xl w-[22rem] p-6">
+            <h2 className="text-xl font-semibold mb-4">Reset Password</h2>
 
-      <h2 className="text-xl font-semibold mb-4">Forgot Password</h2>
-      <input
-        type="email"
-        value={forgotEmail}
-        onChange={(e) => setForgotEmail(e.target.value)}
-        placeholder="Enter your email"
-        className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
-      />
-      <button
-        onClick={submitForgotPassword}
-        disabled={!forgotEmail}
-        className={`w-full bg-[#2ca4b5] text-white py-2 rounded-full mt-4 ${!forgotEmail ? 'bg-gray-300 cursor-not-allowed' : ''}`}
-      >
-        Send Reset Email
-      </button>
-      <p className="text-center text-sm text-gray-600 mt-2">{forgotPasswordMessage}</p>
-      <button
-        onClick={closeForgotPassword}
-        className="w-full bg-gray-300 text-black py-2 rounded-full mt-2"
-      >
-        Cancel
-      </button>
-    </div>
-  </div>
-)}
+            {/* New Password Input */}
+            <div className="relative">
+              <input
+                type={isNewPasswordVisible ? "text" : "password"}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="New Password"
+                className="w-full rounded-full px-4 py-2 mb-4 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+              />
+              <button
+                type="button"
+                onClick={toggleNewPasswordVisibility}
+                className="absolute right-4 top-[37%] transform -translate-y-1/2 text-gray-500"
+              >
+                {isNewPasswordVisible ? "🙈" : "👁️"}
+              </button>
+            </div>
 
-{/* Reset Password Form */}
-{resetToken && tokenValid && (
-  <div className="fixed top-0 left-0 z-50 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
+            {/* Confirm Password Input */}
+            <div className="relative">
+              <input
+                type={isConfirmPasswordVisible ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm Password"
+                className="w-full rounded-full px-4 py-2 mb-4 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+              />
+              <button
+                type="button"
+                onClick={toggleConfirmPasswordVisibility}
+                className="absolute right-4 top-[37%] transform -translate-y-1/2 text-gray-500"
+              >
+                {isConfirmPasswordVisible ? "🙈" : "👁️"}
+              </button>
+            </div>
 
-    <div className="bg-white rounded-lg shadow-xl w-[22rem] p-6">
+            {resetPasswordError && (
+              <p className="text-red-500 text-sm mb-4">{resetPasswordError}</p>
+            )}
 
-      <h2 className="text-xl font-semibold mb-4">Reset Password</h2>
-      
-      {/* New Password Input */}
-      <div className="relative">
-        <input
-          type={isNewPasswordVisible ? "text" : "password"}
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          placeholder="New Password"
-          className="w-full rounded-full px-4 py-2 mb-4 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
-        />
-        <button
-          type="button"
-          onClick={toggleNewPasswordVisibility}
-
-          className="absolute right-4 top-[37%] transform -translate-y-1/2 text-gray-500"
-
-        >
-          {isNewPasswordVisible ? "🙈" : "👁️"}
-        </button>
-      </div>
-      
-      {/* Confirm Password Input */}
-      <div className="relative">
-        <input
-          type={isConfirmPasswordVisible ? "text" : "password"}
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          placeholder="Confirm Password"
-          className="w-full rounded-full px-4 py-2 mb-4 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
-        />
-        <button
-          type="button"
-          onClick={toggleConfirmPasswordVisibility}
-
-          className="absolute right-4 top-[37%] transform -translate-y-1/2 text-gray-500"
-
-        >
-          {isConfirmPasswordVisible ? "🙈" : "👁️"}
-        </button>
-      </div>
-      
-      {resetPasswordError && <p className="text-red-500 text-sm mb-4">{resetPasswordError}</p>}
-      
-      <button 
-        onClick={submitResetPassword}
-        className={`w-full bg-[#2ca4b5] text-white py-2 rounded-full mt-4 ${!newPassword || !confirmPassword ? 'bg-gray-300 cursor-not-allowed' : ''}`}
-      >
-        Reset Password
-      </button>
-    </div>
-  </div>
-)}
-
-
-
-
+            <button
+              onClick={submitResetPassword}
+              className={`w-full bg-[#2ca4b5] text-white py-2 rounded-full mt-4 ${
+                !newPassword || !confirmPassword
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : ""
+              }`}
+            >
+              Reset Password
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
