@@ -457,25 +457,39 @@ export default function BookingPage() {
   
       // Send socket notification if booking was successful
       if (response.data) {
-        try {
-          // Use the enhanced emitWithAck from our socket context
-          await emitWithAck('new-booking-request', {
-            ownerId: response.data.pgOwner,
-            bookingId: response.data._id,
-            studentId: user.id,
-            room: response.data.room,
-            bedsBooked: response.data.bedsBooked,
-            pricePerHead: response.data.pricePerHead,
-            timestamp: new Date().toISOString()
-          });
+        const MAX_RETRIES = 3;
+        let retryCount = 0;
+        
+        const sendNotification = async () => {
+          try {
+            await emitWithAck('new-booking-request', {
+              ownerId: owner._id,
+              bookingId: response.data._id,
+              studentId: user.id,
+              room: selectedRoomInfo.room,
+              bedsBooked: 1,
+              pricePerHead: selectedRoomInfo.pricePerHead,
+              timestamp: new Date().toISOString()
+            });
+            
+            console.log('Real-time notification sent successfully');
+          } catch (error) {
+            if (retryCount < MAX_RETRIES) {
+              retryCount++;
+              console.warn(`Retry ${retryCount} for notification...`);
+              await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+              return sendNotification();
+            }
+            throw error;
+          }
+        };
   
-          console.log('Booking notification sent successfully');
-          toast.success("Booking request submitted successfully!");
-          
-        } catch (emitError) {
-          console.warn('Socket notification failed:', emitError.message);
-          // This is non-critical, so we still show success but warn about real-time updates
-          toast.success("Booking submitted (real-time updates may be delayed)");
+        try {
+          await sendNotification();
+          toast.success("Booking created with real-time notification!");
+        } catch (error) {
+          console.warn("Real-time notification failed after retries:", error);
+          toast.success("Booking created! Owner will be notified when online");
         }
       }
   
