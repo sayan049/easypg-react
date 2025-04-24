@@ -1,10 +1,15 @@
 const { Server } = require("socket.io");
+const jwt = require('jsonwebtoken');
 
 class SocketManager {
   constructor() {
     this.io = null;
     this.ownerSockets = new Map();
     this.studentSockets = new Map();
+    this.connectionStats = {
+      totalConnections: 0,
+      activeConnections: 0
+    };
   }
 
   init(server) {
@@ -16,15 +21,15 @@ class SocketManager {
         allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
       },
       connectionStateRecovery: {
-        maxDisconnectionDuration: 120000
+        maxDisconnectionDuration: 120000,
+        skipMiddlewares: true
       },
       pingTimeout: 60000,
       pingInterval: 25000,
       transports: ['websocket', 'polling'],
       allowEIO3: true,
-      // Add these for better production stability
       serveClient: false,
-      maxHttpBufferSize: 1e8 // 100MB max payload
+      maxHttpBufferSize: 1e8
     });
 
     // Enhanced authentication middleware
@@ -37,12 +42,15 @@ class SocketManager {
         }
         
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        if (!decoded) {
-          console.log('Invalid token format');
+        if (!decoded?._id) {
+          console.log('Invalid token payload');
           return next(new Error("Authentication failed"));
         }
         
-        socket.user = decoded;
+        socket.user = {
+          id: decoded._id,
+          role: decoded.role
+        };
         next();
       } catch (err) {
         console.error('Socket auth error:', err.message);
@@ -54,50 +62,79 @@ class SocketManager {
     });
 
     this.io.on("connection", (socket) => {
-      console.log("New client connected:", socket.id, socket.user?._id);
+      this.connectionStats.totalConnections++;
+      this.connectionStats.activeConnections++;
       
-      // Send connection confirmation
+      console.log(`New connection (${socket.user?.role}):`, socket.id, socket.user?.id);
+      
+      // Connection confirmation with additional metadata
       socket.emit("connection-status", { 
-        status: "connected", 
+        status: "connected",
         socketId: socket.id,
-        userId: socket.user?._id,
-        timestamp: new Date()
+        userId: socket.user?.id,
+        role: socket.user?.role,
+        timestamp: new Date(),
+        connectionCount: this.connectionStats.activeConnections
       });
 
-      // Handle owner connections
-      socket.on("owner-join", ({ userId }, ack) => {
-        if (!userId) {
-          console.log('owner-join missing userId');
-          return ack?.({ status: 'error', message: 'Missing userId' });
-        }
-
+      // Handle role-based room joining
+      socket.on("join-room", ({ roomType }, callback) => {
         try {
-          if (!this.ownerSockets.has(userId)) {
-            this.ownerSockets.set(userId, new Set());
-          }
-          this.ownerSockets.get(userId).add(socket.id);
-          socket.join(`owner-${userId}`);
+          if (!socket.user?.id) throw new Error("Unauthenticated");
           
-          console.log(`Owner ${userId} joined with socket ${socket.id}`);
-          ack?.({ 
-            status: 'success', 
-            rooms: [...socket.rooms],
+          const roomName = `${roomType}-${socket.user.id}`;
+          socket.join(roomName);
+          
+          if (roomType === 'owner') {
+            this._trackOwnerConnection(socket.user.id, socket.id);
+          } else if (roomType === 'student') {
+            this._trackStudentConnection(socket.user.id, socket.id);
+          }
+          
+          callback?.({
+            status: 'success',
+            room: roomName,
             timestamp: new Date()
           });
+          
+          console.log(`${roomType} ${socket.user.id} joined room ${roomName}`);
         } catch (err) {
-          console.error('owner-join error:', err);
-          ack?.({ status: 'error', message: err.message });
+          console.error('join-room error:', err.message);
+          callback?.({ status: 'error', message: err.message });
         }
       });
 
-      // Handle student connections (if needed)
-      socket.on("student-join", ({ userId }, ack) => {
-        // Similar implementation to owner-join
+      // Handle booking requests
+      socket.on("new-booking-request", async (data, callback) => {
+        try {
+          if (!socket.user?.id) throw new Error("Unauthenticated");
+          
+          console.log('New booking request:', data);
+          const success = this.notifyOwnerNewBooking(data.ownerId, {
+            ...data,
+            requestor: socket.user.id,
+            timestamp: new Date()
+          });
+          
+          callback?.({
+            status: success ? 'success' : 'retrying',
+            message: success ? 'Notification sent' : 'Owner not connected',
+            timestamp: new Date()
+          });
+          
+          if (!success) {
+            // Implement retry logic or offline queue if needed
+          }
+        } catch (err) {
+          console.error('Booking request error:', err);
+          callback?.({ status: 'error', message: err.message });
+        }
       });
 
       // Enhanced disconnection handling
       socket.on("disconnect", (reason) => {
-        console.log(`Client disconnected (${reason}):`, socket.id);
+        this.connectionStats.activeConnections--;
+        console.log(`Disconnected (${reason}):`, socket.id);
         this._cleanUpDisconnectedSocket(socket.id);
       });
 
@@ -106,26 +143,34 @@ class SocketManager {
         console.error("Socket error:", err);
       });
 
-      // Heartbeat mechanism
-      const pingInterval = setInterval(() => {
-        if (socket.connected) {
-          socket.emit('ping', {}, () => {
-            // Ping successful
-          });
-        }
-      }, 20000);
-
-      socket.on('pong', (cb) => {
-        if (typeof cb === 'function') cb();
-      });
-
-      socket.on('disconnect', () => {
-        clearInterval(pingInterval);
+      // Health check endpoint
+      socket.on("health-check", (callback) => {
+        callback?.({
+          status: 'healthy',
+          socketId: socket.id,
+          uptime: process.uptime(),
+          timestamp: new Date()
+        });
       });
     });
 
     return this.io;
   }
+
+  _trackOwnerConnection(ownerId, socketId) {
+    if (!this.ownerSockets.has(ownerId)) {
+      this.ownerSockets.set(ownerId, new Set());
+    }
+    this.ownerSockets.get(ownerId).add(socketId);
+  }
+
+  _trackStudentConnection(studentId, socketId) {
+    if (!this.studentSockets.has(studentId)) {
+      this.studentSockets.set(studentId, new Set());
+    }
+    this.studentSockets.get(studentId).add(socketId);
+  }
+
   _cleanUpDisconnectedSocket(socketId) {
     // Clean up owner connections
     for (const [ownerId, socketSet] of this.ownerSockets.entries()) {
@@ -151,33 +196,80 @@ class SocketManager {
   }
 
   notifyOwnerNewBooking(ownerId, bookingData) {
-    if (this.io && this.ownerSockets.has(ownerId)) {
-      this.io.to(`owner-${ownerId}`).emit("new-booking", bookingData);
-      console.log(`Notified owner ${ownerId} of new booking`);
-      return true;
+    try {
+      if (!this.io) return false;
+      
+      const room = `owner-${ownerId}`;
+      const sockets = this.ownerSockets.get(ownerId);
+      
+      if (sockets?.size > 0) {
+        this.io.to(room).emit("new-booking", {
+          ...bookingData,
+          _meta: {
+            sentAt: new Date(),
+            deliveryAttempt: 1
+          }
+        });
+        
+        console.log(`Notified owner ${ownerId} in room ${room}`);
+        return true;
+      }
+      
+      console.warn(`Owner ${ownerId} not connected - no sockets found`);
+      return false;
+    } catch (err) {
+      console.error('Notification failed:', err);
+      return false;
     }
-    console.warn(`Owner ${ownerId} not connected for new booking notification`);
-    return false;
   }
 
-  notifyOwnerBookingUpdate(ownerId, bookingData) {
-    if (this.io && this.ownerSockets.has(ownerId)) {
-      this.io.to(`owner-${ownerId}`).emit("booking-updated", bookingData);
-      console.log(`Notified owner ${ownerId} of booking update`);
-      return true;
-    }
-    console.warn(`Owner ${ownerId} not connected for booking update notification`);
-    return false;
+notifyOwnerBookingUpdate(ownerId, bookingData) {
+  if (this.io && this.ownerSockets.has(ownerId)) {
+    this.io.to(`owner-${ownerId}`).emit("booking-updated", bookingData);
+    console.log(`Notified owner ${ownerId} of booking update`);
+    return true;
   }
+  console.warn(`Owner ${ownerId} not connected for booking update notification`);
+  return false;
+}
 
-  // Student notification methods (kept for completeness)
-  notifyStudentBookingStatus(studentId, bookingData) {
-    if (this.io && this.studentSockets.has(studentId)) {
-      this.io.to(`student-${studentId}`).emit("booking-status-update", bookingData);
-      return true;
-    }
-    return false;
+// Student notification methods (kept for completeness)
+notifyStudentBookingStatus(studentId, bookingData) {
+  if (this.io && this.studentSockets.has(studentId)) {
+    this.io.to(`student-${studentId}`).emit("booking-status-update", bookingData);
+    return true;
+  }
+  return false;
+}
+
+
+  getConnectionStats() {
+    return {
+      ...this.connectionStats,
+      connectedOwners: this.ownerSockets.size,
+      connectedStudents: this.studentSockets.size,
+      timestamp: new Date()
+    };
   }
 }
 
 module.exports = new SocketManager();
+// notifyOwnerBookingUpdate(ownerId, bookingData) {
+//   if (this.io && this.ownerSockets.has(ownerId)) {
+//     this.io.to(`owner-${ownerId}`).emit("booking-updated", bookingData);
+//     console.log(`Notified owner ${ownerId} of booking update`);
+//     return true;
+//   }
+//   console.warn(`Owner ${ownerId} not connected for booking update notification`);
+//   return false;
+// }
+
+// // Student notification methods (kept for completeness)
+// notifyStudentBookingStatus(studentId, bookingData) {
+//   if (this.io && this.studentSockets.has(studentId)) {
+//     this.io.to(`student-${studentId}`).emit("booking-status-update", bookingData);
+//     return true;
+//   }
+//   return false;
+// }
+// }

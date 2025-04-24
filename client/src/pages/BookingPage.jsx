@@ -381,6 +381,7 @@ export default function BookingPage() {
   const [checkInDate, setCheckInDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const {socket,isConnected} = useSocket();
+  const { emitWithAck, isInitialized } = useSocket();
   const { user } = useAuth();
    
   // Track if socket is ready to emit events
@@ -415,6 +416,7 @@ export default function BookingPage() {
     try {
       setIsLoading(true);
       
+      // Validate inputs
       if (!selectedRoom || !checkInDate) {
         throw new Error("Please select a room and check-in date");
       }
@@ -427,6 +429,7 @@ export default function BookingPage() {
         throw new Error("Selected room not found");
       }
   
+      // Prepare booking data
       const bookingData = {
         student: user.id,
         pgOwner: owner._id,
@@ -439,47 +442,43 @@ export default function BookingPage() {
           durationMonths: duration
         },
         payment: {
-          totalAmount: selectedRoomInfo.pricePerHead * (duration + 1), // Rent + deposit
+          totalAmount: selectedRoomInfo.pricePerHead * (duration + 1),
           deposit: selectedRoomInfo.pricePerHead
         },
         status: "pending"
       };
   
-      const response = await axios.post(bookingRequestUrl, bookingData);
+      // Make booking request
+      const response = await axios.post(bookingRequestUrl, bookingData, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      });
   
-       // Safe emit function
-       const emitBookingRequest = () => {
-        if (!socket) {
-          console.error('Socket not initialized');
-          return;
-        }
-        
-        if (!isConnected) {
-          console.warn('Socket not connected - retrying in 1s');
-          setTimeout(emitBookingRequest, 1000);
-          return;
-        }
-
-        socket.emit('new-booking-request', {
-          ownerId: response.data.pgOwner,
-          bookingId: response.data._id,
-          studentId: user._id,
-          room: response.data.room,
-          bedsBooked: response.data.bedsBooked,
-          pricePerHead: response.data.pricePerHead
-        }, (ack) => {
-          if (ack?.success) {
-            console.log('Booking notification sent successfully');
-          } else {
-            console.error('Failed to notify owner:', ack?.message);
-          }
-        });
-      };
-
+      // Send socket notification if booking was successful
       if (response.data) {
-        emitBookingRequest();
+        try {
+          // Use the enhanced emitWithAck from our socket context
+          await emitWithAck('new-booking-request', {
+            ownerId: response.data.pgOwner,
+            bookingId: response.data._id,
+            studentId: user.id,
+            room: response.data.room,
+            bedsBooked: response.data.bedsBooked,
+            pricePerHead: response.data.pricePerHead,
+            timestamp: new Date().toISOString()
+          });
+  
+          console.log('Booking notification sent successfully');
+          toast.success("Booking request submitted successfully!");
+          
+        } catch (emitError) {
+          console.warn('Socket notification failed:', emitError.message);
+          // This is non-critical, so we still show success but warn about real-time updates
+          toast.success("Booking submitted (real-time updates may be delayed)");
+        }
       }
-
+  
     } catch (error) {
       console.error("Booking error:", error);
       toast.error(error.response?.data?.message || error.message || "Booking failed");
