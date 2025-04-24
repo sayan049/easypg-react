@@ -120,7 +120,7 @@ function SignUpForm() {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
-      {message &&
+      {/* {message &&
         <FlashMessage
           message={message.text}
           type={message.type}
@@ -128,7 +128,8 @@ function SignUpForm() {
           key={message.text + Date.now()}
           onClear={() => setmessage(null)}
         />
-      }
+      } */}
+      <ToastContainer />
       {/* Left Section */}
       <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6">
         <div className="w-full max-w-lg p-8">
