@@ -5,6 +5,8 @@ import { signupownerUrl } from "../constant/urls";
 import { useNavigate } from "react-router-dom";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { toast,ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -18,6 +20,7 @@ function SignupOwner() {
   const navigate = useNavigate();
   // const [location, setLocation] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
+  
   
   const amenities = [
     { id: "test1", label: "A/C", icon: "💨" },
@@ -251,6 +254,17 @@ function SignupOwner() {
         console.error("Signup failed:", response.data);
       }
     } catch (error) {
+       if(error.response) {
+              const res = error.response;
+              if (res.data.message) {
+               // setForgotPasswordMessage(res.data.message); // e.g., "Invalid email or password."
+              return  toast.error(res.data.message);
+              } else if (res.data.errors) {
+               // setForgotPasswordMessage(res.data.errors.join(", ")); // Join multiple errors if present
+               return  toast.error(res.data.errors.join(", "));
+              }
+            }
+            toast.error("Error sending email. Please try again.");
       console.error(
         "Error creating user:",
         error.response ? error.response.data : error.message
@@ -300,6 +314,7 @@ console.log(isFormComplete());
 
   return (
     <div className="relative md:bg-custom-gradient bg-mobile-owner" >
+      <ToastContainer position="top-center"  />
     {/* Header text */}
     <div
   className="flex flex-col items-center w-full text-center  pt-8
