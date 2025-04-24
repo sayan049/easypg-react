@@ -1,6 +1,6 @@
 // const baseUrl = 'https://easypg-react.onrender.com';
-  const baseUrl = `${process.env.REACT_APP_BACKEND_URL}` ;
-// const baseUrl =`https://messmate-server.onrender.com`
+//   const baseUrl = `${process.env.REACT_APP_BACKEND_URL}` || `https://messmate-server.onrender.com`;
+const baseUrl =`https://messmate-server.onrender.com`
 
 export const loginUrl = `${baseUrl}/auth/login`;
 export const signupUrl = `${baseUrl}/auth/signup`;
