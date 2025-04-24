@@ -13,7 +13,7 @@ class SocketManager {
   }
 
   init(server) {
-   
+   console.log("SocketManager initialized with server:", server);
     this.io = new Server(server, {
       cors: {
         origin:  "https://messmate-client.onrender.com",
@@ -23,7 +23,7 @@ class SocketManager {
       },
       connectionStateRecovery: {
         maxDisconnectionDuration: 120000,
-        skipMiddlewares: true
+        skipMiddlewares: false
       },
       pingTimeout: 60000,
       pingInterval: 25000,
