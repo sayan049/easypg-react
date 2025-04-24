@@ -831,7 +831,7 @@ const BookingStatus = () => {
     try {
       setLoading((prev) => ({ ...prev, action: true }));
 
-      await axios.put(`${baseurl}/bookings/${bookingId}/status`, {
+      await axios.post(`${baseurl}/auth/bookings/${bookingId}/status`, {
         status,
         ...(reason && { rejectionReason: reason }),
       }, {
