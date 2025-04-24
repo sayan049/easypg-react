@@ -458,6 +458,7 @@ export default function BookingPage() {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`
         }
       });
+      
   
       // Send socket notification if booking was successful
       if (response.data) {
