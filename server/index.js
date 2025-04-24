@@ -170,11 +170,6 @@ const corsOptions = {
     "x-device-info",
   ],
 };
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', corsOptions.origin);
-  res.header('Access-Control-Allow-Credentials', 'true');
-  next();
-});
 
 const app = express();
 const server = http.createServer(app);
@@ -192,6 +187,11 @@ const io = SocketManager.init(server);
 app.set('socketManager', SocketManager);
 
 app.use(passport.initialize());
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', corsOptions.origin);
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
 
 // Routes
 app.use("/mail", mailRoute);
