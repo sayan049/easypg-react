@@ -124,6 +124,7 @@ function LoginUser() {
         error.response?.data?.errors?.join(", ") ||
         "Login failed. Please try again.";
       toast.error(msg);
+      console.log("Error:", error.response?.data?.message ,  error.response?.data?.errors?.join(", ") );
     } finally {
       setTimeout(() => {
         setIsButtonDisabled(false);
