@@ -118,13 +118,28 @@ function LoginUser() {
       }
     } catch (error) {
       console.log("Error sending JSON data:", error);
-      // toast.error(error.response?.data?.message || error.response?.data?.errors?.join(", ")|| "Login failed. Please try again.");
-      const msg =
-        error.response?.data?.message ||
-        error.response?.data?.errors?.join(", ") ||
-        "Login failed. Please try again.";
-      toast.error(msg);
-      console.log("Error:", error.response?.data?.message ,  error.response?.data?.errors?.join(", ") );
+      let errorMsg = "Login failed. Please try again.";
+
+      // Check if the error response exists and handle specific cases
+      if (error.response) {
+        const res = error.response;
+        
+        // Check for specific error messages from the backend
+        if (res.data.message) {
+          errorMsg = res.data.message;  // e.g., "Invalid email or password."
+        } else if (res.data.errors) {
+          errorMsg = res.data.errors.join(", ");  // Join multiple errors if present
+        }
+      } else if (error.request) {
+        errorMsg = "Server not responding. Check your internet.";
+      } else {
+        errorMsg = "Error: " + error.message; // Default error message
+      }
+  
+      // Log the error and show the toast
+      console.error("Error details:", error);
+      toast.error(errorMsg);
+      console.log("Error:", error.response?.data?.message ,  errorMsg);
     } finally {
       setTimeout(() => {
         setIsButtonDisabled(false);
