@@ -91,15 +91,37 @@ export const SocketProvider = ({ children }) => {
     };
   }, [user?._id]);
 
-  // Enhanced emit function
-  const safeEmit = (event, data, callback) => {
-    if (!socket || !isInitialized) {
-      console.error('Socket not ready');
-      return false;
-    }
-    
-    socket.emit(event, data, callback);
-    return true;
+  // Enhanced emit function with retry logic
+  const emitWithAck = (event, data, timeout = 5000, retries = 3, delay = 1000) => {
+    return new Promise((resolve, reject) => {
+      const attempt = (retryCount) => {
+        if (!socket || !isInitialized) {
+          if (retryCount <= 0) {
+            return reject(new Error('Socket not ready'));
+          }
+          return setTimeout(() => attempt(retryCount - 1), delay);
+        }
+
+        let timedOut = false;
+        const timer = setTimeout(() => {
+          timedOut = true;
+          reject(new Error('Socket timeout'));
+        }, timeout);
+
+        socket.emit(event, data, (response) => {
+          if (timedOut) return;
+          clearTimeout(timer);
+
+          if (response?.success) {
+            resolve(response);
+          } else {
+            reject(new Error(response?.message || 'Socket error'));
+          }
+        });
+      };
+
+      attempt(retries);
+    });
   };
 
   return (
@@ -107,7 +129,7 @@ export const SocketProvider = ({ children }) => {
       socket, 
       isConnected, 
       isInitialized,
-      safeEmit 
+      emitWithAck 
     }}>
       {children}
     </SocketContext.Provider>
@@ -119,36 +141,9 @@ export const useSocket = () => {
   if (!context) {
     throw new Error('useSocket must be used within a SocketProvider');
   }
-  
-  // Enhanced emit with Promise wrapper
-  const emitWithAck = (event, data, timeout = 5000) => {
-    if (!context.socket || !context.isInitialized) {
-      return Promise.reject(new Error('Socket not ready'));
-    }
-    
-    return new Promise((resolve, reject) => {
-      let timedOut = false;
-      const timer = setTimeout(() => {
-        timedOut = true;
-        reject(new Error('Socket timeout'));
-      }, timeout);
-
-      context.socket.emit(event, data, (response) => {
-        if (timedOut) return;
-        clearTimeout(timer);
-        
-        if (response?.success) {
-          resolve(response);
-        } else {
-          reject(new Error(response?.message || 'Socket error'));
-        }
-      });
-    });
-  };
 
   return { 
-    ...context,
-    emitWithAck
+    ...context
   };
 };
 
