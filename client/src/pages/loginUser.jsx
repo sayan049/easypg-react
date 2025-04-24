@@ -418,7 +418,7 @@ function LoginUser() {
               Send Reset Email
             </button>
             <p className="text-center text-sm text-gray-600 mt-2">
-              {forgotPasswordMessage}
+              {/* {forgotPasswordMessage} */}
             </p>
             <button
               onClick={closeForgotPassword}
