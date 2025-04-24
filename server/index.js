@@ -155,7 +155,7 @@ const connectDB = require("./config/mongoDB");
 const http = require('http');
 const SocketManager = require('./sockets/bookingSocket'); // Update with correct path
 // const ORIGIN =  process.env.CLIENT_URL|| 'http://localhost:3000'; // Default to localhost if not set
-const ORIGIN =  "https://messmate-client.onrender.com";
+const ORIGIN =  "https://messmate-client.onrender.com/";
 const PORT = process.env.PORT || 8080;
 
 // Enhanced CORS configuration
