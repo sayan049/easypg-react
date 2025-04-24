@@ -95,7 +95,7 @@ export const SocketProvider = ({ children }) => {
   const emitWithAck = (event, data, timeout = 5000, retries = 3, delay = 1000) => {
     return new Promise((resolve, reject) => {
       const attempt = (retryCount) => {
-        if (!socket || !isInitialized) {
+        if (!socket || !isInitialized || !isConnected) {
           if (retryCount <= 0) {
             return reject(new Error('Socket not ready'));
           }
