@@ -10,9 +10,10 @@ class SocketManager {
   init(server) {
     this.io = new Server(server, {
       cors: {
-        origin: process.env.CLIENT_URL || "https://messmate-client.onrender.com",
-        methods: ["GET", "POST"],
-        credentials: true
+        origin: process.env.CLIENT_URL || "http://localhost:3000",
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        credentials: true,
+        allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
       },
       connectionStateRecovery: {
         maxDisconnectionDuration: 120000
@@ -20,7 +21,10 @@ class SocketManager {
       pingTimeout: 60000,
       pingInterval: 25000,
       transports: ['websocket', 'polling'],
-      allowEIO3: true // Add this for Socket.IO v2/v3 compatibility
+      allowEIO3: true,
+      // Add these for better production stability
+      serveClient: false,
+      maxHttpBufferSize: 1e8 // 100MB max payload
     });
 
     // Enhanced authentication middleware
@@ -28,44 +32,67 @@ class SocketManager {
       try {
         const token = socket.handshake.auth.token;
         if (!token) {
-          console.log('No token provided');
+          console.log('Socket connection attempt without token');
           return next(new Error("Authentication error"));
         }
         
-        // Verify JWT token here (example using jsonwebtoken)
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (!decoded) {
+          console.log('Invalid token format');
+          return next(new Error("Authentication failed"));
+        }
+        
         socket.user = decoded;
         next();
       } catch (err) {
-        console.error('Socket auth error:', err);
-        next(new Error("Authentication failed"));
+        console.error('Socket auth error:', err.message);
+        if (err.name === 'TokenExpiredError') {
+          return next(new Error("Token expired"));
+        }
+        return next(new Error("Authentication failed"));
       }
     });
 
     this.io.on("connection", (socket) => {
       console.log("New client connected:", socket.id, socket.user?._id);
+      
+      // Send connection confirmation
       socket.emit("connection-status", { 
         status: "connected", 
         socketId: socket.id,
-        userId: socket.user?._id
+        userId: socket.user?._id,
+        timestamp: new Date()
       });
 
-      // Handle owner connections with acknowledgement
+      // Handle owner connections
       socket.on("owner-join", ({ userId }, ack) => {
-        console.log('Received owner-join for:', userId);
         if (!userId) {
-          if (ack) ack({ status: 'error', message: 'Missing userId' });
-          return;
+          console.log('owner-join missing userId');
+          return ack?.({ status: 'error', message: 'Missing userId' });
         }
-        
-        if (!this.ownerSockets.has(userId)) {
-          this.ownerSockets.set(userId, new Set());
+
+        try {
+          if (!this.ownerSockets.has(userId)) {
+            this.ownerSockets.set(userId, new Set());
+          }
+          this.ownerSockets.get(userId).add(socket.id);
+          socket.join(`owner-${userId}`);
+          
+          console.log(`Owner ${userId} joined with socket ${socket.id}`);
+          ack?.({ 
+            status: 'success', 
+            rooms: [...socket.rooms],
+            timestamp: new Date()
+          });
+        } catch (err) {
+          console.error('owner-join error:', err);
+          ack?.({ status: 'error', message: err.message });
         }
-        this.ownerSockets.get(userId).add(socket.id);
-        socket.join(`owner-${userId}`);
-        console.log(`Owner ${userId} joined with socket ${socket.id}`);
-        
-        if (ack) ack({ status: 'success', rooms: [...socket.rooms] });
+      });
+
+      // Handle student connections (if needed)
+      socket.on("student-join", ({ userId }, ack) => {
+        // Similar implementation to owner-join
       });
 
       // Enhanced disconnection handling
@@ -74,16 +101,26 @@ class SocketManager {
         this._cleanUpDisconnectedSocket(socket.id);
       });
 
-      // Enhanced error handling
+      // Error handling
       socket.on("error", (err) => {
         console.error("Socket error:", err);
       });
 
-      // Heartbeat mechanism with timeout
-      socket.on("ping", (cb) => {
-        if (typeof cb === "function") {
-          setTimeout(() => cb("pong"), 1000);
+      // Heartbeat mechanism
+      const pingInterval = setInterval(() => {
+        if (socket.connected) {
+          socket.emit('ping', {}, () => {
+            // Ping successful
+          });
         }
+      }, 20000);
+
+      socket.on('pong', (cb) => {
+        if (typeof cb === 'function') cb();
+      });
+
+      socket.on('disconnect', () => {
+        clearInterval(pingInterval);
       });
     });
 
