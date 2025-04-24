@@ -22,7 +22,7 @@ function SignUpForm() {
   const [isFormFilled, setIsFormFilled] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Disable button after first click
-  const [message, setmessage] = useState({ Text: "", type: "" }); // State to manage flash message
+  //const [message, setmessage] = useState({ Text: "", type: "" }); // State to manage flash message
   const [emailError, setEmailError] = useState("");
 
 
@@ -51,7 +51,8 @@ function SignUpForm() {
         localStorage.setItem("loginMessage", message);
         navigate("/LoginUser", { state: { message } });
       } else {
-        setmessage({ text: "Signup failed", type: "error" });
+       // setmessage({ text: "Signup failed", type: "error" });
+       toast.error("Signup failed. Try again."); 
       }
     } catch (error) {
       let errorMsg = "Signup failed. Try again.";
@@ -65,7 +66,7 @@ function SignUpForm() {
         errorMsg = "Error: " + error.message;
       }
       toast.error(errorMsg); //not working
-      setmessage({ text: errorMsg, type: "error" });
+      //setmessage({ text: errorMsg, type: "error" });
 
       // Re-enable button after 2s
       setTimeout(() => {
@@ -120,9 +121,10 @@ function SignUpForm() {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       {/* Left Section */}
       <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6">
+      <ToastContainer position="top-center" />
         <div className="w-full max-w-lg p-8">
           {/* Header Section */}
           <div className="lg:absolute lg:top-6 lg:left-6 flex flex-col items-center lg:items-start space-y-2 lg:space-y-0">
