@@ -13,6 +13,7 @@ class SocketManager {
   }
 
   init(server) {
+    console.log("SocketManager initialized...");
     this.io = new Server(server, {
       cors: {
         origin:  "https://messmate-client.onrender.com",
@@ -62,6 +63,7 @@ class SocketManager {
     });
 
     this.io.on("connection", (socket) => {
+
       this.connectionStats.totalConnections++;
       this.connectionStats.activeConnections++;
       
@@ -158,6 +160,7 @@ class SocketManager {
   }
 
   _trackOwnerConnection(ownerId, socketId) {
+    //nothing printing here its not running
     if (!this.ownerSockets.has(ownerId)) {
       this.ownerSockets.set(ownerId, new Set());
       console.log(`Tracking new owner connection: ${ownerId}`, socketId);
