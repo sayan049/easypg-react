@@ -13,7 +13,7 @@ class SocketManager {
   }
 
   init(server) {
-    console.log("SocketManager initialized...");
+   
     this.io = new Server(server, {
       cors: {
         origin:  "https://messmate-client.onrender.com",
@@ -31,10 +31,12 @@ class SocketManager {
       allowEIO3: true,
       serveClient: false,
       maxHttpBufferSize: 1e8
-    });
+    }
+  );
 
     // Enhanced authentication middleware
     this.io.use(async (socket, next) => {
+      console.log('Socket authentication middleware triggered',socket);
       try {
         const token = socket.handshake.auth.token;
         if (!token) {
