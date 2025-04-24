@@ -10,7 +10,7 @@ class SocketManager {
   init(server) {
     this.io = new Server(server, {
       cors: {
-        origin: process.env.CLIENT_URL ,
+        origin: process.env.CLIENT_URL || "https://messmate-client.onrender.com",
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         credentials: true,
         allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
