@@ -22,7 +22,7 @@ function SignUpForm() {
   const [isFormFilled, setIsFormFilled] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // New state to track submission
   const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Disable button after first click
-  const [message, setmessage] = useState({ Text: "hi", type: "success" }); // State to manage flash message
+  const [message, setmessage] = useState({ Text: "", type: "" }); // State to manage flash message
   const [emailError, setEmailError] = useState("");
 
 
@@ -120,15 +120,6 @@ function SignUpForm() {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
-      {/* {message &&
-        <FlashMessage
-          message={message.text}
-          type={message.type}
-          hit={true}
-          key={message.text + Date.now()}
-          onClear={() => setmessage(null)}
-        />
-      } */}
       <ToastContainer />
       {/* Left Section */}
       <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6">
