@@ -493,6 +493,8 @@ export default function BookingPage() {
             
             console.log('Real-time notification sent successfully');
           } catch (error) {
+            console.log('Real-time notification error:', error);
+            console.log("xxx",owner._id, user.id, selectedRoomInfo.room, selectedRoomInfo.pricePerHead);
             if (retryCount < MAX_RETRIES) {
               retryCount++;
               console.warn(`Retry ${retryCount} for notification...`);
