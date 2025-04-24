@@ -380,9 +380,28 @@ export default function BookingPage() {
   const [duration, setDuration] = useState(6);
   const [checkInDate, setCheckInDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const socket = useSocket();
+  const {socket,isConnected} = useSocket();
   const { user } = useAuth();
-
+   
+  // Track if socket is ready to emit events
+  const [socketReady, setSocketReady] = useState(false);
+  useEffect(() => {
+    if (socket) {
+      const handleConnect = () => setSocketReady(true);
+      const handleDisconnect = () => setSocketReady(false);
+      
+      // Set initial state
+      setSocketReady(socket.connected);
+      
+      socket.on('connect', handleConnect);
+      socket.on('disconnect', handleDisconnect);
+      
+      return () => {
+        socket.off('connect', handleConnect);
+        socket.off('disconnect', handleDisconnect);
+      };
+    }
+  }, [socket]);
   // Convert bedCount string to number
   const bedCountToNumber = {
     one: 1,
@@ -428,19 +447,39 @@ export default function BookingPage() {
   
       const response = await axios.post(bookingRequestUrl, bookingData);
   
-      if (response.data) {
-        socket.emit("new-booking-request", {
-          ownerId: owner._id,
+       // Safe emit function
+       const emitBookingRequest = () => {
+        if (!socket) {
+          console.error('Socket not initialized');
+          return;
+        }
+        
+        if (!isConnected) {
+          console.warn('Socket not connected - retrying in 1s');
+          setTimeout(emitBookingRequest, 1000);
+          return;
+        }
+
+        socket.emit('new-booking-request', {
+          ownerId: response.data.pgOwner,
           bookingId: response.data._id,
-          studentId: user.id,
-          room: selectedRoomInfo.room,
-          bedsBooked: 1,
-          pricePerHead: selectedRoomInfo.pricePerHead,
+          studentId: user._id,
+          room: response.data.room,
+          bedsBooked: response.data.bedsBooked,
+          pricePerHead: response.data.pricePerHead
+        }, (ack) => {
+          if (ack?.success) {
+            console.log('Booking notification sent successfully');
+          } else {
+            console.error('Failed to notify owner:', ack?.message);
+          }
         });
-  
-        toast.success("Booking request sent successfully!");
-        // navigate("/my-bookings");
+      };
+
+      if (response.data) {
+        emitBookingRequest();
       }
+
     } catch (error) {
       console.error("Booking error:", error);
       toast.error(error.response?.data?.message || error.message || "Booking failed");

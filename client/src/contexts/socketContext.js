@@ -165,6 +165,7 @@ export const SocketProvider = ({ children }) => {
     });
 
     setSocket(socketInstance);
+    
 
     return () => {
       socketInstance.off('connect', onConnect);
