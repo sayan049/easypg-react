@@ -160,8 +160,10 @@ class SocketManager {
   _trackOwnerConnection(ownerId, socketId) {
     if (!this.ownerSockets.has(ownerId)) {
       this.ownerSockets.set(ownerId, new Set());
+      console.log(`Tracking new owner connection: ${ownerId}`, socketId);
     }
     this.ownerSockets.get(ownerId).add(socketId);
+    console.log(`Owner ${ownerId} connected to socket ${socketId}`);
   }
 
   _trackStudentConnection(studentId, socketId) {
