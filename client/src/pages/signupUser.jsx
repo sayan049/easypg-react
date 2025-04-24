@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { signupUrl } from "../constant/urls";
 import FlashMessage from "../components/flashMessage";
-import { toast } from 'react-toastify';
+import { toast,ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function SignUpForm() {
   useEffect(() => {
@@ -63,7 +64,7 @@ function SignUpForm() {
       } else {
         errorMsg = "Error: " + error.message;
       }
-      toast.error(errorMsg);
+      toast.error(errorMsg); //not working
       setmessage({ text: errorMsg, type: "error" });
 
       // Re-enable button after 2s
