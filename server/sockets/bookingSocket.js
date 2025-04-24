@@ -15,74 +15,58 @@ class SocketManager {
         credentials: true
       },
       connectionStateRecovery: {
-        maxDisconnectionDuration: 120000 // 2 minutes
+        maxDisconnectionDuration: 120000
       },
-      pingTimeout: 60000, // 60 seconds
-      pingInterval: 25000 // 25 seconds
+      pingTimeout: 60000,
+      pingInterval: 25000,
+      transports: ['websocket', 'polling']
     });
 
+    // Add authentication middleware
     this.io.use((socket, next) => {
-      // Add authentication middleware if needed
       const token = socket.handshake.auth.token;
-      if (token) {
-        // Verify token here if using JWT
-        return next();
+      if (!token) {
+        return next(new Error("Authentication error"));
       }
-      next(new Error("Authentication error"));
+      // Verify JWT here if needed
+      next();
     });
 
     this.io.on("connection", (socket) => {
       console.log("New client connected:", socket.id);
       socket.emit("connection-status", { status: "connected", socketId: socket.id });
 
-      // Owner joins their room
+      // Handle owner connections
       socket.on("owner-join", ({ userId }) => {
-        if (!userId) {
-          console.error("No userId provided for owner-join");
-          return;
-        }
-
+        if (!userId) return;
+        
         if (!this.ownerSockets.has(userId)) {
           this.ownerSockets.set(userId, new Set());
         }
         this.ownerSockets.get(userId).add(socket.id);
         socket.join(`owner-${userId}`);
-        console.log(`Owner ${userId} joined with socket ID: ${socket.id}`);
-        socket.emit("owner-joined", { success: true, userId });
+        console.log(`Owner ${userId} joined with socket ${socket.id}`);
       });
 
-      // Student joins their room (kept for completeness)
-      socket.on("student-join", ({ userId }) => {
-        if (!userId) return;
-        
-        if (!this.studentSockets.has(userId)) {
-          this.studentSockets.set(userId, new Set());
-        }
-        this.studentSockets.get(userId).add(socket.id);
-        socket.join(`student-${userId}`);
-        console.log(`Student ${userId} joined with socket ID: ${socket.id}`);
-      });
-
+      // Handle disconnections
       socket.on("disconnect", (reason) => {
         console.log(`Client disconnected (${reason}):`, socket.id);
         this._cleanUpDisconnectedSocket(socket.id);
       });
 
+      // Error handling
       socket.on("error", (err) => {
         console.error("Socket error:", err);
       });
 
       // Heartbeat mechanism
       socket.on("ping", (cb) => {
-        if (typeof cb === "function") {
-          cb("pong");
-        }
+        if (typeof cb === "function") cb("pong");
       });
     });
 
     return this.io;
   }
-
   _cleanUpDisconnectedSocket(socketId) {
     // Clean up owner connections
     for (const [ownerId, socketSet] of this.ownerSockets.entries()) {

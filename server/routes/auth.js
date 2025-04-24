@@ -13,6 +13,7 @@ const forgotPasswordOwner = require("../controllers/forgotPasswordOwner")
 const resetPasswordOwner = require("../controllers/resetPasswordOwner")
 const resetPasswordDashboard=require("../controllers/resetPasswordDashboard")
 const  updatePassword  =require("../controllers/updatePasswordDashboardOwner");
+const frontendUrl = process.env.CLIENT_URL || 'http://localhost:3000';
 const jwt = require('jsonwebtoken');
 const {
   createBookingRequest,
@@ -164,7 +165,8 @@ router.get('/LoginUser/user/reset-password/:resetToken', (req, res) => {
     // Send the URL to the frontend instead of redirecting
     return res.json({
       message: 'Token is valid',
-      resetUrl: `https://easypg-react-client.onrender.com/LoginUser?resetToken=${resetToken}`,
+      // resetUrl: `https://easypg-react-client.onrender.com/LoginUser?resetToken=${resetToken}`,
+      resetUrl: `${frontendUrl}LoginUser?resetToken=${resetToken}`,
     });
   });
 });
@@ -188,7 +190,7 @@ router.get('/LoginOwner/owner/reset-password/:resetToken', (req, res) => {
     // Send the URL to the frontend instead of redirecting
     return res.json({
       message: 'Token is valid',
-      resetUrl: `https://easypg-react-client.onrender.com/LoginUser?resetToken=${resetToken}`,
+      resetUrl: `${frontendUrl}LoginUser?resetToken=${resetToken}`,
     });
   });
 });
@@ -217,7 +219,7 @@ router.post("/updatePasswordDashboardOwner",  async (req, res) => {
 router.post('/bookings', createBookingRequest);
 router.get('/bookings/owner',authenticateJWT, getOwnerBookings);
 // Owner approves or rejects booking request
-router.put('/bookings/:id/status', handleBookingApproval);
+router.post('/bookings/:id/status', handleBookingApproval);
 
 // User cancels the booking
 router.delete('/bookings/:id', cancelBooking);

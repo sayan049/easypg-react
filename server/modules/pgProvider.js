@@ -158,8 +158,7 @@ pgOwnerSchema.pre('save', function(next) {
   }
   next();
 });
-
-const PgOwner = mongoose.model('Pgowner', pgOwnerSchema);
+const PgOwner = mongoose.model('PgOwner', pgOwnerSchema);
 
 module.exports = PgOwner;
 

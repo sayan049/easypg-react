@@ -597,7 +597,7 @@ import {
   CheckCircleIcon,
   XCircleIcon,
 } from "lucide-react";
-import { useSocket } from "../contexts/socketContext";
+import { useSocket } from '../contexts/socketContext';
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
 import { toast } from "sonner";
@@ -831,7 +831,7 @@ const BookingStatus = () => {
     try {
       setLoading((prev) => ({ ...prev, action: true }));
 
-      await axios.put(`${baseurl}/bookings/${bookingId}/status`, {
+      await axios.post(`${baseurl}/auth/bookings/${bookingId}/status`, {
         status,
         ...(reason && { rejectionReason: reason }),
       }, {
@@ -1030,25 +1030,30 @@ const BookingStatus = () => {
       </div>
     );
   };
+  const ConnectionStatus = () => {
+    const { socket, isConnected } = useSocket();
+    const handleReconnect = () => {
+      if (socket && !isConnected) {
+        socket.connect();
+      }
+    };
+  
+    return (
+      <div className="fixed bottom-4 right-4 flex items-center gap-2 bg-white p-2 rounded shadow text-xs">
+        <div className={`w-3 h-3 rounded-full ${isConnected ? "bg-green-500" : "bg-red-500"}`} />
+        {isConnected ? `Connected` : "Disconnected"}
+        {!isConnected && (
+          <button
+            onClick={handleReconnect}
+            className="text-blue-500 hover:underline text-xs"
+          >
+            Reconnect
+          </button>
+        )}
+      </div>
+    );
+  };
 
-  const ConnectionStatus = () => (
-    <div className="fixed bottom-4 right-4 flex items-center gap-2 bg-white p-2 rounded shadow text-xs">
-      <div
-        className={`w-3 h-3 rounded-full ${
-          isConnected ? "bg-green-500" : "bg-red-500"
-        }`}
-      />
-      {isConnected ? `Connected (${socket?.id || 'no id'})` : "Disconnected"}
-      {!isConnected && (
-        <button 
-          onClick={() => socket?.connect()} 
-          className="text-blue-500 hover:underline"
-        >
-          Reconnect
-        </button>
-      )}
-    </div>
-  );
 
   return (
     <BookingStatusErrorBoundary>

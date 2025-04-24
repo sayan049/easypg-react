@@ -8,6 +8,7 @@ const PgOwner = require("../modules/pgProvider");
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+const backendUrl= process.env.BACKEND_URL || 'http://localhost:3000'; // Default to localhost if not set
 
 
 passport.use(
@@ -15,7 +16,7 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
-      callbackURL: "https://easypg-react.onrender.com/auth/google/callback", // Use full URL
+      callbackURL: `${backendUrl}auth/google/callback`, // Use full URL
       passReqToCallback: true,
     },
     async (req, accessToken, refreshToken, profile, done) => {
