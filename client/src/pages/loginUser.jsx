@@ -122,18 +122,23 @@ function LoginUser() {
 
       // Check if the error response exists and handle specific cases
       if (error.response) {
-        const res = error.response;
+      //   const res = error.response;
         
-        // Check for specific error messages from the backend
-        if (res.data.message) {
-          errorMsg = res.data.message;  // e.g., "Invalid email or password."
-        } else if (res.data.errors) {
-          errorMsg = res.data.errors.join(", ");  // Join multiple errors if present
-        }
-      } else if (error.request) {
-        errorMsg = "Server not responding. Check your internet.";
-      } else {
-        errorMsg = "Error: " + error.message; // Default error message
+      //   // Check for specific error messages from the backend
+      //   if (res.data.message) {
+      //     errorMsg = res.data.message;  // e.g., "Invalid email or password."
+      //   } else if (res.data.errors) {
+      //     errorMsg = res.data.errors.join(", ");  // Join multiple errors if present
+      //   }
+      // } else if (error.request) {
+      //   errorMsg = "Server not responding. Check your internet.";
+      // } else {
+      //   errorMsg = "Error: " + error.message; // Default error message
+      toast.error(
+        error.response?.data?.message || 
+        error.response?.data?.errors?.join(", ") ||
+        "Login failed. Please try again."
+      );
       }
   
       // Log the error and show the toast
