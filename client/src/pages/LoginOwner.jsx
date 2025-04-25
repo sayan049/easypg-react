@@ -229,11 +229,11 @@ function LoginOwner() {
         navigate("/LoginUser"); // Redirect to login page
       } else {
         setResetPasswordError("Error resetting password. Please try again....");
-        Toaste.error("Error resetting password. Please try again.");
+        Toast.error("Error resetting password. Please try again.");
       }
     } catch (error) {
       setResetPasswordError("Error resetting password. Please try again.");
-      Toaste.error("Error resetting password. Please try again.");
+      Toast.error("Error resetting password. Please try again.");
     }
   };
 
