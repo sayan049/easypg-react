@@ -295,7 +295,7 @@ function SignupOwner() {
       );
     } finally  {
       setTimeout(() => {
-        setIsSubmitting(false);
+        setIssubmitting(false);
       }, 5000);
     }
   };
