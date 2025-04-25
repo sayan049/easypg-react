@@ -171,7 +171,6 @@ function NewHomePage() {
       <ToastContainer
         position="top-center"
         toastClassName="!w-[300px]   mx-auto mt-4 sm:mt-0  "
-        autoClose={300000}
       />
 
       {/* Hero Section */}
