@@ -41,7 +41,7 @@ const BookingTable = () => {
   };
 
   return (
-    <div className="px-4 sm:px-6 md:px-8 lg:px-6 xl:px-4 py-4 max-w-screen-lg mx-auto">
+    <div className="px-4 sm:px-6 md:px-8 lg:px-6 xl:px-4 py-4  mx-auto">
 
       {/* Booking Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center mb-6">

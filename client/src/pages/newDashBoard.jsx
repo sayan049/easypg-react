@@ -122,7 +122,7 @@
 
 // export default NewDashBoard;
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { FaHome, FaBook, FaMoneyBill, FaCog } from "react-icons/fa";
 import Sidebar from "../components/sidebar";
 import BookingTable from "../components/BookingTable";
 import Settings from "../components/settings";
@@ -130,132 +130,97 @@ import DashboardContent from "../components/dashboardContent";
 import { fetchDetailsUrl } from "../constant/urls";
 import { useAuth } from "../contexts/AuthContext";
 
-
-import { FaHome, FaBook, FaMoneyBill, FaCog } from "react-icons/fa";
-
- function NewDashboard() {
-  const [activePage, setActivePage] = useState("Dashboard");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [userDetails, setUserDetails] = useState(null);
-  const {
-      userName,
-      IsAuthenticated,
-      isOwnerAuthenticated,
-      ownerName,
-      
-      user,
-      owner,
-      type,
-    } = useAuth();
-    useEffect(() => {
-          const fetchDetails = async () => {
-           // setIsLoading(true);
-            try {
-              const userId = type === "student" ? user?.id : owner?.id;
-              if (!userId) {
-                console.error("User ID is missing");
-                return;
-              }
-      
-              const url = new URL(fetchDetailsUrl);
-              url.searchParams.append("userId", userId);
-              url.searchParams.append("type", type);
-      
-              const response = await fetch(url, { method: "GET" });
-      
-              if (!response.ok) {
-                throw new Error("Failed to fetch details");
-              }
-      
-              const data = await response.json();
-              setUserDetails(data); // Pass this to Settings
-            } catch (error) {
-              console.error("Error fetching details:", error);
-            } finally {
-            //  setIsLoading(false);
-            }
-          };
-      
-          fetchDetails();
-        }, [type, user, owner]);
-      
+function NewDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [userDetails, setUserDetails] = useState(null);
+
+  const {
+    userName,
+    user,
+    owner,
+    type,
+  } = useAuth();
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      try {
+        const userId = type === "student" ? user?.id : owner?.id;
+        if (!userId) return;
+
+        const url = new URL(fetchDetailsUrl);
+        url.searchParams.append("userId", userId);
+        url.searchParams.append("type", type);
+
+        const response = await fetch(url, { method: "GET" });
+        if (!response.ok) throw new Error("Failed to fetch details");
+
+        const data = await response.json();
+        setUserDetails(data);
+      } catch (error) {
+        console.error("Error fetching details:", error);
+      }
+    };
+
+    fetchDetails();
+  }, [type, user, owner]);
 
   const renderContent = () => {
     switch (activeTab) {
       case "dashboard":
-        return <DashboardContent/>;
+        return <DashboardContent />;
       case "bookings":
-        return <BookingTable/>;
+        return <BookingTable />;
       case "payments":
         return <div>Payments Content</div>;
       case "settings":
-        return <Settings user={userDetails}/>;
+        return <Settings user={userDetails} />;
       default:
-        return <DashboardContent/>;
+        return <DashboardContent />;
     }
   };
 
-
   return (
-    <div className="min-h-screen flex bg-gray-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-r hidden md:flex flex-col p-4 fixed h-full">
-        <div className="flex items-center space-x-3 mb-10">
-        <svg
-          className="w-10 h-10 rounded-full mb-2 bg-gray-200"
-          viewBox="0 0 100 100"
-        >
-          <circle cx="50" cy="40" r="20" fill="#4F46E5" /> 
-          <circle cx="50" cy="80" r="25" fill="#4F46E5" /> 
-        </svg>
-          <div>
-            <h2 className="font-semibold text-lg">{userName}</h2>
-            <p className="text-gray-500 text-sm">Student</p>
-          </div>
-        </div>
-        <nav className="flex flex-col gap-4">
-          <SidebarButton
-            icon={<FaHome />}
-            label="Dashboard"
-            active={activeTab === "dashboard"}
-            onClick={() => setActiveTab("dashboard")}
-          />
-          <SidebarButton
-            icon={<FaBook />}
-            label="My Bookings"
-            active={activeTab === "bookings"}
-            onClick={() => setActiveTab("bookings")}
-          />
-          <SidebarButton
-            icon={<FaMoneyBill />}
-            label="My Payments"
-            active={activeTab === "payments"}
-            onClick={() => setActiveTab("payments")}
-          />
-          <SidebarButton
-            icon={<FaCog />}
-            label="Settings"
-            active={activeTab === "settings"}
-            onClick={() => setActiveTab("settings")}
-          />
+    <div className="min-h-screen flex flex-col md:flex-row bg-gray-100 relative">
+      {/* Sidebar for desktop */}
+      <aside className="hidden md:flex md:w-64 bg-white border-r flex-col p-4 fixed h-full">
+        <ProfileHeader userName={userName} />
+        <nav className="flex flex-col gap-4 mt-8">
+          <SidebarButton icon={<FaHome />} label="Dashboard" active={activeTab === "dashboard"} onClick={() => setActiveTab("dashboard")} />
+          <SidebarButton icon={<FaBook />} label="My Bookings" active={activeTab === "bookings"} onClick={() => setActiveTab("bookings")} />
+          <SidebarButton icon={<FaMoneyBill />} label="My Payments" active={activeTab === "payments"} onClick={() => setActiveTab("payments")} />
+          <SidebarButton icon={<FaCog />} label="Settings" active={activeTab === "settings"} onClick={() => setActiveTab("settings")} />
         </nav>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-0 md:ml-64 p-6">{renderContent()}</main>
+      <main className="flex-1 md:ml-64 p-6 pb-20">{renderContent()}</main>
+
+      {/* Top-right profile picture for mobile */}
+      <div className="md:hidden absolute top-4 right-4">
+        <svg className="w-10 h-10 rounded-full bg-gray-300" viewBox="0 0 100 100">
+          <circle cx="50" cy="40" r="20" fill="#4F46E5" />
+          <circle cx="50" cy="80" r="25" fill="#4F46E5" />
+        </svg>
+      </div>
+
+      {/* Bottom navbar for mobile */}
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around items-center h-16 md:hidden">
+        <BottomNavButton icon={<FaHome />} label="Dashboard" active={activeTab === "dashboard"} onClick={() => setActiveTab("dashboard")} />
+        <BottomNavButton icon={<FaBook />} label="Bookings" active={activeTab === "bookings"} onClick={() => setActiveTab("bookings")} />
+        <BottomNavButton icon={<FaMoneyBill />} label="Payments" active={activeTab === "payments"} onClick={() => setActiveTab("payments")} />
+        <BottomNavButton icon={<FaCog />} label="Settings" active={activeTab === "settings"} onClick={() => setActiveTab("settings")} />
+      </nav>
     </div>
   );
 }
 
+// Sidebar Button (desktop)
 function SidebarButton({ icon, label, active, onClick }) {
   return (
     <button
       onClick={onClick}
       className={`flex items-center gap-3 px-4 py-2 rounded-md transition ${
-        active
-          ? "bg-blue-100 text-blue-600 font-semibold"
-          : "text-gray-700 hover:bg-gray-100"
+        active ? "bg-blue-100 text-blue-600 font-semibold" : "text-gray-700 hover:bg-gray-100"
       }`}
     >
       {icon}
@@ -264,20 +229,35 @@ function SidebarButton({ icon, label, active, onClick }) {
   );
 }
 
-// /* Dummy Components (you will replace these later) */
-// function Dashboard() {
-//   return <div className="text-2xl font-semibold">Dashboard Content</div>;
-// }
+// Bottom navbar Button (mobile)
+function BottomNavButton({ icon, label, active, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex flex-col items-center justify-center text-xs ${
+        active ? "text-blue-600" : "text-gray-500"
+      }`}
+    >
+      {icon}
+      <span className="text-[10px]">{label}</span>
+    </button>
+  );
+}
 
-// function MyBookings() {
-//   return <div className="text-2xl font-semibold">My Bookings Content</div>;
-// }
+// Profile Header (sidebar)
+function ProfileHeader({ userName }) {
+  return (
+    <div className="flex items-center space-x-3 mb-10">
+      <svg className="w-10 h-10 rounded-full bg-gray-300" viewBox="0 0 100 100">
+        <circle cx="50" cy="40" r="20" fill="#4F46E5" />
+        <circle cx="50" cy="80" r="25" fill="#4F46E5" />
+      </svg>
+      <div>
+        <h2 className="font-semibold text-lg">{userName}</h2>
+        <p className="text-gray-500 text-sm">Student</p>
+      </div>
+    </div>
+  );
+}
 
-// function MyPayments() {
-//   return <div className="text-2xl font-semibold">My Payments Content</div>;
-// }
-
-// function Settings() {
-//   return <div className="text-2xl font-semibold">Settings Content</div>;
-// }
 export default NewDashboard;
