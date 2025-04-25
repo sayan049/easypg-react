@@ -35,11 +35,13 @@ function NewHomePage() {
 
   useEffect(() => {
     const storedMessage = localStorage.getItem("sId_message");
+    const stateMessage = location.state?.message || "";
     if (storedMessage) {
       setMessage(location.state?.message || "");
-      toast.success(storedMessage)
+     
     }
-
+    if (stateMessage) {
+    toast.success(stateMessage);}
     const timer = setTimeout(() => {
       setMessage("");
       localStorage.removeItem("sId_message");
