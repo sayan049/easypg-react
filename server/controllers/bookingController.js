@@ -721,35 +721,36 @@ exports.getOwnerBookings = async (req, res) => {
 // const Booking = require('../models/Booking');
 
 exports.getUserBookings = async (req, res) => {
+  console.log("Authenticated User:", req.user); // Debug JWT payload
   try {
-    const { status, page = 1, limit = 10 } = req.query;
-    const skip = (page - 1) * limit;
-    const userId = req.user.id; // Authenticated user's ID from JWT
+    const userId = req.user.id; // Changed from req.user.id to req.user._id
+    const now = new Date();
 
-    // Build query using student_portal_index (student + status)
-    const query = { 
-      student: new mongoose.Types.ObjectId(userId), // Ensure proper ObjectId
-      ...(status && { status }) // Optional status filter
-    };
+    // Find all bookings for this user
+    const bookings = await Booking.find({ student: userId })
+      .select('room status bedsBooked pricePerHead period payment.totalAmount pgOwner')
+      .populate({
+        path: 'pgOwner',
+        select: 'messName address amenities gender facility roomInfo profilePhoto'
+      })
+      .sort({ createdAt: -1 })
+      .lean();
 
-    // Optimized query using indexes
-    const [bookings, total] = await Promise.all([
-      Booking.find(query)
-        .select('room status bedsBooked pricePerHead period payment.totalAmount pgOwner')
-        .populate({
-          path: 'pgOwner',
-          select: 'messName address amenities gender facility roomInfo profilePhoto'
-        })
-        .sort({ createdAt: -1 }) // Sort by most recent
-        .skip(skip)
-        .limit(limit)
-        .lean(),
-      
-      Booking.countDocuments(query)
-    ]);
+    if (!bookings || bookings.length === 0) {
+      return res.status(200).json({
+        success: true,
+        bookings: [],
+        stats: {
+          upcoming: 0,
+          current: 0,
+          past: 0,
+          total: 0
+        },
+        currentStay: null
+      });
+    }
 
     // Process bookings with calculated fields
-    const now = new Date();
     const processedBookings = bookings.map(booking => {
       const startDate = new Date(booking.period.startDate);
       const endDate = new Date(startDate);
@@ -758,23 +759,21 @@ exports.getUserBookings = async (req, res) => {
       // Determine booking type
       let bookingType = 'past';
       if (booking.status === 'confirmed') {
-        if (startDate > now) bookingType = 'upcoming';
-        else if (endDate >= now) bookingType = 'current';
+        if (startDate > now) {
+          bookingType = 'upcoming';
+        } else if (now <= endDate) {
+          bookingType = 'current';
+        }
       }
 
       return {
         ...booking,
         period: {
-          startDate,
+          startDate: booking.period.startDate,
           durationMonths: booking.period.durationMonths,
           endDate
         },
-        bookingType,
-        // Add formatted dates for frontend
-        formattedPeriod: {
-          start: startDate.toLocaleDateString(),
-          end: endDate.toLocaleDateString()
-        }
+        bookingType
       };
     });
 
@@ -783,7 +782,7 @@ exports.getUserBookings = async (req, res) => {
       upcoming: processedBookings.filter(b => b.bookingType === 'upcoming').length,
       current: processedBookings.filter(b => b.bookingType === 'current').length,
       past: processedBookings.filter(b => b.bookingType === 'past').length,
-      total
+      total: processedBookings.length
     };
 
     // Get current stay (if any)
@@ -793,13 +792,7 @@ exports.getUserBookings = async (req, res) => {
       success: true,
       currentStay,
       bookings: processedBookings,
-      stats,
-      pagination: {
-        total,
-        page: parseInt(page),
-        pages: Math.ceil(total / limit),
-        limit: parseInt(limit)
-      }
+      stats
     });
 
   } catch (error) {
@@ -807,7 +800,7 @@ exports.getUserBookings = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to fetch bookings',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: error.message 
     });
   }
 };
