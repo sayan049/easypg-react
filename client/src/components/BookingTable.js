@@ -1,79 +1,131 @@
 import React from "react";
+import { FaDownload } from "react-icons/fa";
+import { HiOutlineLocationMarker } from "react-icons/hi";
+import { FaBed, FaRupeeSign } from "react-icons/fa";
+import { MdOutlineWifi, MdOutlineKitchen, MdOutlinePower, MdTv, MdOutlineAcUnit } from "react-icons/md";
+import { MdOutlineAccessTime, MdOutlineHome, MdOutlineHistory } from "react-icons/md";
+import { FaCalendarAlt, FaEye } from "react-icons/fa";
 
-function BookingTable() {
+const BookingTable = () => {
   const bookings = [
     {
-      id: "BK001",
-      accommodation: "GreenView PG",
-      dates: "2024-10-12 to 2024-11-12",
-      amount: "₹3,000",
+      id: "#MB01234",
+      name: "Sunshine PG",
+      date: "Apr 15, 2025",
+      amount: "₹15,000",
       status: "Confirmed",
+      action: "Download",
     },
     {
-      id: "BK002",
-      accommodation: "Sunshine Mess",
-      dates: "2024-12-01 to 2024-12-30",
-      amount: "₹2,500",
+      id: "#MB01235",
+      name: "Green View PG",
+      date: "Apr 10, 2025",
+      amount: "₹12,000",
       status: "Pending",
+      action: "View",
     },
     {
-      id: "BK003",
-      accommodation: "CozyNest PG",
-      dates: "2024-08-01 to 2024-08-31",
-      amount: "₹2,200",
-      status: "Completed",
+      id: "#MB01236",
+      name: "College Hub PG",
+      date: "Apr 5, 2025",
+      amount: "₹13,500",
+      status: "Rejected",
+      action: "View",
     },
   ];
 
-  const stats = [
-    { label: "Upcoming Bookings", value: 2, color: "text-green-600" },
-    { label: "Active Stay", value: 1, color: "text-yellow-600" },
-    { label: "Past Bookings", value: 5, color: "text-blue-600" },
-    { label: "Total Spent", value: "₹15,000", color: "text-orange-600" },
-  ];
+  const statusColors = {
+    Confirmed: "text-green-700 bg-green-100",
+    Pending: "text-yellow-700 bg-yellow-100",
+    Rejected: "text-red-700 bg-red-100",
+  };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen">
-      {/* Stats Section */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        {stats.map((stat) => (
-          <div key={stat.label} className="bg-white p-4 rounded-md shadow text-center">
-            <h2 className="text-lg font-semibold">{stat.label}</h2>
-            <p className={`text-2xl font-bold ${stat.color} mt-2`}>{stat.value}</p>
+    <div className="p-4 md:p-8 max-w-6xl mx-auto">
+      {/* Booking Summary */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center mb-6">
+        <div className="flex items-center justify-between sm:justify-center bg-white shadow-md p-4 rounded-xl">
+          <div className="text-left">
+            <p className="text-sm text-gray-500">Upcoming Bookings</p>
+            <h2 className="text-2xl font-bold text-blue-600">2</h2>
           </div>
-        ))}
+          <MdOutlineAccessTime className="text-3xl text-blue-500" />
+        </div>
+        <div className="flex items-center justify-between sm:justify-center bg-white shadow-md p-4 rounded-xl">
+          <div className="text-left">
+            <p className="text-sm text-gray-500">Active Stay</p>
+            <h2 className="text-2xl font-bold text-green-600">1</h2>
+          </div>
+          <MdOutlineHome className="text-3xl text-green-500" />
+        </div>
+        <div className="flex items-center justify-between sm:justify-center bg-white shadow-md p-4 rounded-xl">
+          <div className="text-left">
+            <p className="text-sm text-gray-500">Past Bookings</p>
+            <h2 className="text-2xl font-bold text-purple-600">5</h2>
+          </div>
+          <MdOutlineHistory className="text-3xl text-purple-500" />
+        </div>
       </div>
 
-      {/* Booking List Section */}
-      <div className="bg-white p-6 rounded-md shadow">
-        <h2 className="text-xl font-semibold mb-4">Booking List</h2>
+      {/* Current Accommodation */}
+      <div className="bg-white shadow-md p-4 rounded-xl mb-6">
+        <h3 className="text-lg font-semibold mb-2">Current Accommodation</h3>
+        <h2 className="text-xl font-bold">Sunshine PG</h2>
+        <div className="flex items-center text-sm text-gray-600 mt-1">
+          <HiOutlineLocationMarker className="mr-1" />
+          123 College Street, Tech Park
+        </div>
+        <p className="text-sm text-gray-600">Girls PG</p>
+        <div className="flex items-center text-sm text-gray-600 mt-1">
+          <FaBed className="mr-1" />
+          Room 204
+        </div>
+        <div className="flex items-center text-sm text-gray-600 mt-1">
+          <FaRupeeSign className="mr-1" />
+          15,000/month
+        </div>
+        <div className="mt-4">
+          <p className="font-semibold mb-2">Amenities</p>
+          <div className="flex flex-wrap gap-2 text-sm text-gray-700">
+            <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full"><MdOutlineAcUnit /> AC</span>
+            <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full"><MdTv /> TV</span>
+            <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full"><MdOutlinePower /> Power Backup</span>
+            <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full"><MdOutlineWifi /> WiFi</span>
+            <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full"><MdOutlineKitchen /> Kitchen</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Booking History Table (desktop) */}
+      <div className="hidden md:block bg-white shadow-md p-4 rounded-xl mb-6">
+        <h3 className="text-lg font-semibold mb-4">Booking History</h3>
         <div className="overflow-x-auto">
-          <table className="min-w-full table-auto">
+          <table className="min-w-full divide-y divide-gray-200">
             <thead>
-              <tr className="bg-gray-200 text-gray-600 uppercase text-sm">
-                <th className="py-3 px-4 text-left">Booking ID</th>
-                <th className="py-3 px-4 text-left">Accommodation Name</th>
-                <th className="py-3 px-4 text-left">Booking Dates</th>
-                <th className="py-3 px-4 text-left">Amount Paid</th>
-                <th className="py-3 px-4 text-left">Status</th>
-                <th className="py-3 px-4 text-left">Action</th>
+              <tr className="text-left text-sm font-semibold text-gray-700">
+                <th className="py-2">Booking ID</th>
+                <th className="py-2">Accommodation</th>
+                <th className="py-2">Date</th>
+                <th className="py-2">Amount</th>
+                <th className="py-2">Status</th>
+                <th className="py-2">Action</th>
               </tr>
             </thead>
-            <tbody>
-              {bookings.map((booking) => (
-                <tr key={booking.id} className="border-b">
-                  <td className="py-3 px-4">{booking.id}</td>
-                  <td className="py-3 px-4">{booking.accommodation}</td>
-                  <td className="py-3 px-4">{booking.dates}</td>
-                  <td className="py-3 px-4">{booking.amount}</td>
-                  <td className={`py-3 px-4 font-semibold ${booking.status === "Confirmed" ? "text-green-500" : booking.status === "Pending" ? "text-orange-500" : "text-purple-500"}`}>
-                    {booking.status}
+            <tbody className="text-sm text-gray-800">
+              {bookings.map((booking, index) => (
+                <tr key={index} className="border-t border-gray-100">
+                  <td className="py-2">{booking.id}</td>
+                  <td className="py-2">{booking.name}</td>
+                  <td className="py-2">{booking.date}</td>
+                  <td className="py-2">{booking.amount}</td>
+                  <td className="py-2">
+                    <span className={`px-2 py-1 text-xs rounded-full ${statusColors[booking.status]}`}>{booking.status}</span>
                   </td>
-                  <td className="py-3 px-4">
-                    {booking.status === "Completed" ? (
-                      <button className="text-blue-500 hover:underline">Download Invoice</button>
+                  <td className="py-2">
+                    {booking.action === "Download" ? (
+                      <button className="text-blue-600 flex items-center gap-1"><FaDownload /> Download</button>
                     ) : (
-                      <button className="text-blue-500 hover:underline">View Details</button>
+                      <button className="text-blue-600 flex items-center gap-1"><FaEye /> View</button>
                     )}
                   </td>
                 </tr>
@@ -83,22 +135,43 @@ function BookingTable() {
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="flex flex-wrap justify-between items-center mt-4 gap-4">
-        <button className="bg-gray-200 text-gray-700 text-sm rounded-md px-4 py-2 hover:bg-gray-300">
-          Refresh
-        </button>
-        <div className="flex gap-2">
-          <button className="bg-gray-200 text-gray-700 text-sm rounded-md px-4 py-2 hover:bg-gray-300">
-            Export
-          </button>
-          <button className="bg-blue-500 text-white text-sm rounded-md px-4 py-2 hover:bg-blue-600">
-            + New Booking
-          </button>
+      {/* Booking History Cards (mobile-friendly) */}
+      <div className="md:hidden bg-white shadow-md p-4 rounded-xl mb-6">
+        <h3 className="text-lg font-semibold mb-4">Booking History</h3>
+        <div className="space-y-4">
+          {bookings.map((booking, index) => (
+            <div key={index} className="border border-gray-200 rounded-xl p-4 bg-white shadow-sm">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="text-xs text-gray-500">Booking ID: {booking.id.slice(-4)}</p>
+                  <h4 className="text-md font-semibold">{booking.name}</h4>
+                </div>
+                <span className={`text-xs px-2 py-1 rounded-full ${statusColors[booking.status]}`}>{booking.status}</span>
+              </div>
+              <div className="mt-2 text-sm text-gray-700">
+                <div className="flex items-center gap-2">
+                  <FaCalendarAlt className="text-gray-400" />
+                  {booking.date}
+                </div>
+                <div className="mt-1">{booking.amount}</div>
+              </div>
+              {booking.action === "Download" ? (
+                <button className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium">
+                  <FaDownload /> Download Invoice
+                </button>
+              ) : (
+                <button className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium">
+                  <FaEye /> View Details
+                </button>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default BookingTable;
+//       </span>
+//       {status} 

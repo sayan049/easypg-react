@@ -219,7 +219,7 @@ router.post("/updatePasswordDashboardOwner",  async (req, res) => {
 router.post('/bookings',authenticateJWT, createBookingRequest);
 router.get('/bookings/owner',authenticateJWT, getOwnerBookings);
 // Owner approves or rejects booking request
-router.post('/bookings/:id/status', handleBookingApproval);
+router.post('/bookings/:id/status',authenticateJWT, handleBookingApproval);
 
 // User cancels the booking
 router.delete('/bookings/:id', cancelBooking);
