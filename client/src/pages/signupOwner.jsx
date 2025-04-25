@@ -234,12 +234,12 @@ function SignupOwner() {
     // }
     if (!isFormComplete()) {
       toast.error("Please fill all fields");
-      return;
+    
     }
   
     if (!termsAccepted) {
       toast.error("Please accept the terms and conditions");
-      return;
+      
     }     
 
     e.preventDefault();
