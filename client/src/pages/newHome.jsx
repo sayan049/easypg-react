@@ -23,10 +23,10 @@ function NewHomePage() {
     ownerName,
   } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
-  const stateMessage = location.state?.message || "";
-  if (stateMessage) {
-    toast.success(stateMessage);}
-    console.log("State message:", stateMessage);
+  // const stateMessage = location.state?.message || "";
+  // if (stateMessage) {
+  //   toast.success(stateMessage);}
+  //   console.log("State message:", stateMessage);
 
   useEffect(() => {
     document.title = "Find your nearest paying guest";
@@ -37,14 +37,31 @@ function NewHomePage() {
     navigate("/newMessFind");
   };
 
+  // useEffect(() => {
+  //   const storedMessage = localStorage.getItem("sId_message");
+   
+  //   if (storedMessage) {
+  //     setMessage(location.state?.message || "");
+     
+  //   }
+  
+  //   const timer = setTimeout(() => {
+  //     setMessage("");
+  //     localStorage.removeItem("sId_message");
+  //   }, 5000);
+
+  //   return () => clearTimeout(timer);
+  // }, [location.state?.message]);
   useEffect(() => {
     const storedMessage = localStorage.getItem("sId_message");
-   
-    if (storedMessage) {
-      setMessage(location.state?.message || "");
-     
+    const stateMessage = location.state?.message || "";
+
+    if (storedMessage || stateMessage) {
+      const finalMessage = stateMessage || storedMessage;
+      setMessage(finalMessage);
+      toast.success(finalMessage);
     }
-  
+
     const timer = setTimeout(() => {
       setMessage("");
       localStorage.removeItem("sId_message");
@@ -52,6 +69,18 @@ function NewHomePage() {
 
     return () => clearTimeout(timer);
   }, [location.state?.message]);
+
+
+  // useEffect(() => {
+  //   const storedLogoutStatus = localStorage.getItem("logoutStatus");
+  //   if (storedLogoutStatus) {
+  //     setLogoutStatus(storedLogoutStatus);
+  //     setTimeout(() => {
+  //       localStorage.removeItem("logoutStatus");
+  //       setLogoutStatus("");
+  //     }, 5000);
+  //   }
+  // }, []);
 
   useEffect(() => {
     const storedLogoutStatus = localStorage.getItem("logoutStatus");
