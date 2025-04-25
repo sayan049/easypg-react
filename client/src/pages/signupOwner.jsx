@@ -233,13 +233,11 @@ function SignupOwner() {
     //   return;
     // }
     if (!isFormComplete()) {
-      toast.error("Please fill all fields");
-    
+     return toast.error("Please fill all fields");
     }
   
     if (!termsAccepted) {
-      toast.error("Please accept the terms and conditions");
-      
+    return  toast.error("Please accept the terms and conditions");
     }     
 
     e.preventDefault();
