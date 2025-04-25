@@ -254,12 +254,12 @@ exports.signupHandlerOwner = async (req, res) => {
     // Check if the user already exists
     const existingUser = await PgOwner.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ error: `${email} already exists` });
+      return res.status(400).json({ message: ` already exists` });
     }
 
     // Validate password
     if (!password) {
-      return res.status(400).json({ error: "Password is required" });
+      return res.status(400).json({ message: "Password is required" });
     }
 
     // Hash the password
@@ -276,7 +276,7 @@ exports.signupHandlerOwner = async (req, res) => {
         parsedRoomInfo = JSON.parse(roomInfo);
       } catch (error) {
         console.error("Error parsing roomInfo:", error);
-        return res.status(400).json({ error: 'Invalid roomInfo format' });
+        return res.status(400).json({ message: 'Invalid roomInfo format' });
       }
     }
 
@@ -286,13 +286,13 @@ exports.signupHandlerOwner = async (req, res) => {
       try {
         parsedLocation = JSON.parse(location);
       } catch (error) {
-        return res.status(400).json({ error: 'Invalid location format' });
+        return res.status(400).json({ message: 'Invalid location format' });
       }
     }
 
     // Validate and process location
     if (!parsedLocation || parsedLocation.type !== 'Point' || !Array.isArray(parsedLocation.coordinates) || parsedLocation.coordinates.length !== 2) {
-      return res.status(400).json({ error: 'Invalid location format. Location must be in GeoJSON format (type: "Point", coordinates: [longitude, latitude])' });
+      return res.status(400).json({ message: 'Invalid location format. Location must be in GeoJSON format (type: "Point", coordinates: [longitude, latitude])' });
     }
 
     // ✅ Generate GeoHash for faster searches
@@ -325,7 +325,7 @@ exports.signupHandlerOwner = async (req, res) => {
     return res.status(201).json(newOwner);
   } catch (error) {
     console.error("Error creating user:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 

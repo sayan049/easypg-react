@@ -264,7 +264,7 @@ function SignupOwner() {
                return  toast.error(res.data.errors.join(", "));
               }
             }
-            toast.error("Error sending email. Please try again.");
+            toast.error("Error creating user. Please try again.");
       console.error(
         "Error creating user:",
         error.response ? error.response.data : error.message
@@ -314,7 +314,7 @@ console.log(isFormComplete());
 
   return (
     <div className="relative md:bg-custom-gradient bg-mobile-owner" >
-      <ToastContainer position="top-center"  />
+    <ToastContainer position="top-center" toastClassName="!w-[300px] sm:!w-[90%] mx-auto mt-4 sm:mt-0 "  />
     {/* Header text */}
     <div
   className="flex flex-col items-center w-full text-center  pt-8
