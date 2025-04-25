@@ -202,6 +202,181 @@ const BookingTable = () => {
     limit: 10,
     total: 0
   });
+  // Sub-components for better organization
+const StatCard = ({ icon, label, value, color }) => (
+  <div className="flex items-center justify-between sm:justify-center bg-white shadow-md p-4 rounded-xl">
+    <div className="text-left">
+      <p className="text-sm text-gray-500">{label}</p>
+      <h2 className={`text-2xl font-bold ${color}`}>{value}</h2>
+    </div>
+    {icon}
+  </div>
+);
+
+const CurrentStayCard = ({ booking }) => (
+  <div className="bg-white shadow-md p-4 rounded-xl mb-6">
+    <h3 className="text-lg font-semibold mb-2">Current Accommodation</h3>
+    <h2 className="text-xl font-bold">{booking.pgOwner?.messName}</h2>
+    <div className="flex items-center text-sm text-gray-600 mt-1">
+      <HiOutlineLocationMarker className="mr-1" />
+      {booking.pgOwner?.address}
+    </div>
+    <div className="flex items-center text-sm text-gray-600 mt-1">
+      <FaBed className="mr-1" />
+      Room {booking.room} ({booking.bedsBooked} bed{booking.bedsBooked > 1 ? 's' : ''})
+    </div>
+    <div className="flex items-center text-sm text-gray-600 mt-1">
+      <FaRupeeSign className="mr-1" />
+      {booking.payment.totalAmount} (₹{booking.pricePerHead}/month)
+    </div>
+    <div className="mt-2 text-sm">
+      <span className="font-medium">Stay Period: </span>
+      {new Date(booking.period.startDate).toLocaleDateString()} - {' '}
+      {new Date(booking.period.endDate).toLocaleDateString()}
+    </div>
+  </div>
+);
+
+const BookingTableDesktop = ({ bookings, statusColors, onDownload }) => (
+  <div className="overflow-x-auto">
+    <table className="min-w-full divide-y divide-gray-200">
+      <thead>
+        <tr className="text-left text-sm font-semibold text-gray-700">
+          <th className="py-2 px-4">Booking ID</th>
+          <th className="py-2 px-4">PG Name</th>
+          <th className="py-2 px-4">Period</th>
+          <th className="py-2 px-4">Amount</th>
+          <th className="py-2 px-4">Status</th>
+          <th className="py-2 px-4">Action</th>
+        </tr>
+      </thead>
+      <tbody className="text-sm text-gray-800">
+        {bookings.map((booking) => (
+          <BookingTableRow 
+            key={booking._id} 
+            booking={booking} 
+            statusColors={statusColors}
+            onDownload={onDownload}
+          />
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
+
+const BookingTableRow = ({ booking, statusColors, onDownload }) => (
+  <tr className="border-t border-gray-100 hover:bg-gray-50">
+    <td className="py-3 px-4">#{booking._id.slice(-6).toUpperCase()}</td>
+    <td className="py-3 px-4">{booking.pgOwner?.messName}</td>
+    <td className="py-3 px-4">
+      {new Date(booking.period.startDate).toLocaleDateString()} - {' '}
+      {new Date(booking.period.endDate).toLocaleDateString()}
+    </td>
+    <td className="py-3 px-4">₹{booking.payment.totalAmount}</td>
+    <td className="py-3 px-4">
+      <StatusBadge booking={booking} statusColors={statusColors} />
+    </td>
+    <td className="py-3 px-4">
+      <BookingAction booking={booking} onDownload={onDownload} />
+    </td>
+  </tr>
+);
+
+const BookingCardsMobile = ({ bookings, statusColors, onDownload }) => (
+  <div className="space-y-4 p-4">
+    {bookings.map((booking) => (
+      <div key={booking._id} className="border border-gray-200 rounded-xl p-4 bg-white shadow-sm">
+        <div className="flex justify-between items-start">
+          <div>
+            <p className="text-xs text-gray-500">
+              Booking ID: #{booking._id.slice(-6).toUpperCase()}
+            </p>
+            <h4 className="text-md font-semibold">{booking.pgOwner?.messName}</h4>
+          </div>
+          <StatusBadge booking={booking} statusColors={statusColors} />
+        </div>
+        
+        <BookingDetails booking={booking} />
+        
+        <BookingAction 
+          booking={booking} 
+          onDownload={onDownload} 
+          mobile 
+        />
+      </div>
+    ))}
+  </div>
+);
+
+const StatusBadge = ({ booking, statusColors }) => (
+  <span className={`text-xs px-2 py-1 rounded-full ${statusColors[booking.status]}`}>
+    {booking.status}
+    {booking.status === 'rejected' && booking.rejectionReason && (
+      <span className="block text-xs mt-1">Reason: {booking.rejectionReason}</span>
+    )}
+  </span>
+);
+
+const BookingDetails = ({ booking }) => (
+  <div className="mt-2 text-sm text-gray-700">
+    <div className="flex items-center gap-2">
+      <FaCalendarAlt className="text-gray-400" />
+      {new Date(booking.period.startDate).toLocaleDateString()} - {' '}
+      {new Date(booking.period.endDate).toLocaleDateString()}
+    </div>
+    <div className="mt-1 flex items-center">
+      <FaRupeeSign className="mr-1" />
+      {booking.payment.totalAmount}
+    </div>
+  </div>
+);
+
+const BookingAction = ({ booking, onDownload, mobile = false }) => (
+  booking.status === 'confirmed' ? (
+    <button 
+      onClick={() => onDownload(booking._id)}
+      className={`w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg ${
+        mobile ? 'bg-blue-600 text-white' : 'text-blue-600 hover:text-blue-800'
+      } text-sm font-medium`}
+    >
+      <FaDownload /> {mobile ? 'Download Invoice' : 'Invoice'}
+    </button>
+  ) : (
+    <button className={`w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg ${
+      mobile ? 'bg-gray-200 text-gray-800' : 'text-blue-600 hover:text-blue-800'
+    } text-sm font-medium`}>
+      <FaEye /> {mobile ? 'View Details' : 'Details'}
+    </button>
+  )
+);
+
+const PaginationControls = ({ pagination, onPageChange }) => {
+  const totalPages = Math.ceil(pagination.total / pagination.limit);
+  
+  return (
+    <div className="flex justify-between items-center p-4 border-t border-gray-200">
+      <button
+        onClick={() => onPageChange(pagination.page - 1)}
+        disabled={pagination.page <= 1}
+        className="px-4 py-2 rounded-md border border-gray-300 disabled:opacity-50"
+      >
+        Previous
+      </button>
+      
+      <span className="text-sm text-gray-600">
+        Page {pagination.page} of {totalPages}
+      </span>
+      
+      <button
+        onClick={() => onPageChange(pagination.page + 1)}
+        disabled={pagination.page >= totalPages}
+        className="px-4 py-2 rounded-md border border-gray-300 disabled:opacity-50"
+      >
+        Next
+      </button>
+    </div>
+  );
+};
 
   const statusColors = {
     confirmed: "text-green-700 bg-green-100",
@@ -421,180 +596,6 @@ const BookingTable = () => {
   );
 };
 
-// Sub-components for better organization
-const StatCard = ({ icon, label, value, color }) => (
-  <div className="flex items-center justify-between sm:justify-center bg-white shadow-md p-4 rounded-xl">
-    <div className="text-left">
-      <p className="text-sm text-gray-500">{label}</p>
-      <h2 className={`text-2xl font-bold ${color}`}>{value}</h2>
-    </div>
-    {icon}
-  </div>
-);
 
-const CurrentStayCard = ({ booking }) => (
-  <div className="bg-white shadow-md p-4 rounded-xl mb-6">
-    <h3 className="text-lg font-semibold mb-2">Current Accommodation</h3>
-    <h2 className="text-xl font-bold">{booking.pgOwner?.messName}</h2>
-    <div className="flex items-center text-sm text-gray-600 mt-1">
-      <HiOutlineLocationMarker className="mr-1" />
-      {booking.pgOwner?.address}
-    </div>
-    <div className="flex items-center text-sm text-gray-600 mt-1">
-      <FaBed className="mr-1" />
-      Room {booking.room} ({booking.bedsBooked} bed{booking.bedsBooked > 1 ? 's' : ''})
-    </div>
-    <div className="flex items-center text-sm text-gray-600 mt-1">
-      <FaRupeeSign className="mr-1" />
-      {booking.payment.totalAmount} (₹{booking.pricePerHead}/month)
-    </div>
-    <div className="mt-2 text-sm">
-      <span className="font-medium">Stay Period: </span>
-      {new Date(booking.period.startDate).toLocaleDateString()} - {' '}
-      {new Date(booking.period.endDate).toLocaleDateString()}
-    </div>
-  </div>
-);
-
-const BookingTableDesktop = ({ bookings, statusColors, onDownload }) => (
-  <div className="overflow-x-auto">
-    <table className="min-w-full divide-y divide-gray-200">
-      <thead>
-        <tr className="text-left text-sm font-semibold text-gray-700">
-          <th className="py-2 px-4">Booking ID</th>
-          <th className="py-2 px-4">PG Name</th>
-          <th className="py-2 px-4">Period</th>
-          <th className="py-2 px-4">Amount</th>
-          <th className="py-2 px-4">Status</th>
-          <th className="py-2 px-4">Action</th>
-        </tr>
-      </thead>
-      <tbody className="text-sm text-gray-800">
-        {bookings.map((booking) => (
-          <BookingTableRow 
-            key={booking._id} 
-            booking={booking} 
-            statusColors={statusColors}
-            onDownload={onDownload}
-          />
-        ))}
-      </tbody>
-    </table>
-  </div>
-);
-
-const BookingTableRow = ({ booking, statusColors, onDownload }) => (
-  <tr className="border-t border-gray-100 hover:bg-gray-50">
-    <td className="py-3 px-4">#{booking._id.slice(-6).toUpperCase()}</td>
-    <td className="py-3 px-4">{booking.pgOwner?.messName}</td>
-    <td className="py-3 px-4">
-      {new Date(booking.period.startDate).toLocaleDateString()} - {' '}
-      {new Date(booking.period.endDate).toLocaleDateString()}
-    </td>
-    <td className="py-3 px-4">₹{booking.payment.totalAmount}</td>
-    <td className="py-3 px-4">
-      <StatusBadge booking={booking} statusColors={statusColors} />
-    </td>
-    <td className="py-3 px-4">
-      <BookingAction booking={booking} onDownload={onDownload} />
-    </td>
-  </tr>
-);
-
-const BookingCardsMobile = ({ bookings, statusColors, onDownload }) => (
-  <div className="space-y-4 p-4">
-    {bookings.map((booking) => (
-      <div key={booking._id} className="border border-gray-200 rounded-xl p-4 bg-white shadow-sm">
-        <div className="flex justify-between items-start">
-          <div>
-            <p className="text-xs text-gray-500">
-              Booking ID: #{booking._id.slice(-6).toUpperCase()}
-            </p>
-            <h4 className="text-md font-semibold">{booking.pgOwner?.messName}</h4>
-          </div>
-          <StatusBadge booking={booking} statusColors={statusColors} />
-        </div>
-        
-        <BookingDetails booking={booking} />
-        
-        <BookingAction 
-          booking={booking} 
-          onDownload={onDownload} 
-          mobile 
-        />
-      </div>
-    ))}
-  </div>
-);
-
-const StatusBadge = ({ booking, statusColors }) => (
-  <span className={`text-xs px-2 py-1 rounded-full ${statusColors[booking.status]}`}>
-    {booking.status}
-    {booking.status === 'rejected' && booking.rejectionReason && (
-      <span className="block text-xs mt-1">Reason: {booking.rejectionReason}</span>
-    )}
-  </span>
-);
-
-const BookingDetails = ({ booking }) => (
-  <div className="mt-2 text-sm text-gray-700">
-    <div className="flex items-center gap-2">
-      <FaCalendarAlt className="text-gray-400" />
-      {new Date(booking.period.startDate).toLocaleDateString()} - {' '}
-      {new Date(booking.period.endDate).toLocaleDateString()}
-    </div>
-    <div className="mt-1 flex items-center">
-      <FaRupeeSign className="mr-1" />
-      {booking.payment.totalAmount}
-    </div>
-  </div>
-);
-
-const BookingAction = ({ booking, onDownload, mobile = false }) => (
-  booking.status === 'confirmed' ? (
-    <button 
-      onClick={() => onDownload(booking._id)}
-      className={`w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg ${
-        mobile ? 'bg-blue-600 text-white' : 'text-blue-600 hover:text-blue-800'
-      } text-sm font-medium`}
-    >
-      <FaDownload /> {mobile ? 'Download Invoice' : 'Invoice'}
-    </button>
-  ) : (
-    <button className={`w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg ${
-      mobile ? 'bg-gray-200 text-gray-800' : 'text-blue-600 hover:text-blue-800'
-    } text-sm font-medium`}>
-      <FaEye /> {mobile ? 'View Details' : 'Details'}
-    </button>
-  )
-);
-
-const PaginationControls = ({ pagination, onPageChange }) => {
-  const totalPages = Math.ceil(pagination.total / pagination.limit);
-  
-  return (
-    <div className="flex justify-between items-center p-4 border-t border-gray-200">
-      <button
-        onClick={() => onPageChange(pagination.page - 1)}
-        disabled={pagination.page <= 1}
-        className="px-4 py-2 rounded-md border border-gray-300 disabled:opacity-50"
-      >
-        Previous
-      </button>
-      
-      <span className="text-sm text-gray-600">
-        Page {pagination.page} of {totalPages}
-      </span>
-      
-      <button
-        onClick={() => onPageChange(pagination.page + 1)}
-        disabled={pagination.page >= totalPages}
-        className="px-4 py-2 rounded-md border border-gray-300 disabled:opacity-50"
-      >
-        Next
-      </button>
-    </div>
-  );
-};
 
 export default BookingTable;
