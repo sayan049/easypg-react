@@ -42,6 +42,7 @@ function NewHomePage() {
     }
     if (stateMessage) {
     toast.success(stateMessage);}
+    console.log("State message:", stateMessage);
     const timer = setTimeout(() => {
       setMessage("");
       localStorage.removeItem("sId_message");
