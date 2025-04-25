@@ -124,7 +124,7 @@ function SignUpForm() {
       {/* <ToastContainer /> */}
       {/* Left Section */}
       <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6">
-      <ToastContainer position="top-center" toastClassName="!w-[300px] sm:!w-[90%] mx-auto mt-4 sm:mt-0 "  />
+      <ToastContainer position="top-center" toastClassName="!w-[300px]  mx-auto mt-4 sm:mt-0 "  />
         <div className="w-full max-w-lg p-8">
           {/* Header Section */}
           <div className="lg:absolute lg:top-6 lg:left-6 flex flex-col items-center lg:items-start space-y-2 lg:space-y-0">
