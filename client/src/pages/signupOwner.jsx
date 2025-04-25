@@ -227,6 +227,10 @@ function SignupOwner() {
   };
 
   const handleSubmit = async (e) => {
+    // if(!FormData.profilePhoto){
+    //   toast.error("upload your profile photo");
+    //   return;
+    // }
     if (!isFormComplete()) {
       toast.error("Please fill all fields");
       return;
@@ -654,7 +658,7 @@ function SignupOwner() {
 
         {/* Mess Photos Upload */}
         <div className="mb-4">
-          {errorMessage && <p className="text-red-600 mt-2">{errorMessage}</p>}
+          {/* {errorMessage && <p className="text-red-600 mt-2">{errorMessage}</p>} */}
 
           <div className="">
             {/* Hidden file input */}

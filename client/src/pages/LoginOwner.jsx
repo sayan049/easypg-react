@@ -14,6 +14,9 @@ import {
   tokenVerifyOwnerUrl,
 } from "../constant/urls";
 import "../designs/loginForMessOwner.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Toaster } from "sonner";
 
 function LoginOwner() {
   useEffect(() => {
@@ -61,6 +64,7 @@ function LoginOwner() {
       setTokenValid(response.status === 200);
     } catch (error) {
       console.error("Error verifying reset token:", error);
+      toast.error("Invalid or expired token. Please try again.");
       setTokenValid(false);
     } finally {
       setLoading(false);
@@ -72,6 +76,7 @@ function LoginOwner() {
     const storedMessage = localStorage.getItem("loginMessageOwner");
     if (storedMessage) {
       setMessage(location.state?.message || "");
+      toast.success(location.state?.message || storedMessage);
     }
 
     // Remove the message after 5 seconds
@@ -110,7 +115,10 @@ function LoginOwner() {
       setIsButtonDisabled(true); // Disable button immediately
       const response = await axios.post(loginOwnerUrl, jsonData, {
         withCredentials: true,
-        headers: { "Content-Type": "application/json", "X-Device-Info": deviceInfo, },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Device-Info": deviceInfo,
+        },
       });
       if (response.status === 200) {
         const { accessToken, refreshToken } = response.data;
@@ -127,9 +135,31 @@ function LoginOwner() {
         window.location.reload();
       } else {
         console.error("Login failed", response.data);
+        toast.error("Login failed. Please check your credentials.");
       }
     } catch (error) {
       console.log("Error sending JSON data:", error);
+      let errorMsg = "Login failed. Please try again.";
+
+      // Check if the error response exists and handle specific cases
+      if (error.response) {
+        const res = error.response;
+
+        // Check for specific error messages from the backend
+        if (res.data.message) {
+          errorMsg = res.data.message; // e.g., "Invalid email or password."
+        } else if (res.data.errors) {
+          errorMsg = res.data.errors.join(", "); // Join multiple errors if present
+        }
+      } else if (error.request) {
+        errorMsg = "Server not responding. Check your internet.";
+      } else {
+        errorMsg = "Error: " + error.message; // Default error message
+      }
+
+      // Log the error and show the toast
+      console.error("Error details:", error);
+      toast.error(errorMsg);
     } finally {
       // Re-enable the button after 5 seconds
       setTimeout(() => {
@@ -139,12 +169,12 @@ function LoginOwner() {
     }
   };
   const loginwithgoogleOwner = () => {
-    const deviceInfo = navigator.userAgent;  // Capture device info (e.g., user agent)
+    const deviceInfo = navigator.userAgent; // Capture device info (e.g., user agent)
     const state = JSON.stringify({ type: "owner", device: deviceInfo }); // Add device info in the state
     window.location.href =
       `${baseurl}/auth/google-owner?state=` + encodeURIComponent(state); // Send the state with device info
   };
-  
+
   const openForgotPassword = () => {
     setIsForgotPasswordOpen(true);
   };
@@ -160,17 +190,21 @@ function LoginOwner() {
       });
       if (response.status === 200) {
         setForgotPasswordMessage("Password reset email sent!");
+        toast.success("Password reset email sent!");
         setIsForgotPasswordOpen(false);
       } else {
         setForgotPasswordMessage("Error sending email. Please try again.");
+        toast.error("Error sending email. Please try again.");
       }
     } catch (error) {
       setForgotPasswordMessage("Error sending email. Please try again.");
+      toast.error("Error sending email. Please try again.");
     }
   };
   const submitResetPassword = async () => {
     if (!resetToken || !newPassword || newPassword !== confirmPassword) {
       setResetPasswordError("Passwords do not match or invalid token.");
+      toast.error("Passwords do not match or invalid token.");
       return;
     }
 
@@ -183,13 +217,16 @@ function LoginOwner() {
 
       if (response.status === 200) {
         alert("Password successfully reset! Redirecting to login...");
+        //toast.success("Password successfully reset! Redirecting to login...");
         setResetToken(null);
         navigate("/LoginUser"); // Redirect to login page
       } else {
         setResetPasswordError("Error resetting password. Please try again....");
+        Toaster.error("Error resetting password. Please try again.");
       }
     } catch (error) {
       setResetPasswordError("Error resetting password. Please try again.");
+      Toaster.error("Error resetting password. Please try again.");
     }
   };
 
@@ -200,6 +237,10 @@ function LoginOwner() {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
+      <ToastContainer
+        position="top-center"
+        toastClassName="!w-[300px]   mx-auto mt-4 sm:mt-0  "
+      />
       {/* Left Section */}
       <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6 flex-col">
         <div className="w-full max-w-lg p-8">
