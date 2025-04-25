@@ -129,7 +129,9 @@ function LoginOwner() {
 
         // const message = `Welcome ${userData.name}!`;
         // localStorage.setItem("sId_message", message);
-        navigate("/", { state: { message: "succesfully logged in"  } });
+        localStorage.setItem("sId_message", "Successfully logged in");
+        navigate("/");
+      //  navigate("/", { state: { message: "succesfully logged in" } });
 
         console.log("succesfully logged in");
         window.location.reload();
