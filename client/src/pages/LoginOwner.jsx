@@ -16,7 +16,6 @@ import {
 import "../designs/loginForMessOwner.css";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Toaster } from "sonner";
 
 function LoginOwner() {
   useEffect(() => {
@@ -247,8 +246,9 @@ function LoginOwner() {
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
       <ToastContainer
         position="top-center"
-        toastClassName="!w-[300px]   mx-auto mt-4 sm:mt-0  "
+        toastClassName="!w-[300px]   mx-auto mt-4 sm:mt-0 "
       />
+      <ToastContainer/>
       {/* Left Section */}
       <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6 flex-col">
         <div className="w-full max-w-lg p-8">
@@ -437,7 +437,7 @@ function LoginOwner() {
               {isSendingEmail ? "Sending..." : "Send Reset Email"}
             </button>
             <p className="text-center text-sm text-gray-600 mt-2">
-              {forgotPasswordMessage}
+              {/* {forgotPasswordMessage} */}
             </p>
             <button
               onClick={closeForgotPassword}
