@@ -30,8 +30,8 @@ function SignupOwner() {
 
   useEffect(() => {
     document.title = "Sign up for owner";
-    console.log(isFormComplete());
-  }, [isFormComplete]);
+   // console.log(isFormComplete());
+  }, []);
 
   const mapMake = () => {
     if (navigator.geolocation) {
