@@ -802,7 +802,7 @@ exports.handleBookingApproval = async (req, res) => {
     );
 
     // Socket notifications
-    // const bookingData = booking.toObject();
+     const bookingData = booking.toObject();
 
     // SocketManager.notifyStudentBookingStatus(booking.student._id, {
     //   _id: booking._id,

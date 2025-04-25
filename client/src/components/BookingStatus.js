@@ -1185,7 +1185,9 @@ import {
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
-import { toast } from "sonner";
+import { toast,ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import { baseurl } from "../constant/urls";
 
 const BookingCard = React.memo(({ booking, onConfirm, onReject, loading }) => {
@@ -1206,6 +1208,7 @@ const BookingCard = React.memo(({ booking, onConfirm, onReject, loading }) => {
 
   return (
     <div className="w-full md:w-[48%] bg-white rounded-xl shadow p-4">
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" />
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
