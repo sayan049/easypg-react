@@ -764,10 +764,9 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
-import { toast,ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { bookingRequestUrl } from "../constant/urls";
 import "react-toastify/dist/ReactToastify.css";
-
 
 export default function BookingPage() {
   const navigate = useNavigate();
@@ -796,6 +795,7 @@ export default function BookingPage() {
       // Validate inputs
       if (!selectedRoom || !checkInDate) {
         toast.error("Please select a room and check-in date");
+        setIsLoading(false);
         return;
       }
 
@@ -805,6 +805,7 @@ export default function BookingPage() {
 
       if (!selectedRoomInfo) {
         toast.error("Selected room not found");
+        setIsLoading(false);
         return;
       }
 
@@ -828,46 +829,39 @@ export default function BookingPage() {
       };
 
       // Make booking request
-      const response = await axios.post(bookingRequestUrl, bookingData, {
+      const { data } = await axios.post(bookingRequestUrl, bookingData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
 
-      // Check for successful response (status code 2xx)
-      if (response.data.success) {
-        toast.success(
-          response.data.message || "Booking request sent successfully!"
-        );
+      if (data.success) {
+        toast.success(data.message || "Booking request sent successfully!");
+        // Optionally navigate after success
+        // navigate('/bookings');
       } else {
-        // Handle cases where the request was successful but the backend returned an error
-        toast.error(response.data.message || "Booking request failed");
+        toast.error(data.message || "Booking request failed");
       }
     } catch (error) {
       console.error("Booking error:", error);
 
-      // Handle axios errors
+      // Handle error response from server
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        const errorMessage =
-          error.response.data.message ||
-          error.response.data.error ||
+        const serverMessage =
+          error.response.data?.message ||
+          error.response.data?.error ||
           "Booking request failed";
-        toast.error(errorMessage);
-
-        // You can also show additional details if needed
-        if (error.response.data.missingFields) {
-          console.log("Missing fields:", error.response.data.missingFields);
-        }
-      } else if (error.request) {
-        // The request was made but no response was received
-        toast.error("No response from server. Please try again later.");
-      } else {
-        // Something happened in setting up the request that triggered an Error
+        toast.error(serverMessage);
+      }
+      // Handle network errors
+      else if (error.request) {
         toast.error(
-          error.message || "An error occurred while making the booking request"
+          "Network error. Please check your connection and try again."
         );
+      }
+      // Handle other errors
+      else {
+        toast.error("An unexpected error occurred. Please try again.");
       }
     } finally {
       setIsLoading(false);
@@ -877,7 +871,18 @@ export default function BookingPage() {
 
   return (
     <div className="p-4 md:p-8 max-w-[100rem] mx-auto space-y-6 font-sans">
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        style={{ zIndex: 9999 }} // Ensure it's above other elements
+      />
       <div className="flex items-center gap-4 mb-6 border-b pb-4 border-gray-300 justify-between">
         <div className="flex items-center gap-2">
           <img

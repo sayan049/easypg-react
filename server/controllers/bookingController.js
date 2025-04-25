@@ -720,7 +720,7 @@ exports.handleBookingApproval = async (req, res) => {
   try {
     const { id } = req.params;
     const { status, rejectionReason } = req.body;
-
+    console.log(id, status, rejectionReason);
     if (!["confirmed", "rejected"].includes(status)) {
       return res.status(400).json({
         success: false,
