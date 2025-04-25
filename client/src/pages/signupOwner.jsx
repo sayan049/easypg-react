@@ -16,6 +16,7 @@ function SignupOwner() {
   const navigate = useNavigate();
   // const [location, setLocation] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [isSubmitting, setIssubmitting] = useState(false);
 
   const amenities = [
     { id: "test1", label: "A/C", icon: "💨" },
@@ -244,6 +245,7 @@ function SignupOwner() {
     e.preventDefault();
 
     try {
+      setIssubmitting(true); // Set loading state
       const formDataToSend = new FormData();
       for (const key in formData) {
         if (key === "messPhoto") {
@@ -291,6 +293,10 @@ function SignupOwner() {
         "Error creating user:",
         error.response ? error.response.data : error.message
       );
+    } finally  {
+      setTimeout(() => {
+        setIsSubmitting(false);
+      }, 5000);
     }
   };
 
@@ -748,17 +754,19 @@ function SignupOwner() {
                 : "bg-gray-400 cursor-not-allowed"
             }`}
            // disabled={!isFormComplete() || !termsAccepted}
-            onClick={(e) => {
-              if (!isFormComplete()) {
-                e.preventDefault();
-                toast.error("Please fill all fields");
-              } else if (!termsAccepted) {
-                e.preventDefault();
-                toast.error("Please accept the terms and conditions");
-              }
-            }}
+           disabled={isSubmitting}
+            // onClick={(e) => {
+            //   if (!isFormComplete()) {
+            //     e.preventDefault();
+            //     toast.error("Please fill all fields");
+            //   } else if (!termsAccepted) {
+            //     e.preventDefault();
+            //     toast.error("Please accept the terms and conditions");
+            //   }
+            // }}
           >
-            Create Account
+            {isSubmitting ? ( "submitting...") : "Create Account"}
+           
           </button>
         </div>
       </form>
