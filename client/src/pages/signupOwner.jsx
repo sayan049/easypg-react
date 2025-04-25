@@ -264,7 +264,7 @@ function SignupOwner() {
                return  toast.error(res.data.errors.join(", "));
               }
             }
-            toast.error("Error sending email. Please try again.");
+            toast.error("Error creating user. Please try again.");
       console.error(
         "Error creating user:",
         error.response ? error.response.data : error.message
