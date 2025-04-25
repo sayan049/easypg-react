@@ -238,26 +238,56 @@
 // export default MessBars;
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { findMessUrl } from "../constant/urls";
+import { baseurl, findMessUrl } from "../constant/urls";
 import { useNavigate } from "react-router-dom";
 
-function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }) {
+function MessBars({
+  isChecked,
+  checkFeatures,
+  userLocation,
+  coords,
+  setPgCount,
+}) {
   const [messData, setMessData] = useState([]);
-  const [distances, setDistances] = useState({});
+  const [distance, setDistance] = useState(0);
   const [error, setError] = useState(null);
-  const [selected, setSelected] = useState(null);
   const navigate = useNavigate();
+  const [selected, setSelected] = useState(null);
 
-  const clickNavi = (owner) => navigate("/viewDetails", { state: { owner } });
-  const clickBook = (owner) => navigate("/booking", { state: { owner } });
+  const clickNavi = (owner) => {
+    navigate("/viewDetails", { state: { owner } });
+  };
+  
+  const clickBook = (owner) => {
+    navigate("/booking", { state: { owner } });
+  };
 
+  // Function to calculate distance
   const getStreetDistance = (orig, dest) => {
     return new Promise((resolve, reject) => {
       const service = new window.google.maps.DistanceMatrixService();
+
+      // Check if orig and dest are valid LatLng objects or arrays with [lat, lng]
+      if (
+        !orig ||
+        !dest ||
+        typeof orig.lat !== "number" ||
+        typeof orig.lng !== "number" ||
+        typeof dest[0] !== "number" ||
+        typeof dest[1] !== "number"
+      ) {
+        reject("Invalid origin or destination coordinates.");
+        return;
+      }
+
+      // Convert to LatLngLiteral if needed
+      const originLatLng = new window.google.maps.LatLng(orig.lat, orig.lng);
+      const destinationLatLng = new window.google.maps.LatLng(dest[1], dest[0]); // [lng, lat] from MongoDB
+
       service.getDistanceMatrix(
         {
-          origins: [orig],
-          destinations: [dest],
+          origins: [originLatLng],
+          destinations: [destinationLatLng],
           travelMode: "DRIVING",
         },
         (response, status) => {
@@ -272,10 +302,43 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
     });
   };
 
+  // Function to handle click on the coordinates
+  const clickCords = (location, id) => {
+    setSelected(id);
+
+    if (
+      Array.isArray(location) &&
+      location.length === 2 &&
+      typeof location[0] === "number" &&
+      typeof location[1] === "number"
+    ) {
+      const [lng, lat] = location; // MongoDB stores [lng, lat]
+      if (typeof coords === "function") {
+        coords({ lat, lng });
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (userLocation && Array.isArray(messData) && messData.length > 0) {
+      const [lng, lat] = messData[0]?.location?.coordinates || [];
+      if (lng && lat) {
+        coords({ lat, lng });
+      }
+    }
+
+    if (!selected && Array.isArray(messData) && messData.length > 0 && messData[0]?._id) {
+      setSelected(messData[0]._id);
+    }
+  }, [userLocation, messData]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (!userLocation?.lat || !userLocation?.lng) return;
+        if (!userLocation || !userLocation.lat || !userLocation.lng) {
+          console.error("❌ No valid location provided.");
+          return;
+        }
 
         const res = await axios.get(findMessUrl, {
           params: { lat: userLocation.lat, lng: userLocation.lng },
@@ -283,47 +346,20 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
 
         const filteredData = Array.isArray(res.data)
           ? res.data.filter((owner) => {
-              const facilities = Array.isArray(owner.facility)
-                ? owner.facility.flatMap((f) =>
-                    f.split(",").map((item) => item.trim().toLowerCase())
-                  )
+              const facilitiesArray = Array.isArray(owner.facility)
+                ? owner.facility.flatMap((f) => f.split(",").map((item) => item.trim().toLowerCase()))
                 : [];
-              return checkFeatures.length
-                ? checkFeatures.some((f) => facilities.includes(f.toLowerCase()))
+
+              return checkFeatures.length > 0
+                ? checkFeatures.some((feature) => facilitiesArray.includes(feature.toLowerCase()))
                 : true;
             })
           : [];
 
         setMessData(filteredData);
         setPgCount(filteredData.length);
-        if (filteredData[0]?._id) setSelected(filteredData[0]._id);
-        const firstCoords = filteredData[0]?.location?.coordinates;
-        if (firstCoords) coords?.({ lat: firstCoords[1], lng: firstCoords[0] });
-
-        // Calculate distances for each mess
-        const distancePromises = filteredData.map(async (owner) => {
-          if (owner?.location?.coordinates) {
-            const distance = await getStreetDistance(
-              userLocation,
-              owner.location.coordinates
-            );
-            return { id: owner._id, distance };
-          }
-          return { id: owner._id, distance: "No location" };
-        });
-
-        // Wait for all distance calculations to finish
-        const distancesData = await Promise.all(distancePromises);
-
-        // Update distances state
-        const distancesObj = distancesData.reduce((acc, { id, distance }) => {
-          acc[id] = distance;
-          return acc;
-        }, {});
-        setDistances(distancesObj);
-
       } catch (err) {
-        console.error("Fetch error", err);
+        console.error("❌ Error fetching data", err);
         setError("Failed to fetch PG owners");
       }
     };
@@ -331,7 +367,21 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
     fetchData();
   }, [checkFeatures, userLocation]);
 
-  if (error) return <div>{error}</div>;
+  useEffect(() => {
+    if (userLocation && messData.length > 0) {
+      messData.forEach((owner) => {
+        if (owner?.location?.coordinates) {
+          getStreetDistance(userLocation, owner?.location?.coordinates)
+            .then((d) => setDistance(d))
+            .catch((err) => console.error("Distance error:", err));
+        }
+      });
+    }
+  }, [userLocation, messData]);
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div style={{ overflowY: "auto", height: "84vh" }}>
@@ -339,7 +389,18 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
         <div
           key={owner?._id}
           className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md mb-4 sm:mb-2"
+          onClick={() => {
+            if (owner?.location?.coordinates) {
+              getStreetDistance(userLocation, owner?.location?.coordinates)
+                .then((d) => setDistance(d))
+                .catch((err) => console.error("Distance error:", err));
+              clickCords(owner.location.coordinates, owner?._id);
+            } else {
+              console.log("Location missing for", owner.messName);
+            }
+          }}
         >
+          {/* Image Section */}
           {!isChecked && (
             <div className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0">
               <img
@@ -352,10 +413,9 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
             </div>
           )}
 
+          {/* Content Section */}
           <div
-            className={`flex-grow md:ml-6 mt-4 md:mt-0 ${
-              selected === owner._id && isChecked ? "border-2 border-[rgb(44,164,181)]" : ""
-            }`}
+            className={`flex-grow md:ml-6 mt-4 md:mt-0 ${(selected === owner._id && isChecked) ? "border-2 border-[rgb(44,164,181)]" : ""}`}
             style={{
               padding: isChecked ? "29px" : "0px",
               borderRadius: isChecked ? "10px" : "0px",
@@ -366,19 +426,29 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
           >
             <h3 className="font-medium text-lg">{owner.messName}, In Simhat</h3>
             <p className="text-sm text-gray-600 mt-2">
-              {owner.address} • {distances[owner._id] || "Fetching..."}
+              {owner.address} • {distance} Km
             </p>
             <div className="flex items-center mt-4 text-sm text-gray-500">
-              {owner.facility?.map((f, i) => (
-                <span key={i}>{f} {i < owner.facility.length - 1 && "•"} </span>
+              {owner.facility?.map((feature, index) => (
+                <span key={index}>
+                  {feature} {index < owner.facility.length - 1 && "•"}
+                </span>
               ))}
             </div>
-            <div><span>Price: 2.5k/Month</span></div>
+            <div>
+              <span>Price: 2.5k/Month</span>
+            </div>
             <div className="flex gap-4 mt-4">
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-md" onClick={() => clickNavi(owner)}>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                onClick={() => clickNavi(owner)}
+              >
                 View Details
               </button>
-              <button className="bg-green-500 text-white px-4 py-2 rounded-md" onClick={() => clickBook(owner)}>
+              <button
+                className="bg-green-500 text-white px-4 py-2 rounded-md"
+                onClick={() => clickBook(owner)}
+              >
                 Book Now
               </button>
             </div>
