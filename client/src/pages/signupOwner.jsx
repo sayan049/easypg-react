@@ -755,15 +755,15 @@ function SignupOwner() {
             }`}
            // disabled={!isFormComplete() || !termsAccepted}
            disabled={isSubmitting}
-            // onClick={(e) => {
-            //   if (!isFormComplete()) {
-            //     e.preventDefault();
-            //     toast.error("Please fill all fields");
-            //   } else if (!termsAccepted) {
-            //     e.preventDefault();
-            //     toast.error("Please accept the terms and conditions");
-            //   }
-            // }}
+            onClick={(e) => {
+              if (!isFormComplete()) {
+                e.preventDefault();
+                toast.error("Please fill all fields");
+              } else if (!termsAccepted) {
+                e.preventDefault();
+                toast.error("Please accept the terms and conditions");
+              }
+            }}
           >
             {isSubmitting ? ( "submitting...") : "Create Account"}
            
