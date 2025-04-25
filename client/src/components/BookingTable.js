@@ -569,7 +569,7 @@ import { toast } from 'react-toastify';
 const BookingTable = () => {
   const { user } = useAuth();
   const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState({
     upcoming: 0,
     active: 0,
