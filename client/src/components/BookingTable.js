@@ -266,9 +266,9 @@ const BookingTable = () => {
 
   useEffect(() => {
     if (user?._id) {
-      fetchBookings();
+      fetchBookings(1, statusFilter); // Pass the current status filter
     }
-  }, [user?._id, fetchBookings]);
+  }, [user?._id, statusFilter]); // Add statusFilter to dependencies
 
   const handleDownloadInvoice = async (bookingId) => {
     try {
