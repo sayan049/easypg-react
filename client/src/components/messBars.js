@@ -186,7 +186,7 @@ function MessBars({
             <h3 className="font-medium text-lg">{owner.messName}, In Simhat</h3>
             <p className="text-sm text-gray-600 mt-2">
               {/* Near MAKAUT University • 15 Km */}
-              {owner.address} • {getDistanceFromLatLonInKm(userLocation.lat,userLocation.lng,owner?.location?.coordinates[0],owner?.location?.coordinates[1])} Km
+              {owner.address} • {getDistanceFromLatLonInKm(userLocation.lat,userLocation.lng,owner?.location?.coordinates[1],owner?.location?.coordinates[0])} Km
             </p>
             <div className="flex items-center mt-4 text-sm text-gray-500">
               {owner.facility?.map((feature, index) => (
