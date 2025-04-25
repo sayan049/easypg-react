@@ -209,16 +209,19 @@ const BookingTable = () => {
     rejected: "text-red-700 bg-red-100",
     cancelled: "text-gray-700 bg-gray-100"
   };
+  const [statusFilter, setStatusFilter] = useState('');
 
-  const fetchBookings = useCallback(async (page = 1) => {
+  const fetchBookings = useCallback(async (page = 1,status='') => {
     try {
       setLoading(true);
       const token = localStorage.getItem('accessToken');
       const response = await axios.get(`${baseurl}/auth/bookings/user-bookings`, {
         headers: { Authorization: `Bearer ${token}` },
         params: {
+          
           page,
-          limit: pagination.limit
+          limit: pagination.limit,
+          ...(status && { status })
         }
       });
 
@@ -345,6 +348,28 @@ const BookingTable = () => {
 
   return (
     <div className="px-4 sm:px-6 md:px-8 lg:px-6 xl:px-4 py-4 mx-auto">
+      <div className="mb-6 flex flex-wrap items-center gap-4">
+        <div className="flex-1 min-w-[200px]">
+          <label htmlFor="status-filter" className="block text-sm font-medium text-gray-700 mb-1">
+            Filter by Status
+          </label>
+          <select
+            id="status-filter"
+            value={statusFilter}
+            onChange={(e) => {
+              setStatusFilter(e.target.value);
+              fetchBookings(1, e.target.value);
+            }}
+            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+          >
+            <option value="">All Statuses</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="pending">Pending</option>
+            <option value="rejected">Rejected</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
       {/* Stats Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center mb-6">
         <StatCard 
