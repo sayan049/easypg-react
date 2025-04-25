@@ -216,7 +216,7 @@ router.post("/updatePasswordDashboardOwner",  async (req, res) => {
 //booking part----------------------------------------------------------------------------------->
 
 // User initiates booking request
-router.post('/bookings', createBookingRequest);
+router.post('/bookings',authenticateJWT, createBookingRequest);
 router.get('/bookings/owner',authenticateJWT, getOwnerBookings);
 // Owner approves or rejects booking request
 router.post('/bookings/:id/status', handleBookingApproval);

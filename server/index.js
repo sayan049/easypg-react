@@ -152,8 +152,8 @@ const authRoutes = require("./routes/auth");
 const mailRoute = require("./routes/mailVerifierRoute");
 const mailVerifyOwner = require("./routes/mailVerifyOwner");
 const connectDB = require("./config/mongoDB");
-const http = require('http');
-const SocketManager = require('./sockets/bookingSocket'); // Update with correct path
+// const http = require('http');
+// const SocketManager = require('./sockets/bookingSocket'); // Update with correct path
 //  const ORIGIN =  process.env.CLIENT_URL || "https://messmate-client.onrender.com"; // Default to localhost if not set
  const ORIGIN =  "https://messmate-client.onrender.com";
 const PORT = process.env.PORT || 8080;
@@ -172,7 +172,7 @@ const corsOptions = {
 };
 
 const app = express();
-const server = http.createServer(app);
+// const server = http.createServer(app);
 
 // Initialize SocketManager with HTTP server
 
@@ -182,9 +182,9 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-const io = SocketManager.init(server);
-// Make SocketManager accessible in routes
-app.set('socketManager', SocketManager);
+// const io = SocketManager.init(server);
+// // Make SocketManager accessible in routes
+// app.set('socketManager', SocketManager);
 
 app.use(passport.initialize());
 app.use((req, res, next) => {
@@ -255,7 +255,7 @@ app.use((err, req, res, next) => {
   res.status(500).send("Something broke!");
 });
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server is running on port: http://localhost:${PORT}/`);
   console.log(`WebSocket server is running on ws://localhost:${PORT}`);
 });

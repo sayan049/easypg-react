@@ -160,5 +160,7 @@ const bookingSchema = new mongoose.Schema(
 bookingSchema.index({ pgOwner: 1, status: 1, createdAt: -1 }); // Main query
 bookingSchema.index({ student: 1, status: 1 }); // For student queries
 bookingSchema.index({ room: 1, pgOwner: 1 }); // For room-specific queries
+bookingSchema.index({ student: 1, pgOwner: 1, room: 1, status: 1 });
+
 
 module.exports = mongoose.models.Booking || mongoose.model("Booking", bookingSchema);
