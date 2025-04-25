@@ -229,7 +229,7 @@ function LoginUser() {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
-      <ToastContainer position="top-center" />
+     <ToastContainer position="top-center" toastClassName="!w-[300px] sm:!w-[90%] mx-auto mt-4 sm:mt-0 "  />
 
       {/* Left Section */}
       <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6">
