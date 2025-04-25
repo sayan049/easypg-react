@@ -304,7 +304,7 @@
 //               })()}
 //             </div>
 //           </div>
-//           {/* 
+//           {/*
 //           <div className="rounded-2xl shadow-md bg-white">
 //             <div className="p-4 space-y-4">
 //               <h2 className="text-xl font-semibold">Payment Method</h2>
@@ -383,7 +383,7 @@
 //   const { socket, isConnected, emitWithAck, isInitialized } = useSocket();
 
 //   const { user } = useAuth();
-   
+
 //   // Track if socket is ready to emit events
 //   const [socketReady, setSocketReady] = useState(false);
 //   useEffect(() => {
@@ -394,13 +394,13 @@
 //     // if (socket) {
 //     //   const handleConnect = () => setSocketReady(true);
 //     //   const handleDisconnect = () => setSocketReady(false);
-      
+
 //     //   // Set initial state
 //     //   setSocketReady(socket.connected);
-      
+
 //     //   socket.on('connect', handleConnect);
 //     //   socket.on('disconnect', handleDisconnect);
-      
+
 //     //   return () => {
 //     //     socket.off('connect', handleConnect);
 //     //     socket.off('disconnect', handleDisconnect);
@@ -410,12 +410,12 @@
 
 //     const handleConnect = () => setSocketReady(true);
 //     const handleDisconnect = () => setSocketReady(false);
-  
+
 //     setSocketReady(socket.connected); // Initial
-  
+
 //     socket.on('connect', handleConnect);
 //     socket.on('disconnect', handleDisconnect);
-  
+
 //     return () => {
 //       socket.off('connect', handleConnect);
 //       socket.off('disconnect', handleDisconnect);
@@ -433,20 +433,20 @@
 //   const handleBookingRequest = async () => {
 //     try {
 //       setIsLoading(true);
-      
+
 //       // Validate inputs
 //       if (!selectedRoom || !checkInDate) {
 //         throw new Error("Please select a room and check-in date");
 //       }
-  
+
 //       const selectedRoomInfo = owner?.roomInfo?.find(
 //         (r) => r._id === selectedRoom
 //       );
-  
+
 //       if (!selectedRoomInfo) {
 //         throw new Error("Selected room not found");
 //       }
-  
+
 //       // Prepare booking data
 //       const bookingData = {
 //         student: user.id,
@@ -465,7 +465,7 @@
 //         },
 //         status: "pending"
 //       };
-  
+
 //       // Make booking request
 //       const response = await axios.post(bookingRequestUrl, bookingData, {
 //         headers: {
@@ -473,12 +473,11 @@
 //         }
 //       });
 
-  
 //       // Send socket notification if booking was successful
 //       if (response.data) {
 //         const MAX_RETRIES = 3;
 //         let retryCount = 0;
-        
+
 //         const sendNotification = async () => {
 //           try {
 //             await emitWithAck('new-booking-request', {
@@ -490,7 +489,7 @@
 //               pricePerHead: selectedRoomInfo.pricePerHead,
 //               timestamp: new Date().toISOString()
 //             });
-            
+
 //             console.log('Real-time notification sent successfully');
 //           } catch (error) {
 //             console.log('Real-time notification error:', error);
@@ -504,7 +503,7 @@
 //             throw error;
 //           }
 //         };
-  
+
 //         try {
 //           await sendNotification();
 //           toast.success("Booking created with real-time notification!");
@@ -513,7 +512,7 @@
 //           toast.success("Booking created! Owner will be notified when online");
 //         }
 //       }
-  
+
 //     } catch (error) {
 //       console.error("Booking error:", error);
 //       toast.error(error.response?.data?.message || error.message || "Booking failed");
@@ -591,7 +590,7 @@
 //                             : "bg-red-100 text-red-700"
 //                         }`}
 //                       >
-//                         {room.roomAvailable 
+//                         {room.roomAvailable
 //                           ? `${bedCountToNumber[room.bedContains]} Bed${bedCountToNumber[room.bedContains] > 1 ? 's' : ''} Available`
 //                           : "Fully Booked"}
 //                       </span>
@@ -677,7 +676,7 @@
 //           <div className="rounded-2xl shadow-md bg-white">
 //             <div className="p-4 space-y-4">
 //               <h2 className="text-xl font-semibold">Booking Summary</h2>
-              
+
 //               <div>
 //                 <label className="text-sm">Check-in Date</label>
 //                 <input
@@ -689,7 +688,7 @@
 //                   required
 //                 />
 //               </div>
-              
+
 //               <div>
 //                 <label className="text-sm">Duration (months)</label>
 //                 <select
@@ -704,7 +703,7 @@
 //                   ))}
 //                 </select>
 //               </div>
-              
+
 //               {selectedRoom && (
 //                 <div className="space-y-2">
 //                   <div className="flex justify-between">
@@ -785,26 +784,28 @@ export default function BookingPage() {
     two: 2,
     three: 3,
     four: 4,
-    five: 5
+    five: 5,
   };
 
   const handleBookingRequest = async () => {
     try {
       setIsLoading(true);
-      
+
       // Validate inputs
       if (!selectedRoom || !checkInDate) {
-        throw new Error("Please select a room and check-in date");
+        toast.error("Please select a room and check-in date");
+        return;
       }
-  
+
       const selectedRoomInfo = owner?.roomInfo?.find(
         (r) => r._id === selectedRoom
       );
-  
+
       if (!selectedRoomInfo) {
-        throw new Error("Selected room not found");
+        toast.error("Selected room not found");
+        return;
       }
-  
+
       // Prepare booking data
       const bookingData = {
         student: user.id,
@@ -815,34 +816,61 @@ export default function BookingPage() {
         pricePerHead: selectedRoomInfo.pricePerHead,
         period: {
           startDate: checkInDate,
-          durationMonths: duration
+          durationMonths: duration,
         },
         payment: {
           totalAmount: selectedRoomInfo.pricePerHead * (duration + 1),
-          deposit: selectedRoomInfo.pricePerHead
+          deposit: selectedRoomInfo.pricePerHead,
         },
-        status: "pending"
+        status: "pending",
       };
-  
+
       // Make booking request
       const response = await axios.post(bookingRequestUrl, bookingData, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
       });
 
-      if (response.data) {
-        toast.success("Booking created successfully!");
+      // Check for successful response (status code 2xx)
+      if (response.data.success) {
+        toast.success(
+          response.data.message || "Booking request sent successfully!"
+        );
+      } else {
+        // Handle cases where the request was successful but the backend returned an error
+        toast.error(response.data.message || "Booking request failed");
       }
-  
     } catch (error) {
       console.error("Booking error:", error);
-      toast.error(error.response?.data?.message || error.message || "Booking failed");
+
+      // Handle axios errors
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        const errorMessage =
+          error.response.data.message ||
+          error.response.data.error ||
+          "Booking request failed";
+        toast.error(errorMessage);
+
+        // You can also show additional details if needed
+        if (error.response.data.missingFields) {
+          console.log("Missing fields:", error.response.data.missingFields);
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        toast.error("No response from server. Please try again later.");
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        toast.error(
+          error.message || "An error occurred while making the booking request"
+        );
+      }
     } finally {
       setIsLoading(false);
     }
   };
-
   const primaryColor = "#2CA4B5";
 
   return (
@@ -912,8 +940,10 @@ export default function BookingPage() {
                             : "bg-red-100 text-red-700"
                         }`}
                       >
-                        {room.roomAvailable 
-                          ? `${bedCountToNumber[room.bedContains]} Bed${bedCountToNumber[room.bedContains] > 1 ? 's' : ''} Available`
+                        {room.roomAvailable
+                          ? `${bedCountToNumber[room.bedContains]} Bed${
+                              bedCountToNumber[room.bedContains] > 1 ? "s" : ""
+                            } Available`
                           : "Fully Booked"}
                       </span>
                     </div>
@@ -922,17 +952,26 @@ export default function BookingPage() {
                         <span key={index}>{facility}</span>
                       ))}
                     </div>
-                    <div className="text-lg font-bold" style={{ color: primaryColor }}>
+                    <div
+                      className="text-lg font-bold"
+                      style={{ color: primaryColor }}
+                    >
                       ₹{room.pricePerHead?.toLocaleString()}
-                      <span className="text-sm font-medium text-gray-500">/mo</span>
+                      <span className="text-sm font-medium text-gray-500">
+                        /mo
+                      </span>
                     </div>
                     <button
-                      onClick={() => room.roomAvailable && setSelectedRoom(room._id)}
+                      onClick={() =>
+                        room.roomAvailable && setSelectedRoom(room._id)
+                      }
                       disabled={!room.roomAvailable}
                       className={`w-full py-2 px-4 rounded-md font-semibold ${
                         selectedRoom === room._id ? "text-white" : "border"
                       } ${
-                        !room.roomAvailable ? "opacity-50 cursor-not-allowed" : ""
+                        !room.roomAvailable
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
                       }`}
                       style={{
                         backgroundColor:
@@ -958,16 +997,17 @@ export default function BookingPage() {
             <div className="p-4">
               <h2 className="text-xl font-semibold mb-4">Room Preview</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {(showAllPhotos ? owner?.messPhoto : owner?.messPhoto?.slice(0, 4))?.map(
-                  (image, index) => (
-                    <img
-                      key={index}
-                      src={image}
-                      alt={`Room ${index + 1}`}
-                      className="rounded-2xl w-full h-48 object-cover"
-                    />
-                  )
-                )}
+                {(showAllPhotos
+                  ? owner?.messPhoto
+                  : owner?.messPhoto?.slice(0, 4)
+                )?.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image}
+                    alt={`Room ${index + 1}`}
+                    className="rounded-2xl w-full h-48 object-cover"
+                  />
+                ))}
               </div>
               {owner?.messPhoto?.length > 4 && (
                 <button
@@ -998,19 +1038,19 @@ export default function BookingPage() {
           <div className="rounded-2xl shadow-md bg-white">
             <div className="p-4 space-y-4">
               <h2 className="text-xl font-semibold">Booking Summary</h2>
-              
+
               <div>
                 <label className="text-sm">Check-in Date</label>
                 <input
                   type="date"
                   className="mt-2 border rounded-md w-full p-2"
                   value={checkInDate}
-                  min={new Date().toISOString().split('T')[0]}
+                  min={new Date().toISOString().split("T")[0]}
                   onChange={(e) => setCheckInDate(e.target.value)}
                   required
                 />
               </div>
-              
+
               <div>
                 <label className="text-sm">Duration (months)</label>
                 <select
@@ -1020,36 +1060,56 @@ export default function BookingPage() {
                 >
                   {[1, 2, 3, 6, 12].map((num) => (
                     <option key={num} value={num}>
-                      {num} month{num !== 1 ? 's' : ''}
+                      {num} month{num !== 1 ? "s" : ""}
                     </option>
                   ))}
                 </select>
               </div>
-              
+
               {selectedRoom && (
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>Room:</span>
                     <span>
-                      {owner?.roomInfo?.find(r => r._id === selectedRoom)?.room}
+                      {
+                        owner?.roomInfo?.find((r) => r._id === selectedRoom)
+                          ?.room
+                      }
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Monthly Rent:</span>
-                    <span>₹{owner?.roomInfo?.find(r => r._id === selectedRoom)?.pricePerHead?.toLocaleString()}</span>
+                    <span>
+                      ₹
+                      {owner?.roomInfo
+                        ?.find((r) => r._id === selectedRoom)
+                        ?.pricePerHead?.toLocaleString()}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Duration:</span>
-                    <span>{duration} month{duration !== 1 ? 's' : ''}</span>
+                    <span>
+                      {duration} month{duration !== 1 ? "s" : ""}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Security Deposit:</span>
-                    <span>₹{owner?.roomInfo?.find(r => r._id === selectedRoom)?.pricePerHead?.toLocaleString()}</span>
+                    <span>
+                      ₹
+                      {owner?.roomInfo
+                        ?.find((r) => r._id === selectedRoom)
+                        ?.pricePerHead?.toLocaleString()}
+                    </span>
                   </div>
                   <div className="border-t pt-2 flex justify-between font-semibold">
                     <span>Total Amount:</span>
                     <span style={{ color: primaryColor }}>
-                      ₹{(owner?.roomInfo?.find(r => r._id === selectedRoom)?.pricePerHead * (duration + 1))?.toLocaleString()}
+                      ₹
+                      {(
+                        owner?.roomInfo?.find((r) => r._id === selectedRoom)
+                          ?.pricePerHead *
+                        (duration + 1)
+                      )?.toLocaleString()}
                     </span>
                   </div>
                 </div>
@@ -1059,7 +1119,9 @@ export default function BookingPage() {
 
           <button
             className={`w-full mt-4 py-3 px-4 rounded-md text-white font-medium flex items-center justify-center ${
-              (!selectedRoom || !checkInDate || isLoading) ? 'opacity-70 cursor-not-allowed' : ''
+              !selectedRoom || !checkInDate || isLoading
+                ? "opacity-70 cursor-not-allowed"
+                : ""
             }`}
             style={{ backgroundColor: primaryColor }}
             onClick={handleBookingRequest}
@@ -1067,14 +1129,30 @@ export default function BookingPage() {
           >
             {isLoading ? (
               <>
-                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg
+                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 Processing...
               </>
             ) : (
-              'Request Booking'
+              "Request Booking"
             )}
           </button>
         </div>
