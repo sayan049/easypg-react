@@ -764,8 +764,10 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
-import { toast } from "react-toastify";
+import { toast,ToastContainer } from "react-toastify";
 import { bookingRequestUrl } from "../constant/urls";
+import "react-toastify/dist/ReactToastify.css";
+
 
 export default function BookingPage() {
   const navigate = useNavigate();
@@ -875,6 +877,7 @@ export default function BookingPage() {
 
   return (
     <div className="p-4 md:p-8 max-w-[100rem] mx-auto space-y-6 font-sans">
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
       <div className="flex items-center gap-4 mb-6 border-b pb-4 border-gray-300 justify-between">
         <div className="flex items-center gap-2">
           <img
