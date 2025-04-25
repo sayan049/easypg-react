@@ -167,7 +167,7 @@ function NewDashboard() {
   const renderContent = () => {
     switch (activeTab) {
       case "dashboard":
-        return <DashboardContent />;
+        return <DashboardContent user={userDetails} />;
       case "bookings":
         return <BookingTable />;
       case "payments":

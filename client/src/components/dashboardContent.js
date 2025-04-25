@@ -2,13 +2,13 @@ import React from "react";
 import { FaRupeeSign, FaBookmark, FaCalendarAlt } from "react-icons/fa";
 import { FiAlertCircle } from "react-icons/fi";
 
- function DashboardContent() {
+ function DashboardContent({user}) {
   return (
     <div className="p-4 md:p-8">
       {/* Welcome Message */}
       <div className="mb-8">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
-          Welcome back, Alex!
+          Welcome back, {user.firstName+ user.lastName}!
         </h1>
         <p className="text-gray-500 mt-2">
           Your comfort is our priority. Manage your stays efficiently.
