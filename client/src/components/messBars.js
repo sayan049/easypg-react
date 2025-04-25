@@ -11,6 +11,7 @@ function MessBars({
   setPgCount,
 }) {
   const [messData, setMessData] = useState([]);
+  const [distance, setDistance] = useState(0);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [selected, setSelected] = useState(null);
@@ -22,6 +23,20 @@ function MessBars({
   const clickBook = (owner) => {
     navigate("/booking", { state: { owner } });
   };
+
+  const getDistanceFromLatLonInKm=(lat1, lon1, lat2, lon2)=> {
+    const R = 6371; // Radius of Earth in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) *
+      Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+  
   // const clickCords = (location) => {
   //   // Check if location is a valid string
   //   if (typeof location === 'string' && location.includes(',')) {
@@ -61,6 +76,7 @@ function MessBars({
     //  console.log("User Location:", userLocation); // Debugging
     }
     if(!selected && Array.isArray(messData) && messData.length > 0 && messData[0]?.location?.coordinates){
+      setDistance(getDistanceFromLatLonInKm(userLocation.lat, userLocation.lng, messData[0].location.coordinates[1], messData[0].location.coordinates[0]));
       const [lng, lat] = messData[0].location.coordinates; 
       coords({ lat, lng });
       console.log("Coordinates set to:", { lat, lng }, coords);
@@ -169,7 +185,8 @@ function MessBars({
           >
             <h3 className="font-medium text-lg">{owner.messName}, In Simhat</h3>
             <p className="text-sm text-gray-600 mt-2">
-              Near MAKAUT University • 15 Km
+              {/* Near MAKAUT University • 15 Km */}
+              {owner.address} • {distance} Km
             </p>
             <div className="flex items-center mt-4 text-sm text-gray-500">
               {owner.facility?.map((feature, index) => (
