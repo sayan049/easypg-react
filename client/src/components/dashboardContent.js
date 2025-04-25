@@ -1,223 +1,177 @@
 import React from "react";
+import { FaRupeeSign, FaBookmark, FaCalendarAlt } from "react-icons/fa";
+import { FiAlertCircle } from "react-icons/fi";
 
-function DashboardContent() {
+ function DashboardContent({user}) {
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <div className="max-w-7xl mx-auto bg-white shadow-lg rounded-lg p-6">
-        <header className="mb-6">
-          <h1 className="text-2xl font-semibold">Welcome back, Sandip!</h1>
-          <p className="text-sm text-gray-500">Last Login: 1st Jan 2025, 10:00 AM</p>
-        </header>
+    <div className="p-4 md:p-8">
+      {/* Welcome Message */}
+      <div className="mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+          Welcome back, !
+        </h1>
+        <p className="text-gray-500 mt-2">
+          Your comfort is our priority. Manage your stays efficiently.
+        </p>
+      </div>
 
-        {/* Responsive Box Container */}
-        <div className="flex flex-wrap gap-4 ">
-          
-        <div className="flex flex-wrap gap-4 justify-between">
-  <div className="bg-white shadow-md rounded-lg px-6 pt-6 w-full sm:w-72 border border-blue-200">
-    <h2 className="text-lg font-bold mb-4">Upcoming Stay</h2>
-    
-    <div className="mb-2 flex justify-between">
-      <p className="text-sm text-gray-600">Check-in:</p>
-      <p className="text-base font-medium">2025-01-20</p>
-    </div>
-    <div className="mb-2 flex justify-between">
-      <p className="text-sm text-gray-600">Check-out:</p>
-      <p className="text-base font-medium">2025-01-25</p>
-    </div>
-    <div className="mb-2 flex justify-between">
-      <p className="text-sm text-gray-600">Accommodation Name:</p>
-      <p className="text-base font-medium">Satyam PG</p>
-    </div>
-    <div className="mb-2 flex justify-between">
-      <p className="text-sm text-gray-600">Total Amount Due:</p>
-      <p className="text-base font-medium text-red-500">₹5,000</p>
-    </div>
-    <div className="mb-4 flex justify-between ">
-      <p className="text-sm text-gray-600 w-4">Payment Reminder:</p>
-      <p className="text-base font-medium">Due by 2025-01-15</p>
-    </div>
-    <div className="flex flex-wrap gap-2 justify-between">
-  <button className="bg-blue-500 text-white text-sm  py-1.5 px-3 font-semibold rounded hover:bg-blue-600">
-    Renew Stay
-  </button>
-  <button className="bg-gray-200 text-gray-800 text-sm  py-1.5 px-3 rounded font-semibold hover:bg-gray-300 ">
-    Cancel Stay
-  </button>
-  
-</div>
-{/* <button className="rounded-full bg-white text-black px-4 py-2 border border-black hover:bg-gray-100 mt-4 font-semibold text-xs transition-transform duration-300 ease-in-out hover:scale-x-110 hover:scale-y-110">
-  See More <span className="ml-2 text-black">→</span>
-</button> */}
-<button className="bg-teal-500 text-white text-sm  py-1.5 px-3 rounded hover:bg-teal-600 w-full my-4">
-    View Details
-  </button>
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <StatCard
+          icon={<FaRupeeSign className="text-2xl text-blue-500" />}
+          label="Total Spent"
+          value="₹45,000"
+        />
+        <StatCard
+          icon={<FaBookmark className="text-2xl text-green-500" />}
+          label="Active Bookings"
+          value="2"
+        />
+        <StatCard
+          icon={<FaCalendarAlt className="text-2xl text-purple-500" />}
+          label="Days Remaining"
+          value="45"
+        />
+      </div>
 
-  </div>
-  
-</div>
-
-
-
-<div className="flex flex-wrap gap-4 justify-between">
-  <div className="bg-white shadow-md rounded-lg px-6 pt-6 w-full sm:w-72 border border-blue-200">
-    <h2 className="text-lg font-bold mb-4">Total payment made</h2>
-    
-    <div className="mb-2 flex justify-between">
-      <p className="text-sm text-gray-600 whitespace-normal break-words">Total payment</p>
-      <p className="text-base font-medium text-green-500 whitespace-normal break-words">₹15,000</p>
-    </div>
-    <div className="mb-2 flex justify-between">
-      <p className="text-sm text-gray-600 whitespace-normal break-words">Total Transactions:</p>
-      <p className="text-base font-medium whitespace-normal break-words">5</p>
-    </div>
-    <div className="mb-2 flex justify-between">
-      <p className="text-sm text-gray-600 whitespace-normal break-words">Last Payment Made:</p>
-      <p className="text-base font-medium whitespace-normal break-words">₹3,000 for Satyam PG</p>
-    </div>
-    <div className="mb-2 flex justify-between">
-      <p className="text-sm text-gray-600 whitespace-normal break-words">Payment Status:</p>
-      <p className="text-base font-medium text-red-500 whitespace-normal break-words">Due</p>
-    </div>
-    {/* <div className="mb-4 flex justify-between ">
-      <p className="text-sm text-gray-600 w-4">Payment Reminder:</p>
-      <p className="text-base font-medium">Due by 2025-01-15</p>
-    </div> */}
-    <div className="flex flex-wrap gap-2 justify-between py-[3rem]">
-  <button className="bg-blue-500 text-white text-sm font-semibold py-2 px-4 rounded hover:bg-blue-600 w-full ">
-  View Payment History
-  </button>
-  <button className="bg-gray-200 text-gray-800 text-sm font-semibold py-2 px-4 rounded hover:bg-gray-300 w-full ">
-  Download  Receipt
-  </button>
-  
-</div>
-{/* <button className="rounded-full bg-white text-black px-4 py-2 border border-black hover:bg-gray-100 mt-4 font-semibold text-xs transition-transform duration-300 ease-in-out hover:scale-x-110 hover:scale-y-110">
-  See More <span className="ml-2 text-black">→</span>
-</button> */}
-{/* <button className="bg-teal-500 text-white text-xs  py-1.5 px-3 rounded hover:bg-teal-600 w-full my-4">
-    View Details
-  </button> */}
-
-  </div>
-  
-</div>
-
-<div className="flex flex-wrap gap-4 justify-between">
-  <div className="bg-white shadow-md rounded-lg px-6 pt-6 w-full sm:w-72 border border-blue-200">
-    <h2 className="text-lg font-bold mb-4">Upcoming Stay</h2>
-    
-    <div className="mb-2 flex justify-between">
-      <p className="text-sm text-gray-600">Check-in:</p>
-      <p className="text-base font-medium">2025-01-20</p>
-    </div>
-    <div className="mb-2 flex justify-between">
-      <p className="text-sm text-gray-600">Check-out:</p>
-      <p className="text-base font-medium">2025-01-25</p>
-    </div>
-    <div className="mb-2 flex justify-between">
-      <p className="text-sm text-gray-600">Accommodation Name:</p>
-      <p className="text-base font-medium">Satyam PG</p>
-    </div>
-    <div className="mb-2 flex justify-between">
-      <p className="text-sm text-gray-600">Total Amount Due:</p>
-      <p className="text-base font-medium text-red-500">₹5,000</p>
-    </div>
-    <div className="mb-4 flex justify-between ">
-      <p className="text-sm text-gray-600 w-4">Payment Reminder:</p>
-      <p className="text-base font-medium">Due by 2025-01-15</p>
-    </div>
-    <div className="flex flex-wrap gap-2 justify-between">
-  <button className="bg-blue-500 text-white text-xs  py-1.5 px-3 font-semibold rounded hover:bg-blue-600">
-    Renew Stay
-  </button>
-  <button className="bg-gray-200 text-gray-800 text-xs  py-1.5 px-3 rounded font-semibold hover:bg-gray-300 ">
-    Cancel Stay
-  </button>
-  
-</div>
-{/* <button className="rounded-full bg-white text-black px-4 py-2 border border-black hover:bg-gray-100 mt-4 font-semibold text-xs transition-transform duration-300 ease-in-out hover:scale-x-110 hover:scale-y-110">
-  See More <span className="ml-2 text-black">→</span>
-</button> */}
-<button className="bg-teal-500 text-white text-xs  py-1.5 px-3 rounded hover:bg-teal-600 w-full my-4">
-    View Details
-  </button>
-
-  </div>
-  
-</div>
-
-
-        
+      {/* Notifications */}
+      <div className="mb-8">
+        <h2 className="text-lg font-semibold mb-4 text-gray-700">
+          Stay Notifications
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <NotificationCard
+            icon={<FiAlertCircle className="text-blue-500 text-xl" />}
+            title="Upcoming Check-in"
+            description="Sunshine PG – Room 203"
+            date="March 1, 2025"
+          />
+          <NotificationCard
+            icon={<FiAlertCircle className="text-yellow-500 text-xl" />}
+            title="Rent Due Soon"
+            description="Monthly Payment"
+            date="Due: Feb 28, 2025"
+          />
         </div>
+      </div>
 
-        {/* Grid Layout for Notifications, Accommodation Info, and Maintenance */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mt-6">
-          <div className="lg:col-span-2 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h2 className="text-lg font-semibold text-blue-600 mb-3">Notifications</h2>
-            <ul>
-              <li className="mb-2">
-                <p className="text-sm">
-                  <strong>16 Jan:</strong> Upcoming Stay Reminder: Your stay at Room A-102 begins on 25th Jan 2024.
-                </p>
-              </li>
-              <li>
-                <p className="text-sm">
-                  <strong>18 Jan:</strong> Check-out Reminder: Your stay at Room B-205 ends on 30th July 2024.
-                </p>
-              </li>
-            </ul>
+      {/* Upcoming PG */}
+      <div className="mb-8">
+        <h2 className="text-lg font-semibold mb-4 text-gray-700">Upcoming PGs</h2>
+        <div className="bg-white p-4 rounded-lg shadow-md flex flex-col md:flex-row justify-between items-start md:items-center">
+          <div>
+            <h3 className="text-gray-800 font-semibold">Sunshine PG</h3>
+            <p className="text-gray-500 text-sm">Room 203, Single Occupancy</p>
+            <p className="text-gray-400 text-xs mt-1">Mar 1, 2025 – Aug 31, 2025</p>
           </div>
-
-          <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">Accommodation Info</h2>
-            <p className="text-sm">
-              <strong>Location:</strong> 123 College Road, Bankura
-            </p>
-            <p className="text-sm">
-              <strong>Room Type:</strong> Single Room
-            </p>
-            <p className="text-sm">
-              <strong>Next Payment Due:</strong> ₹5,000 on 15 Jan 2025
-            </p>
-          </div>
-        </div>
-
-        <div className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm mt-6">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">Maintenance Request</h2>
-          <form className="space-y-4 mb-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700" htmlFor="issue">
-                Issue
-              </label>
-              <select
-                id="issue"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              >
-                <option>Plumbing</option>
-                <option>Electricity</option>
-                <option>Wi-Fi</option>
-              </select>
+          <div className="flex flex-col md:items-end mt-4 md:mt-0">
+            <p className="font-bold text-gray-800 mb-2">₹12,000/month</p>
+            <div className="flex gap-2">
+              <button className="px-4 py-2 text-sm border border-red-500 text-red-500 rounded-md hover:bg-red-50">
+                Cancel
+              </button>
+              <button className="px-4 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                Extend Stay
+              </button>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700" htmlFor="description">
+          </div>
+        </div>
+      </div>
+
+      {/* Maintenance */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Create Maintenance Request */}
+        <div>
+          <h2 className="text-lg font-semibold mb-4 text-gray-700">
+            Create Maintenance Request
+          </h2>
+          <div className="bg-white p-4 rounded-lg shadow-md">
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Issue Title
+              </label>
+              <input
+                type="text"
+                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Description
               </label>
               <textarea
-                id="description"
-                rows="3"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Describe the issue briefly..."
-              />
+                rows="4"
+                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              ></textarea>
             </div>
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700"
-            >
+            <button className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
               Submit Request
             </button>
-          </form>
+          </div>
+        </div>
+
+        {/* Maintenance History */}
+        <div>
+          <h2 className="text-lg font-semibold mb-4 text-gray-700">
+            Maintenance History
+          </h2>
+          <div className="bg-white p-4 rounded-lg shadow-md space-y-4">
+            <MaintenanceItem
+              title="Plumbing Issue"
+              date="Reported on Feb 15, 2025"
+              status="In Progress"
+              statusColor="bg-yellow-400"
+            />
+            <MaintenanceItem
+              title="Electrical Repair"
+              date="Reported on Feb 10, 2025"
+              status="Resolved"
+              statusColor="bg-green-400"
+            />
+          </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function StatCard({ icon, label, value }) {
+  return (
+    <div className="bg-white p-4 rounded-lg shadow-md flex items-center gap-4">
+      <div className="p-2 bg-gray-100 rounded-full">{icon}</div>
+      <div>
+        <p className="text-gray-500 text-sm">{label}</p>
+        <p className="font-bold text-xl">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function NotificationCard({ icon, title, description, date }) {
+  return (
+    <div className="bg-white p-4 rounded-lg shadow-md flex gap-4 items-center">
+      <div>{icon}</div>
+      <div>
+        <h3 className="font-semibold text-gray-800">{title}</h3>
+        <p className="text-sm text-gray-500">{description}</p>
+        <p className="text-xs text-gray-400">{date}</p>
+      </div>
+    </div>
+  );
+}
+
+function MaintenanceItem({ title, date, status, statusColor }) {
+  return (
+    <div className="flex justify-between items-center">
+      <div>
+        <h4 className="font-semibold text-gray-800">{title}</h4>
+        <p className="text-xs text-gray-400">{date}</p>
+      </div>
+      <span
+        className={`text-xs text-white px-2 py-1 rounded-full ${statusColor}`}
+      >
+        {status}
+      </span>
     </div>
   );
 }
