@@ -717,46 +717,83 @@ exports.getOwnerBookings = async (req, res) => {
   }
 };
 // Get user bookings
+const mongoose = require('mongoose');
+const Booking = require('../models/Booking');
+
 exports.getUserBookings = async (req, res) => {
   try {
     const { status, page = 1, limit = 10 } = req.query;
     const skip = (page - 1) * limit;
+    const userId = req.user.id; // Authenticated user's ID from JWT
 
-    // Build query to use student_portal_index efficiently
+    // Build query using student_portal_index (student + status)
     const query = { 
-      student: req.user.id,
+      student: new mongoose.Types.ObjectId(userId), // Ensure proper ObjectId
       ...(status && { status }) // Optional status filter
     };
 
-    // Optimized query using covering index pattern
+    // Optimized query using indexes
     const [bookings, total] = await Promise.all([
       Booking.find(query)
-        .select('room status period.startDate period.durationMonths payment.totalAmount pgOwner')
-        .populate('pgOwner', 'messName address')
-        .sort({ createdAt: -1 }) // Uses owner_management_index sort
+        .select('room status bedsBooked pricePerHead period payment.totalAmount pgOwner')
+        .populate({
+          path: 'pgOwner',
+          select: 'messName address amenities gender facility roomInfo profilePhoto'
+        })
+        .sort({ createdAt: -1 }) // Sort by most recent
         .skip(skip)
         .limit(limit)
-        .lean(), // Convert to plain JS objects
+        .lean(),
       
       Booking.countDocuments(query)
     ]);
 
-    // Calculate end dates without modifying original objects
-    const processedBookings = bookings.map(booking => ({
-      ...booking,
-      period: {
-        startDate: booking.period.startDate,
-        durationMonths: booking.period.durationMonths,
-        endDate: new Date(
-          new Date(booking.period.startDate).setMonth(
-            new Date(booking.period.startDate).getMonth() + 
-            booking.period.durationMonths
-        )
-    )}
-    }));
+    // Process bookings with calculated fields
+    const now = new Date();
+    const processedBookings = bookings.map(booking => {
+      const startDate = new Date(booking.period.startDate);
+      const endDate = new Date(startDate);
+      endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
+      
+      // Determine booking type
+      let bookingType = 'past';
+      if (booking.status === 'confirmed') {
+        if (startDate > now) bookingType = 'upcoming';
+        else if (endDate >= now) bookingType = 'current';
+      }
+
+      return {
+        ...booking,
+        period: {
+          startDate,
+          durationMonths: booking.period.durationMonths,
+          endDate
+        },
+        bookingType,
+        // Add formatted dates for frontend
+        formattedPeriod: {
+          start: startDate.toLocaleDateString(),
+          end: endDate.toLocaleDateString()
+        }
+      };
+    });
+
+    // Calculate statistics
+    const stats = {
+      upcoming: processedBookings.filter(b => b.bookingType === 'upcoming').length,
+      current: processedBookings.filter(b => b.bookingType === 'current').length,
+      past: processedBookings.filter(b => b.bookingType === 'past').length,
+      total
+    };
+
+    // Get current stay (if any)
+    const currentStay = processedBookings.find(b => b.bookingType === 'current');
 
     res.json({
+      success: true,
+      currentStay,
       bookings: processedBookings,
+      stats,
       pagination: {
         total,
         page: parseInt(page),
@@ -766,123 +803,73 @@ exports.getUserBookings = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Booking fetch error:', error);
-    res.status(500).json({ 
-      message: 'Failed to load bookings',
-        error: error.message })
-    };
-  
+    console.error('Error fetching user bookings:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch bookings',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
 };
 
 // Generate invoice
 
-exports.generateInvoice = async (req, res) => {
+exports.downloadInvoice = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id)
-      .populate('student', 'firstName lastName email phone')
-      .populate('pgOwner', 'messName address phoneNumber gstNumber');
-    
+      .select('room bedsBooked pricePerHead period.startDate period.durationMonths payment.totalAmount pgOwner student')
+      .populate('pgOwner', 'messName address')
+      .populate('student', 'firstName lastName email')
+      .lean();
+
     if (!booking) {
       return res.status(404).json({ message: 'Booking not found' });
     }
 
-    if (booking.student.toString() !== req.user.id) {
-      return res.status(403).json({ message: 'Unauthorized' });
-    }
+    // Calculate end date
+    const endDate = new Date(booking.period.startDate);
+    endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
 
-    // Create PDF document
-    const doc = new PDFDocument({ margin: 50 });
+    // Generate PDF invoice (example using pdfkit)
+    const PDFDocument = require('pdfkit');
+    const doc = new PDFDocument();
     
     // Set response headers
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename=invoice-${booking._id}.pdf`);
     
-    // Pipe PDF to response
+    // Pipe the PDF to the response
     doc.pipe(res);
-
-    // Add invoice header
-    doc.fontSize(20)
-       .text('INVOICE', { align: 'center' })
-       .moveDown(0.5);
     
-    // Add invoice details
-    doc.fontSize(12)
-       .text(`Invoice #: INV-${booking._id.toString().slice(-8).toUpperCase()}`, { align: 'left' })
-       .text(`Date: ${new Date().toLocaleDateString()}`, { align: 'left' })
-       .moveDown(1);
-
-    // Add divider
-    doc.moveTo(50, 150)
-       .lineTo(550, 150)
-       .stroke();
-
-    // Add billing information
-    doc.font('Helvetica-Bold')
-       .text('Bill To:', 50, 170)
-       .font('Helvetica')
-       .text(`${booking.student.firstName} ${booking.student.lastName}`, 50, 190)
-       .text(booking.student.email, 50, 210)
-       .text(booking.student.phone || 'N/A', 50, 230)
-       .moveDown(1);
-
-    // Add PG information
-    doc.font('Helvetica-Bold')
-       .text('PG Details:', 300, 170)
-       .font('Helvetica')
-       .text(booking.pgOwner.messName, 300, 190)
-       .text(booking.pgOwner.address, 300, 210)
-       .text(`Phone: ${booking.pgOwner.phoneNumber}`, 300, 230)
-       .text(`GST: ${booking.pgOwner.gstNumber || 'N/A'}`, 300, 250)
-       .moveDown(2);
-
-    // Add booking details table
-    doc.font('Helvetica-Bold')
-       .text('Booking Details', { underline: true })
-       .moveDown(0.5);
-
-    const tableTop = 320;
-    const itemCodeX = 50;
-    const descriptionX = 150;
-    const amountX = 450;
-
-    // Table header
-    doc.font('Helvetica-Bold')
-       .text('Item', itemCodeX, tableTop)
-       .text('Description', descriptionX, tableTop)
-       .text('Amount', amountX, tableTop)
-       .moveDown(0.5);
-
-    // Table row
-    doc.font('Helvetica')
-       .text('1', itemCodeX, tableTop + 30)
-       .text(`Room ${booking.room} (${booking.bedsBooked} bed(s))`, descriptionX, tableTop + 30)
-       .text(`₹${booking.payment.totalAmount}`, amountX, tableTop + 30)
-       .moveDown(1);
-
-    // Add stay period
-    const endDate = new Date(booking.period.startDate);
-    endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
+    // Add invoice content
+    doc.fontSize(20).text('Booking Invoice', { align: 'center' });
+    doc.moveDown();
+    doc.fontSize(14).text(`Booking ID: ${booking._id}`);
+    doc.moveDown();
+    doc.text(`PG Name: ${booking.pgOwner.messName}`);
+    doc.text(`Address: ${booking.pgOwner.address}`);
+    doc.moveDown();
+    doc.text(`Student: ${booking.student.firstName} ${booking.student.lastName}`);
+    doc.text(`Email: ${booking.student.email}`);
+    doc.moveDown();
+    doc.text(`Room: ${booking.room}`);
+    doc.text(`Beds Booked: ${booking.bedsBooked}`);
+    doc.moveDown();
+    doc.text(`Period: ${new Date(booking.period.startDate).toLocaleDateString()} - ${endDate.toLocaleDateString()}`);
+    doc.moveDown();
+    doc.text(`Amount: ₹${booking.payment.totalAmount}`);
+    doc.moveDown();
+    doc.text(`Payment Status: Paid`);
+    doc.moveDown();
+    doc.text('Thank you for your booking!');
     
-    doc.text(`Stay Period: ${booking.period.startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`)
-       .moveDown(1);
-
-    // Add payment status
-    doc.font('Helvetica-Bold')
-       .text(`Payment Status: ${booking.payment.status.toUpperCase()}`, { align: 'right' })
-       .moveDown(2);
-
-    // Add thank you message
-    doc.font('Helvetica-Oblique')
-       .text('Thank you for your booking!', { align: 'center' });
-
-    // Finalize PDF
     doc.end();
 
   } catch (error) {
     console.error('Invoice generation error:', error);
     res.status(500).json({ 
       message: 'Failed to generate invoice',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      ...(process.env.NODE_ENV === 'development' && { error: error.message })
     });
   }
 };

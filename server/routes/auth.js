@@ -21,7 +21,7 @@ const {
   cancelBooking,
   getOwnerBookings,
   getUserBookings,
-  generateInvoice
+  downloadInvoice
 } = require('../controllers/bookingController');
 
 
@@ -224,7 +224,7 @@ router.get('/bookings/user-bookings', authenticateJWT, (req, res, next) => {
   console.log('GET /bookings/user-bookings hit');
   next();
 }, getUserBookings);
-router.get('/bookings/:id/invoice', authenticateJWT, generateInvoice);
+router.get('/bookings/:id/invoice', authenticateJWT, downloadInvoice);
 // Owner approves or rejects booking request
 router.post('/bookings/:id/status',authenticateJWT, handleBookingApproval);
 
