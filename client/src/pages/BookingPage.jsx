@@ -380,32 +380,46 @@ export default function BookingPage() {
   const [duration, setDuration] = useState(6);
   const [checkInDate, setCheckInDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const {socket,isConnected} = useSocket();
-  const { emitWithAck, isInitialized } = useSocket();
+  const { socket, isConnected, emitWithAck, isInitialized } = useSocket();
+
   const { user } = useAuth();
    
   // Track if socket is ready to emit events
   const [socketReady, setSocketReady] = useState(false);
   useEffect(() => {
-    if (!isInitialized || !socketReady) {
-      toast.warning("Please wait, setting up real-time connection...");
-      return;
-    }
-    if (socket) {
-      const handleConnect = () => setSocketReady(true);
-      const handleDisconnect = () => setSocketReady(false);
+    // if (!isInitialized || !socketReady) {
+    //   toast.warning("Please wait, setting up real-time connection...");
+    //   return;
+    // }
+    // if (socket) {
+    //   const handleConnect = () => setSocketReady(true);
+    //   const handleDisconnect = () => setSocketReady(false);
       
-      // Set initial state
-      setSocketReady(socket.connected);
+    //   // Set initial state
+    //   setSocketReady(socket.connected);
       
-      socket.on('connect', handleConnect);
-      socket.on('disconnect', handleDisconnect);
+    //   socket.on('connect', handleConnect);
+    //   socket.on('disconnect', handleDisconnect);
       
-      return () => {
-        socket.off('connect', handleConnect);
-        socket.off('disconnect', handleDisconnect);
-      };
-    }
+    //   return () => {
+    //     socket.off('connect', handleConnect);
+    //     socket.off('disconnect', handleDisconnect);
+    //   };
+    // }
+    if (!socket) return;
+
+    const handleConnect = () => setSocketReady(true);
+    const handleDisconnect = () => setSocketReady(false);
+  
+    setSocketReady(socket.connected); // Initial
+  
+    socket.on('connect', handleConnect);
+    socket.on('disconnect', handleDisconnect);
+  
+    return () => {
+      socket.off('connect', handleConnect);
+      socket.off('disconnect', handleDisconnect);
+    };
   }, [socket]);
   // Convert bedCount string to number
   const bedCountToNumber = {
@@ -458,6 +472,7 @@ export default function BookingPage() {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`
         }
       });
+
   
       // Send socket notification if booking was successful
       if (response.data) {
@@ -468,7 +483,7 @@ export default function BookingPage() {
           try {
             await emitWithAck('new-booking-request', {
               ownerId: owner._id,
-              bookingId: response.data._id,
+              bookingId:response.data.booking?._id,
               studentId: user.id,
               room: selectedRoomInfo.room,
               bedsBooked: 1,
@@ -478,6 +493,8 @@ export default function BookingPage() {
             
             console.log('Real-time notification sent successfully');
           } catch (error) {
+            console.log('Real-time notification error:', error);
+            console.log("xxx",owner._id,response.data.booking._id, user.id, selectedRoomInfo.room, selectedRoomInfo.pricePerHead);
             if (retryCount < MAX_RETRIES) {
               retryCount++;
               console.warn(`Retry ${retryCount} for notification...`);

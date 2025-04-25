@@ -13,16 +13,17 @@ class SocketManager {
   }
 
   init(server) {
+   console.log("SocketManager initialized with server:", server);
     this.io = new Server(server, {
       cors: {
-        origin: process.env.CLIENT_URL || "https://messmate-client.onrender.com",
+        origin:  "https://messmate-client.onrender.com",
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         credentials: true,
         allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
       },
       connectionStateRecovery: {
         maxDisconnectionDuration: 120000,
-        skipMiddlewares: true
+        skipMiddlewares: false
       },
       pingTimeout: 60000,
       pingInterval: 25000,
@@ -30,10 +31,12 @@ class SocketManager {
       allowEIO3: true,
       serveClient: false,
       maxHttpBufferSize: 1e8
-    });
+    }
+  );
 
     // Enhanced authentication middleware
     this.io.use(async (socket, next) => {
+      console.log('Socket authentication middleware triggered',socket);
       try {
         const token = socket.handshake.auth.token;
         if (!token) {
@@ -62,6 +65,7 @@ class SocketManager {
     });
 
     this.io.on("connection", (socket) => {
+
       this.connectionStats.totalConnections++;
       this.connectionStats.activeConnections++;
       
@@ -158,10 +162,13 @@ class SocketManager {
   }
 
   _trackOwnerConnection(ownerId, socketId) {
+    //nothing printing here its not running
     if (!this.ownerSockets.has(ownerId)) {
       this.ownerSockets.set(ownerId, new Set());
+      console.log(`Tracking new owner connection: ${ownerId}`, socketId);
     }
     this.ownerSockets.get(ownerId).add(socketId);
+    console.log(`Owner ${ownerId} connected to socket ${socketId}`);
   }
 
   _trackStudentConnection(studentId, socketId) {
@@ -204,6 +211,7 @@ class SocketManager {
   
       const room = `owner-${ownerId}`;
       const sockets = this.ownerSockets.get(ownerId);
+      console.log(this.ownerSockets.get(ownerId),"rooms",room,"ownerId",ownerId,"sockets",sockets);             
   
       if (sockets?.size > 0) {
         this.io.to(room).timeout(5000).emit('new-booking', {
