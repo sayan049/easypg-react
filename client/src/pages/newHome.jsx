@@ -56,6 +56,10 @@ function NewHomePage() {
     const storedMessage = localStorage.getItem("sId_message");
     const stateMessage = location.state?.message || "";
 
+    console.log("State message:", location.state?.message);
+    console.log("Stored message:", localStorage.getItem("sId_message"));
+
+
     if (storedMessage || stateMessage) {
       const finalMessage = stateMessage || storedMessage;
       setMessage(finalMessage);
