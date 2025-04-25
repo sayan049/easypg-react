@@ -69,10 +69,10 @@ function NewHomePage() {
     const timer = setTimeout(() => {
       setMessage("");
       localStorage.removeItem("sId_message");
-    }, 8000);
+    }, 5000);
 
     return () => clearTimeout(timer);
-  }, [location.state]);
+  }, []);
 
 
   // useEffect(() => {
