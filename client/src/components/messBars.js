@@ -26,6 +26,7 @@ function MessBars({
   };
 
   const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
+    console.log("Calculating distance between:", lat1, lon1, lat2, lon2); // Debugging
     if (!lat1 || !lon1 || !lat2 || !lon2) {
       return null;
     }
