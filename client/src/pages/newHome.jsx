@@ -103,11 +103,7 @@ function NewHomePage() {
 
   return (
     <div className="text-gray-800">
-       <ToastContainer
-              position="top-center"
-              toastClassName="!w-[300px]   mx-auto mt-4 sm:mt-0  "
-              autoClose={300000}
-            />
+      
       {/* Header Section */}
       <header className="bg-white shadow-md sticky top-0 z-10 lg:pl-24 lg:pr-24 md:pl-16 md:pr-16 sm:pl-4 sm:pr-4">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -175,6 +171,11 @@ function NewHomePage() {
           </div>
         </div>
       </header>
+      <ToastContainer
+              position="top-center"
+              toastClassName="!w-[300px]   mx-auto mt-4 sm:mt-0  "
+              autoClose={300000}
+            />
 
       {/* Hero Section */}
       <section id="home" className="  pt-28 lg:pl-24 lg:pr-24 md:pl-16 md:pr-16 sm:pl-4 sm:pr-4">
