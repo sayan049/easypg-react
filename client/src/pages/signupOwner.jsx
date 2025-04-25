@@ -30,8 +30,8 @@ function SignupOwner() {
 
   useEffect(() => {
     document.title = "Sign up for owner";
-    console.log(isFormComplete());
-  }, [isFormComplete]);
+   // console.log(isFormComplete());
+  }, []);
 
   const mapMake = () => {
     if (navigator.geolocation) {
@@ -61,10 +61,12 @@ function SignupOwner() {
             }));
           } catch (error) {
             console.error("Error fetching location:", error);
+            toast.error("Error fetching location. Please try again.");
           }
         },
         (error) => {
           console.error("Geolocation error:", error);
+          toast.error("Unable to retrieve your location. Please try again.");
         }
       );
     } else {

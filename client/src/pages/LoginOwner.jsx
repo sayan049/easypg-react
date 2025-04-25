@@ -16,7 +16,7 @@ import {
 import "../designs/loginForMessOwner.css";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Toaster } from "sonner";
+import Toaster from "sonner";
 
 function LoginOwner() {
   useEffect(() => {
@@ -45,6 +45,7 @@ function LoginOwner() {
   const [confirmPassword, setConfirmPassword] = useState(""); // State for confirm password
   const [resetPasswordError, setResetPasswordError] = useState(""); // Error state for reset password
   const [loading, setLoading] = useState(true);
+  const [isSendingEmail, setIsSendingEmail] = useState(false); // State to track email sending status
   const [searchParams] = useSearchParams();
   useEffect(() => {
     const tokenFromUrl = searchParams.get("resetToken");
@@ -187,6 +188,7 @@ function LoginOwner() {
   };
   const submitForgotPassword = async () => {
     try {
+      setIsSendingEmail(true); // Set loading state
       const response = await axios.post(forgotPasswordOwnerUrl, {
         email: forgotEmail,
       });
@@ -201,6 +203,10 @@ function LoginOwner() {
     } catch (error) {
       setForgotPasswordMessage("Error sending email. Please try again.");
       toast.error("Error sending email. Please try again.");
+    } finally{
+      setTimeout(()=>{
+        setIsSendingEmail(false); // Reset loading state after 5 seconds
+      },5000)
     }
   };
   const submitResetPassword = async () => {
@@ -224,11 +230,11 @@ function LoginOwner() {
         navigate("/LoginUser"); // Redirect to login page
       } else {
         setResetPasswordError("Error resetting password. Please try again....");
-        Toaster.error("Error resetting password. Please try again.");
+        toast.error("Error resetting password. Please try again.");
       }
     } catch (error) {
       setResetPasswordError("Error resetting password. Please try again.");
-      Toaster.error("Error resetting password. Please try again.");
+      toast.error("Error resetting password. Please try again.");
     }
   };
 
@@ -241,7 +247,7 @@ function LoginOwner() {
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
       <ToastContainer
         position="top-center"
-        toastClassName="!w-[300px]   mx-auto mt-4 sm:mt-0  "
+        toastClassName="!w-[300px]   mx-auto mt-4 sm:mt-0 "
       />
       {/* Left Section */}
       <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6 flex-col">
@@ -423,15 +429,15 @@ function LoginOwner() {
             />
             <button
               onClick={submitForgotPassword}
-              disabled={!forgotEmail}
+              disabled={!forgotEmail || isSendingEmail}
               className={`w-full bg-[#2ca4b5] text-white py-2 rounded-full mt-4 ${
                 !forgotEmail ? "bg-gray-300 cursor-not-allowed" : ""
               }`}
             >
-              Send Reset Email
+              {isSendingEmail ? "Sending..." : "Send Reset Email"}
             </button>
             <p className="text-center text-sm text-gray-600 mt-2">
-              {forgotPasswordMessage}
+              {/* {forgotPasswordMessage} */}
             </p>
             <button
               onClick={closeForgotPassword}
