@@ -1,4 +1,3 @@
-
 // import React, { useState, useEffect } from "react";
 // import {
 //   BookIcon,
@@ -173,7 +172,7 @@
 //   const limit = 10;
 //   const socket = useSocket();
 //   const { user,owner } = useAuth();
-//   const ownerId = owner?._id;                                                             
+//   const ownerId = owner?._id;
 //   const fetchBookings = async (status, page = 1) => {
 //     try {
 //       setLoading((prev) => ({
@@ -771,7 +770,7 @@
 //         list: true,
 //         tabChange: status !== tab,
 //       }));
-      
+
 //       const response = await axios.get(`${baseurl}/auth/bookings/owner`, {
 //         params: {
 //           status,
@@ -999,7 +998,6 @@
 //         console.warn("Failed to join room:", res?.message);
 //       }
 //     });
-    
 
 //   return () => {
 //       socket.off("new-booking", onNewBooking);
@@ -1044,7 +1042,7 @@
 //         socket.connect();
 //       }
 //     };
-  
+
 //     return (
 //       <div className="fixed bottom-4 right-4 flex items-center gap-2 bg-white p-2 rounded shadow text-xs">
 //         <div className={`w-3 h-3 rounded-full ${isConnected ? "bg-green-500" : "bg-red-500"}`} />
@@ -1060,7 +1058,6 @@
 //       </div>
 //     );
 //   };
-
 
 //   return (
 //     <BookingStatusErrorBoundary>
@@ -1185,7 +1182,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
-import { toast,ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { baseurl } from "../constant/urls";
@@ -1204,11 +1201,12 @@ const BookingCard = React.memo(({ booking, onConfirm, onReject, loading }) => {
         new Date(booking.period.startDate).setMonth(
           new Date(booking.period.startDate).getMonth() +
             (booking.period?.durationMonths || 0)
-      )));
+        )
+      ));
 
   return (
     <div className="w-full md:w-[48%] bg-white rounded-xl shadow p-4">
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" />
+      
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -1358,7 +1356,7 @@ const BookingStatus = () => {
         list: true,
         tabChange: status !== tab,
       }));
-      
+
       const response = await axios.get(`${baseurl}/auth/bookings/owner`, {
         params: {
           status,
@@ -1366,8 +1364,8 @@ const BookingStatus = () => {
           limit,
         },
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
       });
 
       setBookings((prev) => ({
@@ -1383,7 +1381,10 @@ const BookingStatus = () => {
         setStats((prev) => ({
           ...prev,
           [status]: response.data.pagination?.total || 0,
-          total: (prev.total - (prev[status] || 0)) + (response.data.pagination?.total || 0)
+          total:
+            prev.total -
+            (prev[status] || 0) +
+            (response.data.pagination?.total || 0),
         }));
       }
 
@@ -1415,17 +1416,22 @@ const BookingStatus = () => {
   };
 
   const handleStatusChange = async (bookingId, status, reason = "") => {
+    console.log("handleStatusChange","xx", bookingId, status, reason);
     try {
       setLoading((prev) => ({ ...prev, action: true }));
 
-      await axios.post(`${baseurl}/auth/bookings/${bookingId}/status`, {
-        status,
-        ...(reason && { rejectionReason: reason }),
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+      await axios.post(
+        `${baseurl}/auth/bookings/${bookingId}/status`,
+        {
+          status,
+          ...(reason && { rejectionReason: reason }),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
         }
-      });
+      );
 
       setBookings((prev) => {
         const updatedPending = prev.pending.data.filter(
@@ -1544,6 +1550,18 @@ const BookingStatus = () => {
   return (
     <BookingStatusErrorBoundary>
       <div className="p-4 space-y-6">
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        style={{ zIndex: 9999 }} // Ensure it's above other elements
+      />
         <div className="space-y-4">
           <h1 className="text-xl font-bold">Booking Status</h1>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
