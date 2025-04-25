@@ -37,6 +37,7 @@ function LoginUser() {
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
   const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
 
@@ -171,6 +172,7 @@ function LoginUser() {
 
   const submitForgotPassword = async () => {
     try {
+      setIsSendingEmail(true);
       const response = await axios.post(forgotPasswordUserUrl, {
         email: forgotEmail,
       });
@@ -196,6 +198,10 @@ function LoginUser() {
         }
       }
       toast.error("Error sending email. Please try again.");
+    } finally{
+      setTimeout(() => {
+        setIsSendingEmail(false);
+      }, 5000);
     }
   };
 
@@ -417,12 +423,13 @@ function LoginUser() {
             />
             <button
               onClick={submitForgotPassword}
-              disabled={!forgotEmail}
+              disabled={!forgotEmail || isSendingEmail}
               className={`w-full bg-[#2ca4b5] text-white py-2 rounded-full mt-4 ${
                 !forgotEmail ? "bg-gray-300 cursor-not-allowed" : ""
               }`}
             >
-              Send Reset Email
+            {isSendingEmail ? "Sending..." : "Send Reset Email"}
+             
             </button>
             <p className="text-center text-sm text-gray-600 mt-2">
               {/* {forgotPasswordMessage} */}
