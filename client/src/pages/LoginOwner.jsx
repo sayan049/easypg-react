@@ -229,11 +229,11 @@ function LoginOwner() {
         navigate("/LoginUser"); // Redirect to login page
       } else {
         setResetPasswordError("Error resetting password. Please try again....");
-        Toaster.error("Error resetting password. Please try again.");
+        Toaste.error("Error resetting password. Please try again.");
       }
     } catch (error) {
       setResetPasswordError("Error resetting password. Please try again.");
-      Toaster.error("Error resetting password. Please try again.");
+      Toaste.error("Error resetting password. Please try again.");
     }
   };
 
@@ -248,7 +248,6 @@ function LoginOwner() {
         position="top-center"
         toastClassName="!w-[300px]   mx-auto mt-4 sm:mt-0 "
       />
-      <ToastContainer/>
       {/* Left Section */}
       <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6 flex-col">
         <div className="w-full max-w-lg p-8">
