@@ -23,6 +23,10 @@ function NewHomePage() {
     ownerName,
   } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const stateMessage = location.state?.message || "";
+  if (stateMessage) {
+    toast.success(stateMessage);}
+    console.log("State message:", stateMessage);
 
   useEffect(() => {
     document.title = "Find your nearest paying guest";
@@ -35,14 +39,12 @@ function NewHomePage() {
 
   useEffect(() => {
     const storedMessage = localStorage.getItem("sId_message");
-    const stateMessage = location.state?.message || "";
+   
     if (storedMessage) {
       setMessage(location.state?.message || "");
      
     }
-    if (stateMessage) {
-    toast.success(stateMessage);}
-    console.log("State message:", stateMessage);
+  
     const timer = setTimeout(() => {
       setMessage("");
       localStorage.removeItem("sId_message");
