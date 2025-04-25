@@ -5,6 +5,8 @@ import { useLocation } from "react-router-dom";
 
 import "../designs/style.css";
 import FlashMessage from "../components/flashMessage";
+import { ToastContainer,toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import UserProfile from "../components/UserProfile";
 import "../designs/UserProfile.css";
 
@@ -95,6 +97,7 @@ const HomePage = () => {
     const storedMessage = localStorage.getItem("sId_message");
     if (storedMessage) {
       setMessage(location.state?.message || "");
+      toast.success(storedMessage);
     }
 
     const timer = setTimeout(() => {
@@ -317,13 +320,18 @@ const HomePage = () => {
             width: "100%",
           }}
         >
-          {message && (
+          {/* {message && (
             <div style={{ color: "green", fontSize: "20px" }}>
               <p>
                 <FlashMessage message={message} />
               </p>
             </div>
-          )}
+          )} */}
+          <ToastContainer
+                  position="top-center"
+                  toastClassName="!w-[300px]   mx-auto mt-4 sm:mt-0  "
+                />
+
         </div>
         <div
           style={{
