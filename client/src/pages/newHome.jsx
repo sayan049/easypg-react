@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import Footer from "../components/footer";
+import { toast,ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function NewHomePage() {
   const navigate = useNavigate();
@@ -35,6 +37,7 @@ function NewHomePage() {
     const storedMessage = localStorage.getItem("sId_message");
     if (storedMessage) {
       setMessage(location.state?.message || "");
+      toast.success(storedMessage)
     }
 
     const timer = setTimeout(() => {
@@ -62,6 +65,10 @@ function NewHomePage() {
 
   return (
     <div className="text-gray-800">
+       <ToastContainer
+              position="top-center"
+              toastClassName="!w-[300px]   mx-auto mt-4 sm:mt-0  "
+            />
       {/* Header Section */}
       <header className="bg-white shadow-md sticky top-0 z-10 lg:pl-24 lg:pr-24 md:pl-16 md:pr-16 sm:pl-4 sm:pr-4">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">

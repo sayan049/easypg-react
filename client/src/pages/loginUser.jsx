@@ -47,8 +47,10 @@ function LoginUser() {
   const [resetPasswordError, setResetPasswordError] = useState(""); // Error state for reset password
   const [loading, setLoading] = useState(true);
   const [searchParams] = useSearchParams();
+  const messageLoc = location.state?.message;
 
   useEffect(() => {
+    toast.success(messageLoc);
     const tokenFromUrl = searchParams.get("resetToken");
     if (tokenFromUrl) {
       setResetToken(tokenFromUrl);
@@ -56,7 +58,7 @@ function LoginUser() {
     } else {
       setLoading(false); // Stop loading if no token
     }
-  }, [searchParams]);
+  }, [searchParams,messageLoc]);
 
   const verifyResetToken = async (token) => {
     try {
