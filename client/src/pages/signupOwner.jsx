@@ -112,15 +112,7 @@ function SignupOwner() {
   };
 
   const handleFacilityChange = (e) => {
-    if (!isFormComplete()) {
-      toast.error("Please fill all fields");
-      return;
-    }
-  
-    if (!termsAccepted) {
-      toast.error("Please accept the terms and conditions");
-      return;
-    }                        
+                      
     const { value, checked } = e.target;
     setFormData((prevData) => {
       // Make sure we're working with an array (defensive programming)
@@ -235,6 +227,16 @@ function SignupOwner() {
   };
 
   const handleSubmit = async (e) => {
+    if (!isFormComplete()) {
+      toast.error("Please fill all fields");
+      return;
+    }
+  
+    if (!termsAccepted) {
+      toast.error("Please accept the terms and conditions");
+      return;
+    }     
+
     e.preventDefault();
 
     try {
@@ -301,7 +303,6 @@ function SignupOwner() {
       formData.firstName &&
       formData.lastName &&
       formData.pincode &&
-      formData.facility.length > 0 &&
       formData.messName &&
       formData.aboutMess &&
       formData.profilePhoto && // If profile photo is optional, update this condition
