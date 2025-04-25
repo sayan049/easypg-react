@@ -769,9 +769,9 @@ exports.getUserBookings = async (req, res) => {
     console.error('Booking fetch error:', error);
     res.status(500).json({ 
       message: 'Failed to load bookings',
-      ...(process.env.NODE_ENV === 'development' && { error: error.message })
-    });
-  }
+        error: error.message })
+    };
+  
 };
 
 // Generate invoice
