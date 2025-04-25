@@ -115,7 +115,9 @@ function LoginUser() {
 
         // const message = Welcome ${userData.name}!;
         // Navigate to homepage or another page after successful login
-        navigate("/", { state: { message: message } });
+        localStorage.setItem("sId_message", "Successfully logged in");
+       // navigate("/");
+        navigate("/", { state: { message: "succesfully logged in" } });
         window.location.reload();
       }
     } catch (error) {
