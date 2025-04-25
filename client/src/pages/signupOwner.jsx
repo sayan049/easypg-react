@@ -233,11 +233,13 @@ function SignupOwner() {
     //   return;
     // }
     if (!isFormComplete()) {
-     return toast.error("Please fill all fields");
+      toast.error("Please fill all fields");
+     return;
     }
   
     if (!termsAccepted) {
-    return  toast.error("Please accept the terms and conditions");
+      toast.error("Please accept the terms and conditions");
+    return ;
     }     
 
     e.preventDefault();
@@ -747,7 +749,7 @@ function SignupOwner() {
           <button
             type="submit"
             className={`w-1/2 p-3 rounded-full text-white ${
-              isFormComplete() && termsAccepted
+              isFormComplete() && termsAccepted && !isSubmitting
                 ? "bg-[#2ca4b5]"
                 : "bg-gray-400 cursor-not-allowed"
             }`}
