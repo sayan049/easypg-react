@@ -717,8 +717,8 @@ exports.getOwnerBookings = async (req, res) => {
   }
 };
 // Get user bookings
-const mongoose = require('mongoose');
-const Booking = require('../models/Booking');
+// const mongoose = require('mongoose');
+// const Booking = require('../models/Booking');
 
 exports.getUserBookings = async (req, res) => {
   try {
