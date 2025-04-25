@@ -41,7 +41,8 @@ const BookingTable = () => {
   };
 
   return (
-    <div className="p-4 md:p-8 max-w-6xl mx-auto">
+    <div className="px-4 sm:px-6 md:px-8 lg:px-6 xl:px-4 py-4 max-w-screen-lg mx-auto">
+
       {/* Booking Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center mb-6">
         <div className="flex items-center justify-between sm:justify-center bg-white shadow-md p-4 rounded-xl">
