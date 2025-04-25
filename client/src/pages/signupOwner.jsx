@@ -328,7 +328,7 @@ function SignupOwner() {
     <div className="relative md:bg-custom-gradient bg-mobile-owner">
       <ToastContainer
         position="top-center"
-        toastClassName="!w-[300px] sm:!w-[90%]  mx-auto mt-4 sm:mt-0  "
+        toastClassName="!w-[300px]   mx-auto mt-4 sm:mt-0  "
       />
       {/* Header text */}
       <div

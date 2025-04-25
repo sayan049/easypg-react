@@ -199,6 +199,7 @@ function LoginUser() {
   const submitResetPassword = async () => {
     if (!resetToken || !newPassword || newPassword !== confirmPassword) {
       setResetPasswordError("Passwords do not match or invalid token.");
+      toast.error("Passwords do not match or invalid token.");
       return;
     }
 
@@ -215,9 +216,11 @@ function LoginUser() {
         navigate("/LoginUser"); // Redirect to login page
       } else {
         setResetPasswordError("Error resetting password. Please try again....");
+        toast.error("Error resetting password. Please try again.");
       }
     } catch (error) {
       setResetPasswordError("Error resetting password. Please try again.");
+      toast.error("Error resetting password. Please try again.");
     }
   };
 
@@ -229,7 +232,7 @@ function LoginUser() {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
-     <ToastContainer position="top-center" toastClassName="!w-[300px] sm:!w-[90%] mx-auto mt-4 sm:mt-0 "  />
+     <ToastContainer position="top-center" toastClassName="!w-[300px]  mx-auto mt-4 sm:mt-0 "  />
 
       {/* Left Section */}
       <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6">
