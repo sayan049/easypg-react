@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { baseurl, findMessUrl } from "../constant/urls";
 import { useNavigate } from "react-router-dom";
+import { get } from "ol/proj";
 
 function MessBars({
   isChecked,
@@ -24,29 +25,33 @@ function MessBars({
     navigate("/booking", { state: { owner } });
   };
 
-  const getDistanceFromLatLonInKm=(lat1, lon1, lat2, lon2)=> {
-    const R = 6371; // Radius of Earth in km
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(lat1 * Math.PI / 180) *
-      Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-  }
+  // const getDistanceFromLatLonInKm=(lat1, lon1, lat2, lon2)=> {
+  //   const R = 6371; // Radius of Earth in km
+  //   const dLat = (lat2 - lat1) * Math.PI / 180;
+  //   const dLon = (lon2 - lon1) * Math.PI / 180;
+  //   const a =
+  //     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+  //     Math.cos(lat1 * Math.PI / 180) *
+  //     Math.cos(lat2 * Math.PI / 180) *
+  //     Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  //   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  //   return (R * c).toFixed(1); 
+  // }
   
-  // const clickCords = (location) => {
-  //   // Check if location is a valid string
-  //   if (typeof location === 'string' && location.includes(',')) {
-  //     const [lat, lng] = location.split(',').map(coord => parseFloat(coord.trim()));
-  //     coords({ lat, lng });
-  //     console.log('Coordinates clicked:', { lat, lng });
-  //   } else {
-  //     console.log('Invalid location:', location); // Handle invalid location
-  //   }
-  // };
+  const getStreetDistance = async (orig, dest) => {
+    const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${orig.lat},${orig.lng}&destinations=${dest.lat},${dest.lng}&key=${process.env.REACT_APP_MAPS_API_KEY}`;
+  
+    const res = await fetch(url);
+    const data = await res.json();
+  
+    if (data.status === "OK") {
+      return data.rows[0].elements[0].distance.text; // e.g., "5.2 km"
+    } else {
+      console.error("Error fetching distance:", data);
+      return null;
+    }
+  };
+  
   const clickCords = (location,id) => {
     console.log("Clicked Location Data:", location); // Debugging
     setSelected(id);
@@ -76,7 +81,7 @@ function MessBars({
     //  console.log("User Location:", userLocation); // Debugging
     }
     if(!selected && Array.isArray(messData) && messData.length > 0 && messData[0]?.location?.coordinates){
-      setDistance(getDistanceFromLatLonInKm(userLocation.lat, userLocation.lng, messData[0].location.coordinates[1], messData[0].location.coordinates[0]));
+      setDistance(getStreetDistance(userLocation, messData[0].location.coordinates));
       const [lng, lat] = messData[0].location.coordinates; 
       coords({ lat, lng });
       console.log("Coordinates set to:", { lat, lng }, coords);
