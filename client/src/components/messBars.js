@@ -148,7 +148,7 @@ function MessBars({
             }
           }}
         >
-           <button
+          {/* <button
     className="absolute top-2 right-2 bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-blue-600 transition-colors"
     onClick={(e) => {
       e.stopPropagation();
@@ -157,7 +157,7 @@ function MessBars({
     }}
   >
     i
-  </button>
+  </button> */}
           {/* Image Section */}
           {!isChecked && (
             <div className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0">
@@ -243,6 +243,18 @@ function MessBars({
               >
                 map
               </button> */}
+            </div>
+            <div className="relative mt-4">
+              <button
+                className="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-blue-600 transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // Add your button click handler here
+                  console.log("Round button clicked", owner._id);
+                }}
+              >
+                i
+              </button>
             </div>
           </div>
         </div>
