@@ -217,7 +217,7 @@ function MessBars({
             <p className="text-sm text-gray-600 mt-2">
               {/* Near MAKAUT University • 15 Km */}
               {/* {owner.address} • {getDistanceFromLatLonInKm(userLocation.lat,userLocation.lng,owner?.location?.coordinates[1],owner?.location?.coordinates[0])} Km */}
-              {owner.address} • {getRealDistance(userLocation,owner?.location?.coordinates)} Km
+              {owner.address} • {getStreetDistance(userLocation,owner?.location?.coordinates)} Km
             </p>
             <div className="flex items-center mt-4 text-sm text-gray-500">
               {owner.facility?.map((feature, index) => (
