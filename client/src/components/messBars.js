@@ -141,7 +141,7 @@ function MessBars({
       {messData.map((owner) => (
         <div
           key={owner._id}
-          className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md mb-4 sm:mb-2 md-max-h-[15rem]"
+          className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md mb-4 sm:mb-2 md:max-h-[15rem]"
           onClick={() => {
             if (owner?.location?.coordinates) {
               clickCords(owner.location.coordinates, owner._id);
@@ -224,7 +224,7 @@ function MessBars({
               >
                 Book Now
               </button>
-              <button
+              {/* <button
                 className="bg-green-500 text-white rounded-full w-6 h-6 "
                 onClick={(e) => {
                   e.stopPropagation();
@@ -232,7 +232,7 @@ function MessBars({
                 }}
               >
                 map
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
