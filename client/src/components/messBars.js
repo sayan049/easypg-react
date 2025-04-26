@@ -388,7 +388,6 @@ function MessBars({
 
   return (
     <div style={{ overflowY: "auto", height: "84vh" }}>
-     
       {messData.map((owner) => (
         <div
           key={owner._id}
@@ -399,7 +398,6 @@ function MessBars({
             }
           }}
         >
-          
           {/* Image Section */}
           {!isChecked && (
             <div className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0">
@@ -428,7 +426,15 @@ function MessBars({
                 : "none",
             }}
           >
-             <button className="h-8 w-8 rounded bg-red-700 absolute bottom-0 right-0"></button>
+            <button
+              className="absolute bottom-4 right-4 h-10 w-24 bg-red-600 text-white text-sm rounded-md"
+              onClick={(e) => {
+                e.stopPropagation();
+                clickBook(owner);
+              }}
+            >
+              Book Now
+            </button>
             <h3 className="font-medium text-lg">{owner.messName}, In Simhat</h3>
             <p className="text-sm text-gray-600 mt-2">
               {owner.address} • {distanceMap[owner._id] || "Calculating..."}
