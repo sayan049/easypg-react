@@ -258,9 +258,6 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { baseurl, findMessUrl } from "../constant/urls";
 import { useNavigate } from "react-router-dom";
-import { useJsApiLoader } from '@react-google-maps/api';
-
-const libraries = ['places'];
 
 function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }) {
   const [messData, setMessData] = useState([]);
@@ -269,11 +266,7 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
   const navigate = useNavigate();
   const [selected, setSelected] = useState(null);
 
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
-    libraries,
-    version: 'weekly', // Add this line to use the stable version
-  });
+  const ORS_API_KEY = ProcessingInstruction.env.REACT_APP_GOOGLE_API_KEY; // <-- put your OpenRouteService API key here
 
   const clickNavi = (owner) => {
     navigate("/viewDetails", { state: { owner } });
@@ -283,45 +276,22 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
     navigate("/booking", { state: { owner } });
   };
 
-  const getStreetDistance = (orig, dest) => {
-    return new Promise((resolve, reject) => {
-      if (window.google && window.google.maps) {
-        const service = new window.google.maps.DistanceMatrixService();
-  
-        // Convert string coordinates to numbers
-        const origLat = parseFloat(orig.lat);
-        const origLng = parseFloat(orig.lng);
-        const destLng = parseFloat(dest[0]);
-        const destLat = parseFloat(dest[1]);
-  
-        // Validate numerical values
-        if (isNaN(origLat)) reject("Invalid origin latitude");
-        if (isNaN(origLng)) reject("Invalid origin longitude");
-        if (isNaN(destLng)) reject("Invalid destination longitude");
-        if (isNaN(destLat)) reject("Invalid destination latitude");
-  
-        const originLatLng = new window.google.maps.LatLng(origLat, origLng);
-        const destinationLatLng = new window.google.maps.LatLng(destLat, destLng);
-  
-        service.getDistanceMatrix(
-          {
-            origins: [originLatLng],
-            destinations: [destinationLatLng],
-            travelMode: "DRIVING",
-          },
-          (response, status) => {
-            if (status === "OK") {
-              const distanceText = response.rows[0].elements[0].distance.text;
-              resolve(distanceText);
-            } else {
-              reject("Distance Matrix Error");
-            }
-          }
-        );
-      } else {
-        reject("Google Maps API not loaded");
-      }
-    });
+  const getStreetDistance = async (orig, dest) => {
+    if (!orig || !dest || typeof orig.lat !== "number" || typeof orig.lng !== "number" || !Array.isArray(dest)) {
+      return "Invalid coordinates";
+    }
+
+    const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_API_KEY}&start=${orig.lng},${orig.lat}&end=${dest[0]},${dest[1]}`;
+
+    try {
+      const response = await axios.get(url);
+      const distanceMeters = response.data.routes[0].summary.distance;
+      const distanceKm = (distanceMeters / 1000).toFixed(2);
+      return `${distanceKm} km`;
+    } catch (error) {
+      console.error("❌ OpenRouteService error:", error);
+      return "N/A";
+    }
   };
 
   const clickCords = (location, id) => {
@@ -375,7 +345,6 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
       const newDistanceMap = {};
       for (const owner of messData) {
         if (owner?.location?.coordinates) {
-          console.log("Calculating distance for:", owner.messName, owner.location.coordinates); // Debugging
           try {
             const distanceText = await getStreetDistance(userLocation, owner.location.coordinates);
             newDistanceMap[owner._id] = distanceText;
@@ -398,10 +367,6 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
       setSelected(messData[0]._id);
     }
   }, [messData]);
-
-  if (!isLoaded) {
-    return <div>Loading Google Maps...</div>;
-  }
 
   if (error) {
     return <div>{error}</div>;
