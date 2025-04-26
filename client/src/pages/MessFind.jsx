@@ -198,7 +198,7 @@ const MessFind = () => {
 
         {/* Listings */}
         <div className="mt-6 flex flex-col gap-6">
-          <div className="text-lg font-bold md:hidden">{pgCount} Mess in {item}</div>
+          <div className="text-lg font-bold md:hidden">{pgCount} Mess Found</div>
           <div style={{ display: isChecked ? "flex" : "block" }}>
             <MessBars checkFeatures={checkFeatures} isChecked={isChecked} userLocation={userLocation}  coords={handleCoordinatesChange}  setPgCount={setPgCount}/>
             <Map isChecked={isChecked} coordinates={coordinates} />
