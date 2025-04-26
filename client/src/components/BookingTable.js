@@ -1027,6 +1027,8 @@ import {
   FaDownload,
   FaBed,
   FaRupeeSign,
+  FaCalendarAlt,
+  FaEye,
 } from "react-icons/fa";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import {
