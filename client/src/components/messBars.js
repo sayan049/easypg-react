@@ -263,9 +263,9 @@ function MessBars({
                   Book Now
                 </button>
               </div>
-              {/* Round "i" Button - Absolute positioning */}
+              {/* Single "i" Button - Bottom Right */}
               <button
-                className="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full w-11 h-11 flex items-center justify-center hover:bg-blue-600 transition-colors"
+                className="absolute bottom-2 right-2 bg-blue-500 text-white rounded-full w-11 h-11 flex items-center justify-center hover:bg-blue-600 transition-colors z-10"
                 onClick={(e) => {
                   e.stopPropagation();
                   // Your button action
