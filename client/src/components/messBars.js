@@ -25,21 +25,51 @@ function MessBars({
     navigate("/booking", { state: { owner } });
   };
 
-  const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
-  //  console.log("Calculating distance between:", lat1, lon1, lat2, lon2); // Debugging
-    if (!lat1 || !lon1 || !lat2 || !lon2) {
-      return null;
-    }
-    const R = 6371; // Radius of Earth in km
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(lat1 * Math.PI / 180) *
-      Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return parseFloat((R * c).toFixed(1)); // Return as number
+  // const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
+  // //  console.log("Calculating distance between:", lat1, lon1, lat2, lon2); // Debugging
+  //   if (!lat1 || !lon1 || !lat2 || !lon2) {
+  //     return null;
+  //   }
+  //   const R = 6371; // Radius of Earth in km
+  //   const dLat = (lat2 - lat1) * Math.PI / 180;
+  //   const dLon = (lon2 - lon1) * Math.PI / 180;
+  //   const a =
+  //     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+  //     Math.cos(lat1 * Math.PI / 180) *
+  //     Math.cos(lat2 * Math.PI / 180) *
+  //     Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  //   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  //   return parseFloat((R * c).toFixed(1)); // Return as number
+  // };
+  
+  const getStreetDistance = (orig, dest) => {
+    return new Promise((resolve, reject) => {
+      const service = new window.google.maps.DistanceMatrixService();
+  
+      if (!orig || !dest || typeof orig.lat !== "number" || typeof orig.lng !== "number" || typeof dest[0] !== "number" || typeof dest[1] !== "number") {
+        reject("Invalid origin or destination coordinates.");
+        return;
+      }
+  
+      const originLatLng = new window.google.maps.LatLng(orig.lat, orig.lng);
+      const destinationLatLng = new window.google.maps.LatLng(dest[1], dest[0]); // [lng, lat] format
+  
+      service.getDistanceMatrix(
+        {
+          origins: [originLatLng],
+          destinations: [destinationLatLng],
+          travelMode: "DRIVING",
+        },
+        (response, status) => {
+          if (status === "OK") {
+            const distanceText = response.rows[0].elements[0].distance.text;
+            resolve(distanceText);
+          } else {
+            reject("Distance error");
+          }
+        }
+      );
+    });
   };
   
 
@@ -186,7 +216,8 @@ function MessBars({
             <h3 className="font-medium text-lg">{owner.messName}, In Simhat</h3>
             <p className="text-sm text-gray-600 mt-2">
               {/* Near MAKAUT University • 15 Km */}
-              {owner.address} • {getDistanceFromLatLonInKm(userLocation.lat,userLocation.lng,owner?.location?.coordinates[1],owner?.location?.coordinates[0])} Km
+              {/* {owner.address} • {getDistanceFromLatLonInKm(userLocation.lat,userLocation.lng,owner?.location?.coordinates[1],owner?.location?.coordinates[0])} Km */}
+              {owner.address} • {getRealDistance(userLocation,owner?.location?.coordinates)} Km
             </p>
             <div className="flex items-center mt-4 text-sm text-gray-500">
               {owner.facility?.map((feature, index) => (
