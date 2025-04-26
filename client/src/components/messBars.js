@@ -403,6 +403,8 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
                 loading="lazy"
                 src={owner.profilePhoto}
                 alt="Mess"
+                // className="w-full h-48 md:h-full object-cover rounded-md"
+                // style={{ maxHeight: "300px", borderRadius: "10px" }}
                 className="w-full h-48 md:h-full object-cover rounded-md"
                 style={{ maxHeight: "300px", borderRadius: "10px" }}
               />
