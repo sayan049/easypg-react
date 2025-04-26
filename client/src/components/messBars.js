@@ -215,7 +215,7 @@ function MessBars({
               )}
             </div>
 
-            {/* <div className="flex gap-4 mt-4">
+            <div className="flex gap-4 mt-4">
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded-md"
                 onClick={(e) => {
@@ -251,32 +251,8 @@ function MessBars({
                   alt="i"
                 />
               </button>
-            </div> */}
-            <div className="mt-4 pt-6">
-              {" "}
-              {/* Added padding to prevent overlap */}
-              <div className="flex gap-4">
-                <button className="bg-blue-500 text-white px-4 py-2 rounded-md">
-                  View Details
-                </button>
-                <button className="bg-green-500 text-white px-4 py-2 rounded-md">
-                  Book Now
-                </button>
-              </div>
-              {/* Single "i" Button - Bottom Right */}
-              <button
-                className="absolute bottom-2 right-2 bg-blue-500 text-white rounded-full w-11 h-11 flex items-center justify-center hover:bg-blue-600 transition-colors z-10"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  // Your button action
-                }}
-              >
-               <img
-                  src="/assets/i.png"
-                  alt="i"
-                />
-              </button>
             </div>
+           
           </div>
         </div>
       ))}
