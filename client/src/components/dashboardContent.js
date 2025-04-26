@@ -709,8 +709,7 @@ import {
   FaTv,
   FaSnowflake,
   FaBroom,
-  FaSwimmingPool,
-  FaDownload
+  FaSwimmingPool
 } from "react-icons/fa";
 import { FiAlertCircle } from "react-icons/fi";
 import { 
@@ -954,12 +953,6 @@ const DashboardContent = ({
 
                 {/* Action Buttons */}
                 <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-between items-center">
-                  <button 
-                    className="flex items-center gap-2 text-blue-600 hover:text-blue-800 text-sm font-medium"
-                    onClick={() => handleDownloadInvoice(stay._id)}
-                  >
-                    <FaDownload /> Download Invoice
-                  </button>
                   <div className="flex gap-3">
                     <button className="px-4 py-2 text-sm border border-red-500 text-red-500 rounded-md hover:bg-red-50">
                       Cancel Booking
@@ -983,7 +976,127 @@ const DashboardContent = ({
           </h2>
           <div className="space-y-4">
             {pastStay.map((stay, index) => (
-              <StayCard key={index} stay={stay} type="past" />
+              <div key={index} className="bg-white p-6 rounded-lg shadow-md border-l-4 border-gray-200">
+                <div className="flex flex-col md:flex-row justify-between gap-6">
+                  {/* PG Details */}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="bg-gray-100 p-3 rounded-full">
+                        <FaHome className="text-gray-600 text-xl" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-800">
+                          {stay.pgOwner?.messName || "Unknown PG"}
+                        </h3>
+                        <p className="text-gray-500">{stay.room?.roomType || "Room"}</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Owner Info */}
+                      <div className="space-y-2">
+                        <h4 className="font-medium text-gray-700 flex items-center gap-2">
+                          <FaUser className="text-gray-500" /> Owner Details
+                        </h4>
+                        <p className="text-sm text-gray-600">
+                          {stay.pgOwner?.firstName} {stay.pgOwner?.lastName}
+                        </p>
+                        <p className="text-sm text-gray-600 flex items-center gap-2">
+                          <FaEnvelope className="text-gray-400" /> {stay.pgOwner?.email}
+                        </p>
+                        <p className="text-sm text-gray-600 flex items-center gap-2">
+                          <FaPhone className="text-gray-400" /> {stay.pgOwner?.mobileNo}
+                        </p>
+                      </div>
+
+                      {/* Address */}
+                      <div className="space-y-2">
+                        <h4 className="font-medium text-gray-700 flex items-center gap-2">
+                          <FaMapMarkerAlt className="text-gray-500" /> Address
+                        </h4>
+                        <p className="text-sm text-gray-600">{stay.pgOwner?.address}</p>
+                      </div>
+
+                      {/* Room Info */}
+                      <div className="space-y-2">
+                        <h4 className="font-medium text-gray-700 flex items-center gap-2">
+                          <FaBed className="text-gray-500" /> Room Details
+                        </h4>
+                        <p className="text-sm text-gray-600">
+                          Beds Booked: {stay.bedsBooked?.length || 0}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Price: ₹{stay.pricePerHead}/month
+                        </p>
+                      </div>
+
+                      {/* Dates */}
+                      <div className="space-y-2">
+                        <h4 className="font-medium text-gray-700 flex items-center gap-2">
+                          <FaCalendarAlt className="text-gray-500" /> Stay Period
+                        </h4>
+                        <p className="text-sm text-gray-600">
+                          {formatDate(stay.period?.startDate)} - {formatDate(stay.period?.endDate)}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Duration: {stay.period?.durationMonths} months
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Amenities */}
+                  {stay.pgOwner?.facility && (
+                    <div className="md:w-1/3">
+                      <h4 className="font-medium text-gray-700 mb-3">Amenities</h4>
+                      <div className="grid grid-cols-2 gap-3">
+                        {stay.pgOwner.facility.includes("A/C") && (
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <MdOutlineAcUnit className="text-green-500" /> A/C
+                          </div>
+                        )}
+                        {stay.pgOwner.facility.includes("TV") && (
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <MdTv className="text-green-500" /> TV
+                          </div>
+                        )}
+                        {stay.pgOwner.facility.includes("Power Backup") && (
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <MdOutlinePower className="text-green-500" /> Power Backup
+                          </div>
+                        )}
+                        {stay.pgOwner.facility.includes("WiFi") && (
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <MdOutlineWifi className="text-green-500" /> WiFi
+                          </div>
+                        )}
+                        {stay.pgOwner.facility.includes("Kitchen") && (
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <MdOutlineKitchen className="text-green-500" /> Kitchen
+                          </div>
+                        )}
+                        {stay.pgOwner.facility.includes("Tank Water") && (
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <MdOpacity className="text-green-500" /> Tank Water
+                          </div>
+                        )}
+                        {stay.pgOwner.facility.includes("Double Bed") && (
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <MdBed className="text-green-500" /> Double Bed
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex justify-end mt-6">
+                  <button className="px-4 py-2 text-sm border border-gray-500 text-gray-500 rounded-md hover:bg-gray-50">
+                    Book Again
+                  </button>
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -1047,6 +1160,7 @@ const DashboardContent = ({
     </div>
   );
 };
+
 function StatCard({ icon, label, value }) {
   return (
     <div className="bg-white p-4 rounded-lg shadow-md flex items-center gap-4">
@@ -1088,14 +1202,10 @@ function MaintenanceItem({ title, date, status, statusColor }) {
   );
 }
 
-// helper: format date
 function formatDate(dateString) {
   if (!dateString) return "N/A";
   const options = { year: "numeric", month: "short", day: "numeric" };
   return new Date(dateString).toLocaleDateString(undefined, options);
 }
-
-// ... (Keep all the remaining helper components: StatCard, NotificationCard, MaintenanceItem, formatDate)
-// ... (Keep the StayCard component if you still need it for past stays)
 
 export default DashboardContent;
