@@ -444,7 +444,9 @@ function MessBars({
                 <span>
                   Price: ₹
                   {Math.min(
-                    ...owner.roomInfo.map((room) => Number(room.pricePerHead))
+                    ...owner.roomInfo
+                      .map((room) => Number(room.pricePerHead))
+                      .filter((price) => !isNaN(price))
                   )}{" "}
                   /Month
                 </span>
