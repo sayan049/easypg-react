@@ -34,7 +34,7 @@ function DashboardContent({
         <StatCard
           icon={<FaBookmark className="text-2xl text-green-500" />}
           label="Active Bookings"
-          value={stats?.current || 0}
+          value={stats?.active|| 0}
         />
         <StatCard
           icon={<FaCalendarAlt className="text-2xl text-purple-500" />}
