@@ -205,32 +205,33 @@ function NewDashboard() {
             (b) => b.status === "confirmed"
           );
 
-          // Calculate stats
-          const upcoming = confirmedBookings.filter(
-            (b) => new Date(b.period.startDate) > now
-          ).length;
+          // // Calculate stats
+          // const upcoming = confirmedBookings.filter(
+          //   (b) => new Date(b.period.startDate) > now
+          // ).length;
 
-          const active = confirmedBookings.filter(
-            (b) =>
-              new Date(b.period.startDate) <= now &&
-              now <= new Date(b.period.endDate)
-          ).length;
+          // const active = confirmedBookings.filter(
+          //   (b) =>
+          //     new Date(b.period.startDate) <= now &&
+          //     now <= new Date(b.period.endDate)
+          // ).length;
 
-          const past = bookingsWithDates.filter(
-            (b) => new Date(b.period.endDate) < now
-          ).length;
+          // const past = bookingsWithDates.filter(
+          //   (b) => new Date(b.period.endDate) < now
+          // ).length;
 
           setStats({
-            upcoming,
-            active,
-            past,
+            upcoming: response.data.stats.upcoming,
+            active: response.data.stats.current, 
+            past: response.data.stats.past,
           });
 
-          setCurrentStay(response.data.currentStay);
-          setUpcomingStay(response.data.upcomingStay || null);
-          setPastStay(response.data.pastStay || null);
-          setDaysRemaining(response.data.daysRemaining || 0);
-          setTotalAmountConfirmed(response.data.totalAmountConfirmed || 0);
+          // Set stays arrays from backend
+    setCurrentStay(response.data.currentStays || []);
+    setUpcomingStay(response.data.upcomingStays || []);
+    setPastStay(response.data.pastStays || []);
+    setDaysRemaining(response.data.daysRemaining || 0);
+    setTotalAmountConfirmed(response.data.totalAmountConfirmed || 0);
         }
       }
     } catch (error) {
@@ -260,16 +261,16 @@ function NewDashboard() {
       case "dashboard":
         return (
           <DashboardContent
-            user={userDetails}
-            bookings={bookings}
-            currentStay={currentStay}
-            upcomingStay={upcomingStay}
-            pastStay={pastStay}
-            stats={stats}
-            daysRemaining={daysRemaining}
-            totalAmountConfirmed={totalAmountConfirmed}
-            loading={loading}
-          />
+          user={userDetails}
+          bookings={bookings}
+          currentStays={currentStays}
+          upcomingStays={upcomingStays}
+          pastStays={pastStays}
+          stats={stats}
+          daysRemaining={daysRemaining}
+          totalAmountConfirmed={totalAmountConfirmed}
+          loading={loading}
+        />
         );
       case "bookings":
         return (
@@ -287,16 +288,16 @@ function NewDashboard() {
       default:
         return (
           <DashboardContent
-            user={userDetails}
-            bookings={bookings}
-            currentStay={currentStay}
-            upcomingStay={upcomingStay}
-            pastStay={pastStay}
-            stats={stats}
-            daysRemaining={daysRemaining}
-            totalAmountConfirmed={totalAmountConfirmed}
-            loading={loading}
-          />
+          user={userDetails}
+          bookings={bookings}
+          currentStays={currentStays}
+          upcomingStays={upcomingStays}
+          pastStays={pastStays}
+          stats={stats}
+          daysRemaining={daysRemaining}
+          totalAmountConfirmed={totalAmountConfirmed}
+          loading={loading}
+        />
         );
     }
   };
