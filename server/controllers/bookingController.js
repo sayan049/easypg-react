@@ -731,7 +731,7 @@ exports.getUserBookings = async (req, res) => {
       .select('room status bedsBooked pricePerHead period payment.totalAmount pgOwner')
       .populate({
         path: 'pgOwner',
-        select: 'messName address amenities gender facility roomInfo profilePhoto'
+        select: 'firstName lastName email mobileNo messName address  gender facility roomInfo profilePhoto'
       })
       .sort({ "period.startDate": 1 }) // Important: Sort by startDate ascending
       .lean();

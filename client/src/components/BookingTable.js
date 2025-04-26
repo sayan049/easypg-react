@@ -563,6 +563,9 @@ import {
   MdOutlineAcUnit,
   MdBed,
   MdOpacity,
+  MdPhone,
+  MdEmail,
+  MdPersonOutline	
 } from "react-icons/md";
 import axios from "axios";
 import { baseurl } from "../constant/urls";
@@ -771,7 +774,18 @@ const BookingTable = () => {
           <h2 className="text-xl font-bold">
             {currentStay.pgOwner?.messName || "PG Name Not Available"}
           </h2>
-
+          <div className="flex items-center text-sm text-gray-600 mt-1">
+            <MdPersonOutline className="mr-1" />
+            {currentStay.pgOwner?.firstName + currentStay.pgOwner?.lastName  || "Name not specified"}
+          </div>
+          <div className="flex items-center text-sm text-gray-600 mt-1">
+            <MdEmail className="mr-1" />
+            {currentStay.pgOwner?.email || "ContactInfo not specified"}
+          </div>
+          <div className="flex items-center text-sm text-gray-600 mt-1">
+            <MdPhone className="mr-1" />
+            {currentStay.pgOwner?.mobileNo || "Phone No. not specified"}
+          </div>
           {/* Address with fallback */}
           <div className="flex items-center text-sm text-gray-600 mt-1">
             <HiOutlineLocationMarker className="mr-1" />
@@ -827,39 +841,39 @@ const BookingTable = () => {
           <div className="mt-4">
             <p className="font-semibold mb-2">Amenities</p>
             <div className="flex flex-wrap gap-2 text-sm text-gray-700">
-              {currentStay.pgOwner?.amenities?.length > 0 ? (
+              {currentStay.pgOwner?.facility?.length > 0 ? (
                 <>
-                  {currentStay.pgOwner.amenities.includes("A/C") && (
+                  {currentStay.pgOwner.facility.includes("A/C") && (
                     <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                       <MdOutlineAcUnit /> AC
                     </span>
                   )}
-                  {currentStay.pgOwner.amenities.includes("TV") && (
+                  {currentStay.pgOwner.facility.includes("TV") && (
                     <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                       <MdTv /> TV
                     </span>
                   )}
-                  {currentStay.pgOwner.amenities.includes("Power Backup") && (
+                  {currentStay.pgOwner.facility.includes("Power Backup") && (
                     <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                       <MdOutlinePower /> Power Backup
                     </span>
                   )}
-                  {currentStay.pgOwner.amenities.includes("WiFi") && (
+                  {currentStay.pgOwner.facility.includes("WiFi") && (
                     <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                       <MdOutlineWifi /> WiFi
                     </span>
                   )}
-                  {currentStay.pgOwner.amenities.includes("Kitchen") && (
+                  {currentStay.pgOwner.facility.includes("Kitchen") && (
                     <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                       <MdOutlineKitchen /> Kitchen
                     </span>
                   )}
-                  {currentStay.pgOwner.amenities.includes("Tank Water") && (
+                  {currentStay.pgOwner.facility.includes("Tank Water") && (
                     <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                       <MdOpacity /> TankWater
                     </span>
                   )}
-                  {currentStay.pgOwner.amenities.includes("Double bed") && (
+                  {currentStay.pgOwner.facility.includes("Double bed") && (
                     <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                       <MdBed /> DoubleBed
                     </span>
