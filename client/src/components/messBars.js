@@ -399,7 +399,7 @@ function MessBars({
             }
           }}
         >
-           <button className="h-8 w-8 rounded bg-red-700 absolute bottom-0 right-0"></button>
+          
           {/* Image Section */}
           {!isChecked && (
             <div className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0">
@@ -428,6 +428,7 @@ function MessBars({
                 : "none",
             }}
           >
+             <button className="h-8 w-8 rounded bg-red-700 absolute bottom-0 right-0"></button>
             <h3 className="font-medium text-lg">{owner.messName}, In Simhat</h3>
             <p className="text-sm text-gray-600 mt-2">
               {owner.address} • {distanceMap[owner._id] || "Calculating..."}
