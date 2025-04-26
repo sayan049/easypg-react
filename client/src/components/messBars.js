@@ -388,16 +388,18 @@ function MessBars({
 
   return (
     <div style={{ overflowY: "auto", height: "84vh" }}>
+     
       {messData.map((owner) => (
         <div
           key={owner._id}
-          className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md mb-4 sm:mb-2"
+          className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md mb-4 sm:mb-2 max-h-[15rem]"
           onClick={() => {
             if (owner?.location?.coordinates) {
               clickCords(owner.location.coordinates, owner._id);
             }
           }}
         >
+          
           {/* Image Section */}
           {!isChecked && (
             <div className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0">
@@ -426,6 +428,7 @@ function MessBars({
                 : "none",
             }}
           >
+             <button className="h-8 w-8 rounded bg-red-700 absolute bottom-0 right-0"></button>
             <h3 className="font-medium text-lg">{owner.messName}, In Simhat</h3>
             <p className="text-sm text-gray-600 mt-2">
               {owner.address} • {distanceMap[owner._id] || "Calculating..."}
