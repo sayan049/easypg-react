@@ -270,7 +270,7 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
   const [selected, setSelected] = useState(null);
 
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: ProcessingInstruction.env.REACT_APP_MAPS_API_KEY, // Make sure to replace this with your actual API key
+    googleMapsApiKey: Process.env.REACT_APP_MAPS_API_KEY, // Make sure to replace this with your actual API key
     libraries
   });
 
