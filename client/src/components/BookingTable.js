@@ -563,6 +563,9 @@ import {
   MdOutlineAcUnit,
   MdBed,
   MdOpacity,
+  MdPhone,
+  MdEmail,
+  MdPersonOutline	
 } from "react-icons/md";
 import axios from "axios";
 import { baseurl } from "../constant/urls";
@@ -595,7 +598,7 @@ const BookingTable = () => {
       const response = await axios.get(`${baseurl}/auth/bookings/user`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
+      console.log("response", response.data);
       if (response.data && response.data.success) {
         const now = new Date();
         const bookingsData = response.data.bookings || [];
@@ -643,21 +646,27 @@ const BookingTable = () => {
         });
 
         // Find ALL currently active confirmed bookings
-        const currentActiveBookings = confirmedBookings.filter(
+        // Find ALL currently active confirmed bookings
+        const currentActiveBookings = bookingsWithDates.filter(
           (b) =>
+            b.status === "confirmed" &&
             new Date(b.period.startDate) <= now &&
             now <= new Date(b.period.endDate)
         );
 
-        // Sort by confirmation date (earliest first) and take the first one
-        const earliestConfirmedStay =
-          currentActiveBookings.length > 0
-            ? currentActiveBookings.sort(
-                (a, b) => new Date(a.createdAt) - new Date(b.createdAt) // Using createdAt from backend
-              )[0]
-            : null;
+        // Sort by start date (earliest starting first) and take the first one
+        // const earliestConfirmedStay =
+        //   currentActiveBookings.length > 0
+        //     ? currentActiveBookings.sort(
+        //         (a, b) =>
+        //           new Date(a.period.startDate) - new Date(b.period.startDate)
+        //       )[0]
+        //     : null;
 
-        setCurrentStay(earliestConfirmedStay);
+        // console.log("Current Stay:", earliestConfirmedStay); // Add this to debug
+        // setCurrentStay(earliestConfirmedStay);
+        setCurrentStay(response.data.currentStay);
+
       }
     } catch (err) {
       console.error("Error:", err);
@@ -765,7 +774,18 @@ const BookingTable = () => {
           <h2 className="text-xl font-bold">
             {currentStay.pgOwner?.messName || "PG Name Not Available"}
           </h2>
-
+          <div className="flex items-center text-sm text-gray-600 mt-1">
+            <MdPersonOutline className="mr-1" />
+            {currentStay.pgOwner?.firstName + currentStay.pgOwner?.lastName  || "Name not specified"}
+          </div>
+          <div className="flex items-center text-sm text-gray-600 mt-1">
+            <MdEmail className="mr-1" />
+            {currentStay.pgOwner?.email || "ContactInfo not specified"}
+          </div>
+          <div className="flex items-center text-sm text-gray-600 mt-1">
+            <MdPhone className="mr-1" />
+            {currentStay.pgOwner?.mobileNo || "Phone No. not specified"}
+          </div>
           {/* Address with fallback */}
           <div className="flex items-center text-sm text-gray-600 mt-1">
             <HiOutlineLocationMarker className="mr-1" />
@@ -821,39 +841,39 @@ const BookingTable = () => {
           <div className="mt-4">
             <p className="font-semibold mb-2">Amenities</p>
             <div className="flex flex-wrap gap-2 text-sm text-gray-700">
-              {currentStay.pgOwner?.amenities?.length > 0 ? (
+              {currentStay.pgOwner?.facility?.length > 0 ? (
                 <>
-                  {currentStay.pgOwner.amenities.includes("A/C") && (
+                  {currentStay.pgOwner.facility.includes("A/C") && (
                     <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                       <MdOutlineAcUnit /> AC
                     </span>
                   )}
-                  {currentStay.pgOwner.amenities.includes("TV") && (
+                  {currentStay.pgOwner.facility.includes("TV") && (
                     <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                       <MdTv /> TV
                     </span>
                   )}
-                  {currentStay.pgOwner.amenities.includes("Power Backup") && (
+                  {currentStay.pgOwner.facility.includes("Power Backup") && (
                     <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                       <MdOutlinePower /> Power Backup
                     </span>
                   )}
-                  {currentStay.pgOwner.amenities.includes("WiFi") && (
+                  {currentStay.pgOwner.facility.includes("WiFi") && (
                     <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                       <MdOutlineWifi /> WiFi
                     </span>
                   )}
-                  {currentStay.pgOwner.amenities.includes("Kitchen") && (
+                  {currentStay.pgOwner.facility.includes("Kitchen") && (
                     <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                       <MdOutlineKitchen /> Kitchen
                     </span>
                   )}
-                   {currentStay.pgOwner.amenities.includes("Tank Water") && (
+                  {currentStay.pgOwner.facility.includes("Tank Water") && (
                     <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                       <MdOpacity /> TankWater
                     </span>
                   )}
-                   {currentStay.pgOwner.amenities.includes("Double bed") && (
+                  {currentStay.pgOwner.facility.includes("Double bed") && (
                     <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                       <MdBed /> DoubleBed
                     </span>

@@ -721,9 +721,9 @@ exports.getOwnerBookings = async (req, res) => {
 // const Booking = require('../models/Booking');
 
 exports.getUserBookings = async (req, res) => {
-  console.log("Authenticated User:", req.user); // Debug JWT payload
+  console.log("Authenticated User:", req.user);
   try {
-    const userId = req.user.id; // Changed from req.user.id to req.user._id
+    const userId = req.user.id;
     const now = new Date();
 
     // Find all bookings for this user
@@ -731,9 +731,9 @@ exports.getUserBookings = async (req, res) => {
       .select('room status bedsBooked pricePerHead period payment.totalAmount pgOwner')
       .populate({
         path: 'pgOwner',
-        select: 'messName address amenities gender facility roomInfo profilePhoto'
+        select: 'firstName lastName email mobileNo messName address  gender facility roomInfo profilePhoto'
       })
-      .sort({ createdAt: -1 })
+      .sort({ "period.startDate": 1 }) // Important: Sort by startDate ascending
       .lean();
 
     if (!bookings || bookings.length === 0) {
@@ -750,19 +750,20 @@ exports.getUserBookings = async (req, res) => {
       });
     }
 
-    // Process bookings with calculated fields
     const processedBookings = bookings.map(booking => {
       const startDate = new Date(booking.period.startDate);
       const endDate = new Date(startDate);
       endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
-      
-      // Determine booking type
-      let bookingType = 'past';
+
+      let bookingType = 'past'; // default
+
       if (booking.status === 'confirmed') {
-        if (startDate > now) {
-          bookingType = 'upcoming';
-        } else if (now <= endDate) {
+        if (now >= startDate && now <= endDate) {
           bookingType = 'current';
+        } else if (startDate > now) {
+          bookingType = 'upcoming';
+        } else if (endDate < now) {
+          bookingType = 'past';
         }
       }
 
@@ -777,16 +778,16 @@ exports.getUserBookings = async (req, res) => {
       };
     });
 
-    // Calculate statistics
+    // Find the first (earliest) current stay
+    const currentStay = processedBookings.find(b => b.bookingType === 'current') || null;
+
+    // Calculate stats
     const stats = {
       upcoming: processedBookings.filter(b => b.bookingType === 'upcoming').length,
       current: processedBookings.filter(b => b.bookingType === 'current').length,
       past: processedBookings.filter(b => b.bookingType === 'past').length,
       total: processedBookings.length
     };
-
-    // Get current stay (if any)
-    const currentStay = processedBookings.find(b => b.bookingType === 'current');
 
     res.json({
       success: true,
@@ -800,10 +801,11 @@ exports.getUserBookings = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to fetch bookings',
-      error: error.message 
+      error: error.message
     });
   }
 };
+
 
 // Generate invoice
 
