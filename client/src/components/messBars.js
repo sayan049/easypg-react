@@ -266,7 +266,7 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
   const navigate = useNavigate();
   const [selected, setSelected] = useState(null);
 
-  const ORS_API_KEY = ProcessingInstruction.env.REACT_APP_GOOGLE_API_KEY; // <-- put your OpenRouteService API key here
+  const ORS_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY; // <-- put your OpenRouteService API key here
 
   const clickNavi = (owner) => {
     navigate("/viewDetails", { state: { owner } });
