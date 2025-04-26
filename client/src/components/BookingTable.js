@@ -1047,15 +1047,14 @@ import {
   MdPersonOutline,
 } from "react-icons/md";
 
-const BookingTable = ( { bookings = [], currentStay = [], stats = {}, loading = false,  }) => {
-  
+const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = false }) => {
   const statusColors = {
     confirmed: "text-green-700 bg-green-100",
     pending: "text-yellow-700 bg-yellow-100",
     rejected: "text-red-700 bg-red-100",
     cancelled: "text-gray-700 bg-gray-100",
   };
- 
+
   const handleDownloadInvoice = async (bookingId) => {
     try {
       const token = localStorage.getItem("accessToken");
@@ -1081,7 +1080,6 @@ const BookingTable = ( { bookings = [], currentStay = [], stats = {}, loading = 
       toast.error(err.response?.data?.message || "Failed to download invoice");
     }
   };
-
 
   if (loading) {
     return (
@@ -1109,7 +1107,6 @@ const BookingTable = ( { bookings = [], currentStay = [], stats = {}, loading = 
 
   return (
     <div className="px-4 sm:px-6 md:px-8 lg:px-6 xl:px-4 py-4 mx-auto">
-
       {/* Booking Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center mb-6">
         <div className="flex items-center justify-between sm:justify-center bg-white shadow-md p-4 rounded-xl">
@@ -1138,134 +1135,149 @@ const BookingTable = ( { bookings = [], currentStay = [], stats = {}, loading = 
       </div>
 
       {/* Current Accommodation */}
-      {currentStay?.length > 0 && (
-  <div className="space-y-6 mb-6">
-    <h3 className="text-lg font-semibold">Current Accommodations ({currentStay.length})</h3>
-    
-    {currentStay.map((currentStay, index) => (
-      <div key={currentStay._id || index} className="bg-white shadow-md p-4 rounded-xl">
-        <h2 className="text-xl font-bold">
-          {currentStay.pgOwner?.messName || "PG Name Not Available"}
-          {currentStay.length > 1 && <span className="text-sm font-normal text-gray-500 ml-2">(Stay #{index + 1})</span>}
-        </h2>
+      {currentStay?.length > 0 ? (
+        <div className="space-y-6 mb-6">
+          <h3 className="text-lg font-semibold">Current Accommodations ({currentStay.length})</h3>
+          
+          {currentStay.map((stay, index) => (
+            <div key={stay._id || index} className="bg-white shadow-md p-6 rounded-xl border-l-4 border-blue-200">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h2 className="text-xl font-bold flex items-center gap-2">
+                    <MdOutlineHome className="text-blue-500" />
+                    {stay.pgOwner?.messName || "PG Name Not Available"}
+                  </h2>
+                  {currentStay.length > 1 && (
+                    <span className="text-sm text-gray-500">Stay #{index + 1}</span>
+                  )}
+                </div>
+                {stay._id && (
+                  <button
+                    onClick={() => handleDownloadInvoice(stay._id)}
+                    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm"
+                  >
+                    <FaDownload /> Invoice
+                  </button>
+                )}
+              </div>
 
-        <div className="flex items-center text-sm text-gray-600 mt-1">
-          <MdPersonOutline className="mr-1" />
-          {currentStay.pgOwner?.firstName + " " + currentStay.pgOwner?.lastName || "Name not specified"}
-        </div>
-        <div className="flex items-center text-sm text-gray-600 mt-1">
-          <MdEmail className="mr-1" />
-          {currentStay.pgOwner?.email || "Email not specified"}
-        </div>
-        <div className="flex items-center text-sm text-gray-600 mt-1">
-          <MdPhone className="mr-1" />
-          {currentStay.pgOwner?.mobileNo || "Phone No. not specified"}
-        </div>
-        <div className="flex items-center text-sm text-gray-600 mt-1">
-          <HiOutlineLocationMarker className="mr-1" />
-          {currentStay.pgOwner?.address || "Address not specified"}
-        </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Owner Information */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-gray-700 flex items-center gap-2">
+                    <MdPersonOutline /> Owner Details
+                  </h4>
+                  <div className="pl-6 space-y-2">
+                    <p className="text-sm text-gray-600">
+                      {stay.pgOwner?.firstName} {stay.pgOwner?.lastName}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <MdEmail /> {stay.pgOwner?.email || "Email not specified"}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <MdPhone /> {stay.pgOwner?.mobileNo || "Phone not specified"}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <HiOutlineLocationMarker /> {stay.pgOwner?.address || "Address not specified"}
+                    </p>
+                  </div>
+                </div>
 
-        {/* Room and Bed */}
-        <div className="flex items-center text-sm text-gray-600 mt-1">
-          <FaBed className="mr-1" />
-          {currentStay.room ? ` ${currentStay.room}` : "Room not specified"}
-          {currentStay.bedsBooked && (
-            <span> ({currentStay.bedsBooked} bed{currentStay.bedsBooked > 1 ? "s" : ""})</span>
-          )}
-        </div>
+                {/* Stay Details */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-gray-700 flex items-center gap-2">
+                    <FaBed /> Room Details
+                  </h4>
+                  <div className="pl-6 space-y-2">
+                    <p className="text-sm text-gray-600">
+                      {stay.room || "Room not specified"}
+                      {stay.bedsBooked && (
+                        <span> ({stay.bedsBooked} bed{stay.bedsBooked > 1 ? "s" : ""})</span>
+                      )}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <FaRupeeSign /> 
+                      {stay.payment?.totalAmount ? (
+                        <>
+                          ₹{stay.payment.totalAmount}
+                          {stay.pricePerHead && (
+                            <span> (₹{stay.pricePerHead}/month)</span>
+                          )}
+                        </>
+                      ) : (
+                        "Price not available"
+                      )}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <FaCalendarAlt /> 
+                      {stay.period?.startDate ? (
+                        new Date(stay.period.startDate).toLocaleDateString()
+                      ) : (
+                        "Start date not specified"
+                      )} -{" "}
+                      {stay.period?.endDate ? (
+                        new Date(stay.period.endDate).toLocaleDateString()
+                      ) : (
+                        "End date not specified"
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-        {/* Payment Info */}
-        <div className="flex items-center text-sm text-gray-600 mt-1">
-          <FaRupeeSign className="mr-1" />
-          {currentStay.payment?.totalAmount ? (
-            <>
-              ₹{currentStay.payment.totalAmount}
-              {currentStay.pricePerHead && (
-                <span> (₹{currentStay.pricePerHead}/month)</span>
+              {/* Amenities */}
+              {stay.pgOwner?.facility?.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="font-medium text-gray-700 mb-2">Amenities</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {stay.pgOwner.facility.includes("A/C") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdOutlineAcUnit className="text-blue-500" /> A/C
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("TV") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdTv className="text-blue-500" /> TV
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("Power Backup") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdOutlinePower className="text-blue-500" /> Power Backup
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("WiFi") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdOutlineWifi className="text-blue-500" /> WiFi
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("Kitchen") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdOutlineKitchen className="text-blue-500" /> Kitchen
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("Tank Water") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdOpacity className="text-blue-500" /> Tank Water
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("Double Bed") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdBed className="text-blue-500" /> Double Bed
+                      </span>
+                    )}
+                  </div>
+                </div>
               )}
-            </>
-          ) : (
-            "Price information not available"
-          )}
+            </div>
+          ))}
         </div>
-
-        {/* Stay Period */}
-        <div className="mt-2 text-sm">
-          <span className="font-medium">Stay Period: </span>
-          {currentStay.period?.startDate ? (
-            <>
-              {new Date(currentStay.period.startDate).toLocaleDateString()} -{" "}
-              {currentStay.period?.endDate
-                ? new Date(currentStay.period.endDate).toLocaleDateString()
-                : "End date not available"}
-            </>
-          ) : (
-            "Stay period not specified"
-          )}
+      ) : (
+        <div className="bg-white shadow-md p-6 rounded-xl mb-6 text-center">
+          <MdOutlineHome className="mx-auto text-4xl text-gray-400 mb-3" />
+          <h3 className="text-lg font-semibold text-gray-700">No Current Stay</h3>
+          <p className="text-gray-500 mt-1">You don't have any active accommodations right now.</p>
         </div>
-
-        {/* Amenities */}
-        <div className="mt-4">
-          <p className="font-semibold mb-2">Amenities</p>
-          <div className="flex flex-wrap gap-2 text-sm text-gray-700">
-            {currentStay.pgOwner?.facility?.length > 0 ? (
-              <>
-                {currentStay.pgOwner.facility.includes("A/C") && (
-                  <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
-                    <MdOutlineAcUnit /> AC
-                  </span>
-                )}
-                {currentStay.pgOwner.facility.includes("TV") && (
-                  <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
-                    <MdTv /> TV
-                  </span>
-                )}
-                {currentStay.pgOwner.facility.includes("Power Backup") && (
-                  <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
-                    <MdOutlinePower /> Power Backup
-                  </span>
-                )}
-                {currentStay.pgOwner.facility.includes("WiFi") && (
-                  <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
-                    <MdOutlineWifi /> WiFi
-                  </span>
-                )}
-                {currentStay.pgOwner.facility.includes("Kitchen") && (
-                  <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
-                    <MdOutlineKitchen /> Kitchen
-                  </span>
-                )}
-                {currentStay.pgOwner.facility.includes("Tank Water") && (
-                  <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
-                    <MdOpacity /> Tank Water
-                  </span>
-                )}
-                {currentStay.pgOwner.facility.includes("Double Bed") && (
-                  <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
-                    <MdBed /> Double Bed
-                  </span>
-                )}
-              </>
-            ) : (
-              <span className="text-gray-500">No amenities listed</span>
-            )}
-          </div>
-        </div>
-
-        {/* Download Invoice */}
-        {currentStay._id && (
-          <button
-            onClick={() => handleDownloadInvoice(currentStay._id)}
-            className="mt-4 flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <FaDownload /> Download Invoice
-          </button>
-        )}
-      </div>
-    ))}
-  </div>
-)}
+      )}
 
       {/* Booking History Table */}
            {/* Booking History Table (desktop) */}
