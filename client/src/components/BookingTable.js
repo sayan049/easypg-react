@@ -676,32 +676,32 @@
 //       setLoading(false);
 //     }
 //   };
-  // Handle invoice download
-  // const handleDownloadInvoice = async (bookingId) => {
-  //   try {
-  //     const token = localStorage.getItem("accessToken");
-  //     toast.info("Preparing your invoice...", { autoClose: 2000 });
+//   Handle invoice download
+//   const handleDownloadInvoice = async (bookingId) => {
+//     try {
+//       const token = localStorage.getItem("accessToken");
+//       toast.info("Preparing your invoice...", { autoClose: 2000 });
 
-  //     const response = await axios.get(
-  //       `${baseurl}/auth/bookings/${bookingId}/invoice`,
-  //       {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //         responseType: "blob",
-  //       }
-  //     );
+//       const response = await axios.get(
+//         `${baseurl}/auth/bookings/${bookingId}/invoice`,
+//         {
+//           headers: { Authorization: `Bearer ${token}` },
+//           responseType: "blob",
+//         }
+//       );
 
-  //     const url = window.URL.createObjectURL(new Blob([response.data]));
-  //     const link = document.createElement("a");
-  //     link.href = url;
-  //     link.setAttribute("download", `invoice-${bookingId}.pdf`);
-  //     document.body.appendChild(link);
-  //     link.click();
-  //     link.parentNode.removeChild(link);
-  //   } catch (err) {
-  //     console.error("Invoice download error:", err);
-  //     toast.error(err.response?.data?.message || "Failed to download invoice");
-  //   }
-  // };
+//       const url = window.URL.createObjectURL(new Blob([response.data]));
+//       const link = document.createElement("a");
+//       link.href = url;
+//       link.setAttribute("download", `invoice-${bookingId}.pdf`);
+//       document.body.appendChild(link);
+//       link.click();
+//       link.parentNode.removeChild(link);
+//     } catch (err) {
+//       console.error("Invoice download error:", err);
+//       toast.error(err.response?.data?.message || "Failed to download invoice");
+//     }
+//   };
 
 //   useEffect(() => {
 //     console.log("user._id", user.id);
@@ -1259,7 +1259,8 @@ const BookingTable = ({ bookings = [], currentStay = null, stats = {}, loading =
       )}
 
       {/* Booking History Table */}
-      <div className="hidden md:block bg-white shadow-md p-4 rounded-xl mb-6">
+           {/* Booking History Table (desktop) */}
+           <div className="hidden md:block bg-white shadow-md p-4 rounded-xl mb-6">
         <h3 className="text-lg font-semibold mb-4">Booking History</h3>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
@@ -1275,33 +1276,104 @@ const BookingTable = ({ bookings = [], currentStay = null, stats = {}, loading =
             </thead>
             <tbody className="text-sm text-gray-800">
               {bookings.map((booking) => (
-                <tr key={booking._id} className="border-t border-gray-100 hover:bg-gray-50">
-                  <td className="py-3 px-4">#{booking._id.slice(-6).toUpperCase()}</td>
-                  <td className="py-3 px-4">{booking.pgOwner?.messName || "N/A"}</td>
+                <tr
+                  key={booking._id}
+                  className="border-t border-gray-100 hover:bg-gray-50"
+                >
+                  <td className="py-3 px-4">
+                    #{booking._id.slice(-6).toUpperCase()}
+                  </td>
+                  <td className="py-3 px-4">{booking.pgOwner?.messName}</td>
                   <td className="py-3 px-4">
                     {new Date(booking.period.startDate).toLocaleDateString()} -{" "}
                     {new Date(booking.period.endDate).toLocaleDateString()}
                   </td>
-                  <td className="py-3 px-4">₹{booking.payment?.totalAmount || 0}</td>
+                  <td className="py-3 px-4">₹{booking.payment.totalAmount}</td>
                   <td className="py-3 px-4">
                     <span
-                      className={`text-xs px-2 py-1 rounded-full ${statusColors[booking.status] || "bg-gray-300"}`}
+                      className={`text-xs px-2 py-1 rounded-full ${
+                        statusColors[booking.status]
+                      }`}
                     >
                       {booking.status}
                     </span>
                   </td>
                   <td className="py-3 px-4">
-                    <button
-                      onClick={() => handleDownloadInvoice(booking._id)}
-                      className="text-blue-600 hover:text-blue-800 text-sm underline"
-                    >
-                      Download Invoice
-                    </button>
+                    {booking.status === "confirmed" ? (
+                      <button
+                        onClick={() => handleDownloadInvoice(booking._id)}
+                        className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                      >
+                        <FaDownload /> Invoice
+                      </button>
+                    ) : (
+                      <button className="text-blue-600 hover:text-blue-800 flex items-center gap-1">
+                        <FaEye /> Details
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* Booking History Cards (mobile) */}
+      <div className="md:hidden bg-white shadow-md p-4 rounded-xl mb-6">
+        <h3 className="text-lg font-semibold mb-4">Booking History</h3>
+        <div className="space-y-4">
+          {bookings.map((booking) => (
+            <div
+              key={booking._id}
+              className="border border-gray-200 rounded-xl p-4 bg-white shadow-sm"
+            >
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="text-xs text-gray-500">
+                    Booking ID: #{booking._id.slice(-6).toUpperCase()}
+                  </p>
+                  <h4 className="text-md font-semibold">
+                    {booking.pgOwner?.messName}
+                  </h4>
+                </div>
+                <span
+                  className={`text-xs px-2 py-1 rounded-full ${
+                    statusColors[booking.status]
+                  }`}
+                >
+                  {booking.status}
+                </span>
+              </div>
+
+              <div className="mt-2 text-sm text-gray-700">
+                <div className="flex items-center gap-2">
+                  <FaCalendarAlt className="text-gray-400" />
+                  {new Date(
+                    booking.period.startDate
+                  ).toLocaleDateString()} -{" "}
+                  {new Date(booking.period.endDate).toLocaleDateString()}
+                </div>
+                <div className="mt-1 flex items-center">
+                  <FaRupeeSign className="mr-1" />
+                  {booking.payment.totalAmount}
+                </div>
+              </div>
+
+              {booking.status === "confirmed" ? (
+                <button
+                  onClick={() => handleDownloadInvoice(booking._id)}
+                  className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium"
+                >
+                  <FaDownload /> Download Invoice
+                </button>
+              ) : (
+                <button className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gray-200 text-gray-800 text-sm font-medium">
+                  <FaEye /> View Details
+                </button>
+              )}
+            </div>
+          ))}
         </div>
       </div>
 
