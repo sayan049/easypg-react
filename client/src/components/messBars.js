@@ -148,6 +148,16 @@ function MessBars({
             }
           }}
         >
+           <button
+    className="absolute top-2 right-2 bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-blue-600 transition-colors"
+    onClick={(e) => {
+      e.stopPropagation();
+      // Add your button click handler here
+      console.log('Round button clicked', owner._id);
+    }}
+  >
+    i
+  </button>
           {/* Image Section */}
           {!isChecked && (
             <div className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0">
