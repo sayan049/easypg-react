@@ -589,13 +589,23 @@ const BookingTable = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('accessToken');
-      const response = await axios.get(`${baseurl}/auth/bookings/user-bookings`, {
+      console.log('Token:', token); // Check if token exists
+      console.log('User ID:', user._id); // Check the user ID being used
+      
+      const response = await axios.get(`${baseurl}/auth/bookings/user`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      console.log(response.data)
-      if (response.data) {
+      
+      console.log('Full API response:', response); // Inspect full response
+      console.log('Response data:', response.data); // Check the data structure
+      
+      if (response.data && response.data.success) { // Modified this condition
         const now = new Date();
-        const bookingsWithDates = response.data.bookings.map(booking => {
+        const bookingsData = response.data.bookings || []; // Fallback to empty array
+        
+        console.log('Raw bookings from API:', bookingsData); // Check raw data
+        
+        const bookingsWithDates = bookingsData.map(booking => {
           const endDate = new Date(booking.period.startDate);
           endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
           
@@ -607,6 +617,8 @@ const BookingTable = () => {
             }
           };
         });
+  
+        console.log('Processed bookings:', bookingsWithDates); // Check processed data
 
         setBookings(bookingsWithDates);
 
@@ -641,7 +653,8 @@ const BookingTable = () => {
         );
       }
     } catch (err) {
-      console.error('Booking fetch error:', err);
+      console.error('Full error:', err);
+      console.error('Error response:', err.response);
       toast.error(err.response?.data?.message || 'Failed to load bookings');
     } finally {
       setLoading(false);
@@ -673,6 +686,7 @@ const BookingTable = () => {
   };
 
   useEffect(() => {
+    console.log("x",user._id)
     if (user?._id) {
       fetchBookings();
     }

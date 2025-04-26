@@ -220,7 +220,7 @@ router.post("/updatePasswordDashboardOwner",  async (req, res) => {
 // User initiates booking request
 router.post('/bookings',authenticateJWT, createBookingRequest);
 router.get('/bookings/owner',authenticateJWT, getOwnerBookings);
-router.get('/bookings/user-bookings', authenticateJWT, (req, res, next) => {
+router.get('/bookings/user', authenticateJWT, (req, res, next) => {
   console.log('GET /bookings/user-bookings hit');
   next();
 }, getUserBookings);
