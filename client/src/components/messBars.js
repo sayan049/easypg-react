@@ -246,14 +246,18 @@ function MessBars({
             </div>
             <div className="relative mt-4">
               <button
-                className="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-blue-600 transition-colors"
+                className="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full w-11 h-11 flex items-center justify-center hover:bg-blue-600 transition-colors"
                 onClick={(e) => {
                   e.stopPropagation();
                   // Add your button click handler here
                   console.log("Round button clicked", owner._id);
                 }}
               >
-                i
+              
+                <img
+                  src="/assets/i.png"
+                  alt="i"
+                />
               </button>
             </div>
           </div>
