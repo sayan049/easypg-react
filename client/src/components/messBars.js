@@ -388,7 +388,7 @@ function MessBars({
 
   return (
     <div style={{ overflowY: "auto", height: "84vh" }}>
-      <button className="h-8 w-8 rounded bg-red-700 absolute bottom-0 right-0"></button>
+     
       {messData.map((owner) => (
         <div
           key={owner._id}
@@ -399,6 +399,7 @@ function MessBars({
             }
           }}
         >
+           <button className="h-8 w-8 rounded bg-red-700 absolute bottom-0 right-0"></button>
           {/* Image Section */}
           {!isChecked && (
             <div className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0">
