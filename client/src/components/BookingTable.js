@@ -544,6 +544,7 @@
 // export default BookingTable;
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
+
 import {
   FaDownload,
   FaBed,
@@ -873,7 +874,7 @@ const BookingTable = () => {
                       <MdOpacity /> TankWater
                     </span>
                   )}
-                  {currentStay.pgOwner.facility.includes("Double bed") && (
+                  {currentStay.pgOwner.facility.includes("Double Bed") && (
                     <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                       <MdBed /> DoubleBed
                     </span>

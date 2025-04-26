@@ -129,6 +129,12 @@ import Settings from "../components/settings";
 import DashboardContent from "../components/dashboardContent";
 import { fetchDetailsUrl } from "../constant/urls";
 import { useAuth } from "../contexts/AuthContext";
+import {
+  Home,
+  CalendarCheck,
+  CreditCard,
+  Settings as Gear,
+} from "lucide-react";
 
 function NewDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -185,15 +191,15 @@ function NewDashboard() {
       <aside className="hidden md:flex md:w-64 bg-white border-r flex-col p-4 fixed h-full">
         <ProfileHeader userName={userName} />
         <nav className="flex flex-col gap-4 mt-8">
-          <SidebarButton icon={<FaHome />} label="Dashboard" active={activeTab === "dashboard"} onClick={() => setActiveTab("dashboard")} />
-          <SidebarButton icon={<FaBook />} label="My Bookings" active={activeTab === "bookings"} onClick={() => setActiveTab("bookings")} />
-          <SidebarButton icon={<FaMoneyBill />} label="My Payments" active={activeTab === "payments"} onClick={() => setActiveTab("payments")} />
-          <SidebarButton icon={<FaCog />} label="Settings" active={activeTab === "settings"} onClick={() => setActiveTab("settings")} />
+          <SidebarButton icon={<Home />} label="Dashboard" active={activeTab === "dashboard"} onClick={() => setActiveTab("dashboard")} />
+          <SidebarButton icon={<CalendarCheck />} label="My Bookings" active={activeTab === "bookings"} onClick={() => setActiveTab("bookings")} />
+          <SidebarButton icon={<CreditCard />} label="My Payments" active={activeTab === "payments"} onClick={() => setActiveTab("payments")} />
+          <SidebarButton icon={<Gear />} label="Settings" active={activeTab === "settings"} onClick={() => setActiveTab("settings")} />
         </nav>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 md:ml-64 p-6 pb-20">{renderContent()}</main>
+      <main className="flex-1 md:ml-64 p-2 pb-20">{renderContent()}</main>
 
       {/* Top-right profile picture for mobile */}
       <div className="md:hidden absolute top-4 right-4">
@@ -205,10 +211,10 @@ function NewDashboard() {
 
       {/* Bottom navbar for mobile */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around items-center h-16 md:hidden">
-        <BottomNavButton icon={<FaHome />} label="Dashboard" active={activeTab === "dashboard"} onClick={() => setActiveTab("dashboard")} />
-        <BottomNavButton icon={<FaBook />} label="Bookings" active={activeTab === "bookings"} onClick={() => setActiveTab("bookings")} />
-        <BottomNavButton icon={<FaMoneyBill />} label="Payments" active={activeTab === "payments"} onClick={() => setActiveTab("payments")} />
-        <BottomNavButton icon={<FaCog />} label="Settings" active={activeTab === "settings"} onClick={() => setActiveTab("settings")} />
+        <BottomNavButton icon={<Home />} label="Dashboard" active={activeTab === "dashboard"} onClick={() => setActiveTab("dashboard")} />
+        <BottomNavButton icon={<CalendarCheck />} label="Bookings" active={activeTab === "bookings"} onClick={() => setActiveTab("bookings")} />
+        <BottomNavButton icon={<CreditCard />} label="Payments" active={activeTab === "payments"} onClick={() => setActiveTab("payments")} />
+        <BottomNavButton icon={<Gear />} label="Settings" active={activeTab === "settings"} onClick={() => setActiveTab("settings")} />
       </nav>
     </div>
   );
