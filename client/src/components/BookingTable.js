@@ -589,8 +589,7 @@ const BookingTable = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('accessToken');
-      console.log('Token:', token); // Check if token exists
-      console.log('User ID:', user._id); // Check the user ID being used
+     
       
       const response = await axios.get(`${baseurl}/auth/bookings/user`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -686,13 +685,13 @@ const BookingTable = () => {
   };
 
   useEffect(() => {
-    console.log("user",user);
+   
     console.log("user._id",user.id);
-    console.log("x",user._id)
-    if (user?._id) {
+   
+    if (user?.id) {
       fetchBookings();
     }
-  }, [user?._id]);
+  }, [user?.id]);
 
   if (loading) {
     return (
