@@ -258,6 +258,9 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { baseurl, findMessUrl } from "../constant/urls";
 import { useNavigate } from "react-router-dom";
+import { useJsApiLoader } from '@react-google-maps/api';
+
+const libraries = ['places'];
 
 function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }) {
   const [messData, setMessData] = useState([]);
@@ -265,6 +268,11 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [selected, setSelected] = useState(null);
+
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: ProcessingInstruction.env.REACT_APP_MAPS_API_KEY, // Make sure to replace this with your actual API key
+    libraries
+  });
 
   const clickNavi = (owner) => {
     navigate("/viewDetails", { state: { owner } });
@@ -381,6 +389,10 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
       setSelected(messData[0]._id);
     }
   }, [messData]);
+
+  if (!isLoaded) {
+    return <div>Loading Google Maps...</div>;
+  }
 
   if (error) {
     return <div>{error}</div>;
