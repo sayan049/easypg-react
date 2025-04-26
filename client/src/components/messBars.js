@@ -1,4 +1,3 @@
-
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { baseurl, findMessUrl } from "../constant/urls";
@@ -177,15 +176,6 @@ function MessBars({
                 : "none",
             }}
           >
-            <button
-              className="absolute bottom-4 right-4 h-10 w-24 bg-red-600 text-white text-sm rounded-md"
-              onClick={(e) => {
-                e.stopPropagation();
-                clickBook(owner);
-              }}
-            >
-              Book Now
-            </button>
             <h3 className="font-medium text-lg">{owner.messName}, In Simhat</h3>
             <p className="text-sm text-gray-600 mt-2">
               {owner.address} • {distanceMap[owner._id] || "Calculating..."}
@@ -233,6 +223,15 @@ function MessBars({
                 }}
               >
                 Book Now
+              </button>
+              <button
+                className="bg-green-500 text-white px-4 py-2 rounded-full w-full"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  clickBook(owner);
+                }}
+              >
+                map
               </button>
             </div>
           </div>
