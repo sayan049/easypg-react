@@ -44,31 +44,35 @@ function MessBars({
   
   const getStreetDistance = (orig, dest) => {
     return new Promise((resolve, reject) => {
-      const service = new window.google.maps.DistanceMatrixService();
+      if (window.google && window.google.maps) {
+        const service = new window.google.maps.DistanceMatrixService();
   
-      if (!orig || !dest || typeof orig.lat !== "number" || typeof orig.lng !== "number" || typeof dest[0] !== "number" || typeof dest[1] !== "number") {
-        reject("Invalid origin or destination coordinates.");
-        return;
-      }
-  
-      const originLatLng = new window.google.maps.LatLng(orig.lat, orig.lng);
-      const destinationLatLng = new window.google.maps.LatLng(dest[1], dest[0]); // [lng, lat] format
-  
-      service.getDistanceMatrix(
-        {
-          origins: [originLatLng],
-          destinations: [destinationLatLng],
-          travelMode: "DRIVING",
-        },
-        (response, status) => {
-          if (status === "OK") {
-            const distanceText = response.rows[0].elements[0].distance.text;
-            resolve(distanceText);
-          } else {
-            reject("Distance error");
-          }
+        if (!orig || !dest || typeof orig.lat !== "number" || typeof orig.lng !== "number" || typeof dest[0] !== "number" || typeof dest[1] !== "number") {
+          reject("Invalid origin or destination coordinates.");
+          return;
         }
-      );
+    
+        const originLatLng = new window.google.maps.LatLng(orig.lat, orig.lng);
+        const destinationLatLng = new window.google.maps.LatLng(dest[1], dest[0]); // [lng, lat] format
+    
+        service.getDistanceMatrix(
+          {
+            origins: [originLatLng],
+            destinations: [destinationLatLng],
+            travelMode: "DRIVING",
+          },
+          (response, status) => {
+            if (status === "OK") {
+              const distanceText = response.rows[0].elements[0].distance.text;
+              resolve(distanceText);
+            } else {
+              reject("Distance error");
+            }
+          }
+        );
+      }
+      console.error("Google Maps API not loaded.");
+
     });
   };
   
