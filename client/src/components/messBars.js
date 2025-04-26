@@ -255,12 +255,15 @@
 
 // export default MessBars;
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { baseurl, findMessUrl } from "../constant/urls";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useJsApiLoader } from '@react-google-maps/api';
-
-const libraries = ['places'];
+import { Map, View } from 'ol';
+import TileLayer from 'ol/layer/Tile';
+import OSM from 'ol/source/OSM';
+import { fromLonLat } from 'ol/proj';
+import { LineString } from 'ol/geom';
+import { getDistance } from 'ol/sphere';
+import 'ol/ol.css';
 
 function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }) {
   const [messData, setMessData] = useState([]);
@@ -268,67 +271,68 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [selected, setSelected] = useState(null);
+  const mapRef = useRef(null);
 
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
-    libraries,
-    version: 'weekly', // Add this line to use the stable version
-  });
+  // Initialize map
+  useEffect(() => {
+    if (!mapRef.current) return;
 
-  const clickNavi = (owner) => {
-    navigate("/viewDetails", { state: { owner } });
-  };
-
-  const clickBook = (owner) => {
-    navigate("/booking", { state: { owner } });
-  };
-
-  const getStreetDistance = (orig, dest) => {
-    return new Promise((resolve, reject) => {
-      if (window.google && window.google.maps) {
-        const service = new window.google.maps.DistanceMatrixService();
-        console.log("Google Maps API loaded",orig.lat, orig.lng, dest); // Debugging
-        if (!orig || !dest || typeof dest[0] !== "number" || typeof dest[1] !== "number") {
-          reject("Invalid coordinates");
-          return;
-        }
-        const origLat = parseFloat(orig.lat);
-        const origLng = parseFloat(orig.lng);
-
-        const originLatLng = new window.google.maps.LatLng(origLat,origLng);
-        const destinationLatLng = new window.google.maps.LatLng(dest[1], dest[0]); // [lng, lat]
-
-        service.getDistanceMatrix(
-          {
-            origins: [originLatLng],
-            destinations: [destinationLatLng],
-            travelMode: "DRIVING",
-          },
-          (response, status) => {
-            if (status === "OK") {
-              const distanceText = response.rows[0].elements[0].distance.text;
-              resolve(distanceText);
-            } else {
-              reject("Distance Matrix Error");
-            }
-          }
-        );
-      } else {
-        reject("Google Maps API not loaded");
-      }
+    const initialMap = new Map({
+      target: mapRef.current,
+      layers: [
+        new TileLayer({
+          source: new OSM()
+        })
+      ],
+      view: new View({
+        center: fromLonLat([78.9629, 20.5937]), // Center on India
+        zoom: 4
+      })
     });
+
+    return () => initialMap.setTarget(undefined);
+  }, []);
+
+  const getStreetDistance = async (orig, dest) => {
+    try {
+      const origin = [parseFloat(orig.lng), parseFloat(orig.lat)];
+      const destination = [parseFloat(dest[0]), parseFloat(dest[1])];
+
+      // Try OSRM routing first
+      const response = await fetch(
+        `https://router.project-osrm.org/route/v1/driving/${origin.join(',')};${destination.join(',')}?overview=false`
+      );
+      
+      const data = await response.json();
+      if (data.routes?.[0]?.distance) {
+        return `${(data.routes[0].distance / 1000).toFixed(1)} km`;
+      }
+
+      // Fallback to great-circle distance
+      const line = new LineString([
+        fromLonLat(origin),
+        fromLonLat(destination)
+      ]);
+      const distance = getDistance(line.getCoordinates());
+      return `${(distance / 1000).toFixed(1)} km`;
+    } catch (err) {
+      console.error("Routing error:", err);
+      return "N/A";
+    }
   };
 
   const clickCords = (location, id) => {
     setSelected(id);
     if (Array.isArray(location) && location.length === 2) {
-      const [lng, lat] = location;
+      const [lng, lat] = location.map(parseFloat);
+      const transformed = fromLonLat([lng, lat]);
       if (typeof coords === "function") {
-        coords({ lat, lng });
+        coords(transformed);
       }
     }
   };
 
+  // Keep existing useEffect for data fetching
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -338,16 +342,19 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
         }
 
         const res = await axios.get(findMessUrl, {
-          params: { lat: userLocation.lat, lng: userLocation.lng },
+          params: { 
+            lat: parseFloat(userLocation.lat),
+            lng: parseFloat(userLocation.lng)
+          }
         });
 
         const filteredData = Array.isArray(res.data)
           ? res.data.filter((owner) => {
-              const facilitiesArray = Array.isArray(owner.facility)
-                ? owner.facility.flatMap((f) => f.split(",").map((item) => item.trim().toLowerCase()))
-                : [];
+              const facilities = owner.facility?.flatMap(f => 
+                f.split(',').map(item => item.trim().toLowerCase())
+              ) || [];
               return checkFeatures.length > 0
-                ? checkFeatures.some((feature) => facilitiesArray.includes(feature.toLowerCase()))
+                ? checkFeatures.some(f => facilities.includes(f.toLowerCase()))
                 : true;
             })
           : [];
@@ -363,121 +370,103 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
     fetchData();
   }, [checkFeatures, userLocation]);
 
+  // Update distances
   useEffect(() => {
     const fetchDistances = async () => {
       if (messData.length === 0 || !userLocation) return;
 
-      const newDistanceMap = {};
+      const newDistances = {};
       for (const owner of messData) {
         if (owner?.location?.coordinates) {
-          console.log("Calculating distance for:", owner.messName, owner.location.coordinates); // Debugging
           try {
-            const distanceText = await getStreetDistance(userLocation, owner.location.coordinates);
-            newDistanceMap[owner._id] = distanceText;
+            const distance = await getStreetDistance(
+              { lat: userLocation.lat, lng: userLocation.lng },
+              owner.location.coordinates
+            );
+            newDistances[owner._id] = distance;
           } catch (err) {
             console.error(`❌ Distance error for ${owner.messName}:`, err);
-            newDistanceMap[owner._id] = "N/A";
+            newDistances[owner._id] = "N/A";
           }
         }
       }
-      setDistanceMap(newDistanceMap);
+      setDistanceMap(newDistances);
     };
 
     fetchDistances();
   }, [messData, userLocation]);
 
-  useEffect(() => {
-    if (!selected && messData.length > 0 && messData[0]?.location?.coordinates) {
-      const [lng, lat] = messData[0].location.coordinates;
-      coords({ lat, lng });
-      setSelected(messData[0]._id);
-    }
-  }, [messData]);
-
-  if (!isLoaded) {
-    return <div>Loading Google Maps...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
   return (
-    <div style={{ overflowY: "auto", height: "84vh" }}>
-      {messData.map((owner) => (
-        <div
-          key={owner._id}
-          className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md mb-4 sm:mb-2"
-          onClick={() => {
-            if (owner?.location?.coordinates) {
-              clickCords(owner.location.coordinates, owner._id);
-            }
-          }}
-        >
-          {/* Image Section */}
-          {!isChecked && (
-            <div className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0">
-              <img
-                loading="lazy"
-                src={owner.profilePhoto}
-                alt="Mess"
-                className="w-full h-48 md:h-full object-cover rounded-md"
-                style={{ maxHeight: "300px", borderRadius: "10px" }}
-              />
-            </div>
-          )}
+    <div className="flex flex-col h-screen">
+      <div 
+        ref={mapRef} 
+        className="w-full h-64 mb-4 rounded-lg shadow-lg"
+        style={{ height: '400px' }}
+      ></div>
 
-          {/* Content Section */}
+      <div className="overflow-y-auto flex-grow">
+        {messData.map((owner) => (
           <div
-            className={`flex-grow md:ml-6 mt-4 md:mt-0 ${
-              selected === owner._id && isChecked ? "border-2 border-[rgb(44,164,181)]" : ""
-            }`}
-            style={{
-              padding: isChecked ? "29px" : "0px",
-              borderRadius: isChecked ? "10px" : "0px",
-              boxShadow: isChecked
-                ? "rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px"
-                : "none",
-            }}
+            key={owner._id}
+            className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md mb-4"
+            onClick={() => owner?.location?.coordinates && 
+              clickCords(owner.location.coordinates, owner._id)}
           >
-            <h3 className="font-medium text-lg">{owner.messName}, In Simhat</h3>
-            <p className="text-sm text-gray-600 mt-2">
-              {owner.address} • {distanceMap[owner._id] || "Calculating..."}
-            </p>
-            <div className="flex items-center mt-4 text-sm text-gray-500 flex-wrap gap-2">
-              {owner.facility?.map((feature, index) => (
-                <span key={index}>
-                  {feature}
-                  {index < owner.facility.length - 1 && " • "}
-                </span>
-              ))}
-            </div>
-            <div className="mt-2">
-              <span>Price: 2.5k/Month</span>
-            </div>
-            <div className="flex gap-4 mt-4">
-              <button
-                className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  clickNavi(owner);
-                }}
-              >
-                View Details
-              </button>
-              <button
-                className="bg-green-500 text-white px-4 py-2 rounded-md"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  clickBook(owner);
-                }}
-              >
-                Book Now
-              </button>
+            {!isChecked && (
+              <div className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0 mb-4 md:mb-0">
+                <img
+                  src={owner.profilePhoto}
+                  alt="Mess"
+                  className="w-full h-48 object-cover rounded-md"
+                />
+              </div>
+            )}
+
+            <div className={`flex-grow md:ml-6 ${
+              selected === owner._id && isChecked 
+                ? "border-2 border-blue-500 rounded-lg p-4"
+                : ""
+            }`}>
+              <h3 className="text-xl font-semibold">{owner.messName}</h3>
+              <p className="text-gray-600 mt-2">
+                {owner.address} • {distanceMap[owner._id] || "Calculating..."}
+              </p>
+              
+              <div className="mt-3 flex flex-wrap gap-2">
+                {owner.facility?.map((f, i) => (
+                  <span 
+                    key={i}
+                    className="bg-gray-100 px-2 py-1 rounded text-sm"
+                  >
+                    {f.trim()}
+                  </span>
+                ))}
+              </div>
+
+              <div className="mt-4 flex gap-3">
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate("/viewDetails", { state: { owner } });
+                  }}
+                >
+                  Details
+                </button>
+                <button
+                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate("/booking", { state: { owner } });
+                  }}
+                >
+                  Book Now
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
