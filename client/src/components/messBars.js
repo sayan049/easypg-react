@@ -41,20 +41,20 @@
 //   //   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 //   //   return parseFloat((R * c).toFixed(1)); // Return as number
 //   // };
-  
+
 //   const getStreetDistance = (orig, dest) => {
 //     return new Promise((resolve, reject) => {
 //       if (window.google && window.google.maps) {
 //         const service = new window.google.maps.DistanceMatrixService();
-  
+
 //         if (!orig || !dest || typeof orig.lat !== "number" || typeof orig.lng !== "number" || typeof dest[0] !== "number" || typeof dest[1] !== "number") {
 //           reject("Invalid origin or destination coordinates.");
 //           return;
 //         }
-    
+
 //         const originLatLng = new window.google.maps.LatLng(orig.lat, orig.lng);
 //         const destinationLatLng = new window.google.maps.LatLng(dest[1], dest[0]); // [lng, lat] format
-    
+
 //         service.getDistanceMatrix(
 //           {
 //             origins: [originLatLng],
@@ -75,9 +75,7 @@
 
 //     });
 //   };
-  
 
-  
 //   const clickCords = (location,id) => {
 //     console.log("Clicked Location Data:", location); // Debugging
 //     setSelected(id);
@@ -94,7 +92,7 @@
 //       } else {
 //       //  console.error("❌ coords is not a function:", coords);
 //       }
-//       // coords({ lat, lng });      
+//       // coords({ lat, lng });
 //       console.log("✅ Valid Coordinates Clicked:", { lat, lng });
 //     } else {
 //       //console.log("❌ Invalid location format:", location);
@@ -105,22 +103,20 @@
 //     console.log("Selected Features:", checkFeatures);
 //     if (userLocation) {
 //     //  console.log("User Location:", userLocation); // Debugging
-   
+
 //     }
 //     if(!selected && Array.isArray(messData) && messData.length > 0 && messData[0]?.location?.coordinates){
-     
-      
-//       const [lng, lat] = messData[0].location.coordinates; 
+
+//       const [lng, lat] = messData[0].location.coordinates;
 //       coords({ lat, lng });
 //       console.log("Coordinates set to:", { lat, lng }, coords);
-//     } 
+//     }
 
 //     if (!selected && Array.isArray(messData) && messData.length > 0 && messData[0]?._id) {
 //       setSelected(messData[0]._id);
 //     }
 //     console.log("Sel", !coords , coords);
 
-    
 //   }, [checkFeatures, userLocation,messData[0]]);
 
 //   useEffect(() => {
@@ -130,16 +126,16 @@
 //           console.error("❌ No valid location provided.");
 //           return;
 //         }
-  
+
 //     //    console.log("📍 Fetching PGs near:", userLocation.lat, userLocation.lng);
-  
+
 //         // Fetch PGs near selected location
 //         const res = await axios.get(findMessUrl, {
 //           params: { lat: userLocation.lat, lng: userLocation.lng },
 //         });
-  
+
 //       //  console.log("🛎 PGs Found:", res.data);
-  
+
 //         // Ensure `facility` is an array before filtering
 //         const filteredData = Array.isArray(res.data)
 //         ? res.data.filter((owner) => {
@@ -147,16 +143,15 @@
 //             const facilitiesArray = Array.isArray(owner.facility)
 //               ? owner.facility.flatMap((f) => f.split(",").map((item) => item.trim().toLowerCase()))
 //               : [];  // Default to empty array if facility is missing
-      
+
 //             console.log("✅ Processed Facilities Array:", facilitiesArray); // Debugging
-      
+
 //             return checkFeatures.length > 0
 //               ? checkFeatures.some((feature) => facilitiesArray.includes(feature.toLowerCase()))
 //               : true;
 //           })
 //         : [];
-      
-  
+
 //         console.log("🔎 Filtered PGs:", filteredData);
 //         // console.log("🔍 Facility Data Type:", typeof owner.facility, owner.facility);
 
@@ -167,10 +162,9 @@
 //         setError("Failed to fetch PG owners");
 //       }
 //     };
-  
+
 //     fetchData();
 //   }, [checkFeatures, userLocation]);
-  
 
 //   if (error) {
 //     return <div>{error}</div>;
@@ -185,7 +179,7 @@
 //           // onClick={() => clickNavi(owner)}
 //           onClick={() => {
 //             if (owner?.location?.coordinates) {
-              
+
 //               clickCords(owner.location.coordinates,owner?._id);
 //             } else {
 //               console.log("Location missing for", owner.messName);
@@ -258,14 +252,21 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { baseurl, findMessUrl } from "../constant/urls";
 import { useNavigate } from "react-router-dom";
-import { getDistance } from 'ol/sphere';
+import { getDistance } from "ol/sphere";
 
-function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }) {
+function MessBars({
+  isChecked,
+  checkFeatures,
+  userLocation,
+  coords,
+  setPgCount,
+}) {
   const [messData, setMessData] = useState([]);
   const [distanceMap, setDistanceMap] = useState({});
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [selected, setSelected] = useState(null);
+  const [lowestPrice, setLowestPrice] = useState(null);
 
   const getStreetDistance = async (orig, dest) => {
     try {
@@ -279,18 +280,15 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
       const response = await fetch(
         `https://router.project-osrm.org/route/v1/driving/${startLon},${startLat};${endLon},${endLat}?overview=false`
       );
-      
+
       const data = await response.json();
-      
+
       if (data.routes?.[0]?.distance) {
         return `${(data.routes[0].distance / 1000).toFixed(1)} km`;
       }
 
       // Fallback to great-circle distance if OSRM fails
-      const distance = getDistance(
-        [startLon, startLat],
-        [endLon, endLat]
-      );
+      const distance = getDistance([startLon, startLat], [endLon, endLat]);
       return `${(distance / 1000).toFixed(1)} km (straight line)`;
     } catch (err) {
       console.error("Distance calculation error:", err);
@@ -326,19 +324,23 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
         }
 
         const res = await axios.get(findMessUrl, {
-          params: { 
+          params: {
             lat: parseFloat(userLocation.lat),
-            lng: parseFloat(userLocation.lng)
-          }
+            lng: parseFloat(userLocation.lng),
+          },
         });
 
         const filteredData = Array.isArray(res.data)
           ? res.data.filter((owner) => {
               const facilitiesArray = Array.isArray(owner.facility)
-                ? owner.facility.flatMap((f) => f.split(",").map((item) => item.trim().toLowerCase()))
+                ? owner.facility.flatMap((f) =>
+                    f.split(",").map((item) => item.trim().toLowerCase())
+                  )
                 : [];
               return checkFeatures.length > 0
-                ? checkFeatures.some((feature) => facilitiesArray.includes(feature.toLowerCase()))
+                ? checkFeatures.some((feature) =>
+                    facilitiesArray.includes(feature.toLowerCase())
+                  )
                 : true;
             })
           : [];
@@ -403,7 +405,6 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
                 loading="lazy"
                 src={owner.profilePhoto}
                 alt="Mess"
-
                 className="w-full h-48 md:h-full object-cover rounded-md"
                 style={{ maxHeight: "300px", borderRadius: "10px" }}
               />
@@ -413,7 +414,9 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
           {/* Content Section */}
           <div
             className={`flex-grow md:ml-6 mt-4 md:mt-0 ${
-              selected === owner._id && isChecked ? "border-2 border-[rgb(44,164,181)]" : ""
+              selected === owner._id && isChecked
+                ? "border-2 border-[rgb(44,164,181)]"
+                : ""
             }`}
             style={{
               padding: isChecked ? "29px" : "0px",
@@ -435,9 +438,21 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
                 </span>
               ))}
             </div>
+
             <div className="mt-2">
-              <span>Price: 2.5k/Month</span>
+              {owner.roomInfo?.length > 0 ? (
+                <span>
+                  Price: ₹
+                  {Math.min(
+                    ...owner.roomInfo.map((room) => Number(room.price))
+                  )}{" "}
+                  /Month
+                </span>
+              ) : (
+                <span>Price: N/A</span>
+              )}
             </div>
+
             <div className="flex gap-4 mt-4">
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded-md"
