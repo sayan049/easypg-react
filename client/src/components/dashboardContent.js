@@ -255,10 +255,10 @@
 
 // export default DashboardContent;
 // import React from "react";
-// import { 
-//   FaRupeeSign, 
-//   FaBookmark, 
-//   FaCalendarAlt, 
+// import {
+//   FaRupeeSign,
+//   FaBookmark,
+//   FaCalendarAlt,
 //   FaHome,
 //   FaUser,
 //   FaEnvelope,
@@ -693,10 +693,10 @@
 
 // export default DashboardContent;
 import React from "react";
-import { 
-  FaRupeeSign, 
-  FaBookmark, 
-  FaCalendarAlt, 
+import {
+  FaRupeeSign,
+  FaBookmark,
+  FaCalendarAlt,
   FaHome,
   FaUser,
   FaEnvelope,
@@ -709,10 +709,10 @@ import {
   FaTv,
   FaSnowflake,
   FaBroom,
-  FaSwimmingPool
+  FaSwimmingPool,
 } from "react-icons/fa";
 import { FiAlertCircle } from "react-icons/fi";
-import { 
+import {
   MdOutlineAcUnit,
   MdTv,
   MdOutlinePower,
@@ -720,7 +720,7 @@ import {
   MdOutlineKitchen,
   MdOpacity,
   MdBed,
-  MdKitchen 
+  MdKitchen,
 } from "react-icons/md";
 
 const DashboardContent = ({
@@ -822,7 +822,10 @@ const DashboardContent = ({
           </h2>
           <div className="space-y-6">
             {upcomingStay.map((stay, index) => (
-              <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden">
+              <div
+                key={index}
+                className="bg-white rounded-xl shadow-md overflow-hidden"
+              >
                 {/* Header with PG name and status */}
                 <div className="bg-blue-50 p-4 border-b border-blue-100">
                   <div className="flex justify-between items-center">
@@ -832,7 +835,8 @@ const DashboardContent = ({
                         {stay.pgOwner?.messName || "PG Name Not Available"}
                       </h3>
                       <p className="text-sm text-blue-600 font-medium mt-1">
-                        Upcoming Stay • Check-in: {formatDate(stay.period?.startDate)}
+                        Upcoming Stay • Check-in:{" "}
+                        {formatDate(stay.period?.startDate)}
                       </p>
                     </div>
                     <span className="text-green-700 bg-green-100 text-xs px-3 py-1 rounded-full">
@@ -854,10 +858,12 @@ const DashboardContent = ({
                           {stay.pgOwner?.firstName} {stay.pgOwner?.lastName}
                         </p>
                         <p className="text-sm text-gray-600 flex items-center gap-2">
-                          <FaEnvelope className="text-gray-400" /> {stay.pgOwner?.email}
+                          <FaEnvelope className="text-gray-400" />{" "}
+                          {stay.pgOwner?.email}
                         </p>
                         <p className="text-sm text-gray-600 flex items-center gap-2">
-                          <FaPhone className="text-gray-400" /> {stay.pgOwner?.mobileNo}
+                          <FaPhone className="text-gray-400" />{" "}
+                          {stay.pgOwner?.mobileNo}
                         </p>
                       </div>
                     </div>
@@ -866,7 +872,9 @@ const DashboardContent = ({
                       <h4 className="font-medium text-gray-700 mb-3 flex items-center gap-2">
                         <FaMapMarkerAlt className="text-gray-500" /> Address
                       </h4>
-                      <p className="text-sm text-gray-600 pl-6">{stay.pgOwner?.address}</p>
+                      <p className="text-sm text-gray-600 pl-6">
+                        {stay.pgOwner?.address}
+                      </p>
                     </div>
                   </div>
 
@@ -895,7 +903,8 @@ const DashboardContent = ({
                       </h4>
                       <div className="space-y-2 pl-6">
                         <p className="text-sm text-gray-600">
-                          {formatDate(stay.period?.startDate)} - {formatDate(stay.period?.endDate)}
+                          {formatDate(stay.period?.startDate)} -{" "}
+                          {formatDate(stay.period?.endDate)}
                         </p>
                         <p className="text-sm text-gray-600">
                           Duration: {stay.period?.durationMonths} months
@@ -910,42 +919,46 @@ const DashboardContent = ({
                   {/* Amenities */}
                   {stay.pgOwner?.facility && (
                     <div className="space-y-4">
-                      <h4 className="font-medium text-gray-700 mb-3">Amenities</h4>
+                      <h4 className="font-medium text-gray-700 mb-3">
+                        Amenities
+                      </h4>
                       <div className="grid grid-cols-2 gap-3">
                         {stay.pgOwner.facility.includes("A/C") && (
-                        <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                                                <MdOutlineAcUnit className="text-blue-500" /> A/C
-                                              </span>
+                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                            <MdOutlineAcUnit className="text-blue-500" /> A/C
+                          </span>
                         )}
                         {stay.pgOwner.facility.includes("TV") && (
                           <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                                                  <MdTv className="text-blue-500" /> TV
-                                                </span>
+                            <MdTv className="text-blue-500" /> TV
+                          </span>
                         )}
                         {stay.pgOwner.facility.includes("Power Backup") && (
                           <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                                                  <MdOutlinePower className="text-blue-500" /> Power Backup
-                                                </span>
+                            <MdOutlinePower className="text-blue-500" /> Power
+                            Backup
+                          </span>
                         )}
                         {stay.pgOwner.facility.includes("WiFi") && (
                           <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                                                  <MdOutlineWifi className="text-blue-500" /> WiFi
-                                                </span>
+                            <MdOutlineWifi className="text-blue-500" /> WiFi
+                          </span>
                         )}
                         {stay.pgOwner.facility.includes("Kitchen") && (
                           <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                                                  <MdOutlineKitchen className="text-blue-500" /> Kitchen
-                                                </span>
+                            <MdOutlineKitchen className="text-blue-500" />{" "}
+                            Kitchen
+                          </span>
                         )}
                         {stay.pgOwner.facility.includes("Tank Water") && (
                           <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                                                  <MdOpacity className="text-blue-500" /> Tank Water
-                                                </span>
+                            <MdOpacity className="text-blue-500" /> Tank Water
+                          </span>
                         )}
                         {stay.pgOwner.facility.includes("Double Bed") && (
                           <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                                                  <MdBed className="text-blue-500" /> Double Bed
-                                                </span>
+                            <MdBed className="text-blue-500" /> Double Bed
+                          </span>
                         )}
                       </div>
                     </div>
@@ -977,7 +990,10 @@ const DashboardContent = ({
           </h2>
           <div className="space-y-4">
             {pastStay.map((stay, index) => (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-md border-l-4 border-gray-200">
+              <div
+                key={index}
+                className="bg-white p-6 rounded-lg shadow-md border-l-4 border-gray-200"
+              >
                 <div className="flex flex-col md:flex-row justify-between gap-6">
                   {/* PG Details */}
                   <div className="flex-1">
@@ -989,7 +1005,9 @@ const DashboardContent = ({
                         <h3 className="text-xl font-semibold text-gray-800">
                           {stay.pgOwner?.messName || "Unknown PG"}
                         </h3>
-                        <p className="text-gray-500">{stay.room?.roomType || "Room"}</p>
+                        <p className="text-gray-500">
+                          {stay.room?.roomType || "Room"}
+                        </p>
                       </div>
                     </div>
 
@@ -1003,10 +1021,12 @@ const DashboardContent = ({
                           {stay.pgOwner?.firstName} {stay.pgOwner?.lastName}
                         </p>
                         <p className="text-sm text-gray-600 flex items-center gap-2">
-                          <FaEnvelope className="text-gray-400" /> {stay.pgOwner?.email}
+                          <FaEnvelope className="text-gray-400" />{" "}
+                          {stay.pgOwner?.email}
                         </p>
                         <p className="text-sm text-gray-600 flex items-center gap-2">
-                          <FaPhone className="text-gray-400" /> {stay.pgOwner?.mobileNo}
+                          <FaPhone className="text-gray-400" />{" "}
+                          {stay.pgOwner?.mobileNo}
                         </p>
                       </div>
 
@@ -1015,7 +1035,9 @@ const DashboardContent = ({
                         <h4 className="font-medium text-gray-700 flex items-center gap-2">
                           <FaMapMarkerAlt className="text-gray-500" /> Address
                         </h4>
-                        <p className="text-sm text-gray-600">{stay.pgOwner?.address}</p>
+                        <p className="text-sm text-gray-600">
+                          {stay.pgOwner?.address}
+                        </p>
                       </div>
 
                       {/* Room Info */}
@@ -1034,10 +1056,12 @@ const DashboardContent = ({
                       {/* Dates */}
                       <div className="space-y-2">
                         <h4 className="font-medium text-gray-700 flex items-center gap-2">
-                          <FaCalendarAlt className="text-gray-500" /> Stay Period
+                          <FaCalendarAlt className="text-gray-500" /> Stay
+                          Period
                         </h4>
                         <p className="text-sm text-gray-600">
-                          {formatDate(stay.period?.startDate)} - {formatDate(stay.period?.endDate)}
+                          {formatDate(stay.period?.startDate)} -{" "}
+                          {formatDate(stay.period?.endDate)}
                         </p>
                         <p className="text-sm text-gray-600">
                           Duration: {stay.period?.durationMonths} months
@@ -1049,42 +1073,45 @@ const DashboardContent = ({
                   {/* Amenities */}
                   {stay.pgOwner?.facility && (
                     <div className="md:w-1/3">
-                      <h4 className="font-medium text-gray-700 mb-3">Amenities</h4>
-                      <div className="grid grid-cols-2 gap-3">
+                      <h4 className="font-medium text-gray-700 mb-3">
+                        Amenities
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
                         {stay.pgOwner.facility.includes("A/C") && (
                           <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                                                  <MdOutlineAcUnit className="text-blue-500" /> A/C
-                                                </span>
+                            <MdOutlineAcUnit className="text-blue-500" /> A/C
+                          </span>
                         )}
                         {stay.pgOwner.facility.includes("TV") && (
                           <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                                                  <MdTv className="text-blue-500" /> TV
-                                                </span>
+                            <MdTv className="text-blue-500" /> TV
+                          </span>
                         )}
                         {stay.pgOwner.facility.includes("Power Backup") && (
                           <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                                                  <MdOutlinePower className="text-blue-500" /> Power Backup
-                                                </span>
+                            <MdOutlinePower className="text-blue-500" /> Power
+                            Backup
+                          </span>
                         )}
                         {stay.pgOwner.facility.includes("WiFi") && (
                           <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                                                  <MdOutlineWifi className="text-blue-500" /> WiFi
-                                                </span>
+                            <MdOutlineWifi className="text-blue-500" /> WiFi
+                          </span>
                         )}
                         {stay.pgOwner.facility.includes("Kitchen") && (
                           <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                                                  <MdKitchen className="text-blue-500" /> Kitchen
-                                                </span>
+                            <MdKitchen className="text-blue-500" /> Kitchen
+                          </span>
                         )}
                         {stay.pgOwner.facility.includes("Tank Water") && (
                           <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                                                  <MdOpacity className="text-blue-500" /> Tank Water
-                                                </span>
+                            <MdOpacity className="text-blue-500" /> Tank Water
+                          </span>
                         )}
                         {stay.pgOwner.facility.includes("Double Bed") && (
-                           <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                                                  <MdBed className="text-blue-500" /> Double Bed
-                                                </span>
+                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                            <MdBed className="text-blue-500" /> Double Bed
+                          </span>
                         )}
                       </div>
                     </div>
