@@ -157,10 +157,27 @@ const bookingSchema = new mongoose.Schema(
 // bookingSchema.index({ pgOwner: 1, status: 1 });
 // bookingSchema.index({ room: 1, bedsBooked: 1 });
 // bookingSchema.index({ "payment.status": 1, status: 1 });
-bookingSchema.index({ pgOwner: 1, status: 1, createdAt: -1 }); // Main query
-bookingSchema.index({ student: 1, status: 1 }); // For student queries
-bookingSchema.index({ room: 1, pgOwner: 1 }); // For room-specific queries
-bookingSchema.index({ student: 1, pgOwner: 1, room: 1, status: 1 });
+// bookingSchema.index({ pgOwner: 1, status: 1, createdAt: -1 }); // Main query
+// bookingSchema.index({ student: 1, status: 1 }); // For student queries
+// bookingSchema.index({ room: 1, pgOwner: 1 }); // For room-specific queries
+// bookingSchema.index({ student: 1, pgOwner: 1, room: 1, status: 1 });
+// 1. Student Portal Index (covers 90% of user queries)
+bookingSchema.index({ student: 1, status: 1 }, { name: "student_portal_index" });
+bookingSchema.index({ pgOwner: 1, createdAt: -1, status: 1 }, { name: "owner_management_index" });
+bookingSchema.index({ "period.startDate": 1, status: 1 }, { 
+  name: "date_filter_index",
+  partialFilterExpression: { status: { $in: ["confirmed", "pending"] } 
+}});
+bookingSchema.index({ room: 1, pgOwner: 1, status: 1 }, {
+  name: "room_availability_index",
+  partialFilterExpression: { status: "confirmed" }
+});
+
+// Maintenance Index
+bookingSchema.index({ createdAt: 1 }, { 
+  expireAfterSeconds: 5184000,
+  partialFilterExpression: { status: { $in: ["cancelled", "rejected"] } }
+});
 
 
 module.exports = mongoose.models.Booking || mongoose.model("Booking", bookingSchema);

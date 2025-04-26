@@ -458,6 +458,8 @@ const {
 } = require("../services/notificationService");
 // const SocketManager = require("../sockets/bookingSocket");
 const { Types } = require("mongoose");
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
 
 // Helper functions
 const bedCountToNumber = {
@@ -714,7 +716,156 @@ exports.getOwnerBookings = async (req, res) => {
     });
   }
 };
+// Get user bookings
+// const mongoose = require('mongoose');
+// const Booking = require('../models/Booking');
 
+exports.getUserBookings = async (req, res) => {
+  console.log("Authenticated User:", req.user); // Debug JWT payload
+  try {
+    const userId = req.user.id; // Changed from req.user.id to req.user._id
+    const now = new Date();
+
+    // Find all bookings for this user
+    const bookings = await Booking.find({ student: userId })
+      .select('room status bedsBooked pricePerHead period payment.totalAmount pgOwner')
+      .populate({
+        path: 'pgOwner',
+        select: 'messName address amenities gender facility roomInfo profilePhoto'
+      })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    if (!bookings || bookings.length === 0) {
+      return res.status(200).json({
+        success: true,
+        bookings: [],
+        stats: {
+          upcoming: 0,
+          current: 0,
+          past: 0,
+          total: 0
+        },
+        currentStay: null
+      });
+    }
+
+    // Process bookings with calculated fields
+    const processedBookings = bookings.map(booking => {
+      const startDate = new Date(booking.period.startDate);
+      const endDate = new Date(startDate);
+      endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
+      
+      // Determine booking type
+      let bookingType = 'past';
+      if (booking.status === 'confirmed') {
+        if (startDate > now) {
+          bookingType = 'upcoming';
+        } else if (now <= endDate) {
+          bookingType = 'current';
+        }
+      }
+
+      return {
+        ...booking,
+        period: {
+          startDate: booking.period.startDate,
+          durationMonths: booking.period.durationMonths,
+          endDate
+        },
+        bookingType
+      };
+    });
+
+    // Calculate statistics
+    const stats = {
+      upcoming: processedBookings.filter(b => b.bookingType === 'upcoming').length,
+      current: processedBookings.filter(b => b.bookingType === 'current').length,
+      past: processedBookings.filter(b => b.bookingType === 'past').length,
+      total: processedBookings.length
+    };
+
+    // Get current stay (if any)
+    const currentStay = processedBookings.find(b => b.bookingType === 'current');
+
+    res.json({
+      success: true,
+      currentStay,
+      bookings: processedBookings,
+      stats
+    });
+
+  } catch (error) {
+    console.error('Error fetching user bookings:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch bookings',
+      error: error.message 
+    });
+  }
+};
+
+// Generate invoice
+
+exports.downloadInvoice = async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id)
+      .select('room bedsBooked pricePerHead period.startDate period.durationMonths payment.totalAmount pgOwner student')
+      .populate('pgOwner', 'messName address')
+      .populate('student', 'firstName lastName email')
+      .lean();
+
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+
+    // Calculate end date
+    const endDate = new Date(booking.period.startDate);
+    endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
+
+    // Generate PDF invoice (example using pdfkit)
+    const PDFDocument = require('pdfkit');
+    const doc = new PDFDocument();
+    
+    // Set response headers
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=invoice-${booking._id}.pdf`);
+    
+    // Pipe the PDF to the response
+    doc.pipe(res);
+    
+    // Add invoice content
+    doc.fontSize(20).text('Booking Invoice', { align: 'center' });
+    doc.moveDown();
+    doc.fontSize(14).text(`Booking ID: ${booking._id}`);
+    doc.moveDown();
+    doc.text(`PG Name: ${booking.pgOwner.messName}`);
+    doc.text(`Address: ${booking.pgOwner.address}`);
+    doc.moveDown();
+    doc.text(`Student: ${booking.student.firstName} ${booking.student.lastName}`);
+    doc.text(`Email: ${booking.student.email}`);
+    doc.moveDown();
+    doc.text(`Room: ${booking.room}`);
+    doc.text(`Beds Booked: ${booking.bedsBooked}`);
+    doc.moveDown();
+    doc.text(`Period: ${new Date(booking.period.startDate).toLocaleDateString()} - ${endDate.toLocaleDateString()}`);
+    doc.moveDown();
+    doc.text(`Amount: ₹${booking.payment.totalAmount}`);
+    doc.moveDown();
+    doc.text(`Payment Status: Paid`);
+    doc.moveDown();
+    doc.text('Thank you for your booking!');
+    
+    doc.end();
+
+  } catch (error) {
+    console.error('Invoice generation error:', error);
+    res.status(500).json({ 
+      message: 'Failed to generate invoice',
+      ...(process.env.NODE_ENV === 'development' && { error: error.message })
+    });
+  }
+};
 // Handle booking approval/rejection (BED DEDUCTION ONLY ON CONFIRMATION)
 exports.handleBookingApproval = async (req, res) => {
   try {
