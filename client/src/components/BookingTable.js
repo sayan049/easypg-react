@@ -1045,6 +1045,7 @@ import {
   MdPhone,
   MdEmail,
   MdPersonOutline,
+  MdKitchen 
 } from "react-icons/md";
 
 const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = false }) => {
@@ -1252,7 +1253,7 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
                     )}
                     {stay.pgOwner.facility.includes("Kitchen") && (
                       <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                        <MdOutlineKitchen className="text-blue-500" /> Kitchen
+                        <MdKitchen className="text-blue-500" /> Kitchen
                       </span>
                     )}
                     {stay.pgOwner.facility.includes("Tank Water") && (

@@ -719,7 +719,8 @@ import {
   MdOutlineWifi,
   MdOutlineKitchen,
   MdOpacity,
-  MdBed
+  MdBed,
+  MdKitchen 
 } from "react-icons/md";
 
 const DashboardContent = ({
@@ -1051,39 +1052,39 @@ const DashboardContent = ({
                       <h4 className="font-medium text-gray-700 mb-3">Amenities</h4>
                       <div className="grid grid-cols-2 gap-3">
                         {stay.pgOwner.facility.includes("A/C") && (
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <MdOutlineAcUnit className="text-green-500" /> A/C
-                          </div>
+                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                                                  <MdOutlineAcUnit className="text-blue-500" /> A/C
+                                                </span>
                         )}
                         {stay.pgOwner.facility.includes("TV") && (
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <MdTv className="text-green-500" /> TV
-                          </div>
+                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                                                  <MdTv className="text-blue-500" /> TV
+                                                </span>
                         )}
                         {stay.pgOwner.facility.includes("Power Backup") && (
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <MdOutlinePower className="text-green-500" /> Power Backup
-                          </div>
+                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                                                  <MdOutlinePower className="text-blue-500" /> Power Backup
+                                                </span>
                         )}
                         {stay.pgOwner.facility.includes("WiFi") && (
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <MdOutlineWifi className="text-green-500" /> WiFi
-                          </div>
+                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                                                  <MdOutlineWifi className="text-blue-500" /> WiFi
+                                                </span>
                         )}
                         {stay.pgOwner.facility.includes("Kitchen") && (
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <MdOutlineKitchen className="text-green-500" /> Kitchen
-                          </div>
+                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                                                  <MdKitchen className="text-blue-500" /> Kitchen
+                                                </span>
                         )}
                         {stay.pgOwner.facility.includes("Tank Water") && (
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <MdOpacity className="text-green-500" /> Tank Water
-                          </div>
+                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                                                  <MdOpacity className="text-blue-500" /> Tank Water
+                                                </span>
                         )}
                         {stay.pgOwner.facility.includes("Double Bed") && (
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <MdBed className="text-green-500" /> Double Bed
-                          </div>
+                           <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                                                  <MdBed className="text-blue-500" /> Double Bed
+                                                </span>
                         )}
                       </div>
                     </div>
