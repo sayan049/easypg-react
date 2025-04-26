@@ -287,7 +287,7 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
     return new Promise((resolve, reject) => {
       if (window.google && window.google.maps) {
         const service = new window.google.maps.DistanceMatrixService();
-
+        console.log("Google Maps API loaded",lat, lng, dest); // Debugging
         if (!orig || !dest || typeof orig.lat !== "number" || typeof orig.lng !== "number" || typeof dest[0] !== "number" || typeof dest[1] !== "number") {
           reject("Invalid coordinates");
           return;
