@@ -595,7 +595,7 @@ const BookingTable = () => {
       const response = await axios.get(`${baseurl}/auth/bookings/user`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
+      console.log("response", response.data);
       if (response.data && response.data.success) {
         const now = new Date();
         const bookingsData = response.data.bookings || [];
@@ -643,21 +643,27 @@ const BookingTable = () => {
         });
 
         // Find ALL currently active confirmed bookings
-        const currentActiveBookings = confirmedBookings.filter(
+        // Find ALL currently active confirmed bookings
+        const currentActiveBookings = bookingsWithDates.filter(
           (b) =>
+            b.status === "confirmed" &&
             new Date(b.period.startDate) <= now &&
             now <= new Date(b.period.endDate)
         );
 
-        // Sort by confirmation date (earliest first) and take the first one
-        const earliestConfirmedStay =
-          currentActiveBookings.length > 0
-            ? currentActiveBookings.sort(
-                (a, b) => new Date(a.createdAt) - new Date(b.createdAt) // Using createdAt from backend
-              )[0]
-            : null;
+        // Sort by start date (earliest starting first) and take the first one
+        // const earliestConfirmedStay =
+        //   currentActiveBookings.length > 0
+        //     ? currentActiveBookings.sort(
+        //         (a, b) =>
+        //           new Date(a.period.startDate) - new Date(b.period.startDate)
+        //       )[0]
+        //     : null;
 
-        setCurrentStay(earliestConfirmedStay);
+        // console.log("Current Stay:", earliestConfirmedStay); // Add this to debug
+        // setCurrentStay(earliestConfirmedStay);
+        setCurrentStay(response.data.currentStay);
+
       }
     } catch (err) {
       console.error("Error:", err);
@@ -848,12 +854,12 @@ const BookingTable = () => {
                       <MdOutlineKitchen /> Kitchen
                     </span>
                   )}
-                   {currentStay.pgOwner.amenities.includes("Tank Water") && (
+                  {currentStay.pgOwner.amenities.includes("Tank Water") && (
                     <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                       <MdOpacity /> TankWater
                     </span>
                   )}
-                   {currentStay.pgOwner.amenities.includes("Double bed") && (
+                  {currentStay.pgOwner.amenities.includes("Double bed") && (
                     <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                       <MdBed /> DoubleBed
                     </span>
