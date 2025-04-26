@@ -283,6 +283,7 @@ function NewDashboard() {
             stats={stats}
             daysRemaining={daysRemaining}
             totalAmountConfirmed={totalAmountConfirmed}
+            loading={loading}
           />
         );
     }

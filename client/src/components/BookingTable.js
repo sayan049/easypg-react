@@ -1047,7 +1047,7 @@ import {
   MdPersonOutline,
 } from "react-icons/md";
 
-const BookingTable = ({ bookings = [], currentStay = null, stats = {}, loading = false,  }) => {
+const BookingTable = ( { bookings = [], currentStay = null, stats = {}, loading = false,  }) => {
   
   const statusColors = {
     confirmed: "text-green-700 bg-green-100",

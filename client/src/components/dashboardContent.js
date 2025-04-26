@@ -2,16 +2,40 @@ import React from "react";
 import { FaRupeeSign, FaBookmark, FaCalendarAlt, FaHome } from "react-icons/fa";
 import { FiAlertCircle } from "react-icons/fi";
 
-function DashboardContent({
+const BookingTable = ({
   user,
-  bookings,
-  currentStay,
-  upcomingStay,
-  pastStay,
-  stats,
-  daysRemaining,
-  totalAmountConfirmed
-}) {
+  bookings = [],
+  currentStay = [],
+  upcomingStay = [],
+  pastStay = [],
+  stats = {},
+  daysRemaining = 0,
+  totalAmountConfirmed = 0,
+  loading = false,
+}) => {
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+  if (!loading && bookings.length === 0) {
+    return (
+      <div className="px-4 py-8 text-center">
+        <div className="bg-white shadow-md rounded-xl p-8 max-w-md mx-auto">
+          <h3 className="text-xl font-semibold mb-4">No Bookings</h3>
+          <p className="text-gray-600 mb-6">
+            You haven't made any bookings yet.
+          </p>
+          <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+            Browse Accommodations
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-4 md:p-8">
       {/* Welcome Message */}
@@ -34,7 +58,7 @@ function DashboardContent({
         <StatCard
           icon={<FaBookmark className="text-2xl text-green-500" />}
           label="Active Bookings"
-          value={stats?.active|| 0}
+          value={stats?.active || 0}
         />
         <StatCard
           icon={<FaCalendarAlt className="text-2xl text-purple-500" />}
@@ -85,16 +109,22 @@ function DashboardContent({
 
       {/* Upcoming PGs Section */}
       <div className="mb-8">
-        <h2 className="text-lg font-semibold mb-4 text-gray-700">Upcoming PGs</h2>
+        <h2 className="text-lg font-semibold mb-4 text-gray-700">
+          Upcoming PGs
+        </h2>
         {upcomingStay ? (
           <div className="bg-white p-4 rounded-lg shadow-md flex flex-col md:flex-row justify-between items-start md:items-center">
             <div>
-              <h3 className="text-gray-800 font-semibold">{upcomingStay.pgOwner?.messName}</h3>
+              <h3 className="text-gray-800 font-semibold">
+                {upcomingStay.pgOwner?.messName}
+              </h3>
               <p className="text-gray-500 text-sm">
-                {upcomingStay.room?.roomType || "Room"} - Beds Booked: {upcomingStay.bedsBooked?.length || 0}
+                {upcomingStay.room?.roomType || "Room"} - Beds Booked:{" "}
+                {upcomingStay.bedsBooked?.length || 0}
               </p>
               <p className="text-gray-400 text-xs mt-1">
-                {formatDate(upcomingStay.period?.startDate)} – {formatDate(upcomingStay.period?.endDate)}
+                {formatDate(upcomingStay.period?.startDate)} –{" "}
+                {formatDate(upcomingStay.period?.endDate)}
               </p>
             </div>
             <div className="flex flex-col md:items-end mt-4 md:mt-0">
@@ -173,7 +203,7 @@ function DashboardContent({
       </div>
     </div>
   );
-}
+};
 
 function StatCard({ icon, label, value }) {
   return (
@@ -219,7 +249,7 @@ function MaintenanceItem({ title, date, status, statusColor }) {
 // helper: format date
 function formatDate(dateString) {
   if (!dateString) return "N/A";
-  const options = { year: 'numeric', month: 'short', day: 'numeric' };
+  const options = { year: "numeric", month: "short", day: "numeric" };
   return new Date(dateString).toLocaleDateString(undefined, options);
 }
 
