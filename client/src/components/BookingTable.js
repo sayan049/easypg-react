@@ -1164,7 +1164,7 @@ const BookingTable = ({ bookings = [], currentStay = null, stats = {}, loading =
           {/* Room and Bed */}
           <div className="flex items-center text-sm text-gray-600 mt-1">
             <FaBed className="mr-1" />
-            {currentStay.room ? `Room ${currentStay.room}` : "Room not specified"}
+            {currentStay.room ? ` ${currentStay.room}` : "Room not specified"}
             {currentStay.bedsBooked && (
               <span> ({currentStay.bedsBooked} bed{currentStay.bedsBooked > 1 ? "s" : ""})</span>
             )}

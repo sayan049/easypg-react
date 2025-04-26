@@ -1,84 +1,122 @@
 import React from "react";
-import { FaRupeeSign, FaBookmark, FaCalendarAlt } from "react-icons/fa";
+import { FaRupeeSign, FaBookmark, FaCalendarAlt, FaHome } from "react-icons/fa";
 import { FiAlertCircle } from "react-icons/fi";
 
- function DashboardContent({user}) {
+function DashboardContent({
+  user,
+  bookings,
+  currentStay,
+  upcomingStay,
+  pastStay,
+  stats,
+  daysRemaining,
+  totalAmountConfirmed
+}) {
   return (
     <div className="p-4 md:p-8">
       {/* Welcome Message */}
       <div className="mb-8">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
-          Welcome back, !
+          Welcome back, {user?.firstName || "Guest"}!
         </h1>
         <p className="text-gray-500 mt-2">
           Your comfort is our priority. Manage your stays efficiently.
         </p>
       </div>
 
-      {/* Stats */}
+      {/* Stats Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <StatCard
           icon={<FaRupeeSign className="text-2xl text-blue-500" />}
           label="Total Spent"
-          value="₹45,000"
+          value={`₹${totalAmountConfirmed || 0}`}
         />
         <StatCard
           icon={<FaBookmark className="text-2xl text-green-500" />}
           label="Active Bookings"
-          value="2"
+          value={stats?.current || 0}
         />
         <StatCard
           icon={<FaCalendarAlt className="text-2xl text-purple-500" />}
           label="Days Remaining"
-          value="45"
+          value={daysRemaining || 0}
         />
       </div>
 
-      {/* Notifications */}
+      {/* Notifications Section */}
       <div className="mb-8">
         <h2 className="text-lg font-semibold mb-4 text-gray-700">
           Stay Notifications
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <NotificationCard
-            icon={<FiAlertCircle className="text-blue-500 text-xl" />}
-            title="Upcoming Check-in"
-            description="Sunshine PG – Room 203"
-            date="March 1, 2025"
-          />
-          <NotificationCard
-            icon={<FiAlertCircle className="text-yellow-500 text-xl" />}
-            title="Rent Due Soon"
-            description="Monthly Payment"
-            date="Due: Feb 28, 2025"
-          />
+          {upcomingStay ? (
+            <NotificationCard
+              icon={<FiAlertCircle className="text-blue-500 text-xl" />}
+              title="Upcoming Check-in"
+              description={upcomingStay.pgOwner?.messName || "Unknown PG"}
+              date={`Check-in: ${formatDate(upcomingStay.period?.startDate)}`}
+            />
+          ) : (
+            <NotificationCard
+              icon={<FiAlertCircle className="text-gray-400 text-xl" />}
+              title="No Upcoming Stay"
+              description="You have no upcoming bookings."
+              date=""
+            />
+          )}
+
+          {currentStay ? (
+            <NotificationCard
+              icon={<FiAlertCircle className="text-yellow-500 text-xl" />}
+              title="Ongoing Stay"
+              description={currentStay.pgOwner?.messName || "Unknown PG"}
+              date={`Ends: ${formatDate(currentStay.period?.endDate)}`}
+            />
+          ) : (
+            <NotificationCard
+              icon={<FiAlertCircle className="text-gray-400 text-xl" />}
+              title="No Current Stay"
+              description="You are not checked-in to any stay."
+              date=""
+            />
+          )}
         </div>
       </div>
 
-      {/* Upcoming PG */}
+      {/* Upcoming PGs Section */}
       <div className="mb-8">
         <h2 className="text-lg font-semibold mb-4 text-gray-700">Upcoming PGs</h2>
-        <div className="bg-white p-4 rounded-lg shadow-md flex flex-col md:flex-row justify-between items-start md:items-center">
-          <div>
-            <h3 className="text-gray-800 font-semibold">Sunshine PG</h3>
-            <p className="text-gray-500 text-sm">Room 203, Single Occupancy</p>
-            <p className="text-gray-400 text-xs mt-1">Mar 1, 2025 – Aug 31, 2025</p>
-          </div>
-          <div className="flex flex-col md:items-end mt-4 md:mt-0">
-            <p className="font-bold text-gray-800 mb-2">₹12,000/month</p>
-            <div className="flex gap-2">
-              <button className="px-4 py-2 text-sm border border-red-500 text-red-500 rounded-md hover:bg-red-50">
-                Cancel
-              </button>
-              <button className="px-4 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600">
-                Extend Stay
-              </button>
+        {upcomingStay ? (
+          <div className="bg-white p-4 rounded-lg shadow-md flex flex-col md:flex-row justify-between items-start md:items-center">
+            <div>
+              <h3 className="text-gray-800 font-semibold">{upcomingStay.pgOwner?.messName}</h3>
+              <p className="text-gray-500 text-sm">
+                {upcomingStay.room?.roomType || "Room"} - Beds Booked: {upcomingStay.bedsBooked?.length || 0}
+              </p>
+              <p className="text-gray-400 text-xs mt-1">
+                {formatDate(upcomingStay.period?.startDate)} – {formatDate(upcomingStay.period?.endDate)}
+              </p>
+            </div>
+            <div className="flex flex-col md:items-end mt-4 md:mt-0">
+              <p className="font-bold text-gray-800 mb-2">
+                ₹{upcomingStay.pricePerHead || "N/A"}/month
+              </p>
+              <div className="flex gap-2">
+                <button className="px-4 py-2 text-sm border border-red-500 text-red-500 rounded-md hover:bg-red-50">
+                  Cancel
+                </button>
+                <button className="px-4 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                  Extend Stay
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <p className="text-gray-500">No upcoming PG stays booked yet.</p>
+        )}
       </div>
 
-      {/* Maintenance */}
+      {/* Maintenance Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Create Maintenance Request */}
         <div>
@@ -93,6 +131,7 @@ import { FiAlertCircle } from "react-icons/fi";
               <input
                 type="text"
                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                placeholder="Enter issue title"
               />
             </div>
             <div className="mb-4">
@@ -102,6 +141,7 @@ import { FiAlertCircle } from "react-icons/fi";
               <textarea
                 rows="4"
                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                placeholder="Describe the issue"
               ></textarea>
             </div>
             <button className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
@@ -154,7 +194,7 @@ function NotificationCard({ icon, title, description, date }) {
       <div>
         <h3 className="font-semibold text-gray-800">{title}</h3>
         <p className="text-sm text-gray-500">{description}</p>
-        <p className="text-xs text-gray-400">{date}</p>
+        {date && <p className="text-xs text-gray-400">{date}</p>}
       </div>
     </div>
   );
@@ -174,6 +214,13 @@ function MaintenanceItem({ title, date, status, statusColor }) {
       </span>
     </div>
   );
+}
+
+// helper: format date
+function formatDate(dateString) {
+  if (!dateString) return "N/A";
+  const options = { year: 'numeric', month: 'short', day: 'numeric' };
+  return new Date(dateString).toLocaleDateString(undefined, options);
 }
 
 export default DashboardContent;

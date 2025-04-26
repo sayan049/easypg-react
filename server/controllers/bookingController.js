@@ -780,6 +780,21 @@ exports.getUserBookings = async (req, res) => {
 
     // Find the first (earliest) current stay
     const currentStay = processedBookings.find(b => b.bookingType === 'current') || null;
+    const upcomingStay = processedBookings.find(b => b.bookingType === 'upcoming') || null;
+    const pastStay = processedBookings.find(b => b.bookingType === 'past') || null;
+    
+    // Calculate days remaining
+    let daysRemaining = 0;
+    if (currentStay) {
+      const endDate = new Date(currentStay.period.endDate);
+      const diffTime = Math.max(endDate - now, 0); // Make sure no negative
+      daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // milliseconds -> days
+    }
+    
+    // Calculate total amount of confirmed bookings
+    const totalAmountConfirmed = processedBookings
+      .filter(b => b.status === 'confirmed')
+      .reduce((sum, b) => sum + (b.payment?.totalAmount || 0), 0);
 
     // Calculate stats
     const stats = {
@@ -792,6 +807,10 @@ exports.getUserBookings = async (req, res) => {
     res.json({
       success: true,
       currentStay,
+      upcomingStay,
+      pastStay,
+      daysRemaining,
+      totalAmountConfirmed,
       bookings: processedBookings,
       stats
     });

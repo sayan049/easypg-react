@@ -137,8 +137,6 @@ import BookingTable from "../components/BookingTable";
 import Settings from "../components/settings";
 import DashboardContent from "../components/dashboardContent";
 
-
-
 function NewDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [userDetails, setUserDetails] = useState(null);
@@ -150,6 +148,10 @@ function NewDashboard() {
     past: 0,
   });
   const [currentStay, setCurrentStay] = useState(null);
+  const [upcomingStay, setUpcomingStay] = useState(null);
+  const [pastStay, setPastStay] = useState(null);
+  const [daysRemaining, setDaysRemaining] = useState(0);
+  const [totalAmountConfirmed, setTotalAmountConfirmed] = useState(0);
 
   const { userName, user, owner, type } = useAuth();
 
@@ -225,6 +227,10 @@ function NewDashboard() {
           });
 
           setCurrentStay(response.data.currentStay);
+          setUpcomingStay(response.data.upcomingStay || null);
+          setPastStay(response.data.pastStay || null);
+          setDaysRemaining(response.data.daysRemaining || 0);
+          setTotalAmountConfirmed(response.data.totalAmountConfirmed || 0);
         }
       }
     } catch (error) {
@@ -267,7 +273,18 @@ function NewDashboard() {
       case "settings":
         return <Settings user={userDetails} />;
       default:
-        return <DashboardContent user={userDetails} />;
+        return (
+          <DashboardContent
+            user={userDetails}
+            bookings={bookings}
+            currentStay={currentStay}
+            upcomingStay={upcomingStay}
+            pastStay={pastStay}
+            stats={stats}
+            daysRemaining={daysRemaining}
+            totalAmountConfirmed={totalAmountConfirmed}
+          />
+        );
     }
   };
 
