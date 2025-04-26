@@ -225,7 +225,7 @@ function MessBars({
                 Book Now
               </button>
               <button
-                className="bg-green-500 text-white round w-full"
+                className="bg-green-500 text-white rounded-full w-6 h-6 "
                 onClick={(e) => {
                   e.stopPropagation();
                   clickBook(owner);
