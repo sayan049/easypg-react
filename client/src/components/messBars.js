@@ -287,15 +287,22 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
     return new Promise((resolve, reject) => {
       if (window.google && window.google.maps) {
         const service = new window.google.maps.DistanceMatrixService();
-        console.log("Google Maps API loaded",orig.lat, orig.lng, dest); // Debugging
-        if (!orig || !dest || typeof orig.lat !== "number" || typeof orig.lng !== "number" || typeof dest[0] !== "number" || typeof dest[1] !== "number") {
-          reject("Invalid coordinates");
-          return;
-        }
-
-        const originLatLng = new window.google.maps.LatLng(orig.lat, orig.lng);
-        const destinationLatLng = new window.google.maps.LatLng(dest[1], dest[0]); // [lng, lat]
-
+  
+        // Convert string coordinates to numbers
+        const origLat = parseFloat(orig.lat);
+        const origLng = parseFloat(orig.lng);
+        const destLng = parseFloat(dest[0]);
+        const destLat = parseFloat(dest[1]);
+  
+        // Validate numerical values
+        if (isNaN(origLat)) reject("Invalid origin latitude");
+        if (isNaN(origLng)) reject("Invalid origin longitude");
+        if (isNaN(destLng)) reject("Invalid destination longitude");
+        if (isNaN(destLat)) reject("Invalid destination latitude");
+  
+        const originLatLng = new window.google.maps.LatLng(origLat, origLng);
+        const destinationLatLng = new window.google.maps.LatLng(destLat, destLng);
+  
         service.getDistanceMatrix(
           {
             origins: [originLatLng],
