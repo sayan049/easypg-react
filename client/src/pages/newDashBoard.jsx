@@ -263,9 +263,9 @@ function NewDashboard() {
           <DashboardContent
           user={userDetails}
           bookings={bookings}
-          currentStays={currentStays}
-          upcomingStays={upcomingStays}
-          pastStays={pastStays}
+          currentStay={currentStay}
+          upcomingStay={upcomingStay}
+          pastStay={pastStay}
           stats={stats}
           daysRemaining={daysRemaining}
           totalAmountConfirmed={totalAmountConfirmed}
@@ -290,9 +290,9 @@ function NewDashboard() {
           <DashboardContent
           user={userDetails}
           bookings={bookings}
-          currentStays={currentStays}
-          upcomingStays={upcomingStays}
-          pastStays={pastStays}
+          currentStay={currentStay}
+          upcomingStay={upcomingStay}
+          pastStay={pastStay}
           stats={stats}
           daysRemaining={daysRemaining}
           totalAmountConfirmed={totalAmountConfirmed}

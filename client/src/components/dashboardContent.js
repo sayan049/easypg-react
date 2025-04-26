@@ -278,9 +278,9 @@ import { FiAlertCircle } from "react-icons/fi";
 const DashboardContent = ({
   user,
   bookings = [],
-  currentStays = [],
-  upcomingStays = [],
-  pastStays = [],
+  currentStay = [],
+  upcomingStay = [],
+  pastStay = [],
   stats = {},
   daysRemaining = 0,
   totalAmountConfirmed = 0,
@@ -346,8 +346,8 @@ const DashboardContent = ({
           Stay Notifications
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {upcomingStays.length > 0 ? (
-            upcomingStays.map((stay, index) => (
+          {upcomingStay.length > 0 ? (
+            upcomingStay.map((stay, index) => (
               <NotificationCard
                 key={index}
                 icon={<FiAlertCircle className="text-blue-500 text-xl" />}
@@ -365,8 +365,8 @@ const DashboardContent = ({
             />
           )}
 
-          {currentStays.length > 0 ? (
-            currentStays.map((stay, index) => (
+          {currentStay.length > 0 ? (
+            currentStay.map((stay, index) => (
               <NotificationCard
                 key={index}
                 icon={<FiAlertCircle className="text-yellow-500 text-xl" />}
@@ -387,13 +387,13 @@ const DashboardContent = ({
       </div>
 
       {/* Current Stays Section */}
-      {currentStays.length > 0 && (
+      {currentStay.length > 0 && (
         <div className="mb-8">
           <h2 className="text-lg font-semibold mb-4 text-gray-700">
-            Current Stays ({currentStays.length})
+            Current Stays ({currentStay.length})
           </h2>
           <div className="space-y-4">
-            {currentStays.map((stay, index) => (
+            {currentStay.map((stay, index) => (
               <StayCard key={index} stay={stay} type="current" />
             ))}
           </div>
@@ -401,13 +401,13 @@ const DashboardContent = ({
       )}
 
       {/* Upcoming Stays Section */}
-      {upcomingStays.length > 0 && (
+      {upcomingStay.length > 0 && (
         <div className="mb-8">
           <h2 className="text-lg font-semibold mb-4 text-gray-700">
-            Upcoming Stays ({upcomingStays.length})
+            Upcoming Stays ({upcomingStay.length})
           </h2>
           <div className="space-y-4">
-            {upcomingStays.map((stay, index) => (
+            {upcomingStay.map((stay, index) => (
               <StayCard key={index} stay={stay} type="upcoming" />
             ))}
           </div>
@@ -415,13 +415,13 @@ const DashboardContent = ({
       )}
 
       {/* Past Stays Section */}
-      {pastStays.length > 0 && (
+      {pastStay.length > 0 && (
         <div className="mb-8">
           <h2 className="text-lg font-semibold mb-4 text-gray-700">
-            Past Stays ({pastStays.length})
+            Past Stays ({pastStay.length})
           </h2>
           <div className="space-y-4">
-            {pastStays.map((stay, index) => (
+            {pastStay.map((stay, index) => (
               <StayCard key={index} stay={stay} type="past" />
             ))}
           </div>
