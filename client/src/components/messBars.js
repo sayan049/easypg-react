@@ -368,6 +368,7 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
       const newDistanceMap = {};
       for (const owner of messData) {
         if (owner?.location?.coordinates) {
+          console.log("Calculating distance for:", owner.messName, owner.location.coordinates); // Debugging
           try {
             const distanceText = await getStreetDistance(userLocation, owner.location.coordinates);
             newDistanceMap[owner._id] = distanceText;
