@@ -277,11 +277,12 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
   };
 
   const getStreetDistance = async (orig, dest) => {
-    if (!orig || !dest || typeof orig.lat !== "number" || typeof orig.lng !== "number" || !Array.isArray(dest)) {
+    if (!orig || !dest || !Array.isArray(dest)) {
       return "Invalid coordinates";
     }
-
-    const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_API_KEY}&start=${orig.lng},${orig.lat}&end=${dest[0]},${dest[1]}`;
+    const userLat = parseFloat(orig.lat);
+  const userLng = parseFloat(orig.lng);
+    const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${ORS_API_KEY}&start=${userLng},${userLat}&end=${dest[0]},${dest[1]}`;
 
     try {
       const response = await axios.get(url);
