@@ -994,7 +994,7 @@ const DashboardContent = ({
                 key={index}
                 className="bg-white p-6 rounded-lg shadow-md border-l-4 border-gray-200"
               >
-                <div className="flex flex-col md:flex-row justify-between gap-6">
+                <div className="flex flex-col md:flex-row  gap-6">
                   {/* PG Details */}
                   <div className="flex-1">
                     <div className="flex items-center gap-4 mb-4">
@@ -1072,7 +1072,7 @@ const DashboardContent = ({
 
                   {/* Amenities */}
                   {stay.pgOwner?.facility && (
-                    <div className="md:w-1/3">
+                    <div className="flex-1">
                       <h4 className="font-medium text-gray-700 mb-3">
                         Amenities
                       </h4>
