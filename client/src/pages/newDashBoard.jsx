@@ -130,7 +130,7 @@ import {
 import axios from "axios";
 import { baseurl, fetchDetailsUrl } from "../constant/urls";
 import { toast } from "react-toastify";
-import React, { useState, useEffect } from "react";
+// import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../components/sidebar";
 import BookingTable from "../components/BookingTable";
