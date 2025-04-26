@@ -444,7 +444,7 @@ function MessBars({
                 <span>
                   Price: ₹
                   {Math.min(
-                    ...owner.roomInfo.map((room) => Number(room.price))
+                    ...owner.roomInfo.map((room) => Number(room.pricePerHead))
                   )}{" "}
                   /Month
                 </span>
