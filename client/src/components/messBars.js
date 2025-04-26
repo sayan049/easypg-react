@@ -270,8 +270,9 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
   const [selected, setSelected] = useState(null);
 
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY, // Make sure to replace this with your actual API key
-    libraries
+    googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
+    libraries,
+    version: 'weekly', // Add this line to use the stable version
   });
 
   const clickNavi = (owner) => {
