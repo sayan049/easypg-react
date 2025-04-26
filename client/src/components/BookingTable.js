@@ -686,6 +686,8 @@ const BookingTable = () => {
   };
 
   useEffect(() => {
+    console.log("user",user);
+    console.log("user._id",user.id);
     console.log("x",user._id)
     if (user?._id) {
       fetchBookings();
