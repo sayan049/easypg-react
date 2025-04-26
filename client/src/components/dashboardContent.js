@@ -1047,6 +1047,53 @@ const DashboardContent = ({
     </div>
   );
 };
+function StatCard({ icon, label, value }) {
+  return (
+    <div className="bg-white p-4 rounded-lg shadow-md flex items-center gap-4">
+      <div className="p-2 bg-gray-100 rounded-full">{icon}</div>
+      <div>
+        <p className="text-gray-500 text-sm">{label}</p>
+        <p className="font-bold text-xl">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function NotificationCard({ icon, title, description, date }) {
+  return (
+    <div className="bg-white p-4 rounded-lg shadow-md flex gap-4 items-center">
+      <div>{icon}</div>
+      <div>
+        <h3 className="font-semibold text-gray-800">{title}</h3>
+        <p className="text-sm text-gray-500">{description}</p>
+        {date && <p className="text-xs text-gray-400">{date}</p>}
+      </div>
+    </div>
+  );
+}
+
+function MaintenanceItem({ title, date, status, statusColor }) {
+  return (
+    <div className="flex justify-between items-center">
+      <div>
+        <h4 className="font-semibold text-gray-800">{title}</h4>
+        <p className="text-xs text-gray-400">{date}</p>
+      </div>
+      <span
+        className={`text-xs text-white px-2 py-1 rounded-full ${statusColor}`}
+      >
+        {status}
+      </span>
+    </div>
+  );
+}
+
+// helper: format date
+function formatDate(dateString) {
+  if (!dateString) return "N/A";
+  const options = { year: "numeric", month: "short", day: "numeric" };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+}
 
 // ... (Keep all the remaining helper components: StatCard, NotificationCard, MaintenanceItem, formatDate)
 // ... (Keep the StayCard component if you still need it for past stays)
