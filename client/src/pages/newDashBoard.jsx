@@ -177,7 +177,7 @@ function NewDashboard() {
         const response = await axios.get(`${baseurl}/auth/bookings/user`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-
+        console.log("Bookings response:", response.data);
         if (response.data && response.data.success) {
           const now = new Date();
           const bookingsData = response.data.bookings || [];
@@ -258,7 +258,19 @@ function NewDashboard() {
 
     switch (activeTab) {
       case "dashboard":
-        return <DashboardContent user={userDetails} />;
+        return (
+          <DashboardContent
+            user={userDetails}
+            bookings={bookings}
+            currentStay={currentStay}
+            upcomingStay={upcomingStay}
+            pastStay={pastStay}
+            stats={stats}
+            daysRemaining={daysRemaining}
+            totalAmountConfirmed={totalAmountConfirmed}
+            loading={loading}
+          />
+        );
       case "bookings":
         return (
           <BookingTable
