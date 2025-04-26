@@ -2,7 +2,7 @@ import React from "react";
 import { FaRupeeSign, FaBookmark, FaCalendarAlt, FaHome } from "react-icons/fa";
 import { FiAlertCircle } from "react-icons/fi";
 
-const BookingTable = ({
+const DashboardContent = ({
   user,
   bookings = [],
   currentStay = [],
