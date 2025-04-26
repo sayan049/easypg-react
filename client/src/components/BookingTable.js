@@ -175,16 +175,16 @@
 
 // export default BookingTable;
 // //       </span>
-// //       {status} 
+// //       {status}
 // import React, { useState, useEffect, useCallback } from "react";
 // import { useAuth } from "../contexts/AuthContext";
-// import { 
-//   FaDownload, FaRupeeSign, FaBed, 
-//   FaCalendarAlt, FaEye 
+// import {
+//   FaDownload, FaRupeeSign, FaBed,
+//   FaCalendarAlt, FaEye
 // } from "react-icons/fa";
 // import { HiOutlineLocationMarker } from "react-icons/hi";
-// import { 
-//   MdOutlineAccessTime, MdOutlineHistory 
+// import {
+//   MdOutlineAccessTime, MdOutlineHistory
 // } from "react-icons/md";
 // import axios from 'axios';
 // import { baseurl } from '../constant/urls';
@@ -228,7 +228,7 @@
 //         const bookingsWithDates = response.data.bookings.map(booking => {
 //           const endDate = new Date(booking.period.startDate);
 //           endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
-          
+
 //           return {
 //             ...booking,
 //             period: {
@@ -241,8 +241,8 @@
 //         setBookings(bookingsWithDates);
 //         setCurrentStay(
 //           bookingsWithDates.find(
-//             b => b.status === 'confirmed' && 
-//                  new Date(b.period.startDate) <= now && 
+//             b => b.status === 'confirmed' &&
+//                  new Date(b.period.startDate) <= now &&
 //                  now <= new Date(b.period.endDate)
 //           )
 //         );
@@ -272,12 +272,12 @@
 //     try {
 //       const token = localStorage.getItem('accessToken');
 //       toast.info('Preparing your invoice...', { autoClose: 2000 });
-      
+
 //       const response = await axios.get(`${baseurl}/auth/bookings/${bookingId}/invoice`, {
 //         headers: { Authorization: `Bearer ${token}` },
 //         responseType: 'blob'
 //       });
-      
+
 //       const url = window.URL.createObjectURL(new Blob([response.data]));
 //       const link = document.createElement('a');
 //       link.href = url;
@@ -317,8 +317,8 @@
 //         <div className="bg-white shadow-md rounded-xl p-8 max-w-md mx-auto">
 //           <h3 className="text-xl font-semibold mb-4 text-red-600">Error</h3>
 //           <p className="text-gray-600 mb-6">{error}</p>
-//           <button 
-//             onClick={() => fetchBookings()} 
+//           <button
+//             onClick={() => fetchBookings()}
 //             className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
 //           >
 //             Retry
@@ -416,7 +416,7 @@
 //       {/* Bookings Table */}
 //       <div className="bg-white shadow-md rounded-xl mb-6 overflow-hidden">
 //         <h3 className="text-lg font-semibold p-4">Booking History</h3>
-        
+
 //         {/* Desktop Table */}
 //         <div className="hidden md:block overflow-x-auto">
 //           <table className="min-w-full divide-y divide-gray-200">
@@ -450,7 +450,7 @@
 //                   </td>
 //                   <td className="py-3 px-4">
 //                     {booking.status === 'confirmed' ? (
-//                       <button 
+//                       <button
 //                         onClick={() => handleDownloadInvoice(booking._id)}
 //                         className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1"
 //                       >
@@ -467,7 +467,7 @@
 //             </tbody>
 //           </table>
 //         </div>
-        
+
 //         {/* Mobile Cards */}
 //         <div className="md:hidden space-y-4 p-4">
 //           {bookings.map((booking) => (
@@ -483,7 +483,7 @@
 //                   {booking.status}
 //                 </span>
 //               </div>
-              
+
 //               <div className="mt-2 text-sm text-gray-700">
 //                 <div className="flex items-center gap-2">
 //                   <FaCalendarAlt className="text-gray-400" />
@@ -495,9 +495,9 @@
 //                   {booking.payment.totalAmount}
 //                 </div>
 //               </div>
-              
+
 //               {booking.status === 'confirmed' ? (
-//                 <button 
+//                 <button
 //                   onClick={() => handleDownloadInvoice(booking._id)}
 //                   className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium"
 //                 >
@@ -522,11 +522,11 @@
 //             >
 //               Previous
 //             </button>
-            
+
 //             <span className="text-sm text-gray-600">
 //               Page {pagination.page} of {Math.ceil(pagination.total / pagination.limit)}
 //             </span>
-            
+
 //             <button
 //               onClick={() => fetchBookings(pagination.page + 1, statusFilter)}
 //               disabled={pagination.page >= Math.ceil(pagination.total / pagination.limit)}
@@ -544,27 +544,29 @@
 // export default BookingTable;
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { 
-  FaDownload, 
-  FaBed, 
+import {
+  FaDownload,
+  FaBed,
   FaRupeeSign,
   FaCalendarAlt,
-  FaEye
+  FaEye,
 } from "react-icons/fa";
 import { HiOutlineLocationMarker } from "react-icons/hi";
-import { 
-  MdOutlineAccessTime, 
-  MdOutlineHome, 
+import {
+  MdOutlineAccessTime,
+  MdOutlineHome,
   MdOutlineHistory,
   MdOutlineWifi,
   MdOutlineKitchen,
   MdOutlinePower,
   MdTv,
-  MdOutlineAcUnit
+  MdOutlineAcUnit,
+  MdBed,
+  MdOpacity,
 } from "react-icons/md";
-import axios from 'axios';
-import { baseurl } from '../constant/urls';
-import { toast } from 'react-toastify';
+import axios from "axios";
+import { baseurl } from "../constant/urls";
+import { toast } from "react-toastify";
 
 const BookingTable = () => {
   const { user } = useAuth();
@@ -573,7 +575,7 @@ const BookingTable = () => {
   const [stats, setStats] = useState({
     upcoming: 0,
     active: 0,
-    past: 0
+    past: 0,
   });
   const [currentStay, setCurrentStay] = useState(null);
 
@@ -581,113 +583,119 @@ const BookingTable = () => {
     confirmed: "text-green-700 bg-green-100",
     pending: "text-yellow-700 bg-yellow-100",
     rejected: "text-red-700 bg-red-100",
-    cancelled: "text-gray-700 bg-gray-100"
+    cancelled: "text-gray-700 bg-gray-100",
   };
 
   // Fetch all bookings for the user
   const fetchBookings = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('accessToken');
-     
-      
+      const token = localStorage.getItem("accessToken");
+
       const response = await axios.get(`${baseurl}/auth/bookings/user`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
-      
-      console.log('Full API response:', response); // Inspect full response
-      console.log('Response data:', response.data); // Check the data structure
-      
-      if (response.data && response.data.success) { // Modified this condition
+
+      if (response.data && response.data.success) {
         const now = new Date();
-        const bookingsData = response.data.bookings || []; // Fallback to empty array
-        
-        console.log('Raw bookings from API:', bookingsData); // Check raw data
-        
-        const bookingsWithDates = bookingsData.map(booking => {
+        const bookingsData = response.data.bookings || [];
+
+        // Process bookings with end dates
+        const bookingsWithDates = bookingsData.map((booking) => {
           const endDate = new Date(booking.period.startDate);
           endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
-          
+
           return {
             ...booking,
             period: {
               ...booking.period,
-              endDate
-            }
+              endDate,
+            },
           };
         });
-  
-        console.log('Processed bookings:', bookingsWithDates); // Check processed data
 
         setBookings(bookingsWithDates);
 
+        // Filter only confirmed bookings for stats
+        const confirmedBookings = bookingsWithDates.filter(
+          (b) => b.status === "confirmed"
+        );
+
         // Calculate stats
-        const upcoming = bookingsWithDates.filter(
-          b => b.status === 'confirmed' && new Date(b.period.startDate) > now
+        const upcoming = confirmedBookings.filter(
+          (b) => new Date(b.period.startDate) > now
         ).length;
 
-        const active = bookingsWithDates.filter(
-          b => b.status === 'confirmed' && 
-               new Date(b.period.startDate) <= now && 
-               now <= new Date(b.period.endDate)
+        const active = confirmedBookings.filter(
+          (b) =>
+            new Date(b.period.startDate) <= now &&
+            now <= new Date(b.period.endDate)
         ).length;
 
         const past = bookingsWithDates.filter(
-          b => new Date(b.period.endDate) < now
+          (b) => new Date(b.period.endDate) < now
         ).length;
 
         setStats({
           upcoming,
           active,
-          past
+          past,
         });
 
-        // Set current stay
-        setCurrentStay(
-          bookingsWithDates.find(
-            b => b.status === 'confirmed' && 
-                 new Date(b.period.startDate) <= now && 
-                 now <= new Date(b.period.endDate)
-          )
+        // Find ALL currently active confirmed bookings
+        const currentActiveBookings = confirmedBookings.filter(
+          (b) =>
+            new Date(b.period.startDate) <= now &&
+            now <= new Date(b.period.endDate)
         );
+
+        // Sort by confirmation date (earliest first) and take the first one
+        const earliestConfirmedStay =
+          currentActiveBookings.length > 0
+            ? currentActiveBookings.sort(
+                (a, b) => new Date(a.createdAt) - new Date(b.createdAt) // Using createdAt from backend
+              )[0]
+            : null;
+
+        setCurrentStay(earliestConfirmedStay);
       }
     } catch (err) {
-      console.error('Full error:', err);
-      console.error('Error response:', err.response);
-      toast.error(err.response?.data?.message || 'Failed to load bookings');
+      console.error("Error:", err);
+      toast.error(err.response?.data?.message || "Failed to load bookings");
     } finally {
       setLoading(false);
     }
   };
-
   // Handle invoice download
   const handleDownloadInvoice = async (bookingId) => {
     try {
-      const token = localStorage.getItem('accessToken');
-      toast.info('Preparing your invoice...', { autoClose: 2000 });
-      
-      const response = await axios.get(`${baseurl}/auth/bookings/${bookingId}/invoice`, {
-        headers: { Authorization: `Bearer ${token}` },
-        responseType: 'blob'
-      });
-      
+      const token = localStorage.getItem("accessToken");
+      toast.info("Preparing your invoice...", { autoClose: 2000 });
+
+      const response = await axios.get(
+        `${baseurl}/auth/bookings/${bookingId}/invoice`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          responseType: "blob",
+        }
+      );
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      link.setAttribute('download', `invoice-${bookingId}.pdf`);
+      link.setAttribute("download", `invoice-${bookingId}.pdf`);
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
     } catch (err) {
-      console.error('Invoice download error:', err);
-      toast.error(err.response?.data?.message || 'Failed to download invoice');
+      console.error("Invoice download error:", err);
+      toast.error(err.response?.data?.message || "Failed to download invoice");
     }
   };
 
   useEffect(() => {
-   
-    console.log("user._id",user.id);
-   
+    console.log("user._id", user.id);
+
     if (user?.id) {
       fetchBookings();
     }
@@ -701,21 +709,21 @@ const BookingTable = () => {
     );
   }
 
-  // if (!loading && bookings.length === 0) {
-  //   return (
-  //     <div className="px-4 py-8 text-center">
-  //       <div className="bg-white shadow-md rounded-xl p-8 max-w-md mx-auto">
-  //         <h3 className="text-xl font-semibold mb-4">No Bookings</h3>
-  //         <p className="text-gray-600 mb-6">
-  //           You haven't made any bookings yet.
-  //         </p>
-  //         <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
-  //           Browse Accommodations
-  //         </button>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  if (!loading && bookings.length === 0) {
+    return (
+      <div className="px-4 py-8 text-center">
+        <div className="bg-white shadow-md rounded-xl p-8 max-w-md mx-auto">
+          <h3 className="text-xl font-semibold mb-4">No Bookings</h3>
+          <p className="text-gray-600 mb-6">
+            You haven't made any bookings yet.
+          </p>
+          <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+            Browse Accommodations
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="px-4 sm:px-6 md:px-8 lg:px-6 xl:px-4 py-4 mx-auto">
@@ -724,14 +732,18 @@ const BookingTable = () => {
         <div className="flex items-center justify-between sm:justify-center bg-white shadow-md p-4 rounded-xl">
           <div className="text-left">
             <p className="text-sm text-gray-500">Upcoming Bookings</p>
-            <h2 className="text-2xl font-bold text-blue-600">{stats.upcoming}</h2>
+            <h2 className="text-2xl font-bold text-blue-600">
+              {stats.upcoming}
+            </h2>
           </div>
           <MdOutlineAccessTime className="text-3xl text-blue-500" />
         </div>
         <div className="flex items-center justify-between sm:justify-center bg-white shadow-md p-4 rounded-xl">
           <div className="text-left">
             <p className="text-sm text-gray-500">Active Stay</p>
-            <h2 className="text-2xl font-bold text-green-600">{stats.active}</h2>
+            <h2 className="text-2xl font-bold text-green-600">
+              {stats.active}
+            </h2>
           </div>
           <MdOutlineHome className="text-3xl text-green-500" />
         </div>
@@ -748,63 +760,122 @@ const BookingTable = () => {
       {currentStay && (
         <div className="bg-white shadow-md p-4 rounded-xl mb-6">
           <h3 className="text-lg font-semibold mb-2">Current Accommodation</h3>
-          <h2 className="text-xl font-bold">{currentStay.pgOwner?.messName}</h2>
+
+          {/* PG Name with fallback */}
+          <h2 className="text-xl font-bold">
+            {currentStay.pgOwner?.messName || "PG Name Not Available"}
+          </h2>
+
+          {/* Address with fallback */}
           <div className="flex items-center text-sm text-gray-600 mt-1">
             <HiOutlineLocationMarker className="mr-1" />
-            {currentStay.pgOwner?.address}
+            {currentStay.pgOwner?.address || "Address not specified"}
           </div>
+
+          {/* Room and Bed Information */}
           <div className="flex items-center text-sm text-gray-600 mt-1">
             <FaBed className="mr-1" />
-            Room {currentStay.room} ({currentStay.bedsBooked} bed{currentStay.bedsBooked > 1 ? 's' : ''})
+            {currentStay.room
+              ? `Room ${currentStay.room}`
+              : "Room not specified"}
+            {currentStay.bedsBooked && (
+              <span>
+                {" "}
+                ({currentStay.bedsBooked} bed
+                {currentStay.bedsBooked > 1 ? "s" : ""})
+              </span>
+            )}
           </div>
+
+          {/* Pricing Information */}
           <div className="flex items-center text-sm text-gray-600 mt-1">
             <FaRupeeSign className="mr-1" />
-            {currentStay.payment.totalAmount} (₹{currentStay.pricePerHead}/month)
+            {currentStay.payment?.totalAmount ? (
+              <>
+                ₹{currentStay.payment.totalAmount}
+                {currentStay.pricePerHead && (
+                  <span> (₹{currentStay.pricePerHead}/month)</span>
+                )}
+              </>
+            ) : (
+              "Price information not available"
+            )}
           </div>
+
+          {/* Stay Period */}
           <div className="mt-2 text-sm">
             <span className="font-medium">Stay Period: </span>
-            {new Date(currentStay.period.startDate).toLocaleDateString()} - {' '}
-            {new Date(currentStay.period.endDate).toLocaleDateString()}
+            {currentStay.period?.startDate ? (
+              <>
+                {new Date(currentStay.period.startDate).toLocaleDateString()} -{" "}
+                {currentStay.period.endDate
+                  ? new Date(currentStay.period.endDate).toLocaleDateString()
+                  : "End date not available"}
+              </>
+            ) : (
+              "Stay period not specified"
+            )}
           </div>
+
+          {/* Amenities Section */}
           <div className="mt-4">
             <p className="font-semibold mb-2">Amenities</p>
             <div className="flex flex-wrap gap-2 text-sm text-gray-700">
-              {currentStay.pgOwner?.amenities?.includes('AC') && (
-                <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
-                  <MdOutlineAcUnit /> AC
-                </span>
-              )}
-              {currentStay.pgOwner?.amenities?.includes('TV') && (
-                <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
-                  <MdTv /> TV
-                </span>
-              )}
-              {currentStay.pgOwner?.amenities?.includes('Power Backup') && (
-                <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
-                  <MdOutlinePower /> Power Backup
-                </span>
-              )}
-              {currentStay.pgOwner?.amenities?.includes('WiFi') && (
-                <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
-                  <MdOutlineWifi /> WiFi
-                </span>
-              )}
-              {currentStay.pgOwner?.amenities?.includes('Kitchen') && (
-                <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
-                  <MdOutlineKitchen /> Kitchen
-                </span>
+              {currentStay.pgOwner?.amenities?.length > 0 ? (
+                <>
+                  {currentStay.pgOwner.amenities.includes("A/C") && (
+                    <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
+                      <MdOutlineAcUnit /> AC
+                    </span>
+                  )}
+                  {currentStay.pgOwner.amenities.includes("TV") && (
+                    <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
+                      <MdTv /> TV
+                    </span>
+                  )}
+                  {currentStay.pgOwner.amenities.includes("Power Backup") && (
+                    <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
+                      <MdOutlinePower /> Power Backup
+                    </span>
+                  )}
+                  {currentStay.pgOwner.amenities.includes("WiFi") && (
+                    <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
+                      <MdOutlineWifi /> WiFi
+                    </span>
+                  )}
+                  {currentStay.pgOwner.amenities.includes("Kitchen") && (
+                    <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
+                      <MdOutlineKitchen /> Kitchen
+                    </span>
+                  )}
+                   {currentStay.pgOwner.amenities.includes("Tank Water") && (
+                    <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
+                      <MdOpacity /> TankWater
+                    </span>
+                  )}
+                   {currentStay.pgOwner.amenities.includes("Double bed") && (
+                    <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
+                      <MdBed /> DoubleBed
+                    </span>
+                  )}
+                </>
+              ) : (
+                <span className="text-gray-500">No amenities listed</span>
               )}
             </div>
           </div>
-          <button 
-            onClick={() => handleDownloadInvoice(currentStay._id)}
-            className="mt-4 flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-          >
-            <FaDownload /> Download Invoice
-          </button>
+
+          {/* Download Invoice Button - Only show if booking has an ID */}
+          {currentStay._id && (
+            <button
+              onClick={() => handleDownloadInvoice(currentStay._id)}
+              className="mt-4 flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <FaDownload /> Download Invoice
+            </button>
+          )}
         </div>
       )}
-
       {/* Booking History Table (desktop) */}
       <div className="hidden md:block bg-white shadow-md p-4 rounded-xl mb-6">
         <h3 className="text-lg font-semibold mb-4">Booking History</h3>
@@ -822,22 +893,31 @@ const BookingTable = () => {
             </thead>
             <tbody className="text-sm text-gray-800">
               {bookings.map((booking) => (
-                <tr key={booking._id} className="border-t border-gray-100 hover:bg-gray-50">
-                  <td className="py-3 px-4">#{booking._id.slice(-6).toUpperCase()}</td>
+                <tr
+                  key={booking._id}
+                  className="border-t border-gray-100 hover:bg-gray-50"
+                >
+                  <td className="py-3 px-4">
+                    #{booking._id.slice(-6).toUpperCase()}
+                  </td>
                   <td className="py-3 px-4">{booking.pgOwner?.messName}</td>
                   <td className="py-3 px-4">
-                    {new Date(booking.period.startDate).toLocaleDateString()} - {' '}
+                    {new Date(booking.period.startDate).toLocaleDateString()} -{" "}
                     {new Date(booking.period.endDate).toLocaleDateString()}
                   </td>
                   <td className="py-3 px-4">₹{booking.payment.totalAmount}</td>
                   <td className="py-3 px-4">
-                    <span className={`text-xs px-2 py-1 rounded-full ${statusColors[booking.status]}`}>
+                    <span
+                      className={`text-xs px-2 py-1 rounded-full ${
+                        statusColors[booking.status]
+                      }`}
+                    >
                       {booking.status}
                     </span>
                   </td>
                   <td className="py-3 px-4">
-                    {booking.status === 'confirmed' ? (
-                      <button 
+                    {booking.status === "confirmed" ? (
+                      <button
                         onClick={() => handleDownloadInvoice(booking._id)}
                         className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
                       >
@@ -861,23 +941,34 @@ const BookingTable = () => {
         <h3 className="text-lg font-semibold mb-4">Booking History</h3>
         <div className="space-y-4">
           {bookings.map((booking) => (
-            <div key={booking._id} className="border border-gray-200 rounded-xl p-4 bg-white shadow-sm">
+            <div
+              key={booking._id}
+              className="border border-gray-200 rounded-xl p-4 bg-white shadow-sm"
+            >
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-xs text-gray-500">
                     Booking ID: #{booking._id.slice(-6).toUpperCase()}
                   </p>
-                  <h4 className="text-md font-semibold">{booking.pgOwner?.messName}</h4>
+                  <h4 className="text-md font-semibold">
+                    {booking.pgOwner?.messName}
+                  </h4>
                 </div>
-                <span className={`text-xs px-2 py-1 rounded-full ${statusColors[booking.status]}`}>
+                <span
+                  className={`text-xs px-2 py-1 rounded-full ${
+                    statusColors[booking.status]
+                  }`}
+                >
                   {booking.status}
                 </span>
               </div>
-              
+
               <div className="mt-2 text-sm text-gray-700">
                 <div className="flex items-center gap-2">
                   <FaCalendarAlt className="text-gray-400" />
-                  {new Date(booking.period.startDate).toLocaleDateString()} - {' '}
+                  {new Date(
+                    booking.period.startDate
+                  ).toLocaleDateString()} -{" "}
                   {new Date(booking.period.endDate).toLocaleDateString()}
                 </div>
                 <div className="mt-1 flex items-center">
@@ -885,9 +976,9 @@ const BookingTable = () => {
                   {booking.payment.totalAmount}
                 </div>
               </div>
-              
-              {booking.status === 'confirmed' ? (
-                <button 
+
+              {booking.status === "confirmed" ? (
+                <button
                   onClick={() => handleDownloadInvoice(booking._id)}
                   className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium"
                 >
