@@ -922,7 +922,7 @@ const DashboardContent = ({
                       <h4 className="font-medium text-gray-700 mb-3">
                         Amenities
                       </h4>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="flex flex-wrap gap-3">
                         {stay.pgOwner.facility.includes("A/C") && (
                           <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
                             <MdOutlineAcUnit className="text-blue-500" /> A/C
