@@ -255,16 +255,10 @@
 
 // export default MessBars;
 import axios from "axios";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
+import { baseurl, findMessUrl } from "../constant/urls";
 import { useNavigate } from "react-router-dom";
- import { baseurl, findMessUrl } from "../constant/urls";
-import { Map, View } from 'ol';
-import TileLayer from 'ol/layer/Tile';
-import OSM from 'ol/source/OSM';
-import { fromLonLat } from 'ol/proj';
-import { LineString } from 'ol/geom';
 import { getDistance } from 'ol/sphere';
-import 'ol/ol.css';
 
 function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }) {
   const [messData, setMessData] = useState([]);
@@ -272,68 +266,57 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [selected, setSelected] = useState(null);
-  const mapRef = useRef(null);
-
-  // Initialize map
-  useEffect(() => {
-    if (!mapRef.current) return;
-
-    const initialMap = new Map({
-      target: mapRef.current,
-      layers: [
-        new TileLayer({
-          source: new OSM()
-        })
-      ],
-      view: new View({
-        center: fromLonLat([78.9629, 20.5937]), // Center on India
-        zoom: 4
-      })
-    });
-
-    return () => initialMap.setTarget(undefined);
-  }, []);
 
   const getStreetDistance = async (orig, dest) => {
     try {
-      const origin = [parseFloat(orig.lng), parseFloat(orig.lat)];
-      const destination = [parseFloat(dest[0]), parseFloat(dest[1])];
+      // Parse coordinates to numbers
+      const startLon = parseFloat(orig.lng);
+      const startLat = parseFloat(orig.lat);
+      const endLon = parseFloat(dest[0]);
+      const endLat = parseFloat(dest[1]);
 
-      // Try OSRM routing first
+      // First try OSRM for road distance
       const response = await fetch(
-        `https://router.project-osrm.org/route/v1/driving/${origin.join(',')};${destination.join(',')}?overview=false`
+        `https://router.project-osrm.org/route/v1/driving/${startLon},${startLat};${endLon},${endLat}?overview=false`
       );
       
       const data = await response.json();
+      
       if (data.routes?.[0]?.distance) {
         return `${(data.routes[0].distance / 1000).toFixed(1)} km`;
       }
 
-      // Fallback to great-circle distance
-      const line = new LineString([
-        fromLonLat(origin),
-        fromLonLat(destination)
-      ]);
-      const distance = getDistance(line.getCoordinates());
-      return `${(distance / 1000).toFixed(1)} km`;
+      // Fallback to great-circle distance if OSRM fails
+      const distance = getDistance(
+        [startLon, startLat],
+        [endLon, endLat]
+      );
+      return `${(distance / 1000).toFixed(1)} km (straight line)`;
     } catch (err) {
-      console.error("Routing error:", err);
+      console.error("Distance calculation error:", err);
       return "N/A";
     }
+  };
+
+  // Keep other functions and useEffect hooks the same
+  const clickNavi = (owner) => {
+    navigate("/viewDetails", { state: { owner } });
+  };
+
+  const clickBook = (owner) => {
+    navigate("/booking", { state: { owner } });
   };
 
   const clickCords = (location, id) => {
     setSelected(id);
     if (Array.isArray(location) && location.length === 2) {
-      const [lng, lat] = location.map(parseFloat);
-      const transformed = fromLonLat([lng, lat]);
+      const [lng, lat] = location;
       if (typeof coords === "function") {
-        coords(transformed);
+        coords({ lat, lng });
       }
     }
   };
 
-  // Keep existing useEffect for data fetching
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -351,11 +334,11 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
 
         const filteredData = Array.isArray(res.data)
           ? res.data.filter((owner) => {
-              const facilities = owner.facility?.flatMap(f => 
-                f.split(',').map(item => item.trim().toLowerCase())
-              ) || [];
+              const facilitiesArray = Array.isArray(owner.facility)
+                ? owner.facility.flatMap((f) => f.split(",").map((item) => item.trim().toLowerCase()))
+                : [];
               return checkFeatures.length > 0
-                ? checkFeatures.some(f => facilities.includes(f.toLowerCase()))
+                ? checkFeatures.some((feature) => facilitiesArray.includes(feature.toLowerCase()))
                 : true;
             })
           : [];
@@ -371,103 +354,112 @@ function MessBars({ isChecked, checkFeatures, userLocation, coords, setPgCount }
     fetchData();
   }, [checkFeatures, userLocation]);
 
-  // Update distances
   useEffect(() => {
     const fetchDistances = async () => {
       if (messData.length === 0 || !userLocation) return;
 
-      const newDistances = {};
+      const newDistanceMap = {};
       for (const owner of messData) {
         if (owner?.location?.coordinates) {
           try {
-            const distance = await getStreetDistance(
+            const distanceText = await getStreetDistance(
               { lat: userLocation.lat, lng: userLocation.lng },
               owner.location.coordinates
             );
-            newDistances[owner._id] = distance;
+            newDistanceMap[owner._id] = distanceText;
           } catch (err) {
             console.error(`❌ Distance error for ${owner.messName}:`, err);
-            newDistances[owner._id] = "N/A";
+            newDistanceMap[owner._id] = "N/A";
           }
         }
       }
-      setDistanceMap(newDistances);
+      setDistanceMap(newDistanceMap);
     };
 
     fetchDistances();
   }, [messData, userLocation]);
 
+  // Remove Google Maps loading check
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
-    <div className="flex flex-col h-screen">
-      <div 
-        ref={mapRef} 
-        className="w-full h-64 mb-4 rounded-lg shadow-lg"
-        style={{ height: '400px' }}
-      ></div>
+    <div style={{ overflowY: "auto", height: "84vh" }}>
+      {messData.map((owner) => (
+        <div
+          key={owner._id}
+          className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md mb-4 sm:mb-2"
+          onClick={() => {
+            if (owner?.location?.coordinates) {
+              clickCords(owner.location.coordinates, owner._id);
+            }
+          }}
+        >
+          {/* Image Section */}
+          {!isChecked && (
+            <div className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0">
+              <img
+                loading="lazy"
+                src={owner.profilePhoto}
+                alt="Mess"
+                className="w-full h-48 md:h-full object-cover rounded-md"
+                style={{ maxHeight: "300px", borderRadius: "10px" }}
+              />
+            </div>
+          )}
 
-      <div className="overflow-y-auto flex-grow">
-        {messData.map((owner) => (
+          {/* Content Section */}
           <div
-            key={owner._id}
-            className="flex flex-col md:flex-row bg-white p-4 shadow rounded-md mb-4"
-            onClick={() => owner?.location?.coordinates && 
-              clickCords(owner.location.coordinates, owner._id)}
+            className={`flex-grow md:ml-6 mt-4 md:mt-0 ${
+              selected === owner._id && isChecked ? "border-2 border-[rgb(44,164,181)]" : ""
+            }`}
+            style={{
+              padding: isChecked ? "29px" : "0px",
+              borderRadius: isChecked ? "10px" : "0px",
+              boxShadow: isChecked
+                ? "rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px"
+                : "none",
+            }}
           >
-            {!isChecked && (
-              <div className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0 mb-4 md:mb-0">
-                <img
-                  src={owner.profilePhoto}
-                  alt="Mess"
-                  className="w-full h-48 object-cover rounded-md"
-                />
-              </div>
-            )}
-
-            <div className={`flex-grow md:ml-6 ${
-              selected === owner._id && isChecked 
-                ? "border-2 border-blue-500 rounded-lg p-4"
-                : ""
-            }`}>
-              <h3 className="text-xl font-semibold">{owner.messName}</h3>
-              <p className="text-gray-600 mt-2">
-                {owner.address} • {distanceMap[owner._id] || "Calculating..."}
-              </p>
-              
-              <div className="mt-3 flex flex-wrap gap-2">
-                {owner.facility?.map((f, i) => (
-                  <span 
-                    key={i}
-                    className="bg-gray-100 px-2 py-1 rounded text-sm"
-                  >
-                    {f.trim()}
-                  </span>
-                ))}
-              </div>
-
-              <div className="mt-4 flex gap-3">
-                <button
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate("/viewDetails", { state: { owner } });
-                  }}
-                >
-                  Details
-                </button>
-                <button
-                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate("/booking", { state: { owner } });
-                  }}
-                >
-                  Book Now
-                </button>
-              </div>
+            <h3 className="font-medium text-lg">{owner.messName}, In Simhat</h3>
+            <p className="text-sm text-gray-600 mt-2">
+              {owner.address} • {distanceMap[owner._id] || "Calculating..."}
+            </p>
+            <div className="flex items-center mt-4 text-sm text-gray-500 flex-wrap gap-2">
+              {owner.facility?.map((feature, index) => (
+                <span key={index}>
+                  {feature}
+                  {index < owner.facility.length - 1 && " • "}
+                </span>
+              ))}
+            </div>
+            <div className="mt-2">
+              <span>Price: 2.5k/Month</span>
+            </div>
+            <div className="flex gap-4 mt-4">
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  clickNavi(owner);
+                }}
+              >
+                View Details
+              </button>
+              <button
+                className="bg-green-500 text-white px-4 py-2 rounded-md"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  clickBook(owner);
+                }}
+              >
+                Book Now
+              </button>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 }
