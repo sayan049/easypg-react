@@ -1018,8 +1018,8 @@ import { baseurl } from "../constant/urls";
 
 
 
-import React, { useState } from "react";
-import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
+
+// import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 
 const BookingCard = React.memo(
   ({ booking, onConfirm, onReject, loading, maintenanceRequests }) => {
