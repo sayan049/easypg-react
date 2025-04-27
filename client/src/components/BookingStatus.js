@@ -998,9 +998,12 @@
 
 // // export default BookingStatus;
 import React, { useState } from "react";
-import { CheckCircleIcon, XCircleIcon, HourglassIcon } from "lucide-react";
+import { CheckCircleIcon, XCircleIcon, HourglassIcon,BookIcon,ClockIcon } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import { baseurl } from "../constant/urls";
+
 
 const BookingCard = React.memo(({ booking, onConfirm, onReject, loading }) => {
   const statusColors = {
@@ -1121,11 +1124,12 @@ const EmptyState = ({ message, icon: Icon }) => (
 const BookingStatus = ({
   bookings,
   stats,
-  loading,
+  
   fetchBookings,
   ownerId,
 }) => {
   const [tab, setTab] = useState("pending");
+const[loading, setLoading] = useState(false);
 
   const handleTabChange = (newTab) => {
     if (bookings[newTab].data.length === 0 || bookings[newTab].page !== 1) {
