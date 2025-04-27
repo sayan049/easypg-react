@@ -12,6 +12,7 @@ import "../designs/UserProfile.css";
 
 import { useAuth } from "../contexts/AuthContext";
 import { baseurl, LocationIqurl } from "../constant/urls";
+import { set } from "ol/transform";
 const HomePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -88,7 +89,7 @@ const HomePage = () => {
     console.log("✅ Passing Location to MessFind:", selectedLocation);
 
     navigate("/MessFind", {
-      state: { userLocation: selectedLocation, item: searchItem },
+      state: { userLocation: selectedLocation, item: searchItem ,performSearch , handleInputChange , setSearchItem },
     });
     setSearchItem(""); // Clear the input field after search
   };
