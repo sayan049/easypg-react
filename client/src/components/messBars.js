@@ -15,7 +15,7 @@ function MessBars({
   const [distanceMap, setDistanceMap] = useState({});
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState(messData[0]?._id || null);
   const [flipped, setFlipped] = useState({});
 
   const toggleFlip = (id) => {
@@ -178,7 +178,12 @@ function MessBars({
             // } bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4`}
             className={`relative flip-card mb-4 h-[31rem] md:h-[15rem] ${
               isChecked ? "w-full" : "w-full"
-            } bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4`}
+            }
+             ${selected === owner._id && isChecked
+                ? "ring-2 ring-blue-500"
+                : "ring-1 ring-gray-200"
+             }
+            bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4`}
             onClick={() => {
               if (owner?.location?.coordinates) {
                 clickCords(owner.location.coordinates, owner._id);
