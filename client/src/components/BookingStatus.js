@@ -1267,7 +1267,7 @@ const BookingStatus = ({ owner }) => {
           },
         }
       );
-
+      console.log("Maintenance Requests Response:", response.data);
       // Return the entire response data which includes the requests array
       return response.data || { requests: [] };
     } catch (error) {
@@ -1297,7 +1297,7 @@ const BookingStatus = ({ owner }) => {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
-
+console.log("Bookings Response:", response.data);
       setBookings((prev) => ({
         ...prev,
         [status]: {
