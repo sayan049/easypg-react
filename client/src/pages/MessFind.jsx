@@ -188,9 +188,9 @@ const MessFind = () => {
       {/* Listings Section */}
       <div className="w-full md:w-3/4 md:mt-0 md:ml-6">
         <div className="flex justify-between items-center bg-white p-4 shadow rounded-md">
-          <h2 className="text-lg font-bold hidden md:block">
+          {/* <h2 className="text-lg font-bold hidden md:block">
             {pgCount} Mess near {item.split(",")[0]}
-          </h2>
+          </h2> */}
 
           {/* implement a search bar here  */}
           <div className="flex items-center gap-4 bg-white p-2 rounded-full border border-gray-300 shadow-md w-full md:w-1/3">
@@ -231,7 +231,7 @@ const MessFind = () => {
         </div>
       </div> */}
         <div className="mt-6" style={{ height: "calc(100vh - 200px)" }}>
-          <div className="text-lg font-bold md:hidden">
+          <div className="text-lg font-bold ">
             {pgCount} Mess near {item.split(",")[0]}
           </div>
           <div className="flex" style={{ height: "100%" }}>
