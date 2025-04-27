@@ -715,6 +715,7 @@ import { FiAlertCircle } from "react-icons/fi";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import { baseurl } from "../constant/urls";
 import {
   MdOutlineAcUnit,
   MdTv,
@@ -783,11 +784,19 @@ const DashboardContent = ({
     };
 
     try {
+      const token = localStorage.getItem("accessToken");
+
       const response = await axios.post(
-        "/api/maintenance-request",
-        requestBody
+        `${baseurl}/auth/maintenance-request`,
+        requestBody,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       alert("Maintenance request submitted successfully!");
+      console.log("Response:", response.data);
       // Optionally, reset form fields
       setTitle("");
       setDescription("");
@@ -1211,115 +1220,114 @@ const DashboardContent = ({
 
       {/* Maintenance Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white shadow-md rounded-xl p-8 space-y-6">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6 border-b pb-2">
-            Maintenance Request
-          </h2>
+        <form onSubmit={handleSubmit}>
+          <div className="bg-white shadow-md rounded-xl p-8 space-y-6">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6 border-b pb-2">
+              Maintenance Request
+            </h2>
 
-          {/* PG Selection */}
-          <div className="space-y-2">
-            <label className="block text-gray-700 font-medium">
-              Select Stay (PG)
-            </label>
-            <select
-              value={selectedStayId}
-              onChange={(e) => setSelectedStayId(e.target.value)}
-              className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 p-3 text-gray-700"
-              required
-            >
-              <option value="">-- Select a Stay --</option>
-              {currentStay.map((stay) => (
-                <option key={stay._id} value={stay._id}>
-                  {stay.pgOwner?.messName} | {stay.pgOwner?.firstName}{" "}
-                  {stay.pgOwner?.lastName}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* PG Details after selecting */}
-          {selectedStayId && (
-            <div className="bg-gray-100 rounded-lg p-4 shadow-sm space-y-2">
-              {(() => {
-                const selectedStay = currentStay.find(
-                  (stay) => stay._id === selectedStayId
-                );
-                if (!selectedStay) return null;
-                return (
-                  <div className="space-y-2 text-gray-700">
-                    <p className="flex items-center gap-2">
-                      <FaHome className="text-blue-500" />{" "}
-                      {selectedStay.pgOwner?.messName}
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <FaUser className="text-blue-500" />{" "}
-                      {selectedStay.pgOwner?.firstName}{" "}
-                      {selectedStay.pgOwner?.lastName}
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <FaMapMarkerAlt className="text-blue-500" />{" "}
-                      {selectedStay.pgOwner?.address}
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <FaEnvelope className="text-blue-500" />{" "}
-                      {selectedStay.pgOwner?.email}
-                    </p>
-                  </div>
-                );
-              })()}
+            {/* PG Selection */}
+            <div className="space-y-2">
+              <label className="block text-gray-700 font-medium">
+                Select Stay (PG)
+              </label>
+              <select
+                value={selectedStayId}
+                onChange={(e) => setSelectedStayId(e.target.value)}
+                className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 p-3 text-gray-700"
+                required
+              >
+                <option value="">-- Select a Stay --</option>
+                {currentStay.map((stay) => (
+                  <option key={stay._id} value={stay._id}>
+                    {stay.pgOwner?.messName} | {stay.pgOwner?.firstName}{" "}
+                    {stay.pgOwner?.lastName}
+                  </option>
+                ))}
+              </select>
             </div>
-          )}
 
-          {/* Title */}
-          <div className="space-y-2">
-            <label className="block text-gray-700 font-medium">
-              Issue Title
-            </label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 p-3 text-gray-700"
-              placeholder="Short title for the issue (e.g., Water leakage)"
-              required
-              disabled={!selectedStayId}
-            />
-          </div>
+            {/* PG Details after selecting */}
+            {selectedStayId && (
+              <div className="bg-gray-100 rounded-lg p-4 shadow-sm space-y-2">
+                {(() => {
+                  const selectedStay = currentStay.find(
+                    (stay) => stay._id === selectedStayId
+                  );
+                  if (!selectedStay) return null;
+                  return (
+                    <div className="space-y-2 text-gray-700">
+                      <p className="flex items-center gap-2">
+                        <FaHome className="text-blue-500" />{" "}
+                        {selectedStay.pgOwner?.messName}
+                      </p>
+                      <p className="flex items-center gap-2">
+                        <FaUser className="text-blue-500" />{" "}
+                        {selectedStay.pgOwner?.firstName}{" "}
+                        {selectedStay.pgOwner?.lastName}
+                      </p>
+                      <p className="flex items-center gap-2">
+                        <FaMapMarkerAlt className="text-blue-500" />{" "}
+                        {selectedStay.pgOwner?.address}
+                      </p>
+                      <p className="flex items-center gap-2">
+                        <FaEnvelope className="text-blue-500" />{" "}
+                        {selectedStay.pgOwner?.email}
+                      </p>
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
 
-          {/* Description */}
-          <div className="space-y-2">
-            <label className="block text-gray-700 font-medium">
-              Issue Description
-            </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows="4"
-              className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 p-3 text-gray-700"
-              placeholder="Describe the issue in detail..."
-              required
-              disabled={!selectedStayId}
-            />
-          </div>
+            {/* Title */}
+            <div className="space-y-2">
+              <label className="block text-gray-700 font-medium">
+                Issue Title
+              </label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 p-3 text-gray-700"
+                placeholder="Short title for the issue (e.g., Water leakage)"
+                required
+                disabled={!selectedStayId}
+              />
+            </div>
 
-          {/* Submit Button */}
-          <div>
-            <button
-              type="submit"
-              onClick={handleSubmit}
-              className={`w-full px-6 py-3 rounded-lg transition text-white font-medium ${
-                selectedStayId
-                  ? isSubmitting
-                    ? "bg-gray-400 cursor-not-allowed" // Disable button during submission
-                    : "bg-blue-600 hover:bg-blue-700"
-                  : "bg-gray-400 cursor-not-allowed"
-              }`}
-              disabled={isSubmitting || !selectedStayId}
-            >
-              {isSubmitting ? "Submitting..." : "Submit Maintenance Request"}
-            </button>
+            {/* Description */}
+            <div className="space-y-2">
+              <label className="block text-gray-700 font-medium">
+                Issue Description
+              </label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows="4"
+                className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 p-3 text-gray-700"
+                placeholder="Describe the issue in detail..."
+                required
+                disabled={!selectedStayId}
+              />
+            </div>
+
+            {/* Submit Button */}
+            <div>
+              <button
+                type="submit"
+                className={`w-full px-6 py-3 rounded-lg transition text-white font-medium ${
+                  selectedStayId
+                    ? "bg-blue-600 hover:bg-blue-700"
+                    : "bg-gray-400 cursor-not-allowed"
+                }`}
+                disabled={!selectedStayId || isSubmitting} // also disable while submitting
+              >
+                {isSubmitting ? "Submitting..." : "Submit Maintenance Request"}
+              </button>
+            </div>
           </div>
-        </div>
+        </form>
         {/* Maintenance History */}
         <div>
           <h2 className="text-lg font-semibold mb-4 text-gray-700">

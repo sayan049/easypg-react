@@ -452,14 +452,17 @@
 // };
 const Booking = require("../modules/Booking");
 const PgOwner = require("../modules/pgProvider");
+const MaintenanceRequest = require("../modules/MaintenanceRequest");
+const rateLimiters = new Map(); // In-memory rate limiter per studentId
+const RATE_LIMIT_DURATION = 60 * 1000; // 1 minute
 const {
   sendNotification,
   NOTIFICATION_TYPES,
 } = require("../services/notificationService");
 // const SocketManager = require("../sockets/bookingSocket");
 const { Types } = require("mongoose");
-const PDFDocument = require('pdfkit');
-const fs = require('fs');
+const PDFDocument = require("pdfkit");
+const fs = require("fs");
 
 // Helper functions
 const bedCountToNumber = {
@@ -480,7 +483,7 @@ const numberToBedCount = {
 
 // Create booking request (NO BED DEDUCTION HERE)
 exports.createBookingRequest = async (req, res) => {
-  console.log("studentId",req.user.id);
+  console.log("studentId", req.user.id);
   try {
     const {
       student,
@@ -728,14 +731,17 @@ exports.getUserBookings = async (req, res) => {
 
     // Find all bookings for this user
     const bookings = await Booking.find({ student: userId })
-      .select('room status bedsBooked pricePerHead period payment.totalAmount pgOwner')
+      .select(
+        "room status bedsBooked pricePerHead period payment.totalAmount pgOwner"
+      )
       .populate({
-        path: 'pgOwner',
-        select: 'firstName lastName email mobileNo messName address gender facility roomInfo profilePhoto'
+        path: "pgOwner",
+        select:
+          "firstName lastName email mobileNo messName address gender facility roomInfo profilePhoto",
       })
       .populate({
-        path: 'student',  // Populate student field
-        select: 'email '  // Only select email and id
+        path: "student", // Populate student field
+        select: "email ", // Only select email and id
       })
       .sort({ "period.startDate": 1 }) // Important: Sort by startDate ascending
       .lean();
@@ -748,28 +754,28 @@ exports.getUserBookings = async (req, res) => {
           upcoming: 0,
           current: 0,
           past: 0,
-          total: 0
+          total: 0,
         },
         currentStays: [],
         upcomingStays: [],
-        pastStays: []
+        pastStays: [],
       });
     }
 
-    const processedBookings = bookings.map(booking => {
+    const processedBookings = bookings.map((booking) => {
       const startDate = new Date(booking.period.startDate);
       const endDate = new Date(startDate);
       endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
 
-      let bookingType = 'none'; // default is none now
+      let bookingType = "none"; // default is none now
 
-      if (booking.status === 'confirmed') {
+      if (booking.status === "confirmed") {
         if (now >= startDate && now <= endDate) {
-          bookingType = 'current';
+          bookingType = "current";
         } else if (startDate > now) {
-          bookingType = 'upcoming';
+          bookingType = "upcoming";
         } else if (endDate < now) {
-          bookingType = 'past';
+          bookingType = "past";
         }
       }
 
@@ -778,32 +784,38 @@ exports.getUserBookings = async (req, res) => {
         period: {
           startDate: booking.period.startDate,
           durationMonths: booking.period.durationMonths,
-          endDate
+          endDate,
         },
-        bookingType
+        bookingType,
       };
     });
 
     // Get all stays of each type
-    const currentStays = processedBookings.filter(b => b.bookingType === 'current');
-    const upcomingStays = processedBookings.filter(b => b.bookingType === 'upcoming');
-    const pastStays = processedBookings.filter(b => b.bookingType === 'past');
-    
+    const currentStays = processedBookings.filter(
+      (b) => b.bookingType === "current"
+    );
+    const upcomingStays = processedBookings.filter(
+      (b) => b.bookingType === "upcoming"
+    );
+    const pastStays = processedBookings.filter((b) => b.bookingType === "past");
+
     // Calculate days remaining for current stays (taking the earliest ending one)
     let daysRemaining = 0;
     if (currentStays.length > 0) {
       // Find the current stay that ends soonest
-      const soonestEndingStay = currentStays.reduce((prev, current) => 
-        new Date(prev.period.endDate) < new Date(current.period.endDate) ? prev : current
+      const soonestEndingStay = currentStays.reduce((prev, current) =>
+        new Date(prev.period.endDate) < new Date(current.period.endDate)
+          ? prev
+          : current
       );
       const endDate = new Date(soonestEndingStay.period.endDate);
       const diffTime = Math.max(endDate - now, 0); // Make sure no negative
       daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // milliseconds -> days
     }
-    
+
     // Calculate total amount of confirmed bookings
     const totalAmountConfirmed = processedBookings
-      .filter(b => b.status === 'confirmed')
+      .filter((b) => b.status === "confirmed")
       .reduce((sum, b) => sum + (b.payment?.totalAmount || 0), 0);
 
     // Calculate stats
@@ -811,7 +823,7 @@ exports.getUserBookings = async (req, res) => {
       upcoming: upcomingStays.length,
       current: currentStays.length,
       past: pastStays.length,
-      total: processedBookings.length
+      total: processedBookings.length,
     };
 
     res.json({
@@ -822,32 +834,32 @@ exports.getUserBookings = async (req, res) => {
       daysRemaining,
       totalAmountConfirmed,
       bookings: processedBookings,
-      stats
+      stats,
     });
-
   } catch (error) {
-    console.error('Error fetching user bookings:', error);
+    console.error("Error fetching user bookings:", error);
     res.status(500).json({
       success: false,
-      message: 'Failed to fetch bookings',
-      error: error.message
+      message: "Failed to fetch bookings",
+      error: error.message,
     });
   }
 };
-
 
 // Generate invoice
 
 exports.downloadInvoice = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id)
-      .select('room bedsBooked pricePerHead period.startDate period.durationMonths payment.totalAmount pgOwner student')
-      .populate('pgOwner', 'messName address')
-      .populate('student', 'firstName lastName email')
+      .select(
+        "room bedsBooked pricePerHead period.startDate period.durationMonths payment.totalAmount pgOwner student"
+      )
+      .populate("pgOwner", "messName address")
+      .populate("student", "firstName lastName email")
       .lean();
 
     if (!booking) {
-      return res.status(404).json({ message: 'Booking not found' });
+      return res.status(404).json({ message: "Booking not found" });
     }
 
     // Calculate end date
@@ -855,45 +867,53 @@ exports.downloadInvoice = async (req, res) => {
     endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
 
     // Generate PDF invoice (example using pdfkit)
-    const PDFDocument = require('pdfkit');
+    const PDFDocument = require("pdfkit");
     const doc = new PDFDocument();
-    
+
     // Set response headers
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=invoice-${booking._id}.pdf`);
-    
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=invoice-${booking._id}.pdf`
+    );
+
     // Pipe the PDF to the response
     doc.pipe(res);
-    
+
     // Add invoice content
-    doc.fontSize(20).text('Booking Invoice', { align: 'center' });
+    doc.fontSize(20).text("Booking Invoice", { align: "center" });
     doc.moveDown();
     doc.fontSize(14).text(`Booking ID: ${booking._id}`);
     doc.moveDown();
     doc.text(`PG Name: ${booking.pgOwner.messName}`);
     doc.text(`Address: ${booking.pgOwner.address}`);
     doc.moveDown();
-    doc.text(`Student: ${booking.student.firstName} ${booking.student.lastName}`);
+    doc.text(
+      `Student: ${booking.student.firstName} ${booking.student.lastName}`
+    );
     doc.text(`Email: ${booking.student.email}`);
     doc.moveDown();
     doc.text(`Room: ${booking.room}`);
     doc.text(`Beds Booked: ${booking.bedsBooked}`);
     doc.moveDown();
-    doc.text(`Period: ${new Date(booking.period.startDate).toLocaleDateString()} - ${endDate.toLocaleDateString()}`);
+    doc.text(
+      `Period: ${new Date(
+        booking.period.startDate
+      ).toLocaleDateString()} - ${endDate.toLocaleDateString()}`
+    );
     doc.moveDown();
     doc.text(`Amount: ₹${booking.payment.totalAmount}`);
     doc.moveDown();
     doc.text(`Payment Status: Paid`);
     doc.moveDown();
-    doc.text('Thank you for your booking!');
-    
-    doc.end();
+    doc.text("Thank you for your booking!");
 
+    doc.end();
   } catch (error) {
-    console.error('Invoice generation error:', error);
-    res.status(500).json({ 
-      message: 'Failed to generate invoice',
-      ...(process.env.NODE_ENV === 'development' && { error: error.message })
+    console.error("Invoice generation error:", error);
+    res.status(500).json({
+      message: "Failed to generate invoice",
+      ...(process.env.NODE_ENV === "development" && { error: error.message }),
     });
   }
 };
@@ -984,7 +1004,7 @@ exports.handleBookingApproval = async (req, res) => {
     );
 
     // Socket notifications
-     const bookingData = booking.toObject();
+    const bookingData = booking.toObject();
 
     // SocketManager.notifyStudentBookingStatus(booking.student._id, {
     //   _id: booking._id,
@@ -1009,6 +1029,63 @@ exports.handleBookingApproval = async (req, res) => {
       message: "Failed to update booking status",
       error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
+  }
+};
+//maintenance request from user
+exports.maintenanceRequestHandler = async (req, res) => {
+  const userId=req.user.id;
+
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Method not allowed" });
+  }
+
+  const { studentId, bookingId, pgOwnerId, title, description } = req.body;
+  if(userId !== req.body.studentId){
+    return res.status(403).json({ message: "Unauthorized" }); }
+
+  // Validation
+  if (!studentId || !bookingId || !pgOwnerId || !title || !description) {
+    return res.status(400).json({ message: "All fields are required." });
+  }
+
+  try {
+    // Rate limiting per student
+    const lastRequestTime = rateLimiters.get(studentId);
+    const now = Date.now();
+
+    if (lastRequestTime && now - lastRequestTime < RATE_LIMIT_DURATION) {
+      const secondsLeft = Math.ceil(
+        (RATE_LIMIT_DURATION - (now - lastRequestTime)) / 1000
+      );
+      return res
+        .status(429)
+        .json({
+          message: `Please wait ${secondsLeft}s before submitting again.`,
+        });
+    }
+
+    // Update rate limiter
+    rateLimiters.set(studentId, now);
+
+    // Create maintenance request
+    const maintenanceRequest = new MaintenanceRequest({
+      student: studentId,
+      booking: bookingId,
+      pgOwner: pgOwnerId,
+      title,
+      description,
+    });
+
+    await maintenanceRequest.save();
+
+    return res
+      .status(201)
+      .json({ message: "Maintenance request submitted successfully." });
+  } catch (error) {
+    console.error("Error creating maintenance request:", error);
+    return res
+      .status(500)
+      .json({ message: "Something went wrong. Try again later." });
   }
 };
 
