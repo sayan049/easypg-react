@@ -70,7 +70,18 @@ function MapComponent({ isChecked, coordinates }) {
     };
   }, [coordinates]); // Re-run effect when coordinates change
 
-  return <div id="map" style={mapContainerStyle} ></div>;
+  // return <div id="map" style={mapContainerStyle} ></div>;
+  return(
+    <div className="w-full h-full sm:h-full">
+                  <iframe
+                    src={`https://www.google.com/maps?q=${coordinates[1]},${coordinates[0]}&z=15&output=embed`}
+                    width="100%"
+                    height="100%"
+                    className="rounded-xl"
+                    loading="lazy"
+                  ></iframe>
+                </div>
+  )
 }
 
 export default MapComponent;
