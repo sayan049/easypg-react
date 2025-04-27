@@ -74,7 +74,7 @@ function MapComponent({ isChecked, coordinates }) {
   return(
     <div className="w-full h-full sm:h-full">
                   <iframe
-                    src={`https://www.google.com/maps?q=${coordinates[1]},${coordinates[0]}&z=15&output=embed`}
+                    src={`https://www.google.com/maps?q=${lat},${lng}&z=15&output=embed`}
                     width="100%"
                     height="100%"
                     className="rounded-xl"
