@@ -196,7 +196,7 @@ function MessBars({
                   </div>
                 )}
 
-                <div className="flex flex-col justify-between">
+                <div className={`"flex flex-col justify-between" ${isChecked ? "w-[145%]" : ""}`}>
                   <div>
                     <div className="flex justify-between items-start">
                       <h3 className="text-xl font-semibold text-gray-900">
