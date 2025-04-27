@@ -163,7 +163,7 @@ function MessBars({
   return (
     <>
       <style>{styles}</style>
-      <div className={`"grid gap-4 p-2 sm:p-4" ${isChecked ? "grid-cols-1" : "grid-cols-2 md:grid-cols-3"}`}>
+      <div className={`"grid gap-4 p-2 sm:p-4" ${isChecked ? "grid-cols-1 w-[50%]" : "grid-cols-2 md:grid-cols-3"}`}>
         {messData.map((owner) => (
           <div
             key={owner._id}
