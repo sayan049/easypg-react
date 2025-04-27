@@ -738,35 +738,38 @@ const DashboardContent = ({
   loading = false,
 }) => {
   const [selectedStayId, setSelectedStayId] = useState("");
-const [title, setTitle] = useState("");
-const [description, setDescription] = useState("");
-const handleSubmitRequest = async (e) => {
-  e.preventDefault();
-  
-  if (!selectedStayId || !title || !description) {
-    toast.error("Please fill all fields properly!");
-    return;
-  }
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const handleSubmitRequest = async (e) => {
+    e.preventDefault();
 
-  const requestBody = {
-    stayId: selectedStayId,
-    title,
-    description,
+    if (!selectedStayId || !title || !description) {
+      toast.error("Please fill all fields properly!");
+      return;
+    }
+
+    const requestBody = {
+      stayId: selectedStayId,
+      title,
+      description,
+    };
+
+    // Call your API here (we'll create it next)
+    try {
+      const res = await axios.post(
+        "/api/maintenance/create-request",
+        requestBody
+      );
+      toast.success("Request submitted successfully!");
+      // Optionally clear form:
+      setSelectedStayId("");
+      setTitle("");
+      setDescription("");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to submit request. Try again!");
+    }
   };
-
-  // Call your API here (we'll create it next)
-  try {
-    const res = await axios.post("/api/maintenance/create-request", requestBody);
-    toast.success("Request submitted successfully!");
-    // Optionally clear form:
-    setSelectedStayId("");
-    setTitle("");
-    setDescription("");
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to submit request. Try again!");
-  }
-};
 
   if (loading) {
     return (
@@ -792,20 +795,19 @@ const handleSubmitRequest = async (e) => {
   }
 
   return (
-        
     <div className="p-4 md:p-8">
-          <ToastContainer
-              position="top-center"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              style={{ zIndex: 9999 }} // Ensure it's above other elements
-            />
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        style={{ zIndex: 9999 }} // Ensure it's above other elements
+      />
       {/* Welcome Message */}
       <div className="mb-8">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
@@ -1180,40 +1182,75 @@ const handleSubmitRequest = async (e) => {
 
       {/* Maintenance Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Create Maintenance Request */}
-        <form onSubmit={handleSubmitRequest} className="space-y-6">
+        <div className="bg-white shadow-md rounded-xl p-8 space-y-6">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6 border-b pb-2">
+            Maintenance Request
+          </h2>
+
           {/* PG Selection */}
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Select Stay
+          <div className="space-y-2">
+            <label className="block text-gray-700 font-medium">
+              Select Stay (PG)
             </label>
             <select
               value={selectedStayId}
               onChange={(e) => setSelectedStayId(e.target.value)}
-              className="w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
+              className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 p-3 text-gray-700"
               required
             >
               <option value="">-- Select a Stay --</option>
               {currentStay.map((stay) => (
                 <option key={stay._id} value={stay._id}>
                   {stay.pgOwner?.messName} | {stay.pgOwner?.firstName}{" "}
-                  {stay.pgOwner?.lastName} | {stay.pgOwner?.address} |{" "}
-                  {stay.pgOwner?.email}
+                  {stay.pgOwner?.lastName}
                 </option>
               ))}
             </select>
           </div>
 
+          {/* PG Details after selecting */}
+          {selectedStayId && (
+            <div className="bg-gray-100 rounded-lg p-4 shadow-sm space-y-2">
+              {(() => {
+                const selectedStay = currentStay.find(
+                  (stay) => stay._id === selectedStayId
+                );
+                if (!selectedStay) return null;
+                return (
+                  <div className="space-y-2 text-gray-700">
+                    <p className="flex items-center gap-2">
+                      <FaHome className="text-blue-500" />{" "}
+                      {selectedStay.pgOwner?.messName}
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <FaUser className="text-blue-500" />{" "}
+                      {selectedStay.pgOwner?.firstName}{" "}
+                      {selectedStay.pgOwner?.lastName}
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <FaMapMarkerAlt className="text-blue-500" />{" "}
+                      {selectedStay.pgOwner?.address}
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <FaEnvelope className="text-blue-500" />{" "}
+                      {selectedStay.pgOwner?.email}
+                    </p>
+                  </div>
+                );
+              })()}
+            </div>
+          )}
+
           {/* Title */}
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">
+          <div className="space-y-2">
+            <label className="block text-gray-700 font-medium">
               Issue Title
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
+              className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 p-3 text-gray-700"
               placeholder="Short title for the issue (e.g., Water leakage)"
               required
               disabled={!selectedStayId}
@@ -1221,15 +1258,15 @@ const handleSubmitRequest = async (e) => {
           </div>
 
           {/* Description */}
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">
+          <div className="space-y-2">
+            <label className="block text-gray-700 font-medium">
               Issue Description
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows="4"
-              className="w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
+              className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 p-3 text-gray-700"
               placeholder="Describe the issue in detail..."
               required
               disabled={!selectedStayId}
@@ -1240,17 +1277,17 @@ const handleSubmitRequest = async (e) => {
           <div>
             <button
               type="submit"
-              className={`px-6 py-2 rounded-md transition text-white ${
+              className={`w-full px-6 py-3 rounded-lg transition text-white font-medium ${
                 selectedStayId
                   ? "bg-blue-600 hover:bg-blue-700"
                   : "bg-gray-400 cursor-not-allowed"
               }`}
               disabled={!selectedStayId}
             >
-              Submit Request
+              Submit Maintenance Request
             </button>
           </div>
-        </form>
+        </div>
 
         {/* Maintenance History */}
         <div>
