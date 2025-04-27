@@ -71,10 +71,19 @@ const MessFind = () => {
   const userLocation = location.state?.userLocation || null;
   const item = location.state?.item || null; // Retrieve items from Homepage
   // Retrieve lat/lon from Homepage
+  const { 
+    performSearch, 
+    handleInputChange, 
+    setSearchItem 
+  } = location.state || {};
+
+  // Local state for search input
+ 
   console.log("🔍 Full Navigation State in MessFind:", location.state);
   console.log("📍 Extracted User Location:", userLocation);
 
   const [price, setPrice] = useState(1500);
+  const [searchQuery, setSearchQuery] = useState("");
   const [checkFeatures, setCheckFeatures] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
@@ -194,13 +203,18 @@ const MessFind = () => {
 
           {/* implement a search bar here  */}
           <div className="flex items-center gap-4 bg-white p-3 rounded-lg border border-gray-300 shadow-sm hover:border-blue-500 transition-colors w-full">
-            <FaSearch className="w-5 h-5 text-gray-400" />
+            <FaSearch className="w-5 h-5 text-gray-400" onClick={() => performSearch && performSearch()} />
             <input
               type="text"
-              placeholder="Search mess by location, price, or facilities"
+              placeholder="Search mess by location"
               className="w-full p-1 text-base outline-none placeholder-gray-400"
-              // value={searchQuery}
-              // onChange={handleSearchChange}
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                if (handleInputChange) handleInputChange(e);
+                if (setSearchItem) setSearchItem(e.target.value);
+              }}
+              onKeyPress={(e) => e.key === "Enter" && performSearch && performSearch()}
             />
           </div>
 
