@@ -757,17 +757,19 @@ const DashboardContent = ({
       setIsSubmitting(false); // Stop loading
       return;
     }
+    console.log("Selected Stay:", selectedStay);
+    console.log("User ID:", user._id);
+    console.log("Selected Stay Student ID:", selectedStay.student._id);
+    // Now student is an object, so we check selectedStay.student._id
+    if (selectedStay.student?._id?.toString() !== user._id.toString()) {
+      alert("You can only submit a maintenance request for your own stay.");
+      setIsSubmitting(false);
+      return;
+    }
 
-  // Now student is an object, so we check selectedStay.student._id
-  if (selectedStay.student?._id?.toString() !== user._id.toString()) {
-    alert("You can only submit a maintenance request for your own stay.");
-    setIsSubmitting(false);
-    return;
-  }
-
-  const studentId = selectedStay.student._id; // From the selected stay
-  const bookingId = selectedStay._id; // The current stay _id is your booking id
-  const pgOwnerId = selectedStay.pgOwner._id; // The PG owner's id
+    const studentId = selectedStay.student._id; // From the selected stay
+    const bookingId = selectedStay._id; // The current stay _id is your booking id
+    const pgOwnerId = selectedStay.pgOwner._id; // The PG owner's id
     if (!title || !description || !pgOwnerId) {
       alert("Please fill in all fields.");
       setIsSubmitting(false); // Stop loading
