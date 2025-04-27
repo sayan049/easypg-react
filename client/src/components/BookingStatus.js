@@ -1036,9 +1036,9 @@ const BookingCard = React.memo(
 
     // Filter maintenance requests for this booking
     // This remains the same since we're already filtering by booking._id
-    const bookingMaintenanceRequests = maintenanceRequests.filter(
-      (req) => req.booking === booking._id
-    );
+    const bookingMaintenanceRequests = Array.isArray(maintenanceRequests)
+      ? maintenanceRequests.filter((req) => req.booking === booking._id)
+      : [];
 
     const hasActiveMaintenance = bookingMaintenanceRequests.some(
       (req) => req.status === "in-progress" || req.status === "pending"
@@ -1264,7 +1264,6 @@ const BookingStatus = ({ owner }) => {
   const ownerId = owner?._id;
 
   const fetchMaintenanceRequests = async (bookingIds) => {
-    // Add parameter here
     try {
       setLoading((prev) => ({ ...prev, maintenance: true }));
       const response = await axios.get(
@@ -1278,11 +1277,12 @@ const BookingStatus = ({ owner }) => {
           },
         }
       );
-      return response.data || [];
+      // Ensure we always return an array
+      return Array.isArray(response.data) ? response.data : [];
     } catch (error) {
       console.error("Error fetching maintenance requests:", error);
       toast.error("Failed to load maintenance requests");
-      return [];
+      return []; // Return empty array on error
     } finally {
       setLoading((prev) => ({ ...prev, maintenance: false }));
     }
@@ -1329,10 +1329,11 @@ const BookingStatus = ({ owner }) => {
 
       // Fetch maintenance requests when loading confirmed bookings
       // Inside fetchBookings function, when status is "confirmed":
+      // Inside fetchBookings, when status is "confirmed":
       if (status === "confirmed") {
         const bookingIds = response.data.bookings.map((b) => b._id);
-        const requests = await fetchMaintenanceRequests(bookingIds); // Pass bookingIds here
-        setMaintenanceRequests(requests);
+        const requests = await fetchMaintenanceRequests(bookingIds);
+        setMaintenanceRequests(Array.isArray(requests) ? requests : []);
       }
       if (status !== tab) {
         setTab(status);
@@ -1452,8 +1453,8 @@ const BookingStatus = ({ owner }) => {
   };
   const refreshMaintenanceData = async () => {
     if (bookings.confirmed.data.length > 0) {
-      const bookingIds = bookings.confirmed.data.map(b => b._id);
-      const requests = await fetchMaintenanceRequests(bookingIds);  // Pass bookingIds here
+      const bookingIds = bookings.confirmed.data.map((b) => b._id);
+      const requests = await fetchMaintenanceRequests(bookingIds); // Pass bookingIds here
       setMaintenanceRequests(requests);
       toast.success("Maintenance requests refreshed");
     }
