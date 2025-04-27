@@ -224,11 +224,11 @@ function MessBars({
             {owner.facility?.map((feature, index) => (
               <span
                 key={index}
-                className="px-2 py-1 bg-blue-50 text-[rgb(44 164 181 / var(--tw-bg-opacity))] text-xs rounded-full"
+                className="px-2 py-1 bg-blue-50 text-[rgb(44 164 181)] text-xs rounded-full"
                // flex items-center mt-4 text-sm text-gray-500 flex-wrap gap-2
               >
                 {feature}
-                {index < owner.facility.length - 1 && " • "}
+               
               </span>
             ))}
           </div>
