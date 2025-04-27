@@ -8,7 +8,7 @@ function MessBars({
   isChecked,
   checkFeatures,
   userLocation,
-  coords,
+  coords={lat:messData[0]?.location?.coordinates[1],lng:messData[0]?.location?.coordinates[1]},
   setPgCount,
 }) {
   const [messData, setMessData] = useState([]);

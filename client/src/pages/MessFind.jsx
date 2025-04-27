@@ -525,7 +525,7 @@ const MessFind = () => {
           </div>
 
           {/* Toggles */}
-          <div className="flex items-center gap-4 mx-4">
+          <div className=" items-center gap-4 mx-4 hidden md:flex">
             <Toggle
               isChecked={isChecked}
               setIsChecked={setIsChecked}
