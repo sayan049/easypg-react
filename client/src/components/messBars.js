@@ -167,7 +167,7 @@ function MessBars({
         {messData.map((owner) => (
           <div
             key={owner._id}
-            className={`relative flip-card ${
+            className={`relative flip-card h-15rem ${
               selected === owner._id && isChecked
                 ? "ring-2 ring-blue-500"
                 : "ring-1 ring-gray-200"
