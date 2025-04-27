@@ -692,7 +692,7 @@
 // }
 
 // export default DashboardContent;
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaRupeeSign,
   FaBookmark,
@@ -712,6 +712,8 @@ import {
   FaSwimmingPool,
 } from "react-icons/fa";
 import { FiAlertCircle } from "react-icons/fi";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   MdOutlineAcUnit,
   MdTv,
@@ -727,6 +729,7 @@ const DashboardContent = ({
   user,
   bookings = [],
   upcomingStay = [],
+  currentStay = [],
   pastStay = [],
   stats = {},
   daysRemaining = 0,
@@ -788,7 +791,20 @@ const handleSubmitRequest = async (e) => {
   }
 
   return (
+        
     <div className="p-4 md:p-8">
+          <ToastContainer
+              position="top-center"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              style={{ zIndex: 9999 }} // Ensure it's above other elements
+            />
       {/* Welcome Message */}
       <div className="mb-8">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
