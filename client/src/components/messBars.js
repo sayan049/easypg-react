@@ -176,7 +176,7 @@ function MessBars({
             //     ? "ring-2 ring-blue-500"
             //     : "ring-1 ring-gray-200"
             // } bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4`}
-            className={`relative flip-card mb-4 h-[31rem] md:h-[15rem] ${
+            className={`relative flip-card mb-4 h-[31rem] md:h-[16rem] ${
               isChecked ? "w-full" : "w-full"
             }
              ${selected === owner._id && isChecked
@@ -223,7 +223,7 @@ function MessBars({
                         {owner.messName}
                       </h3>
                       <button
-                        className="p-2 hover:bg-blue-200 rounded-full transition-colors"
+                        className="p-2 hover:bg-blue-200 rounded-full transition-colors md:hidden"
                         onClick={(e) => {
                           e.stopPropagation();
                           toggleFlip(owner._id);
