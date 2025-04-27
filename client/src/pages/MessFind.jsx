@@ -531,7 +531,7 @@ const MessFind = () => {
               setIsChecked={setIsChecked}
               className="hidden md:block"
             />
-            <span className="hidden md:block">Map View</span>
+            <span className="hidden md:block w-[6rem]">Map View</span>
             <Dropdown className="hidden md:block" />
           </div>
 

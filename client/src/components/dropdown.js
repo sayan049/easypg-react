@@ -88,11 +88,11 @@ function Dropdown() {
   ];
 
   return (
-    <nav className="relative  md:block hidden">
+    <nav className="relative  md:block hidden w-[7rem]">
       {/* Dropdown Button */}
       <button
         onClick={toggleDisplay}
-        className="flex items-center justify-between px-4 py-2 rounded-md text-sm font-semibold text-gray-700 bg-white border border-gray-300 w-full md:w-auto"
+        className="flex items-center justify-between  px-4 py-2 rounded-md text-sm font-semibold text-gray-700 bg-white border border-gray-300  md:w-auto"
       >
         <span>Sort By</span>
         <img
