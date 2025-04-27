@@ -196,7 +196,7 @@ function MessBars({
                   </div>
                 )}
 
-                <div className={`"flex flex-col justify-between" ${isChecked ? "w-[125%]" : ""}`}>
+                <div className={`"flex flex-col justify-between" ${isChecked ? "w-full" : ""}`}> //this dive always going out of the card and sometimes shrink it not changing accroding to parrent fix it
                   <div>
                     <div className="flex justify-between items-start">
                       <h3 className="text-xl font-semibold text-gray-900">
