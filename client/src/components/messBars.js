@@ -141,7 +141,7 @@ function MessBars({
   {messData.map((owner) => (
     <div
       key={owner._id}
-      className={`relative grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4 ${
+      className={`relative grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4 md:max-h[15rem] bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4 ${
         selected === owner._id && isChecked
           ? "ring-2 ring-blue-500"
           : "ring-1 ring-gray-200"
@@ -224,9 +224,11 @@ function MessBars({
             {owner.facility?.map((feature, index) => (
               <span
                 key={index}
-                className="px-2 py-1 bg-blue-50 text-blue-800 text-xs rounded-full"
+                className="px-2 py-1 bg-blue-50 text-[rgb(44 164 181 / var(--tw-bg-opacity))] text-xs rounded-full"
+               // flex items-center mt-4 text-sm text-gray-500 flex-wrap gap-2
               >
                 {feature}
+                {index < owner.facility.length - 1 && " • "}
               </span>
             ))}
           </div>
