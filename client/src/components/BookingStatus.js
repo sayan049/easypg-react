@@ -1018,6 +1018,9 @@ import { baseurl } from "../constant/urls";
 
 
 
+import React, { useState } from "react";
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
+
 const BookingCard = React.memo(
   ({ booking, onConfirm, onReject, loading, maintenanceRequests }) => {
     const [showMaintenance, setShowMaintenance] = useState(false);
@@ -1038,7 +1041,6 @@ const BookingCard = React.memo(
           )
         ));
 
-    // Filter maintenance requests for this booking
     const bookingMaintenanceRequests = Array.isArray(
       maintenanceRequests?.requests
     )
@@ -1123,7 +1125,7 @@ const BookingCard = React.memo(
               </button>
 
               <div
-                className={`overflow-hidden transition-all duration-500 ${
+                className={`overflow-hidden transition-all duration-500 ease-in-out ${
                   showMaintenance ? "max-h-[1000px] mt-3" : "max-h-0"
                 }`}
               >
@@ -1212,6 +1214,9 @@ const BookingCard = React.memo(
     );
   }
 );
+
+
+
 
 
 
