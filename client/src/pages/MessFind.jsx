@@ -204,7 +204,7 @@ const MessFind = () => {
             />
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 my-4">
             <Toggle
               isChecked={isChecked}
               setIsChecked={setIsChecked}
@@ -214,7 +214,7 @@ const MessFind = () => {
             <Dropdown className="hidden md:block" />
           </div>
           <img
-            className="md:hidden"
+            className="md:hidden m-4"
             alt="x"
             src="/assets/filter 1.png"
             onClick={() => setFilterModalOpen(true)}
