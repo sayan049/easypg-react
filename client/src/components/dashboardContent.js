@@ -740,34 +740,63 @@ const DashboardContent = ({
   const [selectedStayId, setSelectedStayId] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const handleSubmitRequest = async (e) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!selectedStayId || !title || !description) {
-      toast.error("Please fill all fields properly!");
+    setIsSubmitting(true); // Start submitting process
+
+    const selectedStay = currentStay.find(
+      (stay) => stay._id === selectedStayId
+    );
+
+    if (!selectedStay) {
+      alert("Please select a valid stay.");
+      setIsSubmitting(false); // Stop loading
+      return;
+    }
+
+    // Ensure that the selected stay's studentId matches the logged-in user's id
+    if (selectedStay.student.toString() !== user._id.toString()) {
+      alert("You can only submit a maintenance request for your own stay.");
+      setIsSubmitting(false); // Stop loading
+      return;
+    }
+
+    const studentId = user._id; // The logged-in user's ID
+    const bookingId = selectedStay.booking; // Use the booking ID from the selected stay
+    const pgOwnerId = selectedStay.pgOwner._id; // The PG owner ID from the selected stay
+
+    if (!title || !description || !pgOwnerId) {
+      alert("Please fill in all fields.");
+      setIsSubmitting(false); // Stop loading
       return;
     }
 
     const requestBody = {
-      stayId: selectedStayId,
+      studentId,
+      bookingId,
+      pgOwnerId,
       title,
       description,
     };
 
-    // Call your API here (we'll create it next)
     try {
-      const res = await axios.post(
-        "/api/maintenance/create-request",
+      const response = await axios.post(
+        "/api/maintenance-request",
         requestBody
       );
-      toast.success("Request submitted successfully!");
-      // Optionally clear form:
-      setSelectedStayId("");
+      alert("Maintenance request submitted successfully!");
+      // Optionally, reset form fields
       setTitle("");
       setDescription("");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to submit request. Try again!");
+      setSelectedStayId("");
+    } catch (error) {
+      console.error("Error submitting maintenance request:", error);
+      alert("There was an error submitting the request. Please try again.");
+    } finally {
+      setIsSubmitting(false); // Stop loading after submission attempt
     }
   };
 
@@ -1277,18 +1306,20 @@ const DashboardContent = ({
           <div>
             <button
               type="submit"
+              onClick={handleSubmit}
               className={`w-full px-6 py-3 rounded-lg transition text-white font-medium ${
                 selectedStayId
-                  ? "bg-blue-600 hover:bg-blue-700"
+                  ? isSubmitting
+                    ? "bg-gray-400 cursor-not-allowed" // Disable button during submission
+                    : "bg-blue-600 hover:bg-blue-700"
                   : "bg-gray-400 cursor-not-allowed"
               }`}
-              disabled={!selectedStayId}
+              disabled={isSubmitting || !selectedStayId}
             >
-              Submit Maintenance Request
+              {isSubmitting ? "Submitting..." : "Submit Maintenance Request"}
             </button>
           </div>
         </div>
-
         {/* Maintenance History */}
         <div>
           <h2 className="text-lg font-semibold mb-4 text-gray-700">

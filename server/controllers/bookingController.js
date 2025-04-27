@@ -733,6 +733,10 @@ exports.getUserBookings = async (req, res) => {
         path: 'pgOwner',
         select: 'firstName lastName email mobileNo messName address gender facility roomInfo profilePhoto'
       })
+      .populate({
+        path: 'student',  // Populate student field
+        select: 'email '  // Only select email and id
+      })
       .sort({ "period.startDate": 1 }) // Important: Sort by startDate ascending
       .lean();
 
