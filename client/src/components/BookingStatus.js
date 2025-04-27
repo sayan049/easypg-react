@@ -1124,7 +1124,7 @@ const EmptyState = ({ message, icon: Icon }) => (
 const BookingStatus = ({
   bookings,
   stats,
-  loading,
+  
   fetchBookings,
   ownerId,
 }) => {

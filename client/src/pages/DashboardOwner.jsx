@@ -254,7 +254,7 @@ export default function DashboardOwner() {
           <BookingStatus
             bookings={bookings}
             stats={stats}
-            loading={loading}
+            
             fetchBookings={fetchBookings}
             ownerId={owner?._id}
           />
