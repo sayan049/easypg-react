@@ -197,14 +197,39 @@ const MessFind = () => {
         </div>
 
         {/* Listings */}
-        <div className="mt-6 flex flex-col gap-6">
+        {/* <div className="mt-6 flex flex-col gap-6">
           <div className="text-lg font-bold md:hidden">{pgCount} Mess Found</div>
           <div style={{ display: isChecked ? "flex" : "block" }}>
             <MessBars checkFeatures={checkFeatures} isChecked={isChecked} userLocation={userLocation}  coords={handleCoordinatesChange}  setPgCount={setPgCount}/>
             <Map isChecked={isChecked} coordinates={coordinates} />
           </div>
         </div>
+      </div> */}
+       <div className="mt-6" style={{ height: "calc(100vh - 200px)" }}>
+    <div className="text-lg font-bold md:hidden">{pgCount} Mess Found</div>
+    <div className="flex" style={{ height: "100%" }}>
+      {/* Scroll only MessBars */}
+      <div className="flex-1 overflow-y-auto pr-4">
+        <MessBars 
+          checkFeatures={checkFeatures}
+          isChecked={isChecked}
+          userLocation={userLocation}
+          coords={handleCoordinatesChange}
+          setPgCount={setPgCount}
+        />
       </div>
+
+      
+
+      {/* Map stays fixed */}
+      {isChecked && (
+        <div className="w-1/2 pl-4">
+          <Map isChecked={isChecked} coordinates={coordinates} />
+        </div>
+      )}
+    </div>
+  </div>
+</div>
 
       {/* Filter Modal for Mobile */}
       <FilterModal
