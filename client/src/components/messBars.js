@@ -167,7 +167,7 @@ function MessBars({
         {messData.map((owner) => (
           <div
             key={owner._id}
-            className={`relative flip-card h-[31rem] mb-4  ${isChecked ? "md:h-[19rem]" : "md:h-[15rem]"} ${
+            className={`relative flip-card h-[31rem] mb-4  ${isChecked ? "md:h-[15rem]" : "md:h-[15rem]"} ${
               selected === owner._id && isChecked
                 ? "ring-2 ring-blue-500"
                 : "ring-1 ring-gray-200"
@@ -196,7 +196,7 @@ function MessBars({
                   </div>
                 )}
 
-                <div className={`"flex flex-col justify-between" ${isChecked ? "w-[145%]" : ""}`}>
+                <div className={`"flex flex-col justify-between" ${isChecked ? "w-[125%]" : ""}`}>
                   <div>
                     <div className="flex justify-between items-start">
                       <h3 className="text-xl font-semibold text-gray-900">
@@ -226,7 +226,7 @@ function MessBars({
                     </div>
 
                     <p className="mt-1 text-sm text-gray-600">
-                      {owner.address}
+                      {owner.address} .
                     </p>
                     <div className="mt-2 text-sm text-gray-500">
                       <span className="inline-flex items-center">
