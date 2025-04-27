@@ -548,7 +548,7 @@ const MessFind = () => {
           <div className="text-lg font-bold">
             {pgCount} Mess near {item?.split(",")[0]}
           </div>
-          <div className="flex" style={{ height: "100%" }}>
+          <div className="flex" style={{ height: "104%" }}>
             <div className="flex-1 overflow-y-auto pr-4">
               <MessBars
                 checkFeatures={checkFeatures}
