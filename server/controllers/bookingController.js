@@ -677,6 +677,7 @@ exports.getOwnerBookings = async (req, res) => {
         status,
       })
         .populate("student", "firstName lastName email ")
+        .populate("pgOwner", "messName")
         .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
@@ -1115,6 +1116,7 @@ exports.getRequestsByBookings = async (req, res) => {
       select: 'firstName lastName email',
       
     })
+    .populate("booking", "_id ")
     .sort({ createdAt: -1 }) // Newest first
     .lean(); // Better performance
 
@@ -1129,6 +1131,7 @@ exports.getRequestsByBookings = async (req, res) => {
               'Unknown Student',
         email: request.student?.email || ''
       },
+      booking: request.booking?._id || null, // <-- only _id here, not object
       createdAt: request.createdAt // Optional: include if you need timestamps
     }));
 
