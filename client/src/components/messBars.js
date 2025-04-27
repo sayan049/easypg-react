@@ -136,143 +136,138 @@ function MessBars({
     return <div>{error}</div>;
   }
 
-  return(
-  <div className="grid gap-4 p-2 sm:p-4">
-  {messData.map((owner) => (
-    <div
-      key={owner._id}
-      className={`relative grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4 md:max-h[15rem] bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4 ${
-        selected === owner._id && isChecked
-          ? "ring-2 ring-blue-500"
-          : "ring-1 ring-gray-200"
-      }`}
-      onClick={() => {
-        if (owner?.location?.coordinates) {
-          clickCords(owner.location.coordinates, owner._id);
-        }
-      }}
-    >
-      {!isChecked && (
-        <div className="relative h-48 md:h-full rounded-lg overflow-hidden">
-          <img
-            loading="lazy"
-            src={owner.profilePhoto}
-            alt="Mess"
-            className="w-full h-full object-cover"
-          />
-        </div>
-      )}
+  return (
+    <div className="grid gap-4 p-2 sm:p-4">
+      {messData.map((owner) => (
+        <div
+          key={owner._id}
+          className={`relative grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4 md:max-h[15rem] bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4 ${
+            selected === owner._id && isChecked
+              ? "ring-2 ring-blue-500"
+              : "ring-1 ring-gray-200"
+          }`}
+          onClick={() => {
+            if (owner?.location?.coordinates) {
+              clickCords(owner.location.coordinates, owner._id);
+            }
+          }}
+        >
+          {!isChecked && (
+            <div className="relative h-48 md:h-full rounded-lg overflow-hidden">
+              <img
+                loading="lazy"
+                src={owner.profilePhoto}
+                alt="Mess"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
 
-      <div className="flex flex-col justify-between">
-        <div>
-          <div className="flex justify-between items-start">
-            <h3 className="text-xl font-semibold text-gray-900">
-              {owner.messName}
-            </h3>
-            <button
-              className="p-2 text-gray-500 hover:text-blue-500 transition-colors"
-              onClick={(e) => {
-                e.stopPropagation();
-                console.log("Info clicked", owner._id);
-              }}
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </button>
-          </div>
+          <div className="flex flex-col justify-between">
+            <div>
+              <div className="flex justify-between items-start">
+                <h3 className="text-xl font-semibold text-gray-900">
+                  {owner.messName}
+                </h3>
+                <button
+                  className="p-2 text-gray-500 hover:text-blue-500 transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    console.log("Map clicked", owner._id);
+                  }}
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                </button>
+              </div>
 
-          <p className="mt-1 text-sm text-gray-600">
-            {owner.address}
-          </p>
-          <div className="mt-2 text-sm text-gray-500">
-            <span className="inline-flex items-center">
-              <svg
-                className="w-4 h-4 mr-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-              {distanceMap[owner._id] || "Calculating..."}
-            </span>
-          </div>
+              <p className="mt-1 text-sm text-gray-600">{owner.address}</p>
+              <div className="mt-2 text-sm text-gray-500">
+                <span className="inline-flex items-center">
+                  <svg
+                    className="w-4 h-4 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                  {distanceMap[owner._id] || "Calculating..."}
+                </span>
+              </div>
 
-          <div className="mt-3 flex flex-wrap gap-2">
-            {owner.facility?.map((feature, index) => (
-              <span
-                key={index}
-                className="px-2 py-1 bg-blue-50 text-[rgb(44 164 181)] text-xs rounded-full"
-               // flex items-center mt-4 text-sm text-gray-500 flex-wrap gap-2
-              >
-                {feature}
-               
-              </span>
-            ))}
-          </div>
-        </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {owner.facility?.map((feature, index) => (
+                  <span
+                    key={index}
+                    className="px-2 py-1 bg-blue-50 text-[rgb(44 164 181)] text-xs rounded-full"
+                    // flex items-center mt-4 text-sm text-gray-500 flex-wrap gap-2
+                  >
+                    {feature}
+                  </span>
+                ))}
+              </div>
+            </div>
 
-        <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div className="text-lg font-medium text-gray-900">
-            {owner.roomInfo?.length > 0 ? (
-              `₹${Math.min(
-                ...owner.roomInfo
-                  .map((room) => Number(room.pricePerHead))
-                  .filter(Number)
-              )} /month`
-            ) : (
-              "Price: N/A"
-            )}
-          </div>
+            <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="text-lg font-medium text-gray-900">
+                {owner.roomInfo?.length > 0
+                  ? `₹${Math.min(
+                      ...owner.roomInfo
+                        .map((room) => Number(room.pricePerHead))
+                        .filter(Number)
+                    )} /month`
+                  : "Price: N/A"}
+              </div>
 
-          <div className="flex gap-2">
-            <button
-              className="px-4 py-2 bg-blue-500 text-white border border-gray-300 rounded-lg  hover:bg-gray-50 transition-colors text-sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                clickNavi(owner);
-              }}
-            >
-              View Details
-            </button>
-            <button
-              className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                clickBook(owner);
-              }}
-            >
-              Book Now
-            </button>
+              <div className="flex gap-2">
+                <button
+                  className="px-4 py-2 bg-blue-500 text-white border border-gray-300 rounded-lg  hover:bg-gray-50 transition-colors text-sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    clickNavi(owner);
+                  }}
+                >
+                  View Details
+                </button>
+                <button
+                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    clickBook(owner);
+                  }}
+                >
+                  Book Now
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      ))}
     </div>
-  ))}
-</div>
-);
+  );
   // (
   //   <div style={{ overflowY: "auto", height: "84vh" }}>
   //     {messData.map((owner) => (
@@ -382,14 +377,14 @@ function MessBars({
   //                 console.log("Round button clicked", owner._id);
   //               }}
   //             >
-              
+
   //               <img
   //                 src="/assets/i.png"
   //                 alt="i"
   //               />
   //             </button>
   //           </div>
-           
+
   //         </div>
   //       </div>
   //     ))}
