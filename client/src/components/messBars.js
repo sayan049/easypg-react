@@ -128,6 +128,12 @@ function MessBars({
       }
     };
 
+    if (filteredData.length > 0 && typeof coords === "function") {
+      const [lng, lat] = filteredData[0].location.coordinates;
+      coords({ lat, lng });
+      setSelected(filteredData[0]._id); // optional: also select first card
+    }
+
     fetchData();
   }, [checkFeatures, userLocation]);
 

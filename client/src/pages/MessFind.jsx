@@ -525,7 +525,7 @@ const MessFind = () => {
           </div>
 
           {/* Toggles */}
-          <div className="flex items-center gap-4 mx-4">
+          <div className=" items-center gap-4 mx-4 hidden md:flex">
             <Toggle
               isChecked={isChecked}
               setIsChecked={setIsChecked}
@@ -536,7 +536,7 @@ const MessFind = () => {
           </div>
 
           <img
-            className="md:hidden  cursor-pointer"
+            className="md:hidden  cursor-pointer ml-4"
             alt="Filter"
             src="/assets/button.png"
             onClick={() => setFilterModalOpen(true)}
