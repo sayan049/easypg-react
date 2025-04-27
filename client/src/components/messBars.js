@@ -226,9 +226,9 @@ function MessBars({
                     </div>
 
                     <p className="mt-1 text-sm text-gray-600">
-                      {owner.address}
+                      {owner.address} . {distanceMap[owner._id] || "Calculating..."}
                     </p>
-                    <div className="mt-2 text-sm text-gray-500">
+                    {/* <div className="mt-2 text-sm text-gray-500">
                       <span className="inline-flex items-center">
                         <svg
                           className="w-4 h-4 mr-1"
@@ -249,9 +249,9 @@ function MessBars({
                             d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                           />
                         </svg>
-                        {distanceMap[owner._id] || "Calculating..."}
+                        
                       </span>
-                    </div>
+                    </div> */}
 
                     <div className="mt-3 flex flex-wrap gap-2">
                       {owner.facility?.map((feature, index) => (
