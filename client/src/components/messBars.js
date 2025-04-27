@@ -32,7 +32,7 @@ function MessBars({
     position: relative;
     width: 100%;
     height: 100%;
-    transition: transform 0.4s ease-in-out;
+    transition: transform 0.6s;
     transform-style: preserve-3d;
   }
   
@@ -310,15 +310,17 @@ function MessBars({
     <style>{styles}</style>
     <div className="grid gap-4 p-2 sm:p-4">
       {messData.map((owner) => (
-        <div key={owner._id} className="flip-card group">
+        <div key={owner._id} className="flip-card">
           <div className={`flip-card-inner ${flipped[owner._id] ? 'flipped' : ''}`}>
             {/* Front Side */}
             <div className="flip-card-front">
-              <div className={`h-full grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-all p-4 ${
-                selected === owner._id && isChecked ? "ring-2 ring-blue-500" : "ring-1 ring-gray-200"
+              <div className={`relative grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4 ${
+                selected === owner._id && isChecked
+                  ? "ring-2 ring-blue-500"
+                  : "ring-1 ring-gray-200"
               }`}>
                 {!isChecked && (
-                  <div className="relative aspect-square md:aspect-auto md:h-full rounded-lg overflow-hidden">
+                  <div className="relative h-48 md:h-full rounded-lg overflow-hidden">
                     <img
                       loading="lazy"
                       src={owner.profilePhoto}
@@ -331,11 +333,11 @@ function MessBars({
                 <div className="flex flex-col justify-between">
                   <div>
                     <div className="flex justify-between items-start">
-                      <h3 className="text-xl font-semibold text-gray-900 truncate">
+                      <h3 className="text-xl font-semibold text-gray-900">
                         {owner.messName}
                       </h3>
                       <button
-                        className="p-2 hover:bg-blue-100 rounded-full transition-colors"
+                        className="p-2 hover:bg-blue-200 rounded-full transition-colors"
                         onClick={(e) => {
                           e.stopPropagation();
                           toggleFlip(owner._id);
@@ -351,17 +353,17 @@ function MessBars({
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
-                            d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z"
                           />
                         </svg>
                       </button>
                     </div>
 
-                    <div className="mt-2 space-y-2">
-                      <p className="text-sm text-gray-600 truncate">{owner.address}</p>
-                      <div className="flex items-center text-sm text-gray-500">
+                    <p className="mt-1 text-sm text-gray-600">{owner.address}</p>
+                    <div className="mt-2 text-sm text-gray-500">
+                      <span className="inline-flex items-center">
                         <svg
-                          className="w-4 h-4 mr-1 shrink-0"
+                          className="w-4 h-4 mr-1"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -379,17 +381,15 @@ function MessBars({
                             d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                           />
                         </svg>
-                        <span className="truncate">
-                          {distanceMap[owner._id] || "Calculating distance..."}
-                        </span>
-                      </div>
+                        {distanceMap[owner._id] || "Calculating..."}
+                      </span>
                     </div>
 
                     <div className="mt-3 flex flex-wrap gap-2">
                       {owner.facility?.map((feature, index) => (
                         <span
                           key={index}
-                          className="px-2.5 py-1 bg-blue-50 text-blue-800 text-xs font-medium rounded-full"
+                          className="px-2 py-1 bg-blue-50 text-[rgb(44 164 181)] text-xs rounded-full"
                         >
                           {feature}
                         </span>
@@ -397,20 +397,20 @@ function MessBars({
                     </div>
                   </div>
 
-                  <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                    <div className="text-lg font-semibold text-gray-900">
-                      {owner.roomInfo?.length > 0 ? (
-                        `₹${Math.min(
-                          ...owner.roomInfo
-                            .map((room) => Number(room.pricePerHead))
-                            .filter(Number)
-                        )}/month`
-                      ) : "Price not available"}
+                  <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="text-lg font-medium text-gray-900">
+                      {owner.roomInfo?.length > 0
+                        ? `₹${Math.min(
+                            ...owner.roomInfo
+                              .map((room) => Number(room.pricePerHead))
+                              .filter(Number)
+                          )} /month`
+                        : "Price: N/A"}
                     </div>
 
-                    <div className="flex gap-2 flex-wrap">
+                    <div className="flex gap-2">
                       <button
-                        className="px-4 py-2 text-sm font-medium text-blue-600 bg-white border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+                        className="px-4 py-2 bg-blue-500 text-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm"
                         onClick={(e) => {
                           e.stopPropagation();
                           clickNavi(owner);
@@ -419,7 +419,7 @@ function MessBars({
                         View Details
                       </button>
                       <button
-                        className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
+                        className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
                         onClick={(e) => {
                           e.stopPropagation();
                           clickBook(owner);
@@ -435,20 +435,18 @@ function MessBars({
 
             {/* Back Side (Map) */}
             <div className="flip-card-back">
-              <div className="h-full bg-white rounded-xl shadow-sm p-4 flex flex-col">
+              <div className="h-full bg-white rounded-xl shadow-sm p-4">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    {owner.messName} Location
-                  </h3>
+                  <h3 className="text-lg font-semibold">Location Map</h3>
                   <button
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    className="p-2 text-gray-500 hover:text-blue-500"
                     onClick={(e) => {
                       e.stopPropagation();
                       toggleFlip(owner._id);
                     }}
                   >
                     <svg
-                      className="w-5 h-5 text-gray-600"
+                      className="w-5 h-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -462,14 +460,17 @@ function MessBars({
                     </svg>
                   </button>
                 </div>
-                <div className="flex-1 rounded-lg overflow-hidden bg-gray-100">
+                <div className="h-64 rounded-lg overflow-hidden">
                   {owner.location?.coordinates && (
                     <iframe
-                      className="w-full h-full"
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                      src={`https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=${owner.location.coordinates[1]},${owner.location.coordinates[0]}`}
-                      title="Location map"
+                      width="100%"
+                      height="100%"
+                      frameBorder="0"
+                      scrolling="no"
+                      marginHeight="0"
+                      marginWidth="0"
+                      src={`https://maps.google.com/maps?q=${owner.location.coordinates[1]},${owner.location.coordinates[0]}&z=15&output=embed`}
+                      title="Mess Location"
                     />
                   )}
                 </div>
