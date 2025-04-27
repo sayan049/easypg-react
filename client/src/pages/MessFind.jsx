@@ -536,7 +536,7 @@ const MessFind = () => {
           </div>
 
           <img
-            className="md:hidden m-4 cursor-pointer"
+            className="md:hidden  cursor-pointer"
             alt="Filter"
             src="/assets/button.png"
             onClick={() => setFilterModalOpen(true)}
