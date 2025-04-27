@@ -1016,8 +1016,12 @@ import "react-toastify/dist/ReactToastify.css";
 import PropTypes from "prop-types";
 import { baseurl } from "../constant/urls";
 
+
+
 const BookingCard = React.memo(
   ({ booking, onConfirm, onReject, loading, maintenanceRequests }) => {
+    const [showMaintenance, setShowMaintenance] = useState(false);
+
     const statusColors = {
       pending: "bg-yellow-100 text-yellow-800",
       confirmed: "bg-green-100 text-green-800",
@@ -1043,8 +1047,12 @@ const BookingCard = React.memo(
         )
       : [];
 
+    const toggleMaintenance = () => {
+      setShowMaintenance((prev) => !prev);
+    };
+
     return (
-      <div className="w-full md:w-[48%] bg-white rounded-xl shadow p-4">
+      <div className="w-full md:w-[48%] bg-white rounded-xl shadow p-4 transition-all duration-300">
         <div className="flex flex-col gap-4">
           {/* Booking Header */}
           <div className="flex items-center justify-between">
@@ -1052,9 +1060,7 @@ const BookingCard = React.memo(
               <img
                 src={
                   booking.student?.avatar ||
-                  `https://i.pravatar.cc/150?u=${
-                    booking.student?._id || "user"
-                  }`
+                  `https://i.pravatar.cc/150?u=${booking.student?._id || "user"}`
                 }
                 alt={booking.student?.firstName || "Student"}
                 className="w-10 h-10 rounded-full"
@@ -1106,17 +1112,24 @@ const BookingCard = React.memo(
             </div>
           </div>
 
-          {/* Maintenance Requests Section - Only for Confirmed Bookings */}
-          {booking.status === "confirmed" &&
-            bookingMaintenanceRequests.length > 0 && (
-              <div className="mt-2">
-                <h3 className="font-medium text-lg mb-2 text-gray-700">
-                  Maintenance Requests ({bookingMaintenanceRequests.length})
-                </h3>
+          {/* Maintenance Requests Section */}
+          {booking.status === "confirmed" && bookingMaintenanceRequests.length > 0 && (
+            <div>
+              <button
+                onClick={toggleMaintenance}
+                className="mt-2 text-blue-600 text-sm font-semibold hover:underline focus:outline-none"
+              >
+                {showMaintenance ? "Hide Maintenance Requests" : "View Maintenance Requests"}
+              </button>
 
+              <div
+                className={`overflow-hidden transition-all duration-500 ${
+                  showMaintenance ? "max-h-[1000px] mt-3" : "max-h-0"
+                }`}
+              >
                 <div className="space-y-3">
                   {bookingMaintenanceRequests.map((request) => (
-                    <div key={request._id} className="border rounded-lg p-3">
+                    <div key={request._id} className="border rounded-lg p-3 bg-gray-50">
                       <div className="flex justify-between items-start">
                         <div>
                           <h4 className="font-medium">{request.title}</h4>
@@ -1135,7 +1148,7 @@ const BookingCard = React.memo(
                         </span>
                       </div>
 
-                      <div className="mt-2 text-sm">
+                      <div className="mt-2 text-sm text-gray-700">
                         <p>
                           <span className="font-medium">Submitted by:</span>{" "}
                           {request.student?.name || "Unknown Student"}
@@ -1153,7 +1166,8 @@ const BookingCard = React.memo(
                   ))}
                 </div>
               </div>
-            )}
+            </div>
+          )}
 
           {/* Action Buttons for Pending Bookings */}
           {booking.status === "pending" && (
@@ -1198,6 +1212,9 @@ const BookingCard = React.memo(
     );
   }
 );
+
+
+
 
 const EmptyState = ({ message, icon: Icon }) => (
   <div className="flex flex-col items-center justify-center py-12 text-gray-500">
