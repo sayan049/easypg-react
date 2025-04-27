@@ -1092,7 +1092,7 @@ exports.maintenanceRequestHandler = async (req, res) => {
 // controllers/maintenanceController.js
 // const MaintenanceRequest = require('../models/MaintenanceRequest');
 
-const MaintenanceRequest = require('../models/MaintenanceRequest');
+// const MaintenanceRequest = require('../models/MaintenanceRequest');
 
 exports.getRequestsByBookings = async (req, res) => {
   try {
