@@ -733,6 +733,37 @@ const DashboardContent = ({
   totalAmountConfirmed = 0,
   loading = false,
 }) => {
+  const [selectedStayId, setSelectedStayId] = useState("");
+const [title, setTitle] = useState("");
+const [description, setDescription] = useState("");
+const handleSubmitRequest = async (e) => {
+  e.preventDefault();
+  
+  if (!selectedStayId || !title || !description) {
+    toast.error("Please fill all fields properly!");
+    return;
+  }
+
+  const requestBody = {
+    stayId: selectedStayId,
+    title,
+    description,
+  };
+
+  // Call your API here (we'll create it next)
+  try {
+    const res = await axios.post("/api/maintenance/create-request", requestBody);
+    toast.success("Request submitted successfully!");
+    // Optionally clear form:
+    setSelectedStayId("");
+    setTitle("");
+    setDescription("");
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to submit request. Try again!");
+  }
+};
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -1133,36 +1164,76 @@ const DashboardContent = ({
       {/* Maintenance Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Create Maintenance Request */}
-        <div>
-          <h2 className="text-lg font-semibold mb-4 text-gray-700">
-            Create Maintenance Request
-          </h2>
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Issue Title
-              </label>
-              <input
-                type="text"
-                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="Enter issue title"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description
-              </label>
-              <textarea
-                rows="4"
-                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="Describe the issue"
-              ></textarea>
-            </div>
-            <button className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
+        <form onSubmit={handleSubmitRequest} className="space-y-6">
+          {/* PG Selection */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Select Stay
+            </label>
+            <select
+              value={selectedStayId}
+              onChange={(e) => setSelectedStayId(e.target.value)}
+              className="w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
+              required
+            >
+              <option value="">-- Select a Stay --</option>
+              {currentStay.map((stay) => (
+                <option key={stay._id} value={stay._id}>
+                  {stay.pgOwner?.messName} | {stay.pgOwner?.firstName}{" "}
+                  {stay.pgOwner?.lastName} | {stay.pgOwner?.address} |{" "}
+                  {stay.pgOwner?.email}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Title */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Issue Title
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
+              placeholder="Short title for the issue (e.g., Water leakage)"
+              required
+              disabled={!selectedStayId}
+            />
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">
+              Issue Description
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows="4"
+              className="w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
+              placeholder="Describe the issue in detail..."
+              required
+              disabled={!selectedStayId}
+            />
+          </div>
+
+          {/* Submit Button */}
+          <div>
+            <button
+              type="submit"
+              className={`px-6 py-2 rounded-md transition text-white ${
+                selectedStayId
+                  ? "bg-blue-600 hover:bg-blue-700"
+                  : "bg-gray-400 cursor-not-allowed"
+              }`}
+              disabled={!selectedStayId}
+            >
               Submit Request
             </button>
           </div>
-        </div>
+        </form>
 
         {/* Maintenance History */}
         <div>
