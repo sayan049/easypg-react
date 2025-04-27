@@ -1035,8 +1035,12 @@ const BookingCard = React.memo(
         ));
 
     // Filter maintenance requests for this booking
-    const bookingMaintenanceRequests = Array.isArray(maintenanceRequests)
-      ? maintenanceRequests.filter((req) => req.booking === booking._id)
+    const bookingMaintenanceRequests = Array.isArray(
+      maintenanceRequests?.requests
+    )
+      ? maintenanceRequests.requests.filter(
+          (req) => req.booking === booking._id
+        )
       : [];
 
     return (
@@ -1048,7 +1052,9 @@ const BookingCard = React.memo(
               <img
                 src={
                   booking.student?.avatar ||
-                  `https://i.pravatar.cc/150?u=${booking.student?._id || "user"}`
+                  `https://i.pravatar.cc/150?u=${
+                    booking.student?._id || "user"
+                  }`
                 }
                 alt={booking.student?.firstName || "Student"}
                 className="w-10 h-10 rounded-full"
@@ -1078,7 +1084,7 @@ const BookingCard = React.memo(
             <h3 className="font-medium text-blue-800">PG Details</h3>
             <div className="text-sm space-y-1 mt-1">
               <p>
-                <strong>PG Name:</strong> {booking.pg?.name || "N/A"}
+                <strong>PG Name:</strong> {booking.pgOwner?.messName || "N/A"}
               </p>
               <p>
                 <strong>Room:</strong> {booking.room || "N/A"}
@@ -1091,8 +1097,7 @@ const BookingCard = React.memo(
                 {booking.period?.startDate
                   ? new Date(booking.period.startDate).toLocaleDateString()
                   : "N/A"}{" "}
-                -{" "}
-                {endDate ? new Date(endDate).toLocaleDateString() : "N/A"}
+                - {endDate ? new Date(endDate).toLocaleDateString() : "N/A"}
               </p>
               <p>
                 <strong>Amount:</strong> ₹
@@ -1102,58 +1107,53 @@ const BookingCard = React.memo(
           </div>
 
           {/* Maintenance Requests Section - Only for Confirmed Bookings */}
-          {booking.status === "confirmed" && bookingMaintenanceRequests.length > 0 && (
-            <div className="mt-2">
-              <h3 className="font-medium text-lg mb-2 text-gray-700">
-                Maintenance Requests ({bookingMaintenanceRequests.length})
-              </h3>
-              
-              <div className="space-y-3">
-                {bookingMaintenanceRequests.map((request) => (
-                  <div key={request._id} className="border rounded-lg p-3">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className="font-medium">{request.title}</h4>
-                        <p className="text-gray-600 text-sm mt-1">
-                          {request.description}
+          {booking.status === "confirmed" &&
+            bookingMaintenanceRequests.length > 0 && (
+              <div className="mt-2">
+                <h3 className="font-medium text-lg mb-2 text-gray-700">
+                  Maintenance Requests ({bookingMaintenanceRequests.length})
+                </h3>
+
+                <div className="space-y-3">
+                  {bookingMaintenanceRequests.map((request) => (
+                    <div key={request._id} className="border rounded-lg p-3">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="font-medium">{request.title}</h4>
+                          <p className="text-gray-600 text-sm mt-1">
+                            {request.description}
+                          </p>
+                        </div>
+                        <span
+                          className={`px-2 py-1 text-xs rounded-full ${
+                            request.status === "in-progress"
+                              ? "bg-orange-100 text-orange-800"
+                              : "bg-green-100 text-green-800"
+                          }`}
+                        >
+                          {request.status.toUpperCase()}
+                        </span>
+                      </div>
+
+                      <div className="mt-2 text-sm">
+                        <p>
+                          <span className="font-medium">Submitted by:</span>{" "}
+                          {request.student?.name || "Unknown Student"}
+                        </p>
+                        <p>
+                          <span className="font-medium">Email:</span>{" "}
+                          {request.student?.email || "N/A"}
+                        </p>
+                        <p>
+                          <span className="font-medium">Date:</span>{" "}
+                          {new Date(request.createdAt).toLocaleDateString()}
                         </p>
                       </div>
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        request.status === "in-progress" ? "bg-orange-100 text-orange-800" :
-                        request.status === "pending" ? "bg-yellow-100 text-yellow-800" :
-                        "bg-green-100 text-green-800"
-                      }`}>
-                        {request.status.toUpperCase()}
-                      </span>
                     </div>
-
-                    <div className="mt-2 text-sm">
-                      <p>
-                        <span className="font-medium">Submitted by:</span>{" "}
-                        {request.student?.name || 
-                         `${booking.student?.firstName} ${booking.student?.lastName}` || 
-                         "Unknown Student"}
-                      </p>
-                      <p>
-                        <span className="font-medium">Email:</span>{" "}
-                        {request.student?.email || booking.student?.email || "N/A"}
-                      </p>
-                      <p>
-                        <span className="font-medium">Date:</span>{" "}
-                        {new Date(request.createdAt).toLocaleDateString()}
-                      </p>
-                      {request.response && (
-                        <p className="mt-1">
-                          <span className="font-medium">Response:</span>{" "}
-                          {request.response}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Action Buttons for Pending Bookings */}
           {booking.status === "pending" && (
@@ -1267,13 +1267,13 @@ const BookingStatus = ({ owner }) => {
           },
         }
       );
-      // Ensure we always return an array
-      console.log("Maintenance Requests:", response.data);
-      return Array.isArray(response.data) ? response.data : [];
+
+      // Return the entire response data which includes the requests array
+      return response.data || { requests: [] };
     } catch (error) {
       console.error("Error fetching maintenance requests:", error);
       toast.error("Failed to load maintenance requests");
-      return []; // Return empty array on error
+      return { requests: [] }; // Return empty object with requests array
     } finally {
       setLoading((prev) => ({ ...prev, maintenance: false }));
     }
@@ -1321,10 +1321,13 @@ const BookingStatus = ({ owner }) => {
       // Fetch maintenance requests when loading confirmed bookings
       // Inside fetchBookings function, when status is "confirmed":
       // Inside fetchBookings, when status is "confirmed":
+      // Inside fetchBookings, when status is "confirmed":
       if (status === "confirmed") {
         const bookingIds = response.data.bookings.map((b) => b._id);
-        const requests = await fetchMaintenanceRequests(bookingIds);
-        setMaintenanceRequests(Array.isArray(requests) ? requests : []);
+        const { requests } = await fetchMaintenanceRequests(bookingIds);
+        setMaintenanceRequests({
+          requests: Array.isArray(requests) ? requests : [],
+        });
       }
       if (status !== tab) {
         setTab(status);
@@ -1444,7 +1447,7 @@ const BookingStatus = ({ owner }) => {
   };
   const refreshMaintenanceData = async () => {
     if (bookings.confirmed.data.length > 0) {
-      const bookingIds = bookings.confirmed.data.map(b => b._id);
+      const bookingIds = bookings.confirmed.data.map((b) => b._id);
       const requests = await fetchMaintenanceRequests(bookingIds);
       setMaintenanceRequests(requests);
       toast.success("Maintenance requests updated");
