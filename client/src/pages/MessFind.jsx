@@ -71,14 +71,11 @@ const MessFind = () => {
   const userLocation = location.state?.userLocation || null;
   const item = location.state?.item || null; // Retrieve items from Homepage
   // Retrieve lat/lon from Homepage
-  const { 
-    performSearch, 
-    handleInputChange, 
-    setSearchItem 
-  } = location.state || {};
+  const { performSearch, handleInputChange, setSearchItem } =
+    location.state || {};
 
   // Local state for search input
- 
+
   console.log("🔍 Full Navigation State in MessFind:", location.state);
   console.log("📍 Extracted User Location:", userLocation);
 
@@ -203,7 +200,16 @@ const MessFind = () => {
 
           {/* implement a search bar here  */}
           <div className="flex items-center gap-4 bg-white p-3 rounded-lg border border-gray-300 shadow-sm hover:border-blue-500 transition-colors w-full">
-            <FaSearch className="w-5 h-5 text-gray-400" onClick={() => performSearch && performSearch()} />
+            <FaSearch
+              className="w-5 h-5 text-gray-400"
+              onClick={() => {
+                console.log("Search Button Clicked");  // Debugging
+                if (performSearch) {
+                  console.log("Calling performSearch with selectedLocation:",item);
+                  performSearch();  // Trigger search
+                }
+              }}
+            />
             <input
               type="text"
               placeholder="Search mess by location"
@@ -211,10 +217,11 @@ const MessFind = () => {
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
-                if (handleInputChange) handleInputChange(e);
-                if (setSearchItem) setSearchItem(e.target.value);
+                if (handleInputChange) handleInputChange(e); // Handle input change with debounce
+                if (setSearchItem) setSearchItem(e.target.value); // Update the search item
               }}
-              onKeyPress={(e) => e.key === "Enter" && performSearch && performSearch()}
+              onKeyDown={(e) =>
+                e.key === "Enter" && performSearch && performSearch()}
             />
           </div>
 
