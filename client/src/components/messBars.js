@@ -163,11 +163,11 @@ function MessBars({
   return (
     <>
       <style>{styles}</style>
-      <div className={`"grid gap-4 p-2 sm:p-4 my-4" ${isChecked ? "grid-cols-1 w-[50%]  " : "grid-cols-2 md:grid-cols-3"}`}>
+      <div className={`"grid gap-4 p-2 sm:p-4 " ${isChecked ? "grid-cols-1 w-[50%]  " : "grid-cols-2 md:grid-cols-3"}`}>
         {messData.map((owner) => (
           <div
             key={owner._id}
-            className={`relative flip-card h-[31rem]  ${isChecked ? "md:h-[19rem]" : "md:h-[15rem]"} ${
+            className={`relative flip-card h-[31rem] my-4  ${isChecked ? "md:h-[19rem]" : "md:h-[15rem]"} ${
               selected === owner._id && isChecked
                 ? "ring-2 ring-blue-500"
                 : "ring-1 ring-gray-200"
