@@ -1,8 +1,8 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { baseurl, findMessUrl } from "../constant/urls";
-import { useNavigate } from "react-router-dom";
 import { getDistance } from "ol/sphere";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { findMessUrl } from "../constant/urls";
 
 function MessBars({
   isChecked,
@@ -122,18 +122,19 @@ function MessBars({
 
         setMessData(filteredData);
         setPgCount(filteredData.length);
+        if (filteredData.length > 0 && typeof coords === "function") {
+          const [lng, lat] = filteredData[0].location.coordinates;
+          coords({ lat, lng });
+          setSelected(filteredData[0]._id); // optional: also select first card
+        }
+    
       } catch (err) {
         console.error("❌ Fetch Error", err);
         setError("Failed to fetch Messes");
       }
     };
 
-    if (filteredData.length > 0 && typeof coords === "function") {
-      const [lng, lat] = filteredData[0].location.coordinates;
-      coords({ lat, lng });
-      setSelected(filteredData[0]._id); // optional: also select first card
-    }
-
+  
     fetchData();
   }, [checkFeatures, userLocation]);
 
