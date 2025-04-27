@@ -16,7 +16,7 @@ const ToggleSwitch = ({isChecked,setIsChecked,className}) => {
         checked={isChecked}
         onChange={handleToggle}
       />
-      <div className="toggle-track">
+      <div className="toggle-track w-[102%]">
         <div className={`toggle-thumb ${isChecked ? "toggled-once" : ""}`} />
       </div>
     </div>
