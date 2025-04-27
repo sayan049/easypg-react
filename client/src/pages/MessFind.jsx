@@ -446,7 +446,7 @@ const MessFind = () => {
   };
 
   return (
-    <div className="flex flex-row md:flex-row p-4 bg-gray-50 min-h-screen overflow-hidden">
+    <div className="flex flex-col md:flex-row p-4 bg-gray-50 min-h-screen overflow-hidden">
       {/* Sidebar */}
       <div className="w-full md:w-1/4 bg-white p-4 shadow rounded-md hidden md:block">
         <h2 className="text-lg font-bold">Filter</h2>
@@ -492,7 +492,7 @@ const MessFind = () => {
 
       {/* Listings */}
       <div className="w-full md:w-3/4 md:mt-0 md:ml-6 relative">
-        <div className="flex flex-col md:flex-row justify-between items-center bg-white p-4 shadow rounded-md relative">
+        <div className="flex flex-row md:flex-row justify-between items-center bg-white p-4 shadow rounded-md relative">
           {/* Search Bar */}
           <div className="flex items-center gap-4 bg-white p-3 rounded-lg border border-gray-300 shadow-sm hover:border-blue-500 transition-colors w-full relative">
             <FaSearch
