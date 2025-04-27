@@ -22,7 +22,8 @@ const {
   getOwnerBookings,
   getUserBookings,
   downloadInvoice,
-  maintenanceRequestHandler
+  maintenanceRequestHandler,
+  getRequestsByBookings
 } = require('../controllers/bookingController');
 
 
@@ -230,6 +231,8 @@ router.get('/bookings/:id/invoice', authenticateJWT, downloadInvoice);
 router.post('/bookings/:id/status',authenticateJWT, handleBookingApproval);
 //maintenance request from user
 router.post('/maintenance-request', authenticateJWT, maintenanceRequestHandler);
+// Get maintenance requests by booking ID
+router.get('/maintenance/requests/owner', authenticateJWT, getRequestsByBookings);
 
 // User cancels the booking
 router.delete('/bookings/:id', cancelBooking);

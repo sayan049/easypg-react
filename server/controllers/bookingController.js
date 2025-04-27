@@ -1088,7 +1088,65 @@ exports.maintenanceRequestHandler = async (req, res) => {
       .json({ message: "Something went wrong. Try again later." });
   }
 };
+//maintenance request for owner
+// controllers/maintenanceController.js
+// const MaintenanceRequest = require('../models/MaintenanceRequest');
 
+// const MaintenanceRequest = require('../models/MaintenanceRequest');
+
+exports.getRequestsByBookings = async (req, res) => {
+  try {
+    const { bookingIds } = req.query;
+    
+    if (!bookingIds) {
+      return res.status(400).json({
+        success: false,
+        message: 'Booking IDs are required'
+      });
+    }
+
+    const idsArray = bookingIds.split(',');
+
+    const requests = await MaintenanceRequest.find({
+      booking: { $in: idsArray }
+    })
+    .populate({
+      path: 'student',
+      select: 'firstName lastName email',
+      
+    })
+    .sort({ createdAt: -1 }) // Newest first
+    .lean(); // Better performance
+
+    // Format the response with only the required fields
+    const formattedRequests = requests.map(request => ({
+      title: request.title,
+      description: request.description,
+      status: request.status,
+      student: {
+        name: request.student ? 
+              `${request.student.firstName} ${request.student.lastName}` : 
+              'Unknown Student',
+        email: request.student?.email || ''
+      },
+      createdAt: request.createdAt // Optional: include if you need timestamps
+    }));
+
+    res.status(200).json({
+      success: true,
+      count: formattedRequests.length,
+      requests: formattedRequests
+    });
+
+  } catch (error) {
+    console.error('Error fetching maintenance requests:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching maintenance requests',
+      error: error.message
+    });
+  }
+};
 // Cancel booking (BED RESTORATION ONLY FOR CONFIRMED BOOKINGS)
 exports.cancelBooking = async (req, res) => {
   try {
