@@ -731,7 +731,7 @@ exports.getUserBookings = async (req, res) => {
       .select('room status bedsBooked pricePerHead period payment.totalAmount pgOwner')
       .populate({
         path: 'pgOwner',
-        select: 'firstName lastName email mobileNo messName address  gender facility roomInfo profilePhoto'
+        select: 'firstName lastName email mobileNo messName address gender facility roomInfo profilePhoto'
       })
       .sort({ "period.startDate": 1 }) // Important: Sort by startDate ascending
       .lean();
@@ -746,7 +746,9 @@ exports.getUserBookings = async (req, res) => {
           past: 0,
           total: 0
         },
-        currentStay: null
+        currentStays: [],
+        upcomingStays: [],
+        pastStays: []
       });
     }
 
@@ -755,7 +757,7 @@ exports.getUserBookings = async (req, res) => {
       const endDate = new Date(startDate);
       endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
 
-      let bookingType = 'past'; // default
+      let bookingType = 'none'; // default is none now
 
       if (booking.status === 'confirmed') {
         if (now >= startDate && now <= endDate) {
@@ -778,20 +780,43 @@ exports.getUserBookings = async (req, res) => {
       };
     });
 
-    // Find the first (earliest) current stay
-    const currentStay = processedBookings.find(b => b.bookingType === 'current') || null;
+    // Get all stays of each type
+    const currentStays = processedBookings.filter(b => b.bookingType === 'current');
+    const upcomingStays = processedBookings.filter(b => b.bookingType === 'upcoming');
+    const pastStays = processedBookings.filter(b => b.bookingType === 'past');
+    
+    // Calculate days remaining for current stays (taking the earliest ending one)
+    let daysRemaining = 0;
+    if (currentStays.length > 0) {
+      // Find the current stay that ends soonest
+      const soonestEndingStay = currentStays.reduce((prev, current) => 
+        new Date(prev.period.endDate) < new Date(current.period.endDate) ? prev : current
+      );
+      const endDate = new Date(soonestEndingStay.period.endDate);
+      const diffTime = Math.max(endDate - now, 0); // Make sure no negative
+      daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // milliseconds -> days
+    }
+    
+    // Calculate total amount of confirmed bookings
+    const totalAmountConfirmed = processedBookings
+      .filter(b => b.status === 'confirmed')
+      .reduce((sum, b) => sum + (b.payment?.totalAmount || 0), 0);
 
     // Calculate stats
     const stats = {
-      upcoming: processedBookings.filter(b => b.bookingType === 'upcoming').length,
-      current: processedBookings.filter(b => b.bookingType === 'current').length,
-      past: processedBookings.filter(b => b.bookingType === 'past').length,
+      upcoming: upcomingStays.length,
+      current: currentStays.length,
+      past: pastStays.length,
       total: processedBookings.length
     };
 
     res.json({
       success: true,
-      currentStay,
+      currentStays,
+      upcomingStays,
+      pastStays,
+      daysRemaining,
+      totalAmountConfirmed,
       bookings: processedBookings,
       stats
     });
