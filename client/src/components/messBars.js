@@ -168,7 +168,7 @@ function MessBars({
           <div
             key={owner._id}
             // ${isChecked ? "md:h-[19rem]" : "md:h-[15rem]"}
-            className={`relative flip-card h-[31rem] mb-4md:h-[15rem]
+            className={`relative flip-card h-[31rem] mb-4 md:h-[15rem]
               
                  ${
               selected === owner._id && isChecked
