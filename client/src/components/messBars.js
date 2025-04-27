@@ -223,7 +223,7 @@ function MessBars({
                         {owner.messName}
                       </h3>
                       <button
-                        className="p-2 hover:bg-blue-200 rounded-full transition-colors"
+                        className="p-2 hover:bg-blue-200 rounded-full transition-colors md:hidden"
                         onClick={(e) => {
                           e.stopPropagation();
                           toggleFlip(owner._id);
