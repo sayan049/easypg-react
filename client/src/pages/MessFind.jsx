@@ -193,12 +193,12 @@ const MessFind = () => {
           </h2> */}
 
           {/* implement a search bar here  */}
-          <div className="flex items-center gap-4 bg-white p-2 rounded-full border border-gray-300 shadow-md w-full md:w-1/3">
-            <FaSearch className="text-gray-500" /> {/* Search Icon */}
+          <div className="flex items-center gap-4 bg-white p-3 rounded-lg border border-gray-300 shadow-sm hover:border-blue-500 transition-colors w-full">
+            <FaSearch className="w-5 h-5 text-gray-400" />
             <input
               type="text"
-              placeholder="Search mess..."
-              className="w-full p-2 text-sm outline-none"
+              placeholder="Search mess by location, price, or facilities"
+              className="w-full p-1 text-base outline-none placeholder-gray-400"
               // value={searchQuery}
               // onChange={handleSearchChange}
             />
