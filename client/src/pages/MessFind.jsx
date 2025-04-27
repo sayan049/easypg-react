@@ -199,8 +199,8 @@ const MessFind = () => {
               type="text"
               placeholder="Search mess..."
               className="w-full p-2 text-sm outline-none"
-              value={searchQuery}
-              onChange={handleSearchChange}
+              // value={searchQuery}
+              // onChange={handleSearchChange}
             />
           </div>
 
