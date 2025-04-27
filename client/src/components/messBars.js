@@ -15,7 +15,7 @@ function MessBars({
   const [distanceMap, setDistanceMap] = useState({});
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState(messData[0]?._id || null);
   const [flipped, setFlipped] = useState({});
 
   const toggleFlip = (id) => {
@@ -163,15 +163,27 @@ function MessBars({
   return (
     <>
       <style>{styles}</style>
-      <div className={`grid gap-4 p-2 sm:p-4 ${isChecked ? "grid-cols-1" : ""}`}>
+      <div
+        className={`grid gap-4 p-2 sm:p-4 ${isChecked ? "grid-cols-1" : ""}`}
+      >
         {messData.map((owner) => (
           <div
             key={owner._id}
-            className={`relative flip-card h-[31rem] mb-4  ${isChecked ? "md:h-[15rem]" : "md:h-[15rem]"} ${
-              selected === owner._id && isChecked
+            // className={`relative flip-card h-[31rem] mb-4  ${
+            //   isChecked ? "md:h-[15rem]" : "md:h-[15rem]"
+            // } ${
+            //   selected === owner._id && isChecked
+            //     ? "ring-2 ring-blue-500"
+            //     : "ring-1 ring-gray-200"
+            // } bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4`}
+            className={`relative flip-card mb-4 h-[31rem] md:h-[15rem] ${
+              isChecked ? "w-full" : "w-full"
+            }
+             ${selected === owner._id && isChecked
                 ? "ring-2 ring-blue-500"
                 : "ring-1 ring-gray-200"
-            } bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4`}
+             }
+            bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4`}
             onClick={() => {
               if (owner?.location?.coordinates) {
                 clickCords(owner.location.coordinates, owner._id);
@@ -185,8 +197,11 @@ function MessBars({
             >
               {/* FRONT SIDE */}
               {/* <div className="flip-card-front grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4"> */}
-              <div className="flip-card-front grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4 w-full">
-
+              <div
+                className={`flip-card-front grid gap-4 w-full h-full ${
+                  isChecked ? "grid-cols-1" : "md:grid-cols-[1fr_2fr]"
+                }`}
+              >
                 {!isChecked && (
                   <div className="relative h-48 md:h-full rounded-lg overflow-hidden">
                     <img
@@ -199,7 +214,8 @@ function MessBars({
                 )}
 
                 {/* <div className={`"flex flex-col justify-between" ${isChecked ? "w-full" : ""}`}>  */}
-                <div className="flex flex-col justify-between w-full">
+                <div className="flex flex-col justify-between h-full">
+                  {/* this div is not changing according to it's parent it always stays constant  sometime it shrinked sometimes out of the div fix it */}
 
                   <div>
                     <div className="flex justify-between items-start">
@@ -346,4 +362,3 @@ function MessBars({
 }
 
 export default MessBars;
-

@@ -184,7 +184,7 @@ const MessFind = () => {
           {pgCount} Mess in {item}
           </h2>
           <div className="flex items-center gap-4">
-            <Toggle isChecked={isChecked} setIsChecked={setIsChecked} />
+            <Toggle isChecked={isChecked} setIsChecked={setIsChecked} className="hidden md:block" />
             <span>Map View</span>
             <Dropdown className="hidden md:block" />
           </div>
@@ -219,7 +219,7 @@ const MessFind = () => {
         />
       </div>
 
-      
+
 
       {/* Map stays fixed */}
       {isChecked && (
