@@ -202,7 +202,13 @@ const MessFind = () => {
           <div className="flex items-center gap-4 bg-white p-3 rounded-lg border border-gray-300 shadow-sm hover:border-blue-500 transition-colors w-full">
             <FaSearch
               className="w-5 h-5 text-gray-400"
-              onClick={() => performSearch && performSearch()}
+              onClick={() => {
+                console.log("Search Button Clicked");  // Debugging
+                if (performSearch) {
+                  console.log("Calling performSearch with selectedLocation:", selectedLocation);
+                  performSearch();  // Trigger search
+                }
+              }}
             />
             <input
               type="text"
@@ -211,12 +217,11 @@ const MessFind = () => {
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
-                if (handleInputChange) handleInputChange(e);
-                if (setSearchItem) setSearchItem(e.target.value);
+                if (handleInputChange) handleInputChange(e); // Handle input change with debounce
+                if (setSearchItem) setSearchItem(e.target.value); // Update the search item
               }}
               onKeyDown={(e) =>
-                e.key === "Enter" && performSearch && performSearch()
-              }
+                e.key === "Enter" && performSearch && performSearch()}
             />
           </div>
 
