@@ -185,7 +185,7 @@ const MessFind = () => {
           </h2>
           <div className="flex items-center gap-4">
             <Toggle isChecked={isChecked} setIsChecked={setIsChecked} className="hidden md:block" />
-            <span>Map View</span>
+            <span className="hidden md:block">Map View</span>
             <Dropdown className="hidden md:block" />
           </div>
           <img
