@@ -296,7 +296,7 @@ function MessBars({
 
               {/* BACK SIDE */}
               <div className="flip-card-back flex items-center justify-center bg-gray-100">
-                <div className="w-full h-64 sm:h-full">
+                <div className="w-full h-full sm:h-full">
                   <iframe
                     src={`https://www.google.com/maps?q=${owner.location.coordinates[1]},${owner.location.coordinates[0]}&z=15&output=embed`}
                     width="100%"
@@ -305,6 +305,15 @@ function MessBars({
                     loading="lazy"
                   ></iframe>
                 </div>
+                <button
+    onClick={(e) => {
+      e.stopPropagation();
+      toggleFlip(owner._id);
+    }}
+    className="absolute top-2 left-2 px-3 py-1 bg-blue-500 text-white text-sm rounded-full shadow"
+  >
+    Back
+  </button>
               </div>
             </div>
           </div>
