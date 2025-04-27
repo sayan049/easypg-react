@@ -163,7 +163,7 @@ function MessBars({
   return (
     <>
       <style>{styles}</style>
-      <div className={`"grid gap-4 p-2 sm:p-4 " ${isChecked ? "grid-cols-1  " : ""}`}>
+      <div className={`grid gap-4 p-2 sm:p-4 ${isChecked ? "grid-cols-1" : ""}`}>
         {messData.map((owner) => (
           <div
             key={owner._id}
@@ -184,7 +184,9 @@ function MessBars({
               }`}
             >
               {/* FRONT SIDE */}
-              <div className="flip-card-front grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4">
+              {/* <div className="flip-card-front grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4"> */}
+              <div className="flip-card-front grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4 w-full">
+
                 {!isChecked && (
                   <div className="relative h-48 md:h-full rounded-lg overflow-hidden">
                     <img
@@ -196,7 +198,9 @@ function MessBars({
                   </div>
                 )}
 
-                <div className={`"flex flex-col justify-between" ${isChecked ? "w-full" : ""}`}> 
+                {/* <div className={`"flex flex-col justify-between" ${isChecked ? "w-full" : ""}`}>  */}
+                <div className="flex flex-col justify-between w-full">
+
                   <div>
                     <div className="flex justify-between items-start">
                       <h3 className="text-xl font-semibold text-gray-900">
