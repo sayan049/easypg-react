@@ -176,7 +176,7 @@ function MessBars({
             //     ? "ring-2 ring-blue-500"
             //     : "ring-1 ring-gray-200"
             // } bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4`}
-            className={`relative flip-card mb-4 ${
+            className={`relative flip-card mb-4 h-[31rem] md:h-[15rem] ${
               isChecked ? "w-full" : "w-full"
             } bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4`}
             onClick={() => {
