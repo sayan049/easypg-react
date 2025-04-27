@@ -492,7 +492,7 @@ const MessFind = () => {
 
       {/* Listings */}
       <div className="w-full md:w-3/4 md:mt-0 md:ml-6 relative">
-        <div className="flex flex-col md:flex-row justify-between items-center bg-white p-4 shadow rounded-md relative">
+        <div className="flex flex-row md:flex-row justify-between items-center bg-white p-4 shadow rounded-md relative">
           {/* Search Bar */}
           <div className="flex items-center gap-4 bg-white p-3 rounded-lg border border-gray-300 shadow-sm hover:border-blue-500 transition-colors w-full relative">
             <FaSearch
@@ -536,9 +536,9 @@ const MessFind = () => {
           </div>
 
           <img
-            className="md:hidden m-4 cursor-pointer"
+            className="md:hidden  cursor-pointer"
             alt="Filter"
-            src="/assets/filter 1.png"
+            src="/assets/button.png"
             onClick={() => setFilterModalOpen(true)}
           />
         </div>
@@ -548,7 +548,7 @@ const MessFind = () => {
           <div className="text-lg font-bold">
             {pgCount} Mess near {item?.split(",")[0]}
           </div>
-          <div className="flex" style={{ height: "100%" }}>
+          <div className="flex" style={{ height: "104%" }}>
             <div className="flex-1 overflow-y-auto pr-4">
               <MessBars
                 checkFeatures={checkFeatures}
