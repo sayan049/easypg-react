@@ -1,3 +1,502 @@
+// import axios from "axios";
+// import React, { useEffect, useState } from "react";
+// import { baseurl, findMessUrl } from "../constant/urls";
+// import { useNavigate } from "react-router-dom";
+// import { getDistance } from "ol/sphere";
+
+// function MessBars({
+//   isChecked,
+//   checkFeatures,
+//   userLocation,
+//   coords,
+//   setPgCount,
+// }) {
+//   const [messData, setMessData] = useState([]);
+//   const [distanceMap, setDistanceMap] = useState({});
+//   const [error, setError] = useState(null);
+//   const navigate = useNavigate();
+//   const [selected, setSelected] = useState(null);
+//   const [flipped, setFlipped] = useState({});
+
+//   const toggleFlip = (id) => {
+//     setFlipped(prev => ({ ...prev, [id]: !prev[id] }));
+//   };
+
+// //   const styles = `
+// //   .flip-card {
+// //     perspective: 1000px;
+// //     min-height: 300px;
+// //   }
+  
+// //   .flip-card-inner {
+// //     position: relative;
+// //     width: 100%;
+// //     height: 100%;
+// //     transition: transform 0.6s;
+// //     transform-style: preserve-3d;
+// //   }
+  
+// //   .flip-card-front, .flip-card-back {
+// //     position: absolute;
+// //     width: 100%;
+// //     height: 100%;
+// //     backface-visibility: hidden;
+// //     -webkit-backface-visibility: hidden;
+// //   }
+  
+// //   .flip-card-back {
+// //     transform: rotateY(180deg);
+// //   }
+  
+// //   .flipped {
+// //     transform: rotateY(180deg);
+// //   }
+// // `;
+
+//   const getStreetDistance = async (orig, dest) => {
+//     try {
+//       // Parse coordinates to numbers
+//       const startLon = parseFloat(orig.lng);
+//       const startLat = parseFloat(orig.lat);
+//       const endLon = parseFloat(dest[0]);
+//       const endLat = parseFloat(dest[1]);
+
+//       // First try OSRM for road distance
+//       const response = await fetch(
+//         `https://router.project-osrm.org/route/v1/driving/${startLon},${startLat};${endLon},${endLat}?overview=false`
+//       );
+
+//       const data = await response.json();
+
+//       if (data.routes?.[0]?.distance) {
+//         return `${(data.routes[0].distance / 1000).toFixed(1)} km`;
+//       }
+
+//       // Fallback to great-circle distance if OSRM fails
+//       const distance = getDistance([startLon, startLat], [endLon, endLat]);
+//       return `${(distance / 1000).toFixed(1)} km (straight line)`;
+//     } catch (err) {
+//       console.error("Distance calculation error:", err);
+//       return "N/A";
+//     }
+//   };
+
+//   // Keep other functions and useEffect hooks the same
+//   const clickNavi = (owner) => {
+//     navigate("/viewDetails", { state: { owner } });
+//   };
+
+//   const clickBook = (owner) => {
+//     navigate("/booking", { state: { owner } });
+//   };
+
+//   const clickCords = (location, id) => {
+//     setSelected(id);
+//     if (Array.isArray(location) && location.length === 2) {
+//       const [lng, lat] = location;
+//       if (typeof coords === "function") {
+//         coords({ lat, lng });
+//       }
+//     }
+//   };
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         if (!userLocation || !userLocation.lat || !userLocation.lng) {
+//           console.error("❌ Invalid user location");
+//           return;
+//         }
+
+//         const res = await axios.get(findMessUrl, {
+//           params: {
+//             lat: parseFloat(userLocation.lat),
+//             lng: parseFloat(userLocation.lng),
+//           },
+//         });
+
+//         const filteredData = Array.isArray(res.data)
+//           ? res.data.filter((owner) => {
+//               const facilitiesArray = Array.isArray(owner.facility)
+//                 ? owner.facility.flatMap((f) =>
+//                     f.split(",").map((item) => item.trim().toLowerCase())
+//                   )
+//                 : [];
+//               return checkFeatures.length > 0
+//                 ? checkFeatures.some((feature) =>
+//                     facilitiesArray.includes(feature.toLowerCase())
+//                   )
+//                 : true;
+//             })
+//           : [];
+
+//         setMessData(filteredData);
+//         setPgCount(filteredData.length);
+//       } catch (err) {
+//         console.error("❌ Fetch Error", err);
+//         setError("Failed to fetch Messes");
+//       }
+//     };
+
+//     fetchData();
+//   }, [checkFeatures, userLocation]);
+
+//   useEffect(() => {
+//     const fetchDistances = async () => {
+//       if (messData.length === 0 || !userLocation) return;
+
+//       const newDistanceMap = {};
+//       for (const owner of messData) {
+//         if (owner?.location?.coordinates) {
+//           try {
+//             const distanceText = await getStreetDistance(
+//               { lat: userLocation.lat, lng: userLocation.lng },
+//               owner.location.coordinates
+//             );
+//             newDistanceMap[owner._id] = distanceText;
+//           } catch (err) {
+//             console.error(`❌ Distance error for ${owner.messName}:`, err);
+//             newDistanceMap[owner._id] = "N/A";
+//           }
+//         }
+//       }
+//       setDistanceMap(newDistanceMap);
+//     };
+
+//     fetchDistances();
+//   }, [messData, userLocation]);
+
+//   // Remove Google Maps loading check
+//   if (error) {
+//     return <div>{error}</div>;
+//   }
+
+//   return (
+//     <>
+//     <style>{styles}</style>
+//     <div className="grid gap-4 p-2 sm:p-4">
+       
+//       {messData.map((owner) => (
+//         <div
+//           key={owner._id}
+//           className={`relative grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4 md:max-h[15rem] bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4 ${
+//             selected === owner._id && isChecked
+//               ? "ring-2 ring-blue-500"
+//               : "ring-1 ring-gray-200"
+//           }`}
+//           onClick={() => {
+//             if (owner?.location?.coordinates) {
+//               clickCords(owner.location.coordinates, owner._id);
+//             }
+//           }}
+//         >
+//           {!isChecked && (
+//             <div className="relative h-48 md:h-full rounded-lg overflow-hidden">
+//               <img
+//                 loading="lazy"
+//                 src={owner.profilePhoto}
+//                 alt="Mess"
+//                 className="w-full h-full object-cover"
+//               />
+//             </div>
+//           )}
+
+//           <div className="flex flex-col justify-between">
+//             <div>
+//               <div className="flex justify-between items-start">
+//                 <h3 className="text-xl font-semibold text-gray-900">
+//                   {owner.messName}
+//                 </h3>
+//                 <button
+//                   className="p-2  hover:bg-blue-200 rounded-full transition-colors"
+//                   onClick={(e) => {
+//                     e.stopPropagation();
+//                     console.log("Map clicked", owner._id);
+//                   }}
+//                 >
+//                   <svg
+//                     className="w-5 h-5 text-blue-600"
+//                     fill="none"
+//                     stroke="currentColor"
+//                     viewBox="0 0 24 24"
+//                   >
+//                     <path
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                       strokeWidth={2}
+//                       d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z"
+//                     />
+//                   </svg>
+//                 </button>
+//               </div>
+
+//               <p className="mt-1 text-sm text-gray-600">{owner.address}</p>
+//               <div className="mt-2 text-sm text-gray-500">
+//                 <span className="inline-flex items-center">
+//                   <svg
+//                     className="w-4 h-4 mr-1"
+//                     fill="none"
+//                     stroke="currentColor"
+//                     viewBox="0 0 24 24"
+//                   >
+//                     <path
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                       strokeWidth={2}
+//                       d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+//                     />
+//                     <path
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                       strokeWidth={2}
+//                       d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+//                     />
+//                   </svg>
+//                   {distanceMap[owner._id] || "Calculating..."}
+//                 </span>
+//               </div>
+
+//               <div className="mt-3 flex flex-wrap gap-2">
+//                 {owner.facility?.map((feature, index) => (
+//                   <span
+//                     key={index}
+//                     className="px-2 py-1 bg-blue-50 text-[rgb(44 164 181)] text-xs rounded-full"
+//                     // flex items-center mt-4 text-sm text-gray-500 flex-wrap gap-2
+//                   >
+//                     {feature}
+//                   </span>
+//                 ))}
+//               </div>
+//             </div>
+
+//             <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+//               <div className="text-lg font-medium text-gray-900">
+//                 {owner.roomInfo?.length > 0
+//                   ? `₹${Math.min(
+//                       ...owner.roomInfo
+//                         .map((room) => Number(room.pricePerHead))
+//                         .filter(Number)
+//                     )} /month`
+//                   : "Price: N/A"}
+//               </div>
+
+//               <div className="flex gap-2">
+//                 <button
+//                   className="px-4 py-2 bg-blue-500 text-white border border-gray-300 rounded-lg  hover:bg-gray-50 transition-colors text-sm"
+//                   onClick={(e) => {
+//                     e.stopPropagation();
+//                     clickNavi(owner);
+//                   }}
+//                 >
+//                   View Details
+//                 </button>
+//                 <button
+//                   className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+//                   onClick={(e) => {
+//                     e.stopPropagation();
+//                     clickBook(owner);
+//                   }}
+//                 >
+//                   Book Now
+//                 </button>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       ))}
+//     </div>
+//     </>
+    
+  
+//   );
+
+// }
+
+// export default MessBars;
+
+
+
+
+
+{/* <style>{styles}</style>
+<div className="grid gap-4 p-2 sm:p-4">
+  {messData.map((owner) => (
+    <div key={owner._id} className="flip-card">
+      <div className={`flip-card-inner ${flipped[owner._id] ? 'flipped' : ''}`}>
+        {/* Front Side */}
+        // <div className="flip-card-front">
+        //   <div className={`relative grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4 ${
+        //     selected === owner._id && isChecked
+        //       ? "ring-2 ring-blue-500"
+        //       : "ring-1 ring-gray-200"
+        //   }`}>
+        //     {!isChecked && (
+        //       <div className="relative h-48 md:h-full rounded-lg overflow-hidden">
+        //         <img
+        //           loading="lazy"
+        //           src={owner.profilePhoto}
+        //           alt="Mess"
+        //           className="w-full h-full object-cover"
+        //         />
+        //       </div>
+        //     )}
+
+        //     <div className="flex flex-col justify-between">
+        //       <div>
+        //         <div className="flex justify-between items-start">
+        //           <h3 className="text-xl font-semibold text-gray-900">
+        //             {owner.messName}
+        //           </h3>
+        //           <button
+        //             className="p-2 hover:bg-blue-200 rounded-full transition-colors"
+        //             onClick={(e) => {
+        //               e.stopPropagation();
+        //               toggleFlip(owner._id);
+        //             }}
+        //           >
+        //             <svg
+        //               className="w-5 h-5 text-blue-600"
+        //               fill="none"
+        //               stroke="currentColor"
+        //               viewBox="0 0 24 24"
+        //             >
+        //               <path
+        //                 strokeLinecap="round"
+        //                 strokeLinejoin="round"
+        //                 strokeWidth={2}
+        //                 d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z"
+        //               />
+        //             </svg>
+        //           </button>
+        //         </div>
+
+        //         <p className="mt-1 text-sm text-gray-600">{owner.address}</p>
+        //         <div className="mt-2 text-sm text-gray-500">
+        //           <span className="inline-flex items-center">
+        //             <svg
+        //               className="w-4 h-4 mr-1"
+        //               fill="none"
+        //               stroke="currentColor"
+        //               viewBox="0 0 24 24"
+        //             >
+        //               <path
+        //                 strokeLinecap="round"
+        //                 strokeLinejoin="round"
+        //                 strokeWidth={2}
+        //                 d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+        //               />
+        //               <path
+        //                 strokeLinecap="round"
+        //                 strokeLinejoin="round"
+        //                 strokeWidth={2}
+        //                 d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+        //               />
+        //             </svg>
+        //             {distanceMap[owner._id] || "Calculating..."}
+        //           </span>
+        //         </div>
+
+        //         <div className="mt-3 flex flex-wrap gap-2">
+        //           {owner.facility?.map((feature, index) => (
+        //             <span
+        //               key={index}
+        //               className="px-2 py-1 bg-blue-50 text-[rgb(44 164 181)] text-xs rounded-full"
+        //             >
+        //               {feature}
+        //             </span>
+        //           ))}
+        //         </div>
+        //       </div>
+
+        //       <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        //         <div className="text-lg font-medium text-gray-900">
+        //           {owner.roomInfo?.length > 0
+        //             ? `₹${Math.min(
+        //                 ...owner.roomInfo
+        //                   .map((room) => Number(room.pricePerHead))
+        //                   .filter(Number)
+        //               )} /month`
+        //             : "Price: N/A"}
+        //         </div>
+
+        //         <div className="flex gap-2">
+        //           <button
+        //             className="px-4 py-2 bg-blue-500 text-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+        //             onClick={(e) => {
+        //               e.stopPropagation();
+        //               clickNavi(owner);
+        //             }}
+        //           >
+        //             View Details
+        //           </button>
+        //           <button
+        //             className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+        //             onClick={(e) => {
+        //               e.stopPropagation();
+        //               clickBook(owner);
+        //             }}
+        //           >
+        //             Book Now
+        //           </button>
+        //         </div>
+        //       </div>
+        //     </div>
+        //   </div>
+        // </div>
+
+        {/* Back Side (Map) */}
+//         <div className="flip-card-back">
+//           <div className="h-full bg-white rounded-xl shadow-sm p-4">
+//             <div className="flex justify-between items-center mb-4">
+//               <h3 className="text-lg font-semibold">Location Map</h3>
+//               <button
+//                 className="p-2 text-gray-500 hover:text-blue-500"
+//                 onClick={(e) => {
+//                   e.stopPropagation();
+//                   toggleFlip(owner._id);
+//                 }}
+//               >
+//                 <svg
+//                   className="w-5 h-5"
+//                   fill="none"
+//                   stroke="currentColor"
+//                   viewBox="0 0 24 24"
+//                 >
+//                   <path
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                     strokeWidth={2}
+//                     d="M6 18L18 6M6 6l12 12"
+//                   />
+//                 </svg>
+//               </button>
+//             </div>
+//             <div className="h-64 rounded-lg overflow-hidden">
+//               {owner.location?.coordinates && (
+//                 <iframe
+//                   width="100%"
+//                   height="100%"
+//                   frameBorder="0"
+//                   scrolling="no"
+//                   marginHeight="0"
+//                   marginWidth="0"
+//                   src={`https://maps.google.com/maps?q=${owner.location.coordinates[1]},${owner.location.coordinates[0]}&z=15&output=embed`}
+//                   title="Mess Location"
+//                 />
+//               )}
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   ))}
+// </div>
+// </> */}
+
+
+
+
+
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { baseurl, findMessUrl } from "../constant/urls";
@@ -23,56 +522,47 @@ function MessBars({
   };
 
   const styles = `
-  .flip-card {
-    perspective: 1000px;
-    min-height: 300px;
-  }
-  
-  .flip-card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.6s;
-    transform-style: preserve-3d;
-  }
-  
-  .flip-card-front, .flip-card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-  }
-  
-  .flip-card-back {
-    transform: rotateY(180deg);
-  }
-  
-  .flipped {
-    transform: rotateY(180deg);
-  }
-`;
+    .flip-card {
+      perspective: 1000px;
+    }
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+    .flip-card-front, .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 0.75rem;
+    }
+    .flip-card-back {
+      transform: rotateY(180deg);
+    }
+    .flipped {
+      transform: rotateY(180deg);
+    }
+  `;
 
   const getStreetDistance = async (orig, dest) => {
     try {
-      // Parse coordinates to numbers
       const startLon = parseFloat(orig.lng);
       const startLat = parseFloat(orig.lat);
       const endLon = parseFloat(dest[0]);
       const endLat = parseFloat(dest[1]);
 
-      // First try OSRM for road distance
       const response = await fetch(
         `https://router.project-osrm.org/route/v1/driving/${startLon},${startLat};${endLon},${endLat}?overview=false`
       );
-
       const data = await response.json();
 
       if (data.routes?.[0]?.distance) {
         return `${(data.routes[0].distance / 1000).toFixed(1)} km`;
       }
 
-      // Fallback to great-circle distance if OSRM fails
       const distance = getDistance([startLon, startLat], [endLon, endLat]);
       return `${(distance / 1000).toFixed(1)} km (straight line)`;
     } catch (err) {
@@ -81,7 +571,6 @@ function MessBars({
     }
   };
 
-  // Keep other functions and useEffect hooks the same
   const clickNavi = (owner) => {
     navigate("/viewDetails", { state: { owner } });
   };
@@ -166,159 +655,31 @@ function MessBars({
     fetchDistances();
   }, [messData, userLocation]);
 
-  // Remove Google Maps loading check
   if (error) {
     return <div>{error}</div>;
   }
 
   return (
-    // <>
-    // <style>{styles}</style>
-    // <div className="grid gap-4 p-2 sm:p-4">
-       
-    //   {messData.map((owner) => (
-    //     <div
-    //       key={owner._id}
-    //       className={`relative grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4 md:max-h[15rem] bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4 ${
-    //         selected === owner._id && isChecked
-    //           ? "ring-2 ring-blue-500"
-    //           : "ring-1 ring-gray-200"
-    //       }`}
-    //       onClick={() => {
-    //         if (owner?.location?.coordinates) {
-    //           clickCords(owner.location.coordinates, owner._id);
-    //         }
-    //       }}
-    //     >
-    //       {!isChecked && (
-    //         <div className="relative h-48 md:h-full rounded-lg overflow-hidden">
-    //           <img
-    //             loading="lazy"
-    //             src={owner.profilePhoto}
-    //             alt="Mess"
-    //             className="w-full h-full object-cover"
-    //           />
-    //         </div>
-    //       )}
-
-    //       <div className="flex flex-col justify-between">
-    //         <div>
-    //           <div className="flex justify-between items-start">
-    //             <h3 className="text-xl font-semibold text-gray-900">
-    //               {owner.messName}
-    //             </h3>
-    //             <button
-    //               className="p-2  hover:bg-blue-200 rounded-full transition-colors"
-    //               onClick={(e) => {
-    //                 e.stopPropagation();
-    //                 console.log("Map clicked", owner._id);
-    //               }}
-    //             >
-    //               <svg
-    //                 className="w-5 h-5 text-blue-600"
-    //                 fill="none"
-    //                 stroke="currentColor"
-    //                 viewBox="0 0 24 24"
-    //               >
-    //                 <path
-    //                   strokeLinecap="round"
-    //                   strokeLinejoin="round"
-    //                   strokeWidth={2}
-    //                   d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z"
-    //                 />
-    //               </svg>
-    //             </button>
-    //           </div>
-
-    //           <p className="mt-1 text-sm text-gray-600">{owner.address}</p>
-    //           <div className="mt-2 text-sm text-gray-500">
-    //             <span className="inline-flex items-center">
-    //               <svg
-    //                 className="w-4 h-4 mr-1"
-    //                 fill="none"
-    //                 stroke="currentColor"
-    //                 viewBox="0 0 24 24"
-    //               >
-    //                 <path
-    //                   strokeLinecap="round"
-    //                   strokeLinejoin="round"
-    //                   strokeWidth={2}
-    //                   d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-    //                 />
-    //                 <path
-    //                   strokeLinecap="round"
-    //                   strokeLinejoin="round"
-    //                   strokeWidth={2}
-    //                   d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-    //                 />
-    //               </svg>
-    //               {distanceMap[owner._id] || "Calculating..."}
-    //             </span>
-    //           </div>
-
-    //           <div className="mt-3 flex flex-wrap gap-2">
-    //             {owner.facility?.map((feature, index) => (
-    //               <span
-    //                 key={index}
-    //                 className="px-2 py-1 bg-blue-50 text-[rgb(44 164 181)] text-xs rounded-full"
-    //                 // flex items-center mt-4 text-sm text-gray-500 flex-wrap gap-2
-    //               >
-    //                 {feature}
-    //               </span>
-    //             ))}
-    //           </div>
-    //         </div>
-
-    //         <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-    //           <div className="text-lg font-medium text-gray-900">
-    //             {owner.roomInfo?.length > 0
-    //               ? `₹${Math.min(
-    //                   ...owner.roomInfo
-    //                     .map((room) => Number(room.pricePerHead))
-    //                     .filter(Number)
-    //                 )} /month`
-    //               : "Price: N/A"}
-    //           </div>
-
-    //           <div className="flex gap-2">
-    //             <button
-    //               className="px-4 py-2 bg-blue-500 text-white border border-gray-300 rounded-lg  hover:bg-gray-50 transition-colors text-sm"
-    //               onClick={(e) => {
-    //                 e.stopPropagation();
-    //                 clickNavi(owner);
-    //               }}
-    //             >
-    //               View Details
-    //             </button>
-    //             <button
-    //               className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
-    //               onClick={(e) => {
-    //                 e.stopPropagation();
-    //                 clickBook(owner);
-    //               }}
-    //             >
-    //               Book Now
-    //             </button>
-    //           </div>
-    //         </div>
-    //       </div>
-    //     </div>
-    //   ))}
-    // </div>
-    // </>
     <>
-    <style>{styles}</style>
-    <div className="grid gap-4 p-2 sm:p-4">
-      {messData.map((owner) => (
-        <div key={owner._id} className="flip-card">
-          <div className={`flip-card-inner ${flipped[owner._id] ? 'flipped' : ''}`}>
-            {/* Front Side */}
-            <div className="flip-card-front">
-              <div className={`relative grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4 ${
-                selected === owner._id && isChecked
-                  ? "ring-2 ring-blue-500"
-                  : "ring-1 ring-gray-200"
-              }`}>
+      <style>{styles}</style>
+      <div className="grid gap-4 p-2 sm:p-4">
+        {messData.map((owner) => (
+          <div
+            key={owner._id}
+            className={`relative flip-card ${
+              selected === owner._id && isChecked
+                ? "ring-2 ring-blue-500"
+                : "ring-1 ring-gray-200"
+            } bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4`}
+            onClick={() => {
+              if (owner?.location?.coordinates) {
+                clickCords(owner.location.coordinates, owner._id);
+              }
+            }}
+          >
+            <div className={`flip-card-inner ${flipped[owner._id] ? "flipped" : ""}`}>
+              {/* FRONT SIDE */}
+              <div className="flip-card-front grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4">
                 {!isChecked && (
                   <div className="relative h-48 md:h-full rounded-lg overflow-hidden">
                     <img
@@ -431,58 +792,25 @@ function MessBars({
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Back Side (Map) */}
-            <div className="flip-card-back">
-              <div className="h-full bg-white rounded-xl shadow-sm p-4">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-semibold">Location Map</h3>
-                  <button
-                    className="p-2 text-gray-500 hover:text-blue-500"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleFlip(owner._id);
-                    }}
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </div>
-                <div className="h-64 rounded-lg overflow-hidden">
-                  {owner.location?.coordinates && (
-                    <iframe
-                      width="100%"
-                      height="100%"
-                      frameBorder="0"
-                      scrolling="no"
-                      marginHeight="0"
-                      marginWidth="0"
-                      src={`https://maps.google.com/maps?q=${owner.location.coordinates[1]},${owner.location.coordinates[0]}&z=15&output=embed`}
-                      title="Mess Location"
-                    />
-                  )}
+              {/* BACK SIDE */}
+              <div className="flip-card-back flex items-center justify-center bg-gray-100">
+                <div className="w-full h-64 sm:h-full">
+                  <iframe
+                    src={`https://www.google.com/maps?q=${owner.location.coordinates[1]},${owner.location.coordinates[0]}&z=15&output=embed`}
+                    width="100%"
+                    height="100%"
+                    className="rounded-xl"
+                    loading="lazy"
+                  ></iframe>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      ))}
-    </div>
-  </>
+        ))}
+      </div>
+    </>
   );
-
 }
 
 export default MessBars;
