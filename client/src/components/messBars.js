@@ -8,7 +8,7 @@ function MessBars({
   isChecked,
   checkFeatures,
   userLocation,
-  coords={lat:messData[0]?.location?.coordinates[1],lng:messData[0]?.location?.coordinates[1]},
+  coords,
   setPgCount,
 }) {
   const [messData, setMessData] = useState([]);
@@ -127,6 +127,12 @@ function MessBars({
         setError("Failed to fetch Messes");
       }
     };
+
+    if (filteredData.length > 0 && typeof coords === "function") {
+      const [lng, lat] = filteredData[0].location.coordinates;
+      coords({ lat, lng });
+      setSelected(filteredData[0]._id); // optional: also select first card
+    }
 
     fetchData();
   }, [checkFeatures, userLocation]);
