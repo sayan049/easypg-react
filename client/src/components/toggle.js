@@ -1,7 +1,7 @@
 import React from "react";
 import "../designs/messfind.css";
 
-const ToggleSwitch = ({isChecked,setIsChecked}) => {
+const ToggleSwitch = ({isChecked,setIsChecked,className}) => {
 
 
   const handleToggle = () => {
@@ -9,7 +9,7 @@ const ToggleSwitch = ({isChecked,setIsChecked}) => {
   };
 
   return (
-    <div className={`toggle-container ${isChecked ? "checked" : ""} blue`}>
+    <div className={`toggle-container ${isChecked ? "checked" : ""} blue ${className}`}>
       <input
         type="checkbox"
         className={`toggle-checkbox ${isChecked ? "toggled-once" : ""}`}
