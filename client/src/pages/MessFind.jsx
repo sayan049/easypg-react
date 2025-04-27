@@ -205,7 +205,7 @@ const MessFind = () => {
               onClick={() => {
                 console.log("Search Button Clicked");  // Debugging
                 if (performSearch) {
-                  console.log("Calling performSearch with selectedLocation:", selectedLocation);
+                  console.log("Calling performSearch with selectedLocation:",item);
                   performSearch();  // Trigger search
                 }
               }}
