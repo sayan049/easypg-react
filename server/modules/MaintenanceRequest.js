@@ -29,10 +29,14 @@ const maintenanceRequestSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["in-progress", "rejected","resolved"],
+      enum: ["in-progress", "cancelled", "resolved"],
       default: "in-progress",
     },
     response: {
+      type: String,
+      default: "",
+    },
+    cancellationReason: { // ✅ new field
       type: String,
       default: "",
     }
@@ -50,8 +54,9 @@ maintenanceRequestSchema.index({ status: 1, createdAt: -1 });
 maintenanceRequestSchema.index(
   { createdAt: 1 },
   { 
-    expireAfterSeconds: 2592000, // 30 days = 30 * 24 * 60 * 60
-    partialFilterExpression: { status: { $in: ["in-progress", "rejected"] } }
+    expireAfterSeconds: 2592000,
+    partialFilterExpression: { status: { $in: ["in-progress", "rejected"] }
+    }
   }
 );
 
