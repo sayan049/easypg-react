@@ -1016,9 +1016,6 @@ import "react-toastify/dist/ReactToastify.css";
 import PropTypes from "prop-types";
 import { baseurl } from "../constant/urls";
 
-
-
-
 // import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 
 const BookingCard = React.memo(
@@ -1065,7 +1062,9 @@ const BookingCard = React.memo(
               <img
                 src={
                   booking.student?.avatar ||
-                  `https://i.pravatar.cc/150?u=${booking.student?._id || "user"}`
+                  `https://i.pravatar.cc/150?u=${
+                    booking.student?._id || "user"
+                  }`
                 }
                 alt={booking.student?.firstName || "Student"}
                 className="w-10 h-10 rounded-full"
@@ -1118,23 +1117,25 @@ const BookingCard = React.memo(
           </div>
 
           {/* Maintenance Requests Section - Only show if there are requests */}
+          {/* Maintenance Requests Section - Only show if there are requests */}
           {booking.status === "confirmed" && hasMaintenanceRequests && (
             <div>
               <button
                 onClick={toggleMaintenance}
                 className="mt-2 text-blue-600 text-sm font-semibold hover:underline focus:outline-none"
               >
-                {showMaintenance ? "Hide Maintenance Requests" : "View Maintenance Requests"}
+                {showMaintenance
+                  ? "Hide Maintenance Requests"
+                  : "View Maintenance Requests"}
               </button>
 
-              <div
-                className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                  showMaintenance ? "max-h-[1000px] mt-3" : "max-h-0"
-                }`}
-              >
-                <div className="space-y-3">
+              {showMaintenance && (
+                <div className="space-y-3 mt-3">
                   {bookingMaintenanceRequests.map((request) => (
-                    <div key={request._id} className="border rounded-lg p-3 bg-gray-50">
+                    <div
+                      key={request._id}
+                      className="border rounded-lg p-3 bg-gray-50"
+                    >
                       <div className="flex justify-between items-start">
                         <div>
                           <h4 className="font-medium">{request.title}</h4>
@@ -1170,7 +1171,7 @@ const BookingCard = React.memo(
                     </div>
                   ))}
                 </div>
-              </div>
+              )}
             </div>
           )}
 
@@ -1217,12 +1218,6 @@ const BookingCard = React.memo(
     );
   }
 );
-
-
-
-
-
-
 
 const EmptyState = ({ message, icon: Icon }) => (
   <div className="flex flex-col items-center justify-center py-12 text-gray-500">
@@ -1322,7 +1317,7 @@ const BookingStatus = ({ owner }) => {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
-console.log("Bookings Response:", response.data);
+      console.log("Bookings Response:", response.data);
       setBookings((prev) => ({
         ...prev,
         [status]: {
