@@ -3,6 +3,15 @@ import { getDistance } from "ol/sphere";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { findMessUrl } from "../constant/urls";
+import {
+  FaWind,
+  FaTv,
+  FaBatteryFull,
+  FaWifi,
+  FaUtensils,
+  FaTint,
+  FaBed,
+} from "react-icons/fa";
 
 function MessBars({
   isChecked,
@@ -17,6 +26,16 @@ function MessBars({
   const navigate = useNavigate();
   const [selected, setSelected] = useState(messData[0]?._id || null);
   const [flipped, setFlipped] = useState({});
+
+  const amenities = [
+    { id: "test1", label: "A/C", icon: <FaWind /> },
+    { id: "test2", label: "TV", icon: <FaTv /> },
+    { id: "test3", label: "Power Backup", icon: <FaBatteryFull /> },
+    { id: "test4", label: "WiFi", icon: <FaWifi /> },
+    { id: "test5", label: "Kitchen", icon: <FaUtensils /> },
+    { id: "test6", label: "Tank Water", icon: <FaTint /> },
+    { id: "test7", label: "Double Bed", icon: <FaBed /> },
+  ];
 
   const toggleFlip = (id) => {
     setFlipped((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -127,14 +146,12 @@ function MessBars({
           coords({ lat, lng });
           setSelected(filteredData[0]._id); // optional: also select first card
         }
-    
       } catch (err) {
         console.error("❌ Fetch Error", err);
         setError("Failed to fetch Messes");
       }
     };
 
-  
     fetchData();
   }, [checkFeatures, userLocation]);
 
@@ -186,9 +203,10 @@ function MessBars({
             className={`relative flip-card mb-4 h-[31rem] md:h-[16rem] ${
               isChecked ? "w-full" : "w-full"
             }
-             ${selected === owner._id && isChecked
-                ? "ring-2 ring-blue-500"
-                : "ring-1 ring-gray-200"
+             ${
+               selected === owner._id && isChecked
+                 ? "ring-2 ring-blue-500"
+                 : "ring-1 ring-gray-200"
              }
             bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4`}
             onClick={() => {
@@ -281,14 +299,20 @@ function MessBars({
                     </div>
 
                     <div className="mt-3 flex flex-wrap gap-2">
-                      {owner.facility?.map((feature, index) => (
+                      {owner.facility?.map((feature, index) => {
+                        const amenity = amenities.find(
+                          (a) =>
+                            a.label.toLowerCase() ===
+                            feature.trim().toLowerCase()
+                        );
                         <span
                           key={index}
-                          className="px-2 py-1 bg-blue-50 text-[rgb(44 164 181)] text-xs rounded-full"
+                          className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-[rgb(44 164 181)] text-xs rounded-full"
                         >
+                          {amenity?.icon || null}
                           {feature}
-                        </span>
-                      ))}
+                        </span>;
+                      })}
                     </div>
                   </div>
 
