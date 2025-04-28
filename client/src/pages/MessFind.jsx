@@ -79,7 +79,7 @@ const FilterModal = ({
             <label className="flex items-center">
               <input
                 type="radio"
-                name="gender"
+                name="modal-gender" // Unique name for the modal's radio group
                 value="boys pg"
                 checked={gender === "boys pg"}
                 onChange={(e) => setGender(e.target.value)}
@@ -90,7 +90,7 @@ const FilterModal = ({
             <label className="flex items-center">
               <input
                 type="radio"
-                name="gender"
+                name="modal-gender" // Unique name
                 value="girls pg"
                 checked={gender === "girls pg"}
                 onChange={(e) => setGender(e.target.value)}
@@ -101,7 +101,7 @@ const FilterModal = ({
             <label className="flex items-center">
               <input
                 type="radio"
-                name="gender"
+                name="modal-gender" // Unique name
                 value="coed pg"
                 checked={gender === "coed pg"}
                 onChange={(e) => setGender(e.target.value)}
@@ -112,7 +112,7 @@ const FilterModal = ({
             <label className="flex items-center">
               <input
                 type="radio"
-                name="gender"
+                name="modal-gender" // Unique name
                 value=""
                 checked={gender === ""}
                 onChange={(e) => setGender("")}
@@ -214,7 +214,7 @@ const MessFind = () => {
     if (userLocation) {
       setSelectedLocation(userLocation);
     }
-  }, [userLocation,finalGender]);
+  }, [userLocation, finalGender, gender, checkFeatures]);
 
   const amenities = [
     {
@@ -255,7 +255,7 @@ const MessFind = () => {
 
   const onApplyFilters = () => {
     setCheckFeatures([...tempCheckFeatures]);
-    setFinalGender(gender)
+    setFinalGender(gender);
     setFilterModalOpen(false);
   };
 
@@ -401,19 +401,18 @@ const MessFind = () => {
             <span className="hidden md:block w-[6rem]">Map View</span>
             <Dropdown className="hidden md:block" />
           </div>
-
-          <img
-            className="md:hidden  cursor-pointer ml-4"
-            alt="Filter"
-            src="/assets/button.png"
-            onClick={() => setFilterModalOpen(true)}
-          />
         </div>
 
         {/* Content */}
         <div className="mt-6" style={{ height: "calc(100vh - 200px)" }}>
-          <div className="text-lg font-bold mb-4">
+          <div className="text-lg font-bold mb-4 flex items-center justify-between">
             {pgCount} Mess near {item?.split(",")[0]}
+            <img
+              className="md:hidden  cursor-pointer ml-4"
+              alt="Filter"
+              src="/assets/button.png"
+              onClick={() => setFilterModalOpen(true)}
+            />
           </div>
           <div className="flex" style={{ height: "104%" }}>
             <div className="flex-1 overflow-y-auto pr-4">
