@@ -1019,7 +1019,7 @@ import { baseurl } from "../constant/urls";
 // import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 
 const BookingCard = React.memo(
-  ({ booking, onConfirm, onReject, loading, maintenanceRequests }) => {
+  ({ booking, onConfirm, onReject, loading, maintenanceRequests, onCancelRequest, onResolveRequest }) => {
     const [showMaintenance, setShowMaintenance] = useState(false);
 
     const statusColors = {
@@ -1050,7 +1050,6 @@ const BookingCard = React.memo(
       setShowMaintenance((prev) => !prev);
     };
 
-    // Only show maintenance section if there are requests for this booking
     const hasMaintenanceRequests = bookingMaintenanceRequests.length > 0;
 
     return (
@@ -1093,81 +1092,80 @@ const BookingCard = React.memo(
           <div className="bg-blue-50 p-3 rounded-lg">
             <h3 className="font-medium text-blue-800">PG Details</h3>
             <div className="text-sm space-y-1 mt-1">
-              <p>
-                <strong>PG Name:</strong> {booking.pgOwner?.messName || "N/A"}
-              </p>
-              <p>
-                <strong>Room:</strong> {booking.room || "N/A"}
-              </p>
-              <p>
-                <strong>Beds:</strong> {booking.bedsBooked || 0}
-              </p>
-              <p>
-                <strong>Period:</strong>{" "}
+              <p><strong>PG Name:</strong> {booking.pgOwner?.messName || "N/A"}</p>
+              <p><strong>Room:</strong> {booking.room || "N/A"}</p>
+              <p><strong>Beds:</strong> {booking.bedsBooked || 0}</p>
+              <p><strong>Period:</strong> 
                 {booking.period?.startDate
                   ? new Date(booking.period.startDate).toLocaleDateString()
                   : "N/A"}{" "}
                 - {endDate ? new Date(endDate).toLocaleDateString() : "N/A"}
               </p>
-              <p>
-                <strong>Amount:</strong> ₹
-                {booking.payment?.totalAmount?.toLocaleString() || "0"}
-              </p>
+              <p><strong>Amount:</strong> ₹{booking.payment?.totalAmount?.toLocaleString() || "0"}</p>
             </div>
           </div>
 
-          {/* Maintenance Requests Section - Only show if there are requests */}
-          {/* Maintenance Requests Section - Only show if there are requests */}
+          {/* Maintenance Requests */}
           {booking.status === "confirmed" && hasMaintenanceRequests && (
             <div>
               <button
                 onClick={toggleMaintenance}
                 className="mt-2 text-blue-600 text-sm font-semibold hover:underline focus:outline-none"
               >
-                {showMaintenance
-                  ? "Hide Maintenance Requests"
-                  : "View Maintenance Requests"}
+                {showMaintenance ? "Hide Maintenance Requests" : "View Maintenance Requests"}
               </button>
 
               {showMaintenance && (
-                <div className="space-y-3 mt-3">
+                <div className="space-y-4 mt-3">
                   {bookingMaintenanceRequests.map((request) => (
                     <div
                       key={request._id}
                       className="border rounded-lg p-3 bg-gray-50"
                     >
+                      {/* Top Row */}
                       <div className="flex justify-between items-start">
-                        <div>
-                          <h4 className="font-medium">{request.title}</h4>
-                          <p className="text-gray-600 text-sm mt-1">
-                            {request.description}
-                          </p>
-                        </div>
+                        <h4 className="font-semibold">{request.title}</h4>
                         <span
-                          className={`px-2 py-1 text-xs rounded-full ${
+                          className={`px-2 py-1 text-xs rounded-full min-w-[80px] text-center ${
                             request.status === "in-progress"
                               ? "bg-orange-100 text-orange-800"
-                              : "bg-green-100 text-green-800"
+                              : request.status === "resolved"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
                           }`}
                         >
                           {request.status.toUpperCase()}
                         </span>
                       </div>
 
-                      <div className="mt-2 text-sm text-gray-700">
-                        <p>
-                          <span className="font-medium">Submitted by:</span>{" "}
-                          {request.student?.name || "Unknown Student"}
-                        </p>
-                        <p>
-                          <span className="font-medium">Email:</span>{" "}
-                          {request.student?.email || "N/A"}
-                        </p>
-                        <p>
-                          <span className="font-medium">Date:</span>{" "}
-                          {new Date(request.createdAt).toLocaleDateString()}
-                        </p>
+                      {/* Divider */}
+                      <hr className="my-2 border-gray-300" />
+
+                      {/* Details */}
+                      <div className="text-sm text-gray-700 space-y-1">
+                        <p className="break-words">{request.description}</p>
+                        <p><span className="font-medium">Submitted by:</span> {request.student?.name || "Unknown Student"}</p>
+                        <p><span className="font-medium">Email:</span> {request.student?.email || "N/A"}</p>
+                        <p><span className="font-medium">Date:</span> {new Date(request.createdAt).toLocaleDateString()}</p>
                       </div>
+
+                      {/* Buttons */}
+                      {request.status === "in-progress" && (
+                        <div className="flex gap-2 mt-3">
+                          <button
+                            onClick={() => onCancelRequest(request._id)}
+                            className="flex-1 border border-red-500 text-red-500 py-1 rounded hover:bg-red-50 text-sm"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={() => onResolveRequest(request._id)}
+                            className="flex-1 bg-green-600 text-white py-1 rounded hover:bg-green-700 text-sm"
+                          >
+                            Resolve
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
