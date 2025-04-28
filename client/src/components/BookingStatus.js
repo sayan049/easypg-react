@@ -1053,6 +1053,9 @@ const BookingCard = React.memo(
       setShowMaintenance((prev) => !prev);
     };
 
+    // Only show maintenance section if there are requests for this booking
+    const hasMaintenanceRequests = bookingMaintenanceRequests.length > 0;
+
     return (
       <div className="w-full md:w-[48%] bg-white rounded-xl shadow p-4 transition-all duration-300">
         <div className="flex flex-col gap-4">
@@ -1114,8 +1117,8 @@ const BookingCard = React.memo(
             </div>
           </div>
 
-          {/* Maintenance Requests Section */}
-          {booking.status === "confirmed" && bookingMaintenanceRequests.length > 0 && (
+          {/* Maintenance Requests Section - Only show if there are requests */}
+          {booking.status === "confirmed" && hasMaintenanceRequests && (
             <div>
               <button
                 onClick={toggleMaintenance}
