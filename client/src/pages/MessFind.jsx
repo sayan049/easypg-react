@@ -59,6 +59,7 @@ const FilterModal = ({
           />
         </div>
         <div className="flex flex-col gap-4">
+        <h4 className="font-medium">Amenities</h4>
           {amenities.map((facility) => (
             <label key={facility.id} className="flex items-center text-sm">
               <input
@@ -359,7 +360,7 @@ const MessFind = () => {
 
       {/* Listings */}
       <div className="w-full md:w-3/4 md:mt-0 md:ml-6 relative">
-        <div className="flex flex-row md:flex-row justify-between items-center bg-white p-4 shadow rounded-md relative">
+        <div className="flex flex-row md:flex-row justify-between items-center bg-white p-4  rounded-md relative">
           {/* Search Bar */}
           <div className="flex items-center gap-4 bg-white p-3 rounded-lg border border-gray-300 shadow-sm hover:border-blue-500 transition-colors w-full relative">
             
