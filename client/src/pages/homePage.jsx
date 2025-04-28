@@ -79,6 +79,10 @@ const HomePage = () => {
     });
 
     setSuggestions([]); // Clear suggestions
+
+    setTimeout(() => {
+      performSearch();
+    }, 100); 
   };
 
   const performSearch = () => {

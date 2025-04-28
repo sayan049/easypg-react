@@ -21,10 +21,11 @@ import {
   MdPhone,
   MdEmail,
   MdPersonOutline,
-  MdKitchen, 
+  MdKitchen,
   MdWifi,
-  MdWater
+  MdWater,
 } from "react-icons/md";
+import { set } from "ol/transform";
 
 const FilterModal = ({
   isOpen,
@@ -72,7 +73,7 @@ const FilterModal = ({
           ))}
         </div>
 
-        <div className="mb-6">
+        <div className="mb-6 mt-2">
           <h4 className="font-medium">Gender</h4>
           <div className="flex flex-col gap-2 mt-2 text-sm">
             <label className="flex items-center">
@@ -152,7 +153,8 @@ const MessFind = () => {
   const [tempCheckFeatures, setTempCheckFeatures] = useState([]);
   const [coordinates, setCoordinates] = useState({ lat: 0, lng: 0 });
   const [pgCount, setPgCount] = useState(0);
-const [gender, setGender] = useState("");
+  const [gender, setGender] = useState("");
+  const [finalGender, setFinalGender] = useState("");
 
   let debounceTimeout;
 
@@ -191,6 +193,10 @@ const [gender, setGender] = useState("");
       lng: suggestion.lon,
     });
     setSuggestions([]);
+
+    setTimeout(() => {
+      performSearch();
+    }, 100);
   };
 
   const performSearch = () => {
@@ -210,25 +216,35 @@ const [gender, setGender] = useState("");
     }
   }, [userLocation]);
 
-  // const amenities = [
-  //   { id: "test1", label: "A/C", icon: "💨" },
-  //   { id: "test2", label: "TV", icon: "📺" },
-  //   { id: "test3", label: "Power Backup", icon: "🔋" },
-  //   { id: "test4", label: "WiFi", icon: "📶" },
-  //   { id: "test5", label: "Kitchen", icon: "🍴" },
-  //   { id: "test6", label: "Tank Water", icon: "💧" },
-  //   { id: "test7", label: "Double Bed", icon: "🛏️" },
-  // ];
-
-    const amenities = [
-      { id: "test1", label: "A/C", icon: <MdOutlineAcUnit /> },
-      { id: "test2", label: "TV", icon: <MdTv /> },
-      { id: "test3", label: "Power Backup", icon: <MdOutlinePower /> },
-      { id: "test4", label: "WiFi", icon: <MdWifi /> },
-      { id: "test5", label: "Kitchen", icon: <MdKitchen /> },
-      { id: "test6", label: "Tank Water", icon: <MdWater /> },
-      { id: "test7", label: "Double Bed", icon: <MdBed /> },
-    ];
+  const amenities = [
+    {
+      id: "test1",
+      label: "A/C",
+      icon: <MdOutlineAcUnit className="text-blue-500" />,
+    },
+    { id: "test2", label: "TV", icon: <MdTv className="text-blue-500" /> },
+    {
+      id: "test3",
+      label: "Power Backup",
+      icon: <MdOutlinePower className="text-blue-500" />,
+    },
+    { id: "test4", label: "WiFi", icon: <MdWifi className="text-blue-500" /> },
+    {
+      id: "test5",
+      label: "Kitchen",
+      icon: <MdKitchen className="text-blue-500" />,
+    },
+    {
+      id: "test6",
+      label: "Tank Water",
+      icon: <MdWater className="text-blue-500" />,
+    },
+    {
+      id: "test7",
+      label: "Double Bed",
+      icon: <MdBed className="text-blue-500" />,
+    },
+  ];
 
   const featureChanges = (e) => {
     const { value, checked } = e.target;
@@ -239,6 +255,7 @@ const [gender, setGender] = useState("");
 
   const onApplyFilters = () => {
     setCheckFeatures([...tempCheckFeatures]);
+    setFinalGender(gender)
     setFilterModalOpen(false);
   };
 
@@ -265,6 +282,7 @@ const [gender, setGender] = useState("");
         <div className="mt-6">
           <h3 className="font-medium">Select Your Need</h3>
           <div className="flex flex-col gap-4 mt-4">
+            <h4 className="font-medium">Amenities</h4>
             {amenities.map((facility) => (
               <label key={facility.id} className="flex items-center text-sm">
                 <input
@@ -273,59 +291,61 @@ const [gender, setGender] = useState("");
                   value={facility.label}
                   className="mr-2 accent-blue-500"
                 />
-                <span className="text-lg mr-2 accent-blue-500">{facility.icon}</span>
+                <span className="text-lg mr-2 accent-blue-500">
+                  {facility.icon}
+                </span>
                 {facility.label}
               </label>
             ))}
-             <div className="mb-6">
-          <h4 className="font-medium">Gender</h4>
-          <div className="flex flex-col gap-2 mt-2 text-sm">
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="gender"
-                value="boys pg"
-                checked={gender === "boys pg"}
-                onChange={(e) => setGender(e.target.value)}
-                className="mr-2 accent-blue-500"
-              />
-              <FaMale className="text-blue-500 mr-2" /> Boys PG
-            </label>
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="gender"
-                value="girls pg"
-                checked={gender === "girls pg"}
-                onChange={(e) => setGender(e.target.value)}
-                className="mr-2 accent-pink-500"
-              />
-              <FaFemale className="text-pink-500 mr-2" /> Girls PG
-            </label>
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="gender"
-                value="coed pg"
-                checked={gender === "coed pg"}
-                onChange={(e) => setGender(e.target.value)}
-                className="mr-2 accent-green-500"
-              />
-              <FaUserFriends className="text-green-500 mr-2" /> Co-ed PG
-            </label>
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="gender"
-                value=""
-                checked={gender === ""}
-                onChange={(e) => setGender("")}
-                className="mr-2 accent-gray-500"
-              />
-              <span className="text-gray-500 mr-2">🌐</span> Any
-            </label>
-          </div>
-        </div>
+            <div className="mb-6 mt-2">
+              <h4 className="font-medium">Gender</h4>
+              <div className="flex flex-col gap-2 mt-2 text-sm">
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="boys pg"
+                    checked={gender === "boys pg"}
+                    onChange={(e) => setGender(e.target.value)}
+                    className="mr-2 accent-blue-500"
+                  />
+                  <FaMale className="text-blue-500 mr-2" /> Boys PG
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="girls pg"
+                    checked={gender === "girls pg"}
+                    onChange={(e) => setGender(e.target.value)}
+                    className="mr-2 accent-pink-500"
+                  />
+                  <FaFemale className="text-pink-500 mr-2" /> Girls PG
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value="coed pg"
+                    checked={gender === "coed pg"}
+                    onChange={(e) => setGender(e.target.value)}
+                    className="mr-2 accent-green-500"
+                  />
+                  <FaUserFriends className="text-green-500 mr-2" /> Co-ed PG
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value=""
+                    checked={gender === ""}
+                    onChange={(e) => setGender("")}
+                    className="mr-2 accent-gray-500"
+                  />
+                  <span className="text-gray-500 mr-2">🌐</span> Any
+                </label>
+              </div>
+            </div>
 
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded shadow w-1/2 left-1/4 relative"
@@ -403,6 +423,7 @@ const [gender, setGender] = useState("");
                 userLocation={userLocation}
                 coords={handleCoordinatesChange}
                 setPgCount={setPgCount}
+                finalGender={finalGender}
               />
             </div>
             {isChecked && (
