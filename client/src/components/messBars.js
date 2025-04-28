@@ -632,82 +632,34 @@ function MessBars({
                         </svg>
                       </button>
                     </div>
-                    <p className="mt-1 text-sm text-gray-600">{owner.address}.</p>
-                    <div className="mt-2 text-sm text-gray-500">
-                      <span className="inline-flex items-center">
-                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        {distanceMap[owner._id] || "Calculating..."}
-                      </span>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <FaUsers className="mr-2" />
+                      {owner.messType || "Not Available"}
                     </div>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {owner.facility?.map((feature, index) => {
-                        const amenity = amenities.find((a) => a.label.toLowerCase() === feature.trim().toLowerCase());
-                        return (
-                          <span key={index} className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-[rgb(44 164 181)] text-xs rounded-full">
-                            {amenity?.icon || null}
-                            {feature}
-                          </span>
-                        );
-                      })}
-                    </div>
-                    {owner?.gender && (
-                      <div className="mt-3 flex items-center gap-2 text-sm font-medium text-gray-700">
-                        {owner.gender.toLowerCase() === "girls pg" && (
-                          <span className="flex items-center gap-1 bg-pink-100 text-pink-600 px-2 py-1 rounded-full">
-                            <FaFemale /> Girls PG
-                          </span>
-                        )}
-                        {owner.gender.toLowerCase() === "boys pg" && (
-                          <span className="flex items-center gap-1 bg-blue-100 text-blue-600 px-2 py-1 rounded-full">
-                            <FaMale /> Boys PG
-                          </span>
-                        )}
-                        {owner.gender.toLowerCase() === "coed pg" && (
-                          <span className="flex items-center gap-1 bg-green-100 text-green-600 px-2 py-1 rounded-full">
-                            <FaUsers /> Co-ed PG
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                    <div className="text-lg font-medium text-gray-900">
-                      {owner.roomInfo?.length > 0
-                        ? `₹${Math.min(...owner.roomInfo.map((room) => Number(room.pricePerHead)).filter(Number))} /month`
-                        : "Price: N/A"}
-                    </div>
-
-                    <div className="flex gap-2">
-                      <button className="px-4 py-2 bg-blue-500 text-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm"
-                        onClick={(e) => { e.stopPropagation(); clickNavi(owner); }}>
-                        View Details
-                      </button>
-                      <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
-                        onClick={(e) => { e.stopPropagation(); clickBook(owner); }}>
-                        Book Now
-                      </button>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <FaUsers className="mr-2" />
+                      {distanceMap[owner._id] || "Loading..."} km
                     </div>
                   </div>
+                  {isChecked && (
+                    <div className="grid grid-cols-2 gap-2 mt-2">
+                      {amenities.filter((amenity) => owner.facility.includes(amenity.id)).map((amenity) => (
+                        <div key={amenity.id} className="flex items-center text-sm text-gray-700">
+                          {amenity.icon}
+                          <span className="ml-2">{amenity.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* BACK SIDE */}
-              <div className="flip-card-back flex items-center justify-center bg-gray-100">
-                <iframe src={`https://www.google.com/maps?q=${owner.location.coordinates[1]},${owner.location.coordinates[0]}&z=15&output=embed`}
-                  width="100%" height="100%" className="rounded-xl" loading="lazy"></iframe>
-                <button onClick={(e) => { e.stopPropagation(); toggleFlip(owner._id); }}
-                  className="absolute top-2 right-2 px-3 py-1 bg-blue-500 text-white text-sm rounded-full shadow">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
+              <div className="flip-card-back flex flex-col justify-center items-center">
+                <button className="mb-4 p-2 w-full bg-blue-600 text-white rounded-xl hover:bg-blue-700"
+                  onClick={() => clickBook(owner)}>Book</button>
+                <button className="mb-4 p-2 w-full bg-gray-200 rounded-xl hover:bg-gray-300"
+                  onClick={() => clickNavi(owner)}>View Details</button>
               </div>
             </div>
           </div>
