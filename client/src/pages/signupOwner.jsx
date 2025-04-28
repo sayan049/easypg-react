@@ -6,6 +6,8 @@ import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FaWind, FaTv, FaBatteryFull, FaWifi, FaUtensils, FaTint, FaBed } from "react-icons/fa";
+
 
 function SignupOwner() {
   const [image, setImage] = useState(null);
