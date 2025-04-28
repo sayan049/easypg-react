@@ -72,7 +72,7 @@ const FilterModal = ({
           ))}
         </div>
 
-        <div className="mb-6">
+        <div className="mb-6 mt-2">
           <h4 className="font-medium">Gender</h4>
           <div className="flex flex-col gap-2 mt-2 text-sm">
             <label className="flex items-center">
@@ -191,6 +191,10 @@ const [gender, setGender] = useState("");
       lng: suggestion.lon,
     });
     setSuggestions([]);
+
+    setTimeout(() => {
+      performSearch();
+    }, 100); 
   };
 
   const performSearch = () => {
@@ -277,7 +281,7 @@ const [gender, setGender] = useState("");
                 {facility.label}
               </label>
             ))}
-             <div className="mb-6">
+             <div className="mb-6 mt-2">
           <h4 className="font-medium">Gender</h4>
           <div className="flex flex-col gap-2 mt-2 text-sm">
             <label className="flex items-center">
