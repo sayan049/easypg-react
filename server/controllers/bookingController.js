@@ -1118,6 +1118,7 @@ exports.getRequestsByBookings = async (req, res) => {
 
     // Format the response with only the required fields
     const formattedRequests = requests.map(request => ({
+      _id: request._id,
       title: request.title,
       description: request.description,
       status: request.status,
