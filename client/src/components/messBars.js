@@ -47,7 +47,7 @@ function MessBars({
     }
   }, [lastCardInView, isLoading, hasMore]);
 
-  const loadMoreCards = (() => {
+  const loadMoreCards = React.useCallback(() => {
     if (isLoading || !hasMore) return;
     
     setIsLoading(true);
