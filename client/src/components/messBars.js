@@ -300,16 +300,10 @@ function MessBars({
 
                     <div className="mt-3 flex flex-wrap gap-2">
                       {/* {owner.facility?.map((feature, index) => {
-                        const amenity = amenities.find(
-                          (a) =>
-                            a.label.toLowerCase() ===
-                            feature.trim().toLowerCase()
-                        );
                         <span
                           key={index}
                           className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-[rgb(44 164 181)] text-xs rounded-full"
                         >
-                          {amenity?.icon || null}
                           {feature}
                         </span>;
                       })} */}
