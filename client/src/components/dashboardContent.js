@@ -710,6 +710,8 @@ import {
   FaSnowflake,
   FaBroom,
   FaSwimmingPool,
+  FaFemale,
+  FaMale,
 } from "react-icons/fa";
 import { FiAlertCircle } from "react-icons/fi";
 import { toast, ToastContainer } from "react-toastify";
@@ -973,15 +975,44 @@ const DashboardContent = ({
                       <h4 className="font-medium text-gray-700 mb-3 flex items-center gap-2">
                         <FaBed className="text-gray-500" /> Room Details
                       </h4>
+
                       <div className="space-y-2 pl-6">
+                        {/* PG Type with Gender */}
+                        <p className="flex items-center gap-2 text-sm">
+                          <span
+                            className={`inline-flex items-center gap-2 px-3 py-1 rounded-full font-medium text-white transition-colors duration-300 ${
+                              stay.pgOwner?.gender === "Girls PG"
+                                ? "bg-pink-500"
+                                :   stay.pgOwner?.gender === "Boys PG"
+                                ? "bg-blue-500"
+                                :   stay.pgOwner?.gender=== "Coed PG"
+                                ? "bg-green-500"
+                                : "bg-gray-400"
+                            }`}
+                          >
+                            {  stay.pgOwner?.gender === "Girls PG" && (
+                              <FaFemale className="text-xs" />
+                            )}
+                            {  stay.pgOwner?.gender === "Boys PG" && (
+                              <FaMale className="text-xs" />
+                            )}
+                            {  stay.pgOwner?.gender=== "Coed PG" && (
+                              <FaUser className="text-xs" />
+                            )}
+                            {  stay.pgOwner?.gender || "Not specified"}
+                          </span>
+                        </p>
+
+                        {/* Room Information */}
                         <p className="text-sm text-gray-600">
-                          Type: {stay.room?.roomType || "Not specified"}
+                          <strong>Room:</strong> {stay.room || "Not specified"}
                         </p>
                         <p className="text-sm text-gray-600">
-                          Beds Booked: {stay.bedsBooked?.length || 0}
+                          <strong>Beds Booked:</strong> {stay.bedsBooked || 0}
                         </p>
                         <p className="text-sm text-gray-600">
-                          Price: ₹{stay.pricePerHead}/month
+                          <strong>Price:</strong> ₹{stay.pricePerHead || 0}
+                          /month
                         </p>
                       </div>
                     </div>
@@ -1094,9 +1125,7 @@ const DashboardContent = ({
                         <h3 className="text-xl font-semibold text-gray-800">
                           {stay.pgOwner?.messName || "Unknown PG"}
                         </h3>
-                        <p className="text-gray-500">
-                          {stay.room?.roomType || "Room"}
-                        </p>
+                        <p className="text-gray-500">{stay.room || "Room"}</p>
                       </div>
                     </div>
 
