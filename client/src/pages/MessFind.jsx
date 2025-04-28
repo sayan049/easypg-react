@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import MessBars from "../components/messBars";
@@ -7,8 +6,17 @@ import Toggle from "../components/toggle";
 import Map from "../components/map";
 import { FaSearch } from "react-icons/fa";
 import { LocationIqurl } from "../constant/urls";
+import { FaMale, FaFemale, FaUserFriends } from "react-icons/fa";
 
-const FilterModal = ({ isOpen, onClose, price, setPrice, amenities, featureChanges, onApplyFilters }) => {
+const FilterModal = ({
+  isOpen,
+  onClose,
+  price,
+  setPrice,
+  amenities,
+  featureChanges,
+  onApplyFilters,
+}) => {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
@@ -43,6 +51,57 @@ const FilterModal = ({ isOpen, onClose, price, setPrice, amenities, featureChang
             </label>
           ))}
         </div>
+
+        <div className="mb-6">
+          <h4 className="font-medium">Gender</h4>
+          <div className="flex flex-col gap-2 mt-2 text-sm">
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="gender"
+                value="boys pg"
+                checked={gender === "boys pg"}
+                onChange={(e) => setGender(e.target.value)}
+                className="mr-2 accent-blue-500"
+              />
+              <FaMale className="text-blue-500 mr-2" /> Boys PG
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="gender"
+                value="girls pg"
+                checked={gender === "girls pg"}
+                onChange={(e) => setGender(e.target.value)}
+                className="mr-2 accent-pink-500"
+              />
+              <FaFemale className="text-pink-500 mr-2" /> Girls PG
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="gender"
+                value="coed pg"
+                checked={gender === "coed pg"}
+                onChange={(e) => setGender(e.target.value)}
+                className="mr-2 accent-green-500"
+              />
+              <FaUserFriends className="text-green-500 mr-2" /> Co-ed PG
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="gender"
+                value=""
+                checked={gender === ""}
+                onChange={(e) => setGender("")}
+                className="mr-2 accent-gray-500"
+              />
+              <span className="text-gray-500 mr-2">🌐</span> Any
+            </label>
+          </div>
+        </div>
+
         <div className="mt-6 flex justify-end">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded shadow"
@@ -89,7 +148,9 @@ const MessFind = () => {
 
       debounceTimeout = setTimeout(async () => {
         try {
-          const fetchUrl = `${LocationIqurl}?input=${encodeURIComponent(query)}`;
+          const fetchUrl = `${LocationIqurl}?input=${encodeURIComponent(
+            query
+          )}`;
           const response = await fetch(fetchUrl);
           const data = await response.json();
           setSuggestions(data || []);
