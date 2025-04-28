@@ -1016,13 +1016,10 @@ import "react-toastify/dist/ReactToastify.css";
 import PropTypes from "prop-types";
 import { baseurl } from "../constant/urls";
 
-
-
-
 // import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 
 const BookingCard = React.memo(
-  ({ booking, onConfirm, onReject, loading, maintenanceRequests }) => {
+  ({ booking, onConfirm, onReject, loading, maintenanceRequests, onCancelRequest, onResolveRequest }) => {
     const [showMaintenance, setShowMaintenance] = useState(false);
 
     const statusColors = {
@@ -1053,6 +1050,8 @@ const BookingCard = React.memo(
       setShowMaintenance((prev) => !prev);
     };
 
+    const hasMaintenanceRequests = bookingMaintenanceRequests.length > 0;
+
     return (
       <div className="w-full md:w-[48%] bg-white rounded-xl shadow p-4 transition-all duration-300">
         <div className="flex flex-col gap-4">
@@ -1062,7 +1061,9 @@ const BookingCard = React.memo(
               <img
                 src={
                   booking.student?.avatar ||
-                  `https://i.pravatar.cc/150?u=${booking.student?._id || "user"}`
+                  `https://i.pravatar.cc/150?u=${
+                    booking.student?._id || "user"
+                  }`
                 }
                 alt={booking.student?.firstName || "Student"}
                 className="w-10 h-10 rounded-full"
@@ -1091,31 +1092,21 @@ const BookingCard = React.memo(
           <div className="bg-blue-50 p-3 rounded-lg">
             <h3 className="font-medium text-blue-800">PG Details</h3>
             <div className="text-sm space-y-1 mt-1">
-              <p>
-                <strong>PG Name:</strong> {booking.pgOwner?.messName || "N/A"}
-              </p>
-              <p>
-                <strong>Room:</strong> {booking.room || "N/A"}
-              </p>
-              <p>
-                <strong>Beds:</strong> {booking.bedsBooked || 0}
-              </p>
-              <p>
-                <strong>Period:</strong>{" "}
+              <p><strong>PG Name:</strong> {booking.pgOwner?.messName || "N/A"}</p>
+              <p><strong>Room:</strong> {booking.room || "N/A"}</p>
+              <p><strong>Beds:</strong> {booking.bedsBooked || 0}</p>
+              <p><strong>Period:</strong> 
                 {booking.period?.startDate
                   ? new Date(booking.period.startDate).toLocaleDateString()
                   : "N/A"}{" "}
                 - {endDate ? new Date(endDate).toLocaleDateString() : "N/A"}
               </p>
-              <p>
-                <strong>Amount:</strong> ₹
-                {booking.payment?.totalAmount?.toLocaleString() || "0"}
-              </p>
+              <p><strong>Amount:</strong> ₹{booking.payment?.totalAmount?.toLocaleString() || "0"}</p>
             </div>
           </div>
 
-          {/* Maintenance Requests Section */}
-          {booking.status === "confirmed" && bookingMaintenanceRequests.length > 0 && (
+          {/* Maintenance Requests */}
+          {booking.status === "confirmed" && hasMaintenanceRequests && (
             <div>
               <button
                 onClick={toggleMaintenance}
@@ -1124,50 +1115,61 @@ const BookingCard = React.memo(
                 {showMaintenance ? "Hide Maintenance Requests" : "View Maintenance Requests"}
               </button>
 
-              <div
-                className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                  showMaintenance ? "max-h-[1000px] mt-3" : "max-h-0"
-                }`}
-              >
-                <div className="space-y-3">
+              {showMaintenance && (
+                <div className="space-y-4 mt-3">
                   {bookingMaintenanceRequests.map((request) => (
-                    <div key={request._id} className="border rounded-lg p-3 bg-gray-50">
+                    <div
+                      key={request._id}
+                      className="border rounded-lg p-3 bg-gray-50"
+                    >
+                      {/* Top Row */}
                       <div className="flex justify-between items-start">
-                        <div>
-                          <h4 className="font-medium">{request.title}</h4>
-                          <p className="text-gray-600 text-sm mt-1">
-                            {request.description}
-                          </p>
-                        </div>
+                        <h4 className="font-semibold">{request.title}</h4>
                         <span
-                          className={`px-2 py-1 text-xs rounded-full ${
+                          className={`px-2 py-1 text-xs rounded-full min-w-[80px] text-center ${
                             request.status === "in-progress"
                               ? "bg-orange-100 text-orange-800"
-                              : "bg-green-100 text-green-800"
+                              : request.status === "resolved"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
                           }`}
                         >
                           {request.status.toUpperCase()}
                         </span>
                       </div>
 
-                      <div className="mt-2 text-sm text-gray-700">
-                        <p>
-                          <span className="font-medium">Submitted by:</span>{" "}
-                          {request.student?.name || "Unknown Student"}
-                        </p>
-                        <p>
-                          <span className="font-medium">Email:</span>{" "}
-                          {request.student?.email || "N/A"}
-                        </p>
-                        <p>
-                          <span className="font-medium">Date:</span>{" "}
-                          {new Date(request.createdAt).toLocaleDateString()}
-                        </p>
+                      {/* Divider */}
+                      <hr className="my-2 border-gray-300" />
+
+                      {/* Details */}
+                      <div className="text-sm text-gray-700 space-y-1">
+                        <p className="break-words">{request.description}</p>
+                        <p><span className="font-medium">Submitted by:</span> {request.student?.name || "Unknown Student"}</p>
+                        <p><span className="font-medium">Email:</span> {request.student?.email || "N/A"}</p>
+                        <p><span className="font-medium">Date:</span> {new Date(request.createdAt).toLocaleDateString()}</p>
                       </div>
+
+                      {/* Buttons */}
+                      {request.status === "in-progress" && (
+                        <div className="flex gap-2 mt-3">
+                          <button
+                            onClick={() => onCancelRequest(request._id)}
+                            className="flex-1 border border-red-500 text-red-500 py-1 rounded hover:bg-red-50 text-sm"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={() => onResolveRequest(request._id)}
+                            className="flex-1 bg-green-600 text-white py-1 rounded hover:bg-green-700 text-sm"
+                          >
+                            Resolve
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
-              </div>
+              )}
             </div>
           )}
 
@@ -1214,12 +1216,6 @@ const BookingCard = React.memo(
     );
   }
 );
-
-
-
-
-
-
 
 const EmptyState = ({ message, icon: Icon }) => (
   <div className="flex flex-col items-center justify-center py-12 text-gray-500">
@@ -1319,7 +1315,7 @@ const BookingStatus = ({ owner }) => {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
-console.log("Bookings Response:", response.data);
+      console.log("Bookings Response:", response.data);
       setBookings((prev) => ({
         ...prev,
         [status]: {
@@ -1467,14 +1463,14 @@ console.log("Bookings Response:", response.data);
       handleStatusChange(bookingId, "rejected", reason);
     }
   };
-  const refreshMaintenanceData = async () => {
-    if (bookings.confirmed.data.length > 0) {
-      const bookingIds = bookings.confirmed.data.map((b) => b._id);
-      const requests = await fetchMaintenanceRequests(bookingIds);
-      setMaintenanceRequests(requests);
-      toast.success("Maintenance requests updated");
-    }
-  };
+  // const refreshMaintenanceData = async () => {
+  //   if (bookings.confirmed.data.length > 0) {
+  //     const bookingIds = bookings.confirmed.data.map((b) => b._id);
+  //     const requests = await fetchMaintenanceRequests(bookingIds);
+  //     setMaintenanceRequests(requests);
+  //     toast.success("Maintenance requests updated");
+  //   }
+  // };
   useEffect(() => {
     const fetchInitialData = async () => {
       await Promise.all([
@@ -1599,7 +1595,7 @@ console.log("Bookings Response:", response.data);
                 Rejected Bookings ({bookings.rejected.total})
               </button>
             </div>
-            {tab === "confirmed" && (
+            {/* {tab === "confirmed" && (
               <button
                 onClick={refreshMaintenanceData}
                 disabled={loading.maintenance}
@@ -1612,7 +1608,7 @@ console.log("Bookings Response:", response.data);
                 />
                 Refresh Maintenance
               </button>
-            )}
+            )} */}
           </div>
 
           {loading.list && loading.tabChange ? (
