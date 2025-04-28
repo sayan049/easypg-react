@@ -1029,6 +1029,8 @@ const BookingCard = React.memo(
     handleMaintenanceResolve,
   }) => {
     const [showMaintenance, setShowMaintenance] = useState(false);
+    const [actionType, setActionType] = useState(null); // 'cancel' or 'resolve'
+    const [actionMessage, setActionMessage] = useState(""); // for the entered message
 
     const statusColors = {
       pending: "bg-yellow-100 text-yellow-800",
@@ -1180,33 +1182,84 @@ const BookingCard = React.memo(
 
                       {/* Buttons */}
                       {request.status === "in-progress" && (
-                        <div className="flex gap-2 mt-3">
-                          <button
-                            onClick={() => {
-                              const message = prompt(
-                                "Enter cancellation reason:"
-                              );
-                              if (message !== null) {
-                                handleMaintenanceCancel(request._id, message);
-                              }
-                            }}
-                            className="flex-1 border border-red-500 text-red-500 py-1 rounded hover:bg-red-50 text-sm"
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            onClick={() => {
-                              const message = prompt(
-                                "Enter resolution message:"
-                              );
-                              if (message !== null) {
-                                handleMaintenanceResolve(request._id, message);
-                              }
-                            }}
-                            className="flex-1 bg-green-600 text-white py-1 rounded hover:bg-green-700 text-sm"
-                          >
-                            Resolved
-                          </button>
+                        <div className="flex flex-col gap-2 mt-3">
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => {
+                                setActionType({
+                                  id: request._id,
+                                  type: "cancel",
+                                });
+                                setActionMessage("");
+                              }}
+                              className="flex-1 border border-red-500 text-red-500 py-1 rounded hover:bg-red-50 text-sm"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              onClick={() => {
+                                setActionType({
+                                  id: request._id,
+                                  type: "resolve",
+                                });
+                                setActionMessage("");
+                              }}
+                              className="flex-1 bg-green-600 text-white py-1 rounded hover:bg-green-700 text-sm"
+                            >
+                              Resolved
+                            </button>
+                          </div>
+
+                          {/* Conditionally show textarea and OK button */}
+                          {actionType?.id === request._id && (
+                            <div className="mt-2 space-y-2">
+                              <textarea
+                                className="w-full border rounded p-2 text-sm"
+                                placeholder={
+                                  actionType.type === "cancel"
+                                    ? "Reason for cancellation..."
+                                    : "Give a response..."
+                                }
+                                value={actionMessage}
+                                onChange={(e) =>
+                                  setActionMessage(e.target.value)
+                                }
+                                rows={3}
+                              />
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => {
+                                    if (actionType.type === "cancel") {
+                                      handleMaintenanceCancel(
+                                        request._id,
+                                        actionMessage
+                                      );
+                                    } else {
+                                      handleMaintenanceResolve(
+                                        request._id,
+                                        actionMessage
+                                      );
+                                    }
+                                    setActionType(null); // Close input after sending
+                                    setActionMessage("");
+                                  }}
+                                  disabled={!actionMessage.trim()}
+                                  className="flex-1 bg-blue-600 text-white py-1 rounded hover:bg-blue-700 disabled:bg-blue-400 text-sm"
+                                >
+                                  OK
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    setActionType(null);
+                                    setActionMessage("");
+                                  }}
+                                  className="flex-1 border border-gray-400 text-gray-600 py-1 rounded hover:bg-gray-100 text-sm"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -1342,10 +1395,14 @@ const BookingStatus = ({ owner }) => {
     }
   };
   // For updating maintenance request status (resolve or cancel)
-  const handleMaintenanceStatusChange = async (requestId, status, message = "") => {
+  const handleMaintenanceStatusChange = async (
+    requestId,
+    status,
+    message = ""
+  ) => {
     try {
       setLoading((prev) => ({ ...prev, action: true }));
-  
+
       await axios.post(
         `${baseurl}/auth/maintenance/${requestId}/update-status`,
         { status, message }, // send both status and message
@@ -1355,13 +1412,13 @@ const BookingStatus = ({ owner }) => {
           },
         }
       );
-  
+
       setMaintenanceRequests((prev) => ({
         requests: prev.requests.map((req) =>
           req._id === requestId ? { ...req, status } : req
         ),
       }));
-  
+
       toast.success(`Maintenance request ${status}`);
     } catch (error) {
       console.error(`Error updating maintenance request (${status}):`, error);
@@ -1370,18 +1427,15 @@ const BookingStatus = ({ owner }) => {
       setLoading((prev) => ({ ...prev, action: false }));
     }
   };
-  
 
   // For cancelling a maintenance request
   const handleMaintenanceCancel = (requestId, message) => {
     handleMaintenanceStatusChange(requestId, "cancelled", message);
   };
-  
+
   const handleMaintenanceResolve = (requestId, message) => {
     handleMaintenanceStatusChange(requestId, "resolved", message);
   };
-  
-  
 
   const fetchBookings = async (status, page = 1) => {
     try {
