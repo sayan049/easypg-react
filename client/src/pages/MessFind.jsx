@@ -7,6 +7,7 @@ import Map from "../components/map";
 import { FaSearch } from "react-icons/fa";
 import { LocationIqurl } from "../constant/urls";
 import { FaMale, FaFemale, FaUserFriends } from "react-icons/fa";
+import { FaWind, FaTv, FaBatteryFull, FaWifi, FaUtensils, FaTint, FaBed } from "react-icons/fa";
 
 const FilterModal = ({
   isOpen,
@@ -192,15 +193,25 @@ const [gender, setGender] = useState("");
     }
   }, [userLocation]);
 
-  const amenities = [
-    { id: "test1", label: "A/C", icon: "💨" },
-    { id: "test2", label: "TV", icon: "📺" },
-    { id: "test3", label: "Power Backup", icon: "🔋" },
-    { id: "test4", label: "WiFi", icon: "📶" },
-    { id: "test5", label: "Kitchen", icon: "🍴" },
-    { id: "test6", label: "Tank Water", icon: "💧" },
-    { id: "test7", label: "Double Bed", icon: "🛏️" },
-  ];
+  // const amenities = [
+  //   { id: "test1", label: "A/C", icon: "💨" },
+  //   { id: "test2", label: "TV", icon: "📺" },
+  //   { id: "test3", label: "Power Backup", icon: "🔋" },
+  //   { id: "test4", label: "WiFi", icon: "📶" },
+  //   { id: "test5", label: "Kitchen", icon: "🍴" },
+  //   { id: "test6", label: "Tank Water", icon: "💧" },
+  //   { id: "test7", label: "Double Bed", icon: "🛏️" },
+  // ];
+
+    const amenities = [
+      { id: "test1", label: "A/C", icon: <FaWind /> },
+      { id: "test2", label: "TV", icon: <FaTv /> },
+      { id: "test3", label: "Power Backup", icon: <FaBatteryFull /> },
+      { id: "test4", label: "WiFi", icon: <FaWifi /> },
+      { id: "test5", label: "Kitchen", icon: <FaUtensils /> },
+      { id: "test6", label: "Tank Water", icon: <FaTint /> },
+      { id: "test7", label: "Double Bed", icon: <FaBed /> },
+    ];
 
   const featureChanges = (e) => {
     const { value, checked } = e.target;
@@ -249,6 +260,56 @@ const [gender, setGender] = useState("");
                 {facility.label}
               </label>
             ))}
+             <div className="mb-6">
+          <h4 className="font-medium">Gender</h4>
+          <div className="flex flex-col gap-2 mt-2 text-sm">
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="gender"
+                value="boys pg"
+                checked={gender === "boys pg"}
+                onChange={(e) => setGender(e.target.value)}
+                className="mr-2 accent-blue-500"
+              />
+              <FaMale className="text-blue-500 mr-2" /> Boys PG
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="gender"
+                value="girls pg"
+                checked={gender === "girls pg"}
+                onChange={(e) => setGender(e.target.value)}
+                className="mr-2 accent-pink-500"
+              />
+              <FaFemale className="text-pink-500 mr-2" /> Girls PG
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="gender"
+                value="coed pg"
+                checked={gender === "coed pg"}
+                onChange={(e) => setGender(e.target.value)}
+                className="mr-2 accent-green-500"
+              />
+              <FaUserFriends className="text-green-500 mr-2" /> Co-ed PG
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="gender"
+                value=""
+                checked={gender === ""}
+                onChange={(e) => setGender("")}
+                className="mr-2 accent-gray-500"
+              />
+              <span className="text-gray-500 mr-2">🌐</span> Any
+            </label>
+          </div>
+        </div>
+
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded shadow w-1/2 left-1/4 relative"
               onClick={onApplyFilters}
