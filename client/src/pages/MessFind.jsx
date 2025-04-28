@@ -123,7 +123,6 @@ const FilterModal = ({
           </div>
         </div>
 
-
         <div className="mt-6 flex justify-end">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded shadow"
@@ -402,19 +401,18 @@ const MessFind = () => {
             <span className="hidden md:block w-[6rem]">Map View</span>
             <Dropdown className="hidden md:block" />
           </div>
-
-          <img
-            className="md:hidden  cursor-pointer ml-4"
-            alt="Filter"
-            src="/assets/button.png"
-            onClick={() => setFilterModalOpen(true)}
-          />
         </div>
 
         {/* Content */}
         <div className="mt-6" style={{ height: "calc(100vh - 200px)" }}>
-          <div className="text-lg font-bold mb-4">
+          <div className="text-lg font-bold mb-4 flex items-center justify-between">
             {pgCount} Mess near {item?.split(",")[0]}
+            <img
+              className="md:hidden  cursor-pointer ml-4"
+              alt="Filter"
+              src="/assets/button.png"
+              onClick={() => setFilterModalOpen(true)}
+            />
           </div>
           <div className="flex" style={{ height: "104%" }}>
             <div className="flex-1 overflow-y-auto pr-4">
