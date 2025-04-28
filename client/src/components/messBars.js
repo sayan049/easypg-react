@@ -135,7 +135,7 @@ function MessBars({
                     f.split(",").map((item) => item.trim().toLowerCase())
                   )
                 : [];
-              checkFeatures.length > 0
+                const matchesFeatures=   checkFeatures.length > 0
                 ? checkFeatures.some((feature) =>
                     facilitiesArray.includes(feature.toLowerCase())
                   )
