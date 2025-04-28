@@ -72,8 +72,7 @@ const FilterModal = ({
             </label>
           ))}
         </div>
-
-        <div className="mb-6 mt-2">
+        {/* <div className="mb-6 mt-2">
           <h4 className="font-medium">Gender</h4>
           <div className="flex flex-col gap-2 mt-2 text-sm">
             <label className="flex items-center">
@@ -121,8 +120,59 @@ const FilterModal = ({
               <span className="text-gray-500 mr-2">🌐</span> Any
             </label>
           </div>
+        </div> */}
+        // Inside FilterModal's radio buttons
+        <div className="mb-6 mt-2">
+          <h4 className="font-medium">Gender</h4>
+          <div className="flex flex-col gap-2 mt-2 text-sm">
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="modal-gender" // Unique name for the modal's radio group
+                value="boys pg"
+                checked={gender === "boys pg"}
+                onChange={(e) => setGender(e.target.value)}
+                className="mr-2 accent-blue-500"
+              />
+              <FaMale className="text-blue-500 mr-2" /> Boys PG
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="modal-gender" // Unique name
+                value="girls pg"
+                checked={gender === "girls pg"}
+                onChange={(e) => setGender(e.target.value)}
+                className="mr-2 accent-pink-500"
+              />
+              <FaFemale className="text-pink-500 mr-2" /> Girls PG
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="modal-gender" // Unique name
+                value="coed pg"
+                checked={gender === "coed pg"}
+                onChange={(e) => setGender(e.target.value)}
+                className="mr-2 accent-green-500"
+              />
+              <FaUserFriends className="text-green-500 mr-2" /> Co-ed PG
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="modal-gender" // Unique name
+                value=""
+                checked={gender === ""}
+                onChange={(e) => setGender("")}
+                className="mr-2 accent-gray-500"
+              />
+              <span className="text-gray-500 mr-2">🌐</span> Any
+            </label>
+          </div>
         </div>
 
+        
         <div className="mt-6 flex justify-end">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded shadow"
@@ -214,7 +264,7 @@ const MessFind = () => {
     if (userLocation) {
       setSelectedLocation(userLocation);
     }
-  }, [userLocation,finalGender,gender,checkFeatures]);
+  }, [userLocation, finalGender, gender, checkFeatures]);
 
   const amenities = [
     {
@@ -255,7 +305,7 @@ const MessFind = () => {
 
   const onApplyFilters = () => {
     setCheckFeatures([...tempCheckFeatures]);
-    setFinalGender(gender)
+    setFinalGender(gender);
     setFilterModalOpen(false);
   };
 
