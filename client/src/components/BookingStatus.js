@@ -1465,14 +1465,14 @@ const BookingStatus = ({ owner }) => {
       handleStatusChange(bookingId, "rejected", reason);
     }
   };
-  const refreshMaintenanceData = async () => {
-    if (bookings.confirmed.data.length > 0) {
-      const bookingIds = bookings.confirmed.data.map((b) => b._id);
-      const requests = await fetchMaintenanceRequests(bookingIds);
-      setMaintenanceRequests(requests);
-      toast.success("Maintenance requests updated");
-    }
-  };
+  // const refreshMaintenanceData = async () => {
+  //   if (bookings.confirmed.data.length > 0) {
+  //     const bookingIds = bookings.confirmed.data.map((b) => b._id);
+  //     const requests = await fetchMaintenanceRequests(bookingIds);
+  //     setMaintenanceRequests(requests);
+  //     toast.success("Maintenance requests updated");
+  //   }
+  // };
   useEffect(() => {
     const fetchInitialData = async () => {
       await Promise.all([
@@ -1597,7 +1597,7 @@ const BookingStatus = ({ owner }) => {
                 Rejected Bookings ({bookings.rejected.total})
               </button>
             </div>
-            {tab === "confirmed" && (
+            {/* {tab === "confirmed" && (
               <button
                 onClick={refreshMaintenanceData}
                 disabled={loading.maintenance}
@@ -1610,7 +1610,7 @@ const BookingStatus = ({ owner }) => {
                 />
                 Refresh Maintenance
               </button>
-            )}
+            )} */}
           </div>
 
           {loading.list && loading.tabChange ? (
