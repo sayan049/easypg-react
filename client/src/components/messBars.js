@@ -299,7 +299,7 @@ function MessBars({
                     </div>
 
                     <div className="mt-3 flex flex-wrap gap-2">
-                      {owner.facility?.map((feature, index) => {
+                      {/* {owner.facility?.map((feature, index) => {
                         const amenity = amenities.find(
                           (a) =>
                             a.label.toLowerCase() ===
@@ -312,6 +312,22 @@ function MessBars({
                           {amenity?.icon || null}
                           {feature}
                         </span>;
+                      })} */}
+                      {owner.facility?.map((feature, index) => {
+                        const amenity = amenities.find(
+                          (a) =>
+                            a.label.toLowerCase() ===
+                            feature.trim().toLowerCase()
+                        );
+                        return (
+                          <span
+                            key={index}
+                            className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-[rgb(44 164 181)] text-xs rounded-full"
+                          >
+                            {amenity?.icon || null}
+                            {feature}
+                          </span>
+                        );
                       })}
                     </div>
                   </div>
