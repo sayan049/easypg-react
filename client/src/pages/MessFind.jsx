@@ -221,13 +221,13 @@ const [gender, setGender] = useState("");
   // ];
 
     const amenities = [
-      { id: "test1", label: "A/C", icon: <MdOutlineAcUnit /> },
-      { id: "test2", label: "TV", icon: <MdTv /> },
-      { id: "test3", label: "Power Backup", icon: <MdOutlinePower /> },
-      { id: "test4", label: "WiFi", icon: <MdWifi /> },
-      { id: "test5", label: "Kitchen", icon: <MdKitchen /> },
-      { id: "test6", label: "Tank Water", icon: <MdWater /> },
-      { id: "test7", label: "Double Bed", icon: <MdBed /> },
+      { id: "test1", label: "A/C", icon: <MdOutlineAcUnit className="text-blue-500" /> },
+      { id: "test2", label: "TV", icon: <MdTv className="text-blue-500" /> },
+      { id: "test3", label: "Power Backup", icon: <MdOutlinePower  className="text-blue-500" /> },
+      { id: "test4", label: "WiFi", icon: <MdWifi className="text-blue-500" /> },
+      { id: "test5", label: "Kitchen", icon: <MdKitchen className="text-blue-500" /> },
+      { id: "test6", label: "Tank Water", icon: <MdWater className="text-blue-500" /> },
+      { id: "test7", label: "Double Bed", icon: <MdBed className="text-blue-500" /> },
     ];
 
   const featureChanges = (e) => {
