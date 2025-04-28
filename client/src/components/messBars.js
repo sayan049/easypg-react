@@ -31,12 +31,12 @@ function MessBars({
   const navigate = useNavigate();
   const [selected, setSelected] = useState(messData[0]?._id || null);
   const [flipped, setFlipped] = useState({});
-  const [isCardVisible, setIsCardVisible] = useState({});
+  // const [isCardVisible, setIsCardVisible] = useState({});
 
-  const { ref, inView } = useInView({
-    triggerOnce: true, // Trigger only once when in view
-    threshold: 0.5, // 50% of the element is in view
-  });
+  // const { ref, inView } = useInView({
+  //   triggerOnce: true, // Trigger only once when in view
+  //   threshold: 0.5, // 50% of the element is in view
+  // });
 
   const amenities = [
     { id: "test1", label: "A/C", icon: <FaWind /> },
@@ -120,11 +120,11 @@ function MessBars({
     }
   };
 
-  useEffect(() => {
-    if (inView) {
-      setIsCardVisible((prev) => ({ ...prev, [messData[0]._id]: true }));
-    }
-  }, [inView]);
+  // useEffect(() => {
+  //   if (inView) {
+  //     setIsCardVisible((prev) => ({ ...prev, [messData[0]._id]: true }));
+  //   }
+  // }, [inView]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -184,7 +184,7 @@ function MessBars({
 
       const newDistanceMap = {};
       for (const owner of messData) {
-        if (owner?.location?.coordinates && isCardVisible[owner._id]) {
+        if (owner?.location?.coordinates) {
           try {
             const distanceText = await getStreetDistance(
               { lat: userLocation.lat, lng: userLocation.lng },
@@ -201,7 +201,7 @@ function MessBars({
     };
 
     fetchDistances();
-  }, [messData, userLocation, isCardVisible]);
+  }, [messData, userLocation]);
 
   if (error) {
     return <div>{error}</div>;
@@ -216,7 +216,7 @@ function MessBars({
         {messData.map((owner,index) => (
           <div
             key={owner._id}
-            ref={index === 0 ? ref : null}
+            // ref={index === 0 ? ref : null}
             // className={`relative flip-card h-[31rem] mb-4  ${
             //   isChecked ? "md:h-[15rem]" : "md:h-[15rem]"
             // } ${
@@ -233,14 +233,14 @@ function MessBars({
                  : "ring-1 ring-gray-200"
              }
             bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4`}
-            style={{ opacity: isCardVisible[owner._id] ? 1 : 0 }}
+            // style={{ opacity: isCardVisible[owner._id] ? 1 : 0 }}
             onClick={() => {
               if (owner?.location?.coordinates) {
                 clickCords(owner.location.coordinates, owner._id);
               }
             }}
           >
-            {isCardVisible[owner._id] && (
+            {/* {isCardVisible[owner._id] &&( */}
               <div
                 className={`flip-card-inner ${
                   flipped[owner._id] ? "flipped" : ""
@@ -442,9 +442,10 @@ function MessBars({
                   </button>
                 </div>
               </div>
-            )}
+            {/* )} */}
           </div>
-        ))}
+        )
+         )}
       </div>
     </>
   );
