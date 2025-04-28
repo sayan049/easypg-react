@@ -1260,7 +1260,7 @@ class BookingStatusErrorBoundary extends React.Component {
 
 const BookingStatus = ({ owner }) => {
   const [tab, setTab] = useState("pending");
-  const [maintenanceRequests, setMaintenanceRequests] = useState([]);
+  const [maintenanceRequests, setMaintenanceRequests] = useState({ requests: [] });
   const [bookings, setBookings] = useState({
     pending: { data: [], page: 1, total: 0 },
     confirmed: { data: [], page: 1, total: 0 },
@@ -1673,13 +1673,15 @@ const handleMaintenanceResolve = (requestId) => {
                 {bookings[tab].data.length > 0 ? (
                   bookings[tab].data.map((booking) => (
                     <BookingCard
-                      key={booking._id}
-                      booking={booking}
-                      onConfirm={handleConfirm}
-                      onReject={handleReject}
-                      loading={loading.action}
-                      maintenanceRequests={maintenanceRequests}
-                    />
+                    key={booking._id}
+                    booking={booking}
+                    onConfirm={handleConfirm}
+                    onReject={handleReject}
+                    loading={loading.action}
+                    maintenanceRequests={maintenanceRequests}
+                    handleMaintenanceCancel={handleMaintenanceCancel}
+                    handleMaintenanceResolve={handleMaintenanceResolve}
+                  />
                   ))
                 ) : (
                   <EmptyState
