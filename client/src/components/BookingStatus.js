@@ -1018,7 +1018,6 @@ import { baseurl } from "../constant/urls";
 
 // import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 
-
 const BookingCard = React.memo(
   ({
     booking,
@@ -1027,7 +1026,7 @@ const BookingCard = React.memo(
     loading,
     maintenanceRequests,
     handleMaintenanceCancel,
-    handleMaintenanceResolve
+    handleMaintenanceResolve,
   }) => {
     const [showMaintenance, setShowMaintenance] = useState(false);
 
@@ -1101,16 +1100,26 @@ const BookingCard = React.memo(
           <div className="bg-blue-50 p-3 rounded-lg">
             <h3 className="font-medium text-blue-800">PG Details</h3>
             <div className="text-sm space-y-1 mt-1">
-              <p><strong>PG Name:</strong> {booking.pgOwner?.messName || "N/A"}</p>
-              <p><strong>Room:</strong> {booking.room || "N/A"}</p>
-              <p><strong>Beds:</strong> {booking.bedsBooked || 0}</p>
-              <p><strong>Period:</strong> 
+              <p>
+                <strong>PG Name:</strong> {booking.pgOwner?.messName || "N/A"}
+              </p>
+              <p>
+                <strong>Room:</strong> {booking.room || "N/A"}
+              </p>
+              <p>
+                <strong>Beds:</strong> {booking.bedsBooked || 0}
+              </p>
+              <p>
+                <strong>Period:</strong>
                 {booking.period?.startDate
                   ? new Date(booking.period.startDate).toLocaleDateString()
                   : "N/A"}{" "}
                 - {endDate ? new Date(endDate).toLocaleDateString() : "N/A"}
               </p>
-              <p><strong>Amount:</strong> ₹{booking.payment?.totalAmount?.toLocaleString() || "0"}</p>
+              <p>
+                <strong>Amount:</strong> ₹
+                {booking.payment?.totalAmount?.toLocaleString() || "0"}
+              </p>
             </div>
           </div>
 
@@ -1121,7 +1130,9 @@ const BookingCard = React.memo(
                 onClick={toggleMaintenance}
                 className="mt-2 text-blue-600 text-sm font-semibold hover:underline focus:outline-none"
               >
-                {showMaintenance ? "Hide Maintenance Requests" : "View Maintenance Requests"}
+                {showMaintenance
+                  ? "Hide Maintenance Requests"
+                  : "View Maintenance Requests"}
               </button>
 
               {showMaintenance && (
@@ -1153,22 +1164,45 @@ const BookingCard = React.memo(
                       {/* Details */}
                       <div className="text-sm text-gray-700 space-y-1">
                         <p className="break-words">{request.description}</p>
-                        <p><span className="font-medium">Submitted by:</span> {request.student?.name || "Unknown Student"}</p>
-                        <p><span className="font-medium">Email:</span> {request.student?.email || "N/A"}</p>
-                        <p><span className="font-medium">Date:</span> {new Date(request.createdAt).toLocaleDateString()}</p>
+                        <p>
+                          <span className="font-medium">Submitted by:</span>{" "}
+                          {request.student?.name || "Unknown Student"}
+                        </p>
+                        <p>
+                          <span className="font-medium">Email:</span>{" "}
+                          {request.student?.email || "N/A"}
+                        </p>
+                        <p>
+                          <span className="font-medium">Date:</span>{" "}
+                          {new Date(request.createdAt).toLocaleDateString()}
+                        </p>
                       </div>
 
                       {/* Buttons */}
                       {request.status === "in-progress" && (
                         <div className="flex gap-2 mt-3">
                           <button
-                            onClick={() => handleMaintenanceCancel(request._id)}
+                            onClick={() => {
+                              const message = prompt(
+                                "Enter cancellation reason:"
+                              );
+                              if (message !== null) {
+                                handleMaintenanceCancel(request._id, message);
+                              }
+                            }}
                             className="flex-1 border border-red-500 text-red-500 py-1 rounded hover:bg-red-50 text-sm"
                           >
                             Cancel
                           </button>
                           <button
-                            onClick={() => handleMaintenanceResolve(request._id)}
+                            onClick={() => {
+                              const message = prompt(
+                                "Enter resolution message:"
+                              );
+                              if (message !== null) {
+                                handleMaintenanceResolve(request._id, message);
+                              }
+                            }}
                             className="flex-1 bg-green-600 text-white py-1 rounded hover:bg-green-700 text-sm"
                           >
                             Resolved
@@ -1226,8 +1260,6 @@ const BookingCard = React.memo(
   }
 );
 
-
-
 const EmptyState = ({ message, icon: Icon }) => (
   <div className="flex flex-col items-center justify-center py-12 text-gray-500">
     <Icon className="w-12 h-12 mb-3 text-gray-300" />
@@ -1260,7 +1292,9 @@ class BookingStatusErrorBoundary extends React.Component {
 
 const BookingStatus = ({ owner }) => {
   const [tab, setTab] = useState("pending");
-  const [maintenanceRequests, setMaintenanceRequests] = useState({ requests: [] });
+  const [maintenanceRequests, setMaintenanceRequests] = useState({
+    requests: [],
+  });
   const [bookings, setBookings] = useState({
     pending: { data: [], page: 1, total: 0 },
     confirmed: { data: [], page: 1, total: 0 },
@@ -1308,46 +1342,46 @@ const BookingStatus = ({ owner }) => {
     }
   };
   // For updating maintenance request status (resolve or cancel)
-const handleMaintenanceStatusChange = async (requestId, status) => {
-  try {
-    setLoading((prev) => ({ ...prev, action: true }));
+  const handleMaintenanceStatusChange = async (requestId, status, message = "") => {
+    try {
+      setLoading((prev) => ({ ...prev, action: true }));
+  
+      await axios.post(
+        `${baseurl}/auth/maintenance/${requestId}/update-status`,
+        { status, message }, // send both status and message
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+  
+      setMaintenanceRequests((prev) => ({
+        requests: prev.requests.map((req) =>
+          req._id === requestId ? { ...req, status } : req
+        ),
+      }));
+  
+      toast.success(`Maintenance request ${status}`);
+    } catch (error) {
+      console.error(`Error updating maintenance request (${status}):`, error);
+      toast.error(`Failed to ${status} maintenance request`);
+    } finally {
+      setLoading((prev) => ({ ...prev, action: false }));
+    }
+  };
+  
 
-    await axios.post(
-      `${baseurl}/auth/maintenance/${requestId}/update-status`, // Single route
-      { status }, // Send status in body
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      }
-    );
-
-    // Update local maintenance requests
-    setMaintenanceRequests((prev) => ({
-      requests: prev.requests.map((req) =>
-        req._id === requestId ? { ...req, status } : req
-      ),
-    }));
-
-    toast.success(`Maintenance request ${status}`);
-  } catch (error) {
-    console.error(`Error updating maintenance request (${status}):`, error);
-    toast.error(`Failed to ${status} maintenance request`);
-  } finally {
-    setLoading((prev) => ({ ...prev, action: false }));
-  }
-};
-
-// For cancelling a maintenance request
-const handleMaintenanceCancel = (requestId) => {
-  handleMaintenanceStatusChange(requestId, "cancelled");
-};
-
-// For resolving a maintenance request
-const handleMaintenanceResolve = (requestId) => {
-  handleMaintenanceStatusChange(requestId, "resolved");
-};
-
+  // For cancelling a maintenance request
+  const handleMaintenanceCancel = (requestId, message) => {
+    handleMaintenanceStatusChange(requestId, "cancelled", message);
+  };
+  
+  const handleMaintenanceResolve = (requestId, message) => {
+    handleMaintenanceStatusChange(requestId, "resolved", message);
+  };
+  
+  
 
   const fetchBookings = async (status, page = 1) => {
     try {
@@ -1673,15 +1707,15 @@ const handleMaintenanceResolve = (requestId) => {
                 {bookings[tab].data.length > 0 ? (
                   bookings[tab].data.map((booking) => (
                     <BookingCard
-                    key={booking._id}
-                    booking={booking}
-                    onConfirm={handleConfirm}
-                    onReject={handleReject}
-                    loading={loading.action}
-                    maintenanceRequests={maintenanceRequests}
-                    handleMaintenanceCancel={handleMaintenanceCancel}
-                    handleMaintenanceResolve={handleMaintenanceResolve}
-                  />
+                      key={booking._id}
+                      booking={booking}
+                      onConfirm={handleConfirm}
+                      onReject={handleReject}
+                      loading={loading.action}
+                      maintenanceRequests={maintenanceRequests}
+                      handleMaintenanceCancel={handleMaintenanceCancel}
+                      handleMaintenanceResolve={handleMaintenanceResolve}
+                    />
                   ))
                 ) : (
                   <EmptyState

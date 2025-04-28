@@ -1153,13 +1153,13 @@ exports.getRequestsByBookings = async (req, res) => {
 // Controller for updating the maintenance request status
 exports.updateMaintenanceStatus = async (req, res) => {
   const { requestId } = req.params;
-  const { status } = req.body;
+  const { status, message } = req.body; // ⬅️ Now also expect a message field
 
   if (!status) {
     return res.status(400).json({ message: "Status is required" });
   }
 
-  const allowedStatuses = ["resolved", "cancelled", "in-progress"]; // Allowed statuses
+  const allowedStatuses = ["resolved", "cancelled", "in-progress"];
   if (!allowedStatuses.includes(status)) {
     return res.status(400).json({ message: "Invalid status" });
   }
@@ -1171,16 +1171,33 @@ exports.updateMaintenanceStatus = async (req, res) => {
       return res.status(404).json({ message: "Maintenance request not found" });
     }
 
-    // Update the status of the maintenance request
+    // Update fields based on the status
     maintenanceRequest.status = status;
+
+    if (status === "resolved") {
+      maintenanceRequest.response = message || ""; // Save response
+      maintenanceRequest.cancellationReason = ""; // Clear cancellation reason if any
+    } else if (status === "cancelled") {
+      maintenanceRequest.cancellationReason = message || ""; // Save cancellation reason
+      maintenanceRequest.response = ""; // Clear response if any
+    } else {
+      // If status is "in-progress", clear both response and cancellationReason
+      maintenanceRequest.response = "";
+      maintenanceRequest.cancellationReason = "";
+    }
+
     await maintenanceRequest.save();
 
-    return res.status(200).json({ message: `Maintenance request ${status}`, request: maintenanceRequest });
+    return res.status(200).json({ 
+      message: `Maintenance request ${status}`, 
+      request: maintenanceRequest 
+    });
   } catch (error) {
     console.error("Error updating maintenance request:", error);
     return res.status(500).json({ message: "Failed to update maintenance request status" });
   }
 };
+
 
 
 // Cancel booking (BED RESTORATION ONLY FOR CONFIRMED BOOKINGS)
