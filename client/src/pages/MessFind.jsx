@@ -7,7 +7,24 @@ import Map from "../components/map";
 import { FaSearch } from "react-icons/fa";
 import { LocationIqurl } from "../constant/urls";
 import { FaMale, FaFemale, FaUserFriends } from "react-icons/fa";
-import { FaWind, FaTv, FaBatteryFull, FaWifi, FaUtensils, FaTint, FaBed } from "react-icons/fa";
+import {
+  MdOutlineAccessTime,
+  MdOutlineHome,
+  MdOutlineHistory,
+  MdOutlineWifi,
+  MdOutlineKitchen,
+  MdOutlinePower,
+  MdTv,
+  MdOutlineAcUnit,
+  MdBed,
+  MdOpacity,
+  MdPhone,
+  MdEmail,
+  MdPersonOutline,
+  MdKitchen, 
+  MdWifi,
+  MdWater
+} from "react-icons/md";
 
 const FilterModal = ({
   isOpen,
@@ -204,13 +221,13 @@ const [gender, setGender] = useState("");
   // ];
 
     const amenities = [
-      { id: "test1", label: "A/C", icon: <FaWind /> },
-      { id: "test2", label: "TV", icon: <FaTv /> },
-      { id: "test3", label: "Power Backup", icon: <FaBatteryFull /> },
-      { id: "test4", label: "WiFi", icon: <FaWifi /> },
-      { id: "test5", label: "Kitchen", icon: <FaUtensils /> },
-      { id: "test6", label: "Tank Water", icon: <FaTint /> },
-      { id: "test7", label: "Double Bed", icon: <FaBed /> },
+      { id: "test1", label: "A/C", icon: <MdOutlineAcUnit /> },
+      { id: "test2", label: "TV", icon: <MdTv /> },
+      { id: "test3", label: "Power Backup", icon: <MdOutlinePower /> },
+      { id: "test4", label: "WiFi", icon: <MdWifi /> },
+      { id: "test5", label: "Kitchen", icon: <MdKitchen /> },
+      { id: "test6", label: "Tank Water", icon: <MdWater /> },
+      { id: "test7", label: "Double Bed", icon: <MdBed /> },
     ];
 
   const featureChanges = (e) => {
@@ -256,7 +273,7 @@ const [gender, setGender] = useState("");
                   value={facility.label}
                   className="mr-2 accent-blue-500"
                 />
-                <span className="text-lg mr-2">{facility.icon}</span>
+                <span className="text-lg mr-2 accent-blue-500">{facility.icon}</span>
                 {facility.label}
               </label>
             ))}
