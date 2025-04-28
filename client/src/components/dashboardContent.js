@@ -983,17 +983,12 @@ const DashboardContent = ({
                             className={`inline-flex items-center gap-2 px-3 py-1 rounded-full font-medium text-white transition-colors duration-300 ${
                               stay.pgOwner?.gender === "Girls PG"
                                 ? "bg-pink-500"
-                                : ""
-                            } ${
-                              stay.pgOwner?.gender === "Boys PG"
+                                : stay.pgOwner?.gender === "Boys PG"
                                 ? "bg-blue-500"
-                                : ""
-                            } ${
-                              stay.pgOwner?.gender === "Coed PG"
+                                : stay.pgOwner?.gender === "Coed PG"
                                 ? "bg-green-500"
-                                : ""
-                            }
-                              `}
+                                : "bg-gray-500" // default color if not specified
+                            }`}
                           >
                             {stay.pgOwner?.gender === "Girls PG" && (
                               <FaFemale className="text-xs" />
