@@ -59,6 +59,7 @@ const FilterModal = ({
           />
         </div>
         <div className="flex flex-col gap-4">
+        <h4 className="font-medium">Amenities</h4>
           {amenities.map((facility) => (
             <label key={facility.id} className="flex items-center text-sm">
               <input
@@ -359,13 +360,10 @@ const MessFind = () => {
 
       {/* Listings */}
       <div className="w-full md:w-3/4 md:mt-0 md:ml-6 relative">
-        <div className="flex flex-row md:flex-row justify-between items-center bg-white p-4 shadow rounded-md relative">
+        <div className="flex flex-row md:flex-row justify-between items-center bg-white p-4  rounded-md relative">
           {/* Search Bar */}
           <div className="flex items-center gap-4 bg-white p-3 rounded-lg border border-gray-300 shadow-sm hover:border-blue-500 transition-colors w-full relative">
-            <FaSearch
-              className="w-5 h-5 text-gray-400 cursor-pointer"
-              onClick={performSearch}
-            />
+            
             <input
               type="text"
               placeholder="Search mess by location"
@@ -373,6 +371,10 @@ const MessFind = () => {
               value={searchQuery}
               onChange={handleInputChange}
               onKeyDown={(e) => e.key === "Enter" && performSearch()}
+            />
+            <FaSearch
+              className="w-5 h-5 text-gray-400 cursor-pointer"
+              onClick={performSearch}
             />
 
             {/* Suggestions Dropdown */}
@@ -415,7 +417,7 @@ const MessFind = () => {
             />
           </div>
           <div className="flex" style={{ height: "104%" }}>
-            <div className="flex-1 overflow-y-auto pr-4">
+            <div className="flex-1 overflow-y-auto ">
               <MessBars
                 checkFeatures={checkFeatures}
                 isChecked={isChecked}
