@@ -325,8 +325,7 @@ function MessBars({
                         );
                       })}
                     </div>
-                    import {(FaFemale, FaMale, FaUsers)} from "react-icons/fa";
-                    // add this import
+                   
                     {owner?.gender && (
                       <div className="mt-3 flex items-center gap-2 text-sm font-medium text-gray-700">
                         {owner.gender === "Girls PG" && (
