@@ -47,7 +47,7 @@ function MessBars({
     }
   }, [lastCardInView, isLoading, hasMore]);
 
-  const loadMoreCards = useCallback(() => {
+  const loadMoreCards = (() => {
     if (messData.length <= visibleCount) {
       setHasMore(false);
       return;
