@@ -6,6 +6,8 @@ import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FaWind, FaTv, FaBatteryFull, FaWifi, FaUtensils, FaTint, FaBed } from "react-icons/fa";
+
 
 function SignupOwner() {
   const [image, setImage] = useState(null);
@@ -18,15 +20,25 @@ function SignupOwner() {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [isSubmitting, setIssubmitting] = useState(false);
 
-  const amenities = [
-    { id: "test1", label: "A/C", icon: "💨" },
-    { id: "test2", label: "TV", icon: "📺" },
-    { id: "test3", label: "Power Backup", icon: "🔋" },
-    { id: "test4", label: "WiFi", icon: "📶" },
-    { id: "test5", label: "Kitchen", icon: "🍴" },
-    { id: "test6", label: "Tank Water", icon: "💧" },
-    { id: "test7", label: "Double Bed", icon: "🛏️" },
-  ];
+  // const amenities = [
+  //   { id: "test1", label: "A/C", icon: "💨" },
+  //   { id: "test2", label: "TV", icon: "📺" },
+  //   { id: "test3", label: "Power Backup", icon: "🔋" },
+  //   { id: "test4", label: "WiFi", icon: "📶" },
+  //   { id: "test5", label: "Kitchen", icon: "🍴" },
+  //   { id: "test6", label: "Tank Water", icon: "💧" },
+  //   { id: "test7", label: "Double Bed", icon: "🛏️" },
+  // ];
+  
+const amenities = [
+  { id: "test1", label: "A/C", icon: <FaWind /> },
+  { id: "test2", label: "TV", icon: <FaTv /> },
+  { id: "test3", label: "Power Backup", icon: <FaBatteryFull /> },
+  { id: "test4", label: "WiFi", icon: <FaWifi /> },
+  { id: "test5", label: "Kitchen", icon: <FaUtensils /> },
+  { id: "test6", label: "Tank Water", icon: <FaTint /> },
+  { id: "test7", label: "Double Bed", icon: <FaBed /> },
+];
 
   useEffect(() => {
     document.title = "Sign up for owner";
