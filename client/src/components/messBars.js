@@ -22,6 +22,7 @@ function MessBars({
   userLocation,
   coords,
   setPgCount,
+  finalGender,
 }) {
   const [messData, setMessData] = useState([]);
   const [distanceMap, setDistanceMap] = useState({});
@@ -134,11 +135,16 @@ function MessBars({
                     f.split(",").map((item) => item.trim().toLowerCase())
                   )
                 : [];
-              return checkFeatures.length > 0
+              checkFeatures.length > 0
                 ? checkFeatures.some((feature) =>
                     facilitiesArray.includes(feature.toLowerCase())
                   )
                 : true;
+              const matchesGender = finalGender
+                ? owner.gender?.toLowerCase() === finalGender.toLowerCase()
+                : true;
+
+              return matchesFeatures && matchesGender;
             })
           : [];
 
@@ -325,7 +331,7 @@ function MessBars({
                         );
                       })}
                     </div>
-                   
+
                     {owner?.gender && (
                       <div className="mt-3 flex items-center gap-2 text-sm font-medium text-gray-700">
                         {owner.gender.toLowerCase() === "girls pg" && (
