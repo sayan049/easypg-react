@@ -1090,10 +1090,6 @@ exports.maintenanceRequestHandler = async (req, res) => {
   }
 };
 //maintenance request for owner
-// controllers/maintenanceController.js
-// const MaintenanceRequest = require('../models/MaintenanceRequest');
-
-// const MaintenanceRequest = require('../models/MaintenanceRequest');
 
 exports.getRequestsByBookings = async (req, res) => {
   try {
@@ -1150,6 +1146,42 @@ exports.getRequestsByBookings = async (req, res) => {
     });
   }
 };
+
+
+
+// Controller for updating the maintenance request status
+exports.updateMaintenanceStatus = async (req, res) => {
+  const { requestId } = req.params;
+  const { status } = req.body;
+
+  if (!status) {
+    return res.status(400).json({ message: "Status is required" });
+  }
+
+  const allowedStatuses = ["resolved", "cancelled", "in-progress"]; // Allowed statuses
+  if (!allowedStatuses.includes(status)) {
+    return res.status(400).json({ message: "Invalid status" });
+  }
+
+  try {
+    // Find the maintenance request by ID
+    const maintenanceRequest = await MaintenanceRequest.findById(requestId);
+    if (!maintenanceRequest) {
+      return res.status(404).json({ message: "Maintenance request not found" });
+    }
+
+    // Update the status of the maintenance request
+    maintenanceRequest.status = status;
+    await maintenanceRequest.save();
+
+    return res.status(200).json({ message: `Maintenance request ${status}`, request: maintenanceRequest });
+  } catch (error) {
+    console.error("Error updating maintenance request:", error);
+    return res.status(500).json({ message: "Failed to update maintenance request status" });
+  }
+};
+
+
 // Cancel booking (BED RESTORATION ONLY FOR CONFIRMED BOOKINGS)
 exports.cancelBooking = async (req, res) => {
   try {

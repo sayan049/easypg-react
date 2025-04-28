@@ -1018,8 +1018,17 @@ import { baseurl } from "../constant/urls";
 
 // import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 
+
 const BookingCard = React.memo(
-  ({ booking, onConfirm, onReject, loading, maintenanceRequests, onCancelRequest, onResolveRequest }) => {
+  ({
+    booking,
+    onConfirm,
+    onReject,
+    loading,
+    maintenanceRequests,
+    handleMaintenanceCancel,
+    handleMaintenanceResolve
+  }) => {
     const [showMaintenance, setShowMaintenance] = useState(false);
 
     const statusColors = {
@@ -1153,16 +1162,16 @@ const BookingCard = React.memo(
                       {request.status === "in-progress" && (
                         <div className="flex gap-2 mt-3">
                           <button
-                            onClick={() => onCancelRequest(request._id)}
+                            onClick={() => handleMaintenanceCancel(request._id)}
                             className="flex-1 border border-red-500 text-red-500 py-1 rounded hover:bg-red-50 text-sm"
                           >
                             Cancel
                           </button>
                           <button
-                            onClick={() => onResolveRequest(request._id)}
+                            onClick={() => handleMaintenanceResolve(request._id)}
                             className="flex-1 bg-green-600 text-white py-1 rounded hover:bg-green-700 text-sm"
                           >
-                            Resolve
+                            Resolved
                           </button>
                         </div>
                       )}
@@ -1216,6 +1225,8 @@ const BookingCard = React.memo(
     );
   }
 );
+
+
 
 const EmptyState = ({ message, icon: Icon }) => (
   <div className="flex flex-col items-center justify-center py-12 text-gray-500">
@@ -1296,6 +1307,47 @@ const BookingStatus = ({ owner }) => {
       setLoading((prev) => ({ ...prev, maintenance: false }));
     }
   };
+  // For updating maintenance request status (resolve or cancel)
+const handleMaintenanceStatusChange = async (requestId, status) => {
+  try {
+    setLoading((prev) => ({ ...prev, action: true }));
+
+    await axios.post(
+      `${baseurl}/auth/maintenance/${requestId}/update-status`, // Single route
+      { status }, // Send status in body
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    );
+
+    // Update local maintenance requests
+    setMaintenanceRequests((prev) => ({
+      requests: prev.requests.map((req) =>
+        req._id === requestId ? { ...req, status } : req
+      ),
+    }));
+
+    toast.success(`Maintenance request ${status}`);
+  } catch (error) {
+    console.error(`Error updating maintenance request (${status}):`, error);
+    toast.error(`Failed to ${status} maintenance request`);
+  } finally {
+    setLoading((prev) => ({ ...prev, action: false }));
+  }
+};
+
+// For cancelling a maintenance request
+const handleMaintenanceCancel = (requestId) => {
+  handleMaintenanceStatusChange(requestId, "cancelled");
+};
+
+// For resolving a maintenance request
+const handleMaintenanceResolve = (requestId) => {
+  handleMaintenanceStatusChange(requestId, "resolved");
+};
+
 
   const fetchBookings = async (status, page = 1) => {
     try {
