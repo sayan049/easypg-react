@@ -983,23 +983,28 @@ const DashboardContent = ({
                             className={`inline-flex items-center gap-2 px-3 py-1 rounded-full font-medium text-white transition-colors duration-300 ${
                               stay.pgOwner?.gender === "Girls PG"
                                 ? "bg-pink-500"
-                                :   stay.pgOwner?.gender === "Boys PG"
+                                : ""
+                            } ${
+                              stay.pgOwner?.gender === "Boys PG"
                                 ? "bg-blue-500"
-                                :   stay.pgOwner?.gender=== "Coed PG"
+                                : ""
+                            } ${
+                              stay.pgOwner?.gender === "Coed PG"
                                 ? "bg-green-500"
-                                : "bg-gray-400"
-                            }`}
+                                : ""
+                            }
+                              `}
                           >
-                            {  stay.pgOwner?.gender === "Girls PG" && (
+                            {stay.pgOwner?.gender === "Girls PG" && (
                               <FaFemale className="text-xs" />
                             )}
-                            {  stay.pgOwner?.gender === "Boys PG" && (
+                            {stay.pgOwner?.gender === "Boys PG" && (
                               <FaMale className="text-xs" />
                             )}
-                            {  stay.pgOwner?.gender=== "Coed PG" && (
+                            {stay.pgOwner?.gender === "Coed PG" && (
                               <FaUser className="text-xs" />
                             )}
-                            {  stay.pgOwner?.gender || "Not specified"}
+                            {stay.pgOwner?.gender || "Not specified"}
                           </span>
                         </p>
 
