@@ -11,6 +11,9 @@ import {
   FaUtensils,
   FaTint,
   FaBed,
+  FaFemale,
+  FaMale,
+  FaUsers,
 } from "react-icons/fa";
 
 function MessBars({
@@ -269,7 +272,6 @@ function MessBars({
                         </svg>
                       </button>
                     </div>
-
                     <p className="mt-1 text-sm text-gray-600">
                       {owner.address} .
                     </p>
@@ -297,7 +299,6 @@ function MessBars({
                         {distanceMap[owner._id] || "Calculating..."}
                       </span>
                     </div>
-
                     <div className="mt-3 flex flex-wrap gap-2">
                       {/* {owner.facility?.map((feature, index) => {
                         <span
@@ -324,6 +325,30 @@ function MessBars({
                         );
                       })}
                     </div>
+                    import {(FaFemale, FaMale, FaUsers)} from "react-icons/fa";
+                    // add this import
+                    {owner?.gender && (
+                      <div className="mt-3 flex items-center gap-2 text-sm font-medium text-gray-700">
+                        {owner.gender === "Girls PG" && (
+                          <span className="flex items-center gap-1 bg-pink-100 text-pink-600 px-2 py-1 rounded-full">
+                            <FaFemale />
+                            Girls PG
+                          </span>
+                        )}
+                        {owner.gender === "Boys PG" && (
+                          <span className="flex items-center gap-1 bg-blue-100 text-blue-600 px-2 py-1 rounded-full">
+                            <FaMale />
+                            Boys PG
+                          </span>
+                        )}
+                        {owner.gender === "Coed PG" && (
+                          <span className="flex items-center gap-1 bg-green-100 text-green-600 px-2 py-1 rounded-full">
+                            <FaUsers />
+                            Co-ed PG
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
