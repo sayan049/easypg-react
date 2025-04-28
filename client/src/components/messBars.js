@@ -48,19 +48,22 @@ function MessBars({
   }, [lastCardInView, isLoading, hasMore]);
 
   const loadMoreCards = (() => {
-    if (messData.length <= visibleCount) {
-      setHasMore(false);
-      return;
-    }
-
+    if (isLoading || !hasMore) return;
+    
     setIsLoading(true);
-
-    // Simulate network delay (remove in production)
-    setTimeout(() => {
-      setVisibleCount((prev) => prev + 5); // Load 5 more cards
+    
+    // Load more if we have at least 5 more items to show
+    if (messData.length > visibleCount) {
+      setTimeout(() => {
+        setVisibleCount(prev => Math.min(prev + 5, messData.length));
+        setIsLoading(false);
+        setHasMore(visibleCount < messData.length);
+      }, 800);
+    } else {
+      setHasMore(false);
       setIsLoading(false);
-    }, 800);
-  }, [visibleCount, messData.length]);
+    }
+  }, [visibleCount, messData.length, isLoading, hasMore]);
 
   // Filter the data to only show visible cards
   const visibleData = messData.slice(0, visibleCount);
