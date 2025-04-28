@@ -415,7 +415,7 @@ const MessFind = () => {
             />
           </div>
           <div className="flex" style={{ height: "104%" }}>
-            <div className="flex-1 overflow-y-auto pr-4">
+            <div className="flex-1 overflow-y-auto ">
               <MessBars
                 checkFeatures={checkFeatures}
                 isChecked={isChecked}
