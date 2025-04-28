@@ -405,7 +405,7 @@ const MessFind = () => {
 
         {/* Content */}
         <div className="mt-6" style={{ height: "calc(100vh - 200px)" }}>
-          <div className="text-lg font-bold mb-4 flex items-center justify-between">
+          <div className="text-lg font-bold mb-4 flex items-center justify-between mx-4">
             {pgCount} Mess near {item?.split(",")[0]}
             <img
               className="md:hidden  cursor-pointer ml-4"
