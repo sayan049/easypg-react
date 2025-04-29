@@ -41,7 +41,7 @@ function MessBars({
     triggerOnce: false,
   });
 
-
+ // Add loadMoreCards to dependencies
 
   const loadMoreCards = React.useCallback(() => {
     if (isLoading || !hasMore) return;
@@ -61,10 +61,10 @@ function MessBars({
   }, [visibleCount, messData.length, isLoading, hasMore]);
 
   useEffect(() => {
-    if (lastCardInView && !isLoading && hasMore) {
-      loadMoreCards();
-    }
-  }, [lastCardInView, isLoading, hasMore, loadMoreCards]);
+  if (lastCardInView && !isLoading && hasMore) {
+    loadMoreCards();
+  }
+}, [lastCardInView, isLoading, hasMore, loadMoreCards]);
 
   // Filter the data to only show visible cards
   const visibleData = messData.slice(0, visibleCount);

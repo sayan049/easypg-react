@@ -187,55 +187,55 @@ const MessFind = () => {
     }
   };
 
-  // const handleSuggestionClick = (suggestion) => {
-  //   setSearchQuery(suggestion.display_name);
-  //   setSelectedLocation({
-  //     lat: suggestion.lat,
-  //     lng: suggestion.lon,
-  //   });
-  //   setSuggestions([]);
-
-  //   setTimeout(() => {
-  //     performSearch();
-  //   }, 100);
-  // };
   const handleSuggestionClick = (suggestion) => {
-    const newLocation = {
+    setSearchQuery(suggestion.display_name);
+    setSelectedLocation({
       lat: suggestion.lat,
       lng: suggestion.lon,
-    };
-
-    setSearchQuery(suggestion.display_name);
-    setSelectedLocation(newLocation);
+    });
     setSuggestions([]);
 
-    performSearch(newLocation); // use the correct new location
+    setTimeout(() => {
+      performSearch();
+    }, 100);
   };
+  // const handleSuggestionClick = (suggestion) => {
+  //   const newLocation = {
+  //     lat: suggestion.lat,
+  //     lng: suggestion.lon,
+  //   };
 
-  // const performSearch = () => {
-  //   if (!selectedLocation) {
-  //     alert("Please select a valid location from suggestions!");
-  //     return;
-  //   }
-  //   navigate("/MessFind", {
-  //     state: { userLocation: selectedLocation, item: searchQuery },
-  //   });
-  //   setSearchQuery("");
+  //   setSearchQuery(suggestion.display_name);
+  //   setSelectedLocation(newLocation);
+  //   setSuggestions([]);
+
+  //   performSearch(newLocation); // use the correct new location
   // };
-  const performSearch = (locationOverride) => {
-    const locationToUse = locationOverride || selectedLocation;
 
-    if (!locationToUse) {
+  const performSearch = () => {
+    if (!selectedLocation) {
       alert("Please select a valid location from suggestions!");
       return;
     }
-
     navigate("/MessFind", {
-      state: { userLocation: locationToUse, item: searchQuery },
+      state: { userLocation: selectedLocation, item: searchQuery },
     });
-
     setSearchQuery("");
   };
+  // const performSearch = (locationOverride) => {
+  //   const locationToUse = locationOverride || selectedLocation;
+
+  //   if (!locationToUse) {
+  //     alert("Please select a valid location from suggestions!");
+  //     return;
+  //   }
+
+  //   navigate("/MessFind", {
+  //     state: { userLocation: locationToUse, item: searchQuery },
+  //   });
+
+  //   setSearchQuery("");
+  // };
 
   useEffect(() => {
     if (userLocation) {
