@@ -41,21 +41,16 @@ function MessBars({
     triggerOnce: false,
   });
 
-  useEffect(() => {
-    if (lastCardInView && !isLoading && hasMore) {
-      loadMoreCards();
-    }
-  }, [lastCardInView, isLoading, hasMore, loadMoreCards]); // Add loadMoreCards to dependencies
+
 
   const loadMoreCards = React.useCallback(() => {
     if (isLoading || !hasMore) return;
-    
+  
     setIsLoading(true);
-    
-    // Load more if we have at least 5 more items to show
+  
     if (messData.length > visibleCount) {
       setTimeout(() => {
-        setVisibleCount(prev => Math.min(prev + 5, messData.length));
+        setVisibleCount((prev) => Math.min(prev + 5, messData.length));
         setIsLoading(false);
         setHasMore(visibleCount < messData.length);
       }, 800);
@@ -64,6 +59,12 @@ function MessBars({
       setIsLoading(false);
     }
   }, [visibleCount, messData.length, isLoading, hasMore]);
+
+  useEffect(() => {
+    if (lastCardInView && !isLoading && hasMore) {
+      loadMoreCards();
+    }
+  }, [lastCardInView, isLoading, hasMore, loadMoreCards]);
 
   // Filter the data to only show visible cards
   const visibleData = messData.slice(0, visibleCount);
