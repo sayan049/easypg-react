@@ -380,7 +380,6 @@ const MessFind = () => {
               type="text"
               placeholder="Search mess by location"
               className="w-full p-1 text-base outline-none placeholder-gray-400"
-              value={searchQuery}
               onChange={handleInputChange}
               onKeyDown={(e) => e.key === "Enter" && performSearch()}
             />
