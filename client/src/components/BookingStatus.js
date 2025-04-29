@@ -491,60 +491,60 @@ console.log("All bookings response:", response.data);
     }
   };
 
-  const fetchBookingsByStatus = async (status, page = 1) => {
-    try {
-      setLoading((prev) => ({
-        ...prev,
-        list: true,
-        tabChange: status !== tab,
-      }));
+  // const fetchBookingsByStatus = async (status, page = 1) => {
+  //   try {
+  //     setLoading((prev) => ({
+  //       ...prev,
+  //       list: true,
+  //       tabChange: status !== tab,
+  //     }));
 
-      const response = await axios.get(`${baseurl}/auth/bookings/owner`, {
-        params: {
-          status,
-          page,
-          limit,
-        },
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
-      console.log("Bookings by status response:", response.data);
-      setBookings((prev) => ({
-        ...prev,
-        [status]: {
-          data: response.data.bookings || [],
-          page,
-          total: response.data.pagination?.total || 0,
-        },
-      }));
+  //     const response = await axios.get(`${baseurl}/auth/bookings/owner`, {
+  //       params: {
+  //         status,
+  //         page,
+  //         limit,
+  //       },
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+  //       },
+  //     });
+  //     console.log("Bookings by status response:", response.data);
+  //     setBookings((prev) => ({
+  //       ...prev,
+  //       [status]: {
+  //         data: response.data.bookings || [],
+  //         page,
+  //         total: response.data.pagination?.total || 0,
+  //       },
+  //     }));
 
-      if (status === "confirmed") {
-        const bookingIds = response.data.bookings.map((b) => b._id);
-        const { requests } = await fetchMaintenanceRequests(bookingIds);
-        setMaintenanceRequests({
-          requests: Array.isArray(requests) ? requests : [],
-        });
-      }
+  //     if (status === "confirmed") {
+  //       const bookingIds = response.data.bookings.map((b) => b._id);
+  //       const { requests } = await fetchMaintenanceRequests(bookingIds);
+  //       setMaintenanceRequests({
+  //         requests: Array.isArray(requests) ? requests : [],
+  //       });
+  //     }
 
-      if (status !== tab) {
-        setTab(status);
-      }
-    } catch (error) {
-      console.error(`Error fetching ${status} bookings:`, error);
-      toast.error(`Failed to load ${status} bookings`);
-    } finally {
-      setLoading((prev) => ({ ...prev, list: false, tabChange: false }));
-    }
-  };
+  //     if (status !== tab) {
+  //       setTab(status);
+  //     }
+  //   } catch (error) {
+  //     console.error(`Error fetching ${status} bookings:`, error);
+  //     toast.error(`Failed to load ${status} bookings`);
+  //   } finally {
+  //     setLoading((prev) => ({ ...prev, list: false, tabChange: false }));
+  //   }
+  // };
 
-  const handleTabChange = (newTab) => {
-    if (bookings[newTab].data.length === 0 || bookings[newTab].page !== 1) {
-      fetchBookingsByStatus(newTab, 1);
-    } else {
-      setTab(newTab);
-    }
-  };
+  // const handleTabChange = (newTab) => {
+  //   if (bookings[newTab].data.length === 0 || bookings[newTab].page !== 1) {
+  //     fetchBookingsByStatus(newTab, 1);
+  //   } else {
+  //     setTab(newTab);
+  //   }
+  // };
 
   const handleStatusChange = async (bookingId, status, reason = "") => {
     try {
@@ -639,34 +639,34 @@ console.log("All bookings response:", response.data);
     fetchAllBookings();
   }, []);
 
-  const PaginationControls = ({ status }) => {
-    const current = bookings[status];
-    const totalPages = Math.ceil(current.total / limit);
+  // const PaginationControls = ({ status }) => {
+  //   const current = bookings[status];
+  //   const totalPages = Math.ceil(current.total / limit);
 
-    if (totalPages <= 1) return null;
+  //   if (totalPages <= 1) return null;
 
-    return (
-      <div className="flex justify-between items-center mt-4">
-        <button
-          onClick={() => fetchBookingsByStatus(status, current.page - 1)}
-          disabled={current.page <= 1 || loading.list}
-          className="px-4 py-2 border rounded disabled:opacity-50"
-        >
-          Previous
-        </button>
-        <span>
-          Page {current.page} of {totalPages}
-        </span>
-        <button
-          onClick={() => fetchBookingsByStatus(status, current.page + 1)}
-          disabled={current.page >= totalPages || loading.list}
-          className="px-4 py-2 border rounded disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
-    );
-  };
+  //   return (
+  //     <div className="flex justify-between items-center mt-4">
+  //       <button
+  //         onClick={() => fetchBookingsByStatus(status, current.page - 1)}
+  //         disabled={current.page <= 1 || loading.list}
+  //         className="px-4 py-2 border rounded disabled:opacity-50"
+  //       >
+  //         Previous
+  //       </button>
+  //       <span>
+  //         Page {current.page} of {totalPages}
+  //       </span>
+  //       <button
+  //         onClick={() => fetchBookingsByStatus(status, current.page + 1)}
+  //         disabled={current.page >= totalPages || loading.list}
+  //         className="px-4 py-2 border rounded disabled:opacity-50"
+  //       >
+  //         Next
+  //       </button>
+  //     </div>
+  //   );
+  // };
 
   return (
     <BookingStatusErrorBoundary>
