@@ -193,11 +193,11 @@ const MessFind = () => {
       lat: suggestion.lat,
       lng: suggestion.lon,
     });
-    setSuggestions([]);
+    //setSearchQuery(suggestion.display_name);
+ 
+  setSuggestions([]);
 
-    setTimeout(() => {
-      performSearch();
-    }, 100);
+  performSearch(newLocation); 
   };
   // const handleSuggestionClick = (suggestion) => {
   //   const newLocation = {
@@ -222,20 +222,7 @@ const MessFind = () => {
     });
     setSearchQuery("");
   };
-  // const performSearch = (locationOverride) => {
-  //   const locationToUse = locationOverride || selectedLocation;
 
-  //   if (!locationToUse) {
-  //     alert("Please select a valid location from suggestions!");
-  //     return;
-  //   }
-
-  //   navigate("/MessFind", {
-  //     state: { userLocation: locationToUse, item: searchQuery },
-  //   });
-
-  //   setSearchQuery("");
-  // };
 
   useEffect(() => {
     if (userLocation) {
