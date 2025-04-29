@@ -197,7 +197,7 @@ const MessFind = () => {
  
   setSuggestions([]);
 
-  performSearch(newLocation); 
+  performSearch(); 
   };
   // const handleSuggestionClick = (suggestion) => {
   //   const newLocation = {
