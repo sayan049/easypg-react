@@ -59,7 +59,7 @@ const FilterModal = ({
           />
         </div>
         <div className="flex flex-col gap-4">
-        <h4 className="font-medium">Amenities</h4>
+          <h4 className="font-medium">Amenities</h4>
           {amenities.map((facility) => (
             <label key={facility.id} className="flex items-center text-sm">
               <input
@@ -187,27 +187,53 @@ const MessFind = () => {
     }
   };
 
+  // const handleSuggestionClick = (suggestion) => {
+  //   setSearchQuery(suggestion.display_name);
+  //   setSelectedLocation({
+  //     lat: suggestion.lat,
+  //     lng: suggestion.lon,
+  //   });
+  //   setSuggestions([]);
+
+  //   setTimeout(() => {
+  //     performSearch();
+  //   }, 100);
+  // };
   const handleSuggestionClick = (suggestion) => {
-    setSearchQuery(suggestion.display_name);
-    setSelectedLocation({
+    const newLocation = {
       lat: suggestion.lat,
       lng: suggestion.lon,
-    });
+    };
+
+    setSearchQuery(suggestion.display_name);
+    setSelectedLocation(newLocation);
     setSuggestions([]);
 
-    setTimeout(() => {
-      performSearch();
-    }, 100);
+    performSearch(newLocation); // use the correct new location
   };
 
-  const performSearch = () => {
-    if (!selectedLocation) {
+  // const performSearch = () => {
+  //   if (!selectedLocation) {
+  //     alert("Please select a valid location from suggestions!");
+  //     return;
+  //   }
+  //   navigate("/MessFind", {
+  //     state: { userLocation: selectedLocation, item: searchQuery },
+  //   });
+  //   setSearchQuery("");
+  // };
+  const performSearch = (locationOverride) => {
+    const locationToUse = locationOverride || selectedLocation;
+
+    if (!locationToUse) {
       alert("Please select a valid location from suggestions!");
       return;
     }
+
     navigate("/MessFind", {
-      state: { userLocation: selectedLocation, item: searchQuery },
+      state: { userLocation: locationToUse, item: searchQuery },
     });
+
     setSearchQuery("");
   };
 
@@ -363,7 +389,6 @@ const MessFind = () => {
         <div className="flex flex-row md:flex-row justify-between items-center bg-white p-4  rounded-md relative">
           {/* Search Bar */}
           <div className="flex items-center gap-4 bg-white p-3 rounded-lg border border-gray-300 shadow-sm hover:border-blue-500 transition-colors w-full relative">
-            
             <input
               type="text"
               placeholder="Search mess by location"

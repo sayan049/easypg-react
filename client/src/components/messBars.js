@@ -45,7 +45,7 @@ function MessBars({
     if (lastCardInView && !isLoading && hasMore) {
       loadMoreCards();
     }
-  }, [lastCardInView, isLoading, hasMore]);
+  }, [lastCardInView, isLoading, hasMore, loadMoreCards]); // Add loadMoreCards to dependencies
 
   const loadMoreCards = React.useCallback(() => {
     if (isLoading || !hasMore) return;
