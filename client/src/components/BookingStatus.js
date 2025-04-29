@@ -575,7 +575,7 @@ const handleTabChange = (newTab) => {
     } catch (error) {
       console.error(`Status change error (${status}):`, error);
       toast.error(`Failed to ${status} booking`);
-      fetchBookings(tab, bookings[tab].page);
+      
     } finally {
       setLoading((prev) => ({ ...prev, action: false }));
     }
@@ -602,9 +602,9 @@ const handleTabChange = (newTab) => {
   useEffect(() => {
     const fetchInitialData = async () => {
       await Promise.all([
-        fetchBookings("pending"),
-        fetchBookings("confirmed"),
-        fetchBookings("rejected"),
+        ,
+        ,
+        ,
       ]);
     };
 
