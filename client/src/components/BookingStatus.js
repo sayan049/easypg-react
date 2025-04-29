@@ -538,13 +538,10 @@ console.log("All bookings response:", response.data);
   //   }
   // };
 
-  // const handleTabChange = (newTab) => {
-  //   if (bookings[newTab].data.length === 0 || bookings[newTab].page !== 1) {
-  //     fetchBookingsByStatus(newTab, 1);
-  //   } else {
-  //     setTab(newTab);
-  //   }
-  // };
+  const handleTabChange = (newTab) => {
+    setTab(newTab);
+  };
+  
 
   const handleStatusChange = async (bookingId, status, reason = "") => {
     try {
@@ -786,7 +783,7 @@ console.log("All bookings response:", response.data);
                   />
                 )}
               </div>
-              <PaginationControls status={tab} />
+              {/* <PaginationControls status={tab} /> */}
             </>
           )}
         </div>
