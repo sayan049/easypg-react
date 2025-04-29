@@ -449,7 +449,7 @@ const fetchAllBookings = async (page = 1) => {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     });
-
+console.log("Bookings Response:", response.data);
     const data = response.data?.data || {};
     const summary = response.data?.summary || {};
 
