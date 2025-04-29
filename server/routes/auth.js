@@ -24,7 +24,8 @@ const {
   downloadInvoice,
   maintenanceRequestHandler,
   getRequestsByBookings,
-  updateMaintenanceStatus
+  updateMaintenanceStatus,
+  getAllOwnerBookings
 } = require('../controllers/bookingController');
 
 
@@ -223,6 +224,8 @@ router.post("/updatePasswordDashboardOwner",  async (req, res) => {
 // User initiates booking request
 router.post('/bookings',authenticateJWT, createBookingRequest);
 router.get('/bookings/owner',authenticateJWT, getOwnerBookings);
+router.get("/bookings/owner/all", authenticateUser, getAllOwnerBookings);
+
 router.get('/bookings/user', authenticateJWT, (req, res, next) => {
   console.log('GET /bookings/user-bookings hit');
   next();
