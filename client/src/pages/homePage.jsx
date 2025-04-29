@@ -78,13 +78,11 @@ const HomePage = () => {
       lng: suggestion.lon,
     });
 
-    // Clear suggestions
+    setSuggestions([]); // Clear suggestions
 
     setTimeout(() => {
       performSearch();
-      setSuggestions([]);
     }, 100); 
-   
   };
 
   const performSearch = () => {
