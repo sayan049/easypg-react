@@ -658,55 +658,75 @@ exports.getOwnerBookings = async (req, res) => {
     console.log("Authenticated User:", req.user);
 
     const ownerId = req.user.id;
-    const status = req.query.status || "pending";
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
 
-    console.log(`Fetching bookings for owner ${ownerId} with status '${status}'`);
+    const statuses = ["pending", "confirmed", "rejected"];
 
-    const [bookings, total] = await Promise.all([
-      Booking.find({ pgOwner: ownerId, status })
+    const queries = statuses.map((status) => {
+      return Booking.find({ pgOwner: ownerId, status })
         .populate("student", "firstName lastName email")
         .populate("pgOwner", "messName")
         .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
-        .lean(),
+        .lean()
+        .hint("owner_management_index");
+    });
 
-      Booking.countDocuments({ pgOwner: ownerId, status }),
+    const countQueries = statuses.map((status) =>
+      Booking.countDocuments({ pgOwner: ownerId, status })
+    );
+
+    const [results, counts] = await Promise.all([
+      Promise.all(queries),
+      Promise.all(countQueries),
     ]);
 
-    const bookingsWithEndDate = bookings.map((booking) => {
-      const startDate = booking?.period?.startDate;
-      const duration = booking?.period?.durationMonths;
+    const response = {};
+    statuses.forEach((status, i) => {
+      const bookingsWithEndDate = results[i].map((booking) => {
+        const startDate = booking?.period?.startDate;
+        const duration = booking?.period?.durationMonths;
 
-      let endDate = null;
-      if (startDate && typeof duration === "number") {
-        endDate = new Date(
-          new Date(startDate).setMonth(new Date(startDate).getMonth() + duration)
-        );
-      }
+        let endDate = null;
+        if (startDate && typeof duration === "number") {
+          endDate = new Date(
+            new Date(startDate).setMonth(new Date(startDate).getMonth() + duration)
+          );
+        }
 
-      return {
-        ...booking,
-        period: {
-          ...booking.period,
-          endDate,
+        return {
+          ...booking,
+          period: {
+            ...booking.period,
+            endDate,
+          },
+        };
+      });
+
+      response[status] = {
+        bookings: bookingsWithEndDate,
+        pagination: {
+          total: counts[i],
+          page,
+          pages: Math.ceil(counts[i] / limit),
+          limit,
         },
       };
     });
 
+    const totalCount = counts.reduce((acc, cur) => acc + cur, 0);
     res.json({
       success: true,
-      bookings: bookingsWithEndDate,
-      pagination: {
-        total,
-        page,
-        pages: Math.ceil(total / limit),
-        limit,
+      data: response,
+      summary: {
+        total: totalCount,
+        pending: counts[0],
+        confirmed: counts[1],
+        rejected: counts[2],
       },
     });
-    console.log(response.json);
   } catch (error) {
     console.error("Error details:", error);
     res.status(500).json({
@@ -716,6 +736,7 @@ exports.getOwnerBookings = async (req, res) => {
     });
   }
 };
+
 
 // Get user bookings
 // const mongoose = require('mongoose');
