@@ -1482,8 +1482,8 @@ const BookingStatus = ({ owner }) => {
       // Inside fetchBookings function, when status is "confirmed":
       // Inside fetchBookings, when status is "confirmed":
       // Inside fetchBookings, when status is "confirmed":
-      if (status === "confirmed" && bookingData.length > 0) {
-        const bookingIds = bookingData.map((b) => b._id);
+      if (status === "confirmed" && bookings.length > 0) {
+        const bookingIds = bookings.map((b) => b._id);
         const { requests } = await fetchMaintenanceRequests(bookingIds);
         setMaintenanceRequests({
           requests: Array.isArray(requests) ? requests : [],
