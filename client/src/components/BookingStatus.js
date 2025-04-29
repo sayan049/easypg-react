@@ -1048,13 +1048,11 @@ const BookingCard = React.memo(
           )
         ));
 
-    const bookingMaintenanceRequests = Array.isArray(
-      maintenanceRequests?.requests
-    )
-      ? maintenanceRequests.requests.filter(
-          (req) => req.booking === booking._id
-        )
-      : [];
+        const bookingMaintenanceRequests = Array.isArray(maintenanceRequests?.requests)
+        ? maintenanceRequests.requests.filter(
+            (req) => req.booking === booking._id
+          )
+        : [];
 
     const toggleMaintenance = () => {
       setShowMaintenance((prev) => !prev);
@@ -1371,6 +1369,10 @@ const BookingStatus = ({ owner }) => {
 
   const fetchMaintenanceRequests = async (bookingIds) => {
     try {
+       // Don't make API call if no booking IDs
+    if (!bookingIds || bookingIds.length === 0) {
+      return { requests: [] };
+    }
       setLoading((prev) => ({ ...prev, maintenance: true }));
       const response = await axios.get(
         `${baseurl}/auth/maintenance/requests/owner`,
@@ -1480,12 +1482,15 @@ const BookingStatus = ({ owner }) => {
       // Inside fetchBookings function, when status is "confirmed":
       // Inside fetchBookings, when status is "confirmed":
       // Inside fetchBookings, when status is "confirmed":
-      if (status === "confirmed") {
-        const bookingIds = response.data.bookings.map((b) => b._id);
+      if (status === "confirmed" && bookingData.length > 0) {
+        const bookingIds = bookingData.map((b) => b._id);
         const { requests } = await fetchMaintenanceRequests(bookingIds);
         setMaintenanceRequests({
           requests: Array.isArray(requests) ? requests : [],
         });
+      } else if (status === "confirmed") {
+        // If no confirmed bookings, reset maintenance requests
+        setMaintenanceRequests({ requests: [] });
       }
       if (status !== tab) {
         setTab(status);
@@ -1501,6 +1506,9 @@ const BookingStatus = ({ owner }) => {
           total: 0,
         },
       }));
+      if (status === "confirmed") {
+        setMaintenanceRequests({ requests: [] });
+      }
     } finally {
       setLoading((prev) => ({ ...prev, list: false, tabChange: false }));
     }

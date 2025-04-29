@@ -706,6 +706,7 @@ exports.getOwnerBookings = async (req, res) => {
         limit,
       },
     });
+    console.log(response.json);
   } catch (error) {
     console.error("Error details:", error);
     res.status(500).json({
