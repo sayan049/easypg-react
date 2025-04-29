@@ -220,7 +220,7 @@ const MessFind = () => {
     navigate("/MessFind", {
       state: { userLocation: selectedLocation, item: searchQuery },
     });
-    setSearchQuery("");
+   // setSearchQuery("");
   };
 
 
