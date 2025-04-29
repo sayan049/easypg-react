@@ -59,7 +59,7 @@ const FilterModal = ({
           />
         </div>
         <div className="flex flex-col gap-4">
-        <h4 className="font-medium">Amenities</h4>
+          <h4 className="font-medium">Amenities</h4>
           {amenities.map((facility) => (
             <label key={facility.id} className="flex items-center text-sm">
               <input
@@ -193,12 +193,24 @@ const MessFind = () => {
       lat: suggestion.lat,
       lng: suggestion.lon,
     });
-    setSuggestions([]);
+  //  setSearchQuery(suggestion.display_name);
+ 
+  setSuggestions([]);
 
-    setTimeout(() => {
-      performSearch();
-    }, 100);
+  performSearch(); 
   };
+  // const handleSuggestionClick = (suggestion) => {
+  //   const newLocation = {
+  //     lat: suggestion.lat,
+  //     lng: suggestion.lon,
+  //   };
+
+  //   setSearchQuery(suggestion.display_name);
+  //   setSelectedLocation(newLocation);
+  //   setSuggestions([]);
+
+  //   performSearch(newLocation); // use the correct new location
+  // };
 
   const performSearch = () => {
     if (!selectedLocation) {
@@ -211,11 +223,15 @@ const MessFind = () => {
     setSearchQuery("");
   };
 
+
   useEffect(() => {
     if (userLocation) {
       setSelectedLocation(userLocation);
     }
-  }, [userLocation, finalGender, gender, checkFeatures]);
+    if (location.state?.userLocation) {
+      setSelectedLocation(location.state.userLocation);
+    }
+  }, [userLocation, finalGender, gender, checkFeatures,location.state]);
 
   const amenities = [
     {
@@ -363,7 +379,6 @@ const MessFind = () => {
         <div className="flex flex-row md:flex-row justify-between items-center bg-white p-4  rounded-md relative">
           {/* Search Bar */}
           <div className="flex items-center gap-4 bg-white p-3 rounded-lg border border-gray-300 shadow-sm hover:border-blue-500 transition-colors w-full relative">
-            
             <input
               type="text"
               placeholder="Search mess by location"
