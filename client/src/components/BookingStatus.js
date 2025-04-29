@@ -438,82 +438,69 @@ const BookingStatus = ({ owner }) => {
     handleMaintenanceStatusChange(requestId, "resolved", message);
   };
 
-  const fetchBookings = async (status, page = 1) => {
-    try {
-      setLoading((prev) => ({
-        ...prev,
-        list: true,
-        tabChange: status !== tab,
-      }));
+  
+const fetchAllBookings = async (page = 1) => {
+  try {
+    setLoading((prev) => ({ ...prev, list: true, tabChange: false }));
 
-      const response = await axios.get(`${baseurl}/auth/bookings/owner`, {
-        params: {
-          status,
-          page,
-          limit,
-        },
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
+    const response = await axios.get(`${baseurl}/auth/bookings/owner`, {
+      params: { page, limit },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
+
+    const data = response.data?.data || {};
+    const summary = response.data?.summary || {};
+
+    setBookings({
+      pending: {
+        data: data.pending?.bookings || [],
+        page,
+        total: data.pending?.pagination?.total || 0,
+      },
+      confirmed: {
+        data: data.confirmed?.bookings || [],
+        page,
+        total: data.confirmed?.pagination?.total || 0,
+      },
+      rejected: {
+        data: data.rejected?.bookings || [],
+        page,
+        total: data.rejected?.pagination?.total || 0,
+      },
+    });
+
+    setStats({
+      total: summary.total || 0,
+      pending: summary.pending || 0,
+      active: summary.confirmed || 0,
+      rejected: summary.rejected || 0,
+    });
+
+    if (data.confirmed?.bookings?.length > 0) {
+      const bookingIds = data.confirmed.bookings.map((b) => b._id);
+      const { requests } = await fetchMaintenanceRequests(bookingIds);
+      setMaintenanceRequests({
+        requests: Array.isArray(requests) ? requests : [],
       });
-      console.log("Bookings Response:", response.data);
-      setBookings((prev) => ({
-        ...prev,
-        [status]: {
-          data: response.data.bookings || [],
-          page,
-          total: response.data.pagination?.total || 0,
-        },
-      }));
-
-      if (page === 1) {
-        setStats((prev) => ({
-          ...prev,
-          [status]: response.data.pagination?.total || 0,
-          total:
-            prev.total -
-            (prev[status] || 0) +
-            (response.data.pagination?.total || 0),
-        }));
-      }
-
-      // Fetch maintenance requests when loading confirmed bookings
-      // Inside fetchBookings function, when status is "confirmed":
-      // Inside fetchBookings, when status is "confirmed":
-      // Inside fetchBookings, when status is "confirmed":
-      if (status === "confirmed") {
-        const bookingIds = response.data.bookings.map((b) => b._id);
-        const { requests } = await fetchMaintenanceRequests(bookingIds);
-        setMaintenanceRequests({
-          requests: Array.isArray(requests) ? requests : [],
-        });
-      }
-      if (status !== tab) {
-        setTab(status);
-      }
-    } catch (error) {
-      console.error(`Error fetching ${status} bookings:`, error);
-      toast.error(`Failed to load ${status} bookings`);
-      setBookings((prev) => ({
-        ...prev,
-        [status]: {
-          data: [],
-          page: 1,
-          total: 0,
-        },
-      }));
-    } finally {
-      setLoading((prev) => ({ ...prev, list: false, tabChange: false }));
     }
-  };
+  } catch (error) {
+    console.error("Error fetching all bookings:", error);
+    toast.error("Failed to load bookings");
+    setBookings({
+      pending: { data: [], page: 1, total: 0 },
+      confirmed: { data: [], page: 1, total: 0 },
+      rejected: { data: [], page: 1, total: 0 },
+    });
+  } finally {
+    setLoading((prev) => ({ ...prev, list: false, tabChange: false }));
+  }
+};
 
-  const handleTabChange = (newTab) => {
-    if (bookings[newTab].data.length === 0 || bookings[newTab].page !== 1) {
-      fetchBookings(newTab, 1);
-    } else {
-      setTab(newTab);
-    }
-  };
+const handleTabChange = (newTab) => {
+  setTab(newTab);
+};
 
   const handleStatusChange = async (bookingId, status, reason = "") => {
     try {
@@ -624,34 +611,36 @@ const BookingStatus = ({ owner }) => {
     fetchInitialData();
   }, []);
 
-  const PaginationControls = ({ status }) => {
-    const current = bookings[status];
-    const totalPages = Math.ceil(current.total / limit);
+  
+const PaginationControls = ({ status }) => {
+  const current = bookings[status];
+  const totalPages = Math.ceil(current.total / limit);
 
-    if (totalPages <= 1) return null;
+  if (totalPages <= 1) return null;
 
-    return (
-      <div className="flex justify-between items-center mt-4">
-        <button
-          onClick={() => fetchBookings(status, current.page - 1)}
-          disabled={current.page <= 1 || loading.list}
-          className="px-4 py-2 border rounded disabled:opacity-50"
-        >
-          Previous
-        </button>
-        <span>
-          Page {current.page} of {totalPages}
-        </span>
-        <button
-          onClick={() => fetchBookings(status, current.page + 1)}
-          disabled={current.page >= totalPages || loading.list}
-          className="px-4 py-2 border rounded disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
-    );
-  };
+  return (
+    <div className="flex justify-between items-center mt-4">
+      <button
+        onClick={() => fetchAllBookings(current.page - 1)}
+        disabled={current.page <= 1 || loading.list}
+        className="px-4 py-2 border rounded disabled:opacity-50"
+      >
+        Previous
+      </button>
+      <span>
+        Page {current.page} of {totalPages}
+      </span>
+      <button
+        onClick={() => fetchAllBookings(current.page + 1)}
+        disabled={current.page >= totalPages || loading.list}
+        className="px-4 py-2 border rounded disabled:opacity-50"
+      >
+        Next
+      </button>
+    </div>
+  );
+};
+
 
   return (
     <BookingStatusErrorBoundary>
