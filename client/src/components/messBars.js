@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { findMessUrl } from "../constant/urls";
 import { useInView } from "react-intersection-observer";
+import Skeleton from "./Skeleton";
 import {
   FaWind,
   FaTv,
@@ -31,6 +32,41 @@ function MessBars({
   const navigate = useNavigate();
   const [selected, setSelected] = useState(messData[0]?._id || null);
   const [flipped, setFlipped] = useState({});
+  const [visibleCount, setVisibleCount] = useState(10); // Initial number of cards to show
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const [lastCardRef, lastCardInView] = useInView({
+    threshold: 0.1,
+    triggerOnce: false,
+  });
+
+  useEffect(() => {
+    if (lastCardInView && !isLoading && hasMore) {
+      loadMoreCards();
+    }
+  }, [lastCardInView, isLoading, hasMore]);
+
+  const loadMoreCards = React.useCallback(() => {
+    if (isLoading || !hasMore) return;
+    
+    setIsLoading(true);
+    
+    // Load more if we have at least 5 more items to show
+    if (messData.length > visibleCount) {
+      setTimeout(() => {
+        setVisibleCount(prev => Math.min(prev + 5, messData.length));
+        setIsLoading(false);
+        setHasMore(visibleCount < messData.length);
+      }, 800);
+    } else {
+      setHasMore(false);
+      setIsLoading(false);
+    }
+  }, [visibleCount, messData.length, isLoading, hasMore]);
+
+  // Filter the data to only show visible cards
+  const visibleData = messData.slice(0, visibleCount);
 
   const amenities = [
     { id: "test1", label: "A/C", icon: <FaWind /> },
@@ -201,9 +237,10 @@ function MessBars({
       <div
         className={`grid gap-4 p-2 sm:p-4 ${isChecked ? "grid-cols-1" : ""}`}
       >
-        {messData.map((owner) => (
+        {visibleData.map((owner, index) => (
           <div
             key={owner._id}
+            ref={index === visibleData.length - 1 ? lastCardRef : null}
             className={`relative flip-card mb-4 h-[35rem] md:h-[16rem] ${
               isChecked ? "w-full" : "w-full"
             }
@@ -418,63 +455,19 @@ function MessBars({
           </div>
         ))}
 
-        <div className="relative mb-4 h-[35rem] md:h-[16rem] w-full bg-white rounded-xl shadow-sm ring-1 ring-gray-200 p-4">
-          <div className="grid md:grid-cols-[1fr_2fr] gap-4 w-full h-full">
-            {/* Image Section */}
-            <div className="relative h-48 md:h-full rounded-lg overflow-hidden bg-gray-200 animate-pulse">
-              {/* Image placeholder */}
-              <div className="w-full h-full bg-gray-300"></div>
-            </div>
+        {isLoading &&
+          [...Array(3)].map((_, index) => (
+            <Skeleton
+              key={`skeleton-${index}`}
+              // className="h-[16rem] w-full mb-4"
+            />
+          ))}
 
-            {/* Details Section */}
-            <div className="flex flex-col justify-between h-full">
-              {/* Top Section */}
-              <div>
-                <div className="flex justify-between items-start">
-                  <h3 className="text-xl font-semibold bg-gray-200 w-3/4 h-6 mb-2 animate-pulse"></h3>
-                  <div className="w-6 h-6 bg-gray-200 rounded-full md:hidden"></div>
-                </div>
-
-                {/* Address */}
-                <p className="mt-1 text-sm bg-gray-200 w-2/3 h-4 animate-pulse"></p>
-
-                {/* Distance */}
-                <div className="mt-2 text-sm bg-gray-200 w-1/4 h-4 animate-pulse"></div>
-
-                {/* Amenities */}
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {[1, 2, 3, 4, 5, 6].map((_, i) => (
-                    <span
-                      key={i}
-                      className="flex items-center gap-1 px-2 py-1 bg-gray-100 w-20 h-6 animate-pulse"
-                    >
-                      <span className="w-4 h-4 bg-gray-300"></span>
-                    </span>
-                  ))}
-                </div>
-
-                {/* Gender Badge */}
-                <div className="mt-3">
-                  <span className="flex items-center gap-1 bg-green-100 text-green-600 px-2 py-1 rounded-full w-24 h-6">
-                    <span className="w-4 h-4"></span>
-                  </span>
-                </div>
-              </div>
-
-              {/* Bottom Section */}
-              <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                {/* Price */}
-                <div className="text-lg font-medium bg-gray-200 w-1/4 h-6 animate-pulse"></div>
-
-                {/* Buttons */}
-                <div className="flex gap-2">
-                  <div className="px-4 py-2 bg-gray-200 w-24 h-10 rounded-lg animate-pulse"></div>
-                  <div className="px-4 py-2 bg-gray-200 w-24 h-10 rounded-lg animate-pulse"></div>
-                </div>
-              </div>
-            </div>
+        {!hasMore && messData.length > 0 && (
+          <div className="text-center py-4 text-gray-500">
+            You've reached the end
           </div>
-        </div>
+        )}
       </div>
     </>
   );
