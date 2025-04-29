@@ -1147,6 +1147,7 @@ exports.getRequestsByBookings = async (req, res) => {
 
 
 
+
 // Controller for updating the maintenance request status
 exports.updateMaintenanceStatus = async (req, res) => {
   const { requestId } = req.params;
