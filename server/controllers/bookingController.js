@@ -655,71 +655,68 @@ exports.createBookingRequest = async (req, res) => {
 };
 exports.getOwnerBookings = async (req, res) => {
   try {
-    console.log("Authenticated User:", req.user); // Debug JWT payload
+    console.log("Authenticated User:", req.user);
 
-    const { status = "pending", page = 1, limit = 10 } = req.query;
     const ownerId = req.user.id;
+    const status = req.query.status || "pending";
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
 
-    // Debug: Check raw bookings count
-    const rawCount = await Booking.countDocuments({ pgOwner: ownerId });
-    console.log(`Total bookings for owner ${ownerId}:`, rawCount);
-
-    // Debug: Check bookings with status filter
-    const filteredCount = await Booking.countDocuments({
-      pgOwner: ownerId,
-      status,
-    });
-    console.log(`Bookings with status ${status}:`, filteredCount);
+    console.log(`Fetching bookings for owner ${ownerId} with status '${status}'`);
 
     const [bookings, total] = await Promise.all([
-      Booking.find({
-        pgOwner: ownerId,
-        status,
-      })
-        .populate("student", "firstName lastName email ")
+      Booking.find({ pgOwner: ownerId, status })
+        .populate("student", "firstName lastName email")
         .populate("pgOwner", "messName")
         .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
-        .lean(), // Convert to plain JS objects
+        .lean(),
 
       Booking.countDocuments({ pgOwner: ownerId, status }),
     ]);
 
-    console.log("Found bookings:", bookings.length); // Debug actual results
+    const bookingsWithEndDate = bookings.map((booking) => {
+      const startDate = booking?.period?.startDate;
+      const duration = booking?.period?.durationMonths;
 
-    const bookingsWithEndDate = bookings.map((booking) => ({
-      ...booking,
-      period: {
-        ...booking.period,
-        endDate: new Date(
-          new Date(booking.period.startDate).setMonth(
-            new Date(booking.period.startDate).getMonth() +
-              booking.period.durationMonths
-          )
-        ),
-      },
-    }));
+      let endDate = null;
+      if (startDate && typeof duration === "number") {
+        endDate = new Date(
+          new Date(startDate).setMonth(new Date(startDate).getMonth() + duration)
+        );
+      }
+
+      return {
+        ...booking,
+        period: {
+          ...booking.period,
+          endDate,
+        },
+      };
+    });
 
     res.json({
       success: true,
       bookings: bookingsWithEndDate,
       pagination: {
         total,
-        page: parseInt(page),
+        page,
         pages: Math.ceil(total / limit),
-        limit: parseInt(limit),
+        limit,
       },
     });
+    console.log(response.json);
   } catch (error) {
     console.error("Error details:", error);
     res.status(500).json({
       success: false,
       message: "Server error",
-      error: error.message, // Include actual error message
+      error: error.message,
     });
   }
 };
+
 // Get user bookings
 // const mongoose = require('mongoose');
 // const Booking = require('../models/Booking');
@@ -1147,6 +1144,7 @@ exports.getRequestsByBookings = async (req, res) => {
     });
   }
 };
+
 
 
 
