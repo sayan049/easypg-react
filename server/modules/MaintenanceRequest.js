@@ -55,7 +55,7 @@ maintenanceRequestSchema.index(
   { createdAt: 1 },
   { 
     expireAfterSeconds: 2592000,
-    partialFilterExpression: { status: { $in: ["in-progress", "rejected"] }
+    partialFilterExpression: { status: { $in: ["in-progress", "cancelled"] }
     }
   }
 );

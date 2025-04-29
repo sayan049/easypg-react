@@ -712,6 +712,7 @@ import {
   FaSwimmingPool,
   FaFemale,
   FaMale,
+  FaUsers
 } from "react-icons/fa";
 import { FiAlertCircle } from "react-icons/fi";
 import { toast, ToastContainer } from "react-toastify";
@@ -982,12 +983,12 @@ const DashboardContent = ({
                           <span
                             className={`inline-flex items-center gap-2 px-3 py-1 rounded-full font-medium text-white transition-colors duration-300 ${
                               stay.pgOwner?.gender === "Girls Pg"
-                                ? "bg-pink-500"
+                                ? "bg-pink-100"
                                 : stay.pgOwner?.gender === "Boys Pg"
-                                ? "bg-blue-500"
+                                ? "bg-blue-100"
                                 : stay.pgOwner?.gender === "Coed Pg"
-                                ? "bg-green-500"
-                                : "bg-gray-500" // default color if not specified
+                                ? "bg-green-100"
+                                : "bg-gray-100" // default color if not specified
                             }`}
                           >
                             {stay.pgOwner?.gender === "Girls Pg" && (
@@ -997,7 +998,7 @@ const DashboardContent = ({
                               <FaMale className="text-xs" />
                             )}
                             {stay.pgOwner?.gender === "Coed Pg" && (
-                              <FaUser className="text-xs" />
+                              <FaUsers className="text-xs" />
                             )}
                             {stay.pgOwner?.gender || "Not specified"}
                           </span>
@@ -1164,7 +1165,7 @@ const DashboardContent = ({
                           <FaBed className="text-gray-500" /> Room Details
                         </h4>
                         <p className="text-sm text-gray-600">
-                          Beds Booked: {stay.bedsBooked?.length || 0}
+                          Beds Booked: {stay.bedsBooked|| 0}
                         </p>
                         <p className="text-sm text-gray-600">
                           Price: ₹{stay.pricePerHead}/month
