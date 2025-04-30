@@ -637,7 +637,7 @@ function MessBars({
   };
 
   const fetchData = async () => {
-    if (!hasMore) return;
+    if (!hasMore || isLoading) return;
     try {
       if (!userLocation?.lat || !userLocation?.lng) {
         console.error("❌ Invalid user location");
@@ -713,18 +713,14 @@ function MessBars({
   }, [lastCardInView, isLoading, hasMore]);
 
   useEffect(() => {
+    // Reset when filters change
     setMessData([]);
     setDistanceMap({});
-    //setHasMore(true);
+    setHasMore(true);
     setPgCount(0);
-
-    // Delay setting page so lastCardInView doesn't trigger a fetch prematurely
-    const timeout = setTimeout(() => {
-      setPage(1);
-    }, 100);
-
-    return () => clearTimeout(timeout);
+    setPage(1); // Reset to page 1 immediately
   }, [checkFeatures, userLocation, finalGender]);
+  
 
   useEffect(() => {
     fetchData();
