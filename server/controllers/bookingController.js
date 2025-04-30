@@ -736,6 +736,76 @@ exports.getOwnerBookings = async (req, res) => {
     });
   }
 };
+exports.getAllOwnerBookings = async (req, res) => {
+  try {
+    console.log("Authenticated User:", req.user);
+
+    const ownerId = req.user.id;
+    const limit = parseInt(req.query.limit, 10) || 10;
+
+    const statuses = ["pending", "confirmed", "rejected"];
+
+    const queries = statuses.map((status) =>
+      Booking.find({ pgOwner: ownerId, status })
+        .populate("student", "firstName lastName email")
+        .populate("pgOwner", "messName")
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .lean()
+        .hint("owner_management_index")
+    );
+
+    const countQueries = statuses.map((status) =>
+      Booking.countDocuments({ pgOwner: ownerId, status })
+    );
+
+    const [results, counts] = await Promise.all([
+      Promise.all(queries),
+      Promise.all(countQueries),
+    ]);
+
+    const response = {};
+    statuses.forEach((status, i) => {
+      const bookingsWithEndDate = results[i].map((booking) => {
+        const startDate = booking?.period?.startDate;
+        const duration = booking?.period?.durationMonths;
+
+        let endDate = null;
+        if (startDate && typeof duration === "number") {
+          endDate = new Date(
+            new Date(startDate).setMonth(new Date(startDate).getMonth() + duration)
+          );
+        }
+
+        return {
+          ...booking,
+          period: {
+            ...booking.period,
+            endDate,
+          },
+        };
+      });
+
+      response[status] = {
+        bookings: bookingsWithEndDate,
+        total: counts[i],
+      };
+    });
+
+    res.json({
+      success: true,
+      ...response,
+    });
+  } catch (error) {
+    console.error("Error in getAllOwnerBookings:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
 
 
 // Get user bookings

@@ -384,18 +384,16 @@ const BookingStatus = ({ owner }) => {
           },
         }
       );
-      console.log("Maintenance Requests Response:", response.data);
-      // Return the entire response data which includes the requests array
       return response.data || { requests: [] };
     } catch (error) {
       console.error("Error fetching maintenance requests:", error);
       toast.error("Failed to load maintenance requests");
-      return { requests: [] }; // Return empty object with requests array
+      return { requests: [] };
     } finally {
       setLoading((prev) => ({ ...prev, maintenance: false }));
     }
   };
-  // For updating maintenance request status (resolve or cancel)
+
   const handleMaintenanceStatusChange = async (
     requestId,
     status,
@@ -406,7 +404,7 @@ const BookingStatus = ({ owner }) => {
 
       await axios.post(
         `${baseurl}/auth/maintenance/${requestId}/update-status`,
-        { status, message }, // send both status and message
+        { status, message },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -429,7 +427,6 @@ const BookingStatus = ({ owner }) => {
     }
   };
 
-  // For cancelling a maintenance request
   const handleMaintenanceCancel = (requestId, message) => {
     handleMaintenanceStatusChange(requestId, "cancelled", message);
   };
@@ -438,69 +435,113 @@ const BookingStatus = ({ owner }) => {
     handleMaintenanceStatusChange(requestId, "resolved", message);
   };
 
-  
-const fetchAllBookings = async (page = 1) => {
-  try {
-    setLoading((prev) => ({ ...prev, list: true, tabChange: false }));
-
-    const response = await axios.get(`${baseurl}/auth/bookings/owner`, {
-      params: { page, limit },
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
-    });
-console.log("Bookings Response:", response.data);
-    const data = response.data?.data || {};
-    const summary = response.data?.summary || {};
-
-    setBookings({
-      pending: {
-        data: data.pending?.bookings || [],
-        page,
-        total: data.pending?.pagination?.total || 0,
-      },
-      confirmed: {
-        data: data.confirmed?.bookings || [],
-        page,
-        total: data.confirmed?.pagination?.total || 0,
-      },
-      rejected: {
-        data: data.rejected?.bookings || [],
-        page,
-        total: data.rejected?.pagination?.total || 0,
-      },
-    });
-
-    setStats({
-      total: summary.total || 0,
-      pending: summary.pending || 0,
-      active: summary.confirmed || 0,
-      rejected: summary.rejected || 0,
-    });
-
-    if (data.confirmed?.bookings?.length > 0) {
-      const bookingIds = data.confirmed.bookings.map((b) => b._id);
-      const { requests } = await fetchMaintenanceRequests(bookingIds);
-      setMaintenanceRequests({
-        requests: Array.isArray(requests) ? requests : [],
+  const fetchAllBookings = async () => {
+    try {
+      setLoading((prev) => ({ ...prev, list: true }));
+      
+      const response = await axios.get(`${baseurl}/auth/bookings/owner/all`, {
+        params: {
+          limit,
+        },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
       });
-    }
-  } catch (error) {
-    console.error("Error fetching all bookings:", error);
-    toast.error("Failed to load bookings");
-    setBookings({
-      pending: { data: [], page: 1, total: 0 },
-      confirmed: { data: [], page: 1, total: 0 },
-      rejected: { data: [], page: 1, total: 0 },
-    });
-  } finally {
-    setLoading((prev) => ({ ...prev, list: false, tabChange: false }));
-  }
-};
 
-const handleTabChange = (newTab) => {
-  setTab(newTab);
-};
+      const { pending, confirmed, rejected } = response.data;
+console.log("All bookings response:", response.data);
+      setBookings({
+        pending: {
+          data: pending.bookings || [],
+          page: 1,
+          total: pending.total || 0,
+        },
+        confirmed: {
+          data: confirmed.bookings || [],
+          page: 1,
+          total: confirmed.total || 0,
+        },
+        rejected: {
+          data: rejected.bookings || [],
+          page: 1,
+          total: rejected.total || 0,
+        },
+      });
+
+      setStats({
+        total: (pending.total || 0) + (confirmed.total || 0) + (rejected.total || 0),
+        active: confirmed.total || 0,
+        pending: pending.total || 0,
+        rejected: rejected.total || 0,
+      });
+
+      // Fetch maintenance requests for confirmed bookings
+      const bookingIds = confirmed.bookings?.map((b) => b._id) || [];
+      if (bookingIds.length > 0) {
+        const { requests } = await fetchMaintenanceRequests(bookingIds);
+        setMaintenanceRequests({
+          requests: Array.isArray(requests) ? requests : [],
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching all bookings:", error);
+      toast.error("Failed to load bookings");
+    } finally {
+      setLoading((prev) => ({ ...prev, list: false }));
+    }
+  };
+
+  // const fetchBookingsByStatus = async (status, page = 1) => {
+  //   try {
+  //     setLoading((prev) => ({
+  //       ...prev,
+  //       list: true,
+  //       tabChange: status !== tab,
+  //     }));
+
+  //     const response = await axios.get(`${baseurl}/auth/bookings/owner`, {
+  //       params: {
+  //         status,
+  //         page,
+  //         limit,
+  //       },
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+  //       },
+  //     });
+  //     console.log("Bookings by status response:", response.data);
+  //     setBookings((prev) => ({
+  //       ...prev,
+  //       [status]: {
+  //         data: response.data.bookings || [],
+  //         page,
+  //         total: response.data.pagination?.total || 0,
+  //       },
+  //     }));
+
+  //     if (status === "confirmed") {
+  //       const bookingIds = response.data.bookings.map((b) => b._id);
+  //       const { requests } = await fetchMaintenanceRequests(bookingIds);
+  //       setMaintenanceRequests({
+  //         requests: Array.isArray(requests) ? requests : [],
+  //       });
+  //     }
+
+  //     if (status !== tab) {
+  //       setTab(status);
+  //     }
+  //   } catch (error) {
+  //     console.error(`Error fetching ${status} bookings:`, error);
+  //     toast.error(`Failed to load ${status} bookings`);
+  //   } finally {
+  //     setLoading((prev) => ({ ...prev, list: false, tabChange: false }));
+  //   }
+  // };
+
+  const handleTabChange = (newTab) => {
+    setTab(newTab);
+  };
+  
 
   const handleStatusChange = async (bookingId, status, reason = "") => {
     try {
@@ -575,7 +616,6 @@ const handleTabChange = (newTab) => {
     } catch (error) {
       console.error(`Status change error (${status}):`, error);
       toast.error(`Failed to ${status} booking`);
-      
     } finally {
       setLoading((prev) => ({ ...prev, action: false }));
     }
@@ -591,56 +631,39 @@ const handleTabChange = (newTab) => {
       handleStatusChange(bookingId, "rejected", reason);
     }
   };
-  // const refreshMaintenanceData = async () => {
-  //   if (bookings.confirmed.data.length > 0) {
-  //     const bookingIds = bookings.confirmed.data.map((b) => b._id);
-  //     const requests = await fetchMaintenanceRequests(bookingIds);
-  //     setMaintenanceRequests(requests);
-  //     toast.success("Maintenance requests updated");
-  //   }
-  // };
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      await Promise.all([
-        ,
-        ,
-        ,
-      ]);
-    };
 
-    fetchInitialData();
+  useEffect(() => {
+    fetchAllBookings();
   }, []);
 
-  
-const PaginationControls = ({ status }) => {
-  const current = bookings[status];
-  const totalPages = Math.ceil(current.total / limit);
+  // const PaginationControls = ({ status }) => {
+  //   const current = bookings[status];
+  //   const totalPages = Math.ceil(current.total / limit);
 
-  if (totalPages <= 1) return null;
+  //   if (totalPages <= 1) return null;
 
-  return (
-    <div className="flex justify-between items-center mt-4">
-      <button
-        onClick={() => fetchAllBookings(current.page - 1)}
-        disabled={current.page <= 1 || loading.list}
-        className="px-4 py-2 border rounded disabled:opacity-50"
-      >
-        Previous
-      </button>
-      <span>
-        Page {current.page} of {totalPages}
-      </span>
-      <button
-        onClick={() => fetchAllBookings(current.page + 1)}
-        disabled={current.page >= totalPages || loading.list}
-        className="px-4 py-2 border rounded disabled:opacity-50"
-      >
-        Next
-      </button>
-    </div>
-  );
-};
-
+  //   return (
+  //     <div className="flex justify-between items-center mt-4">
+  //       <button
+  //         onClick={() => fetchBookingsByStatus(status, current.page - 1)}
+  //         disabled={current.page <= 1 || loading.list}
+  //         className="px-4 py-2 border rounded disabled:opacity-50"
+  //       >
+  //         Previous
+  //       </button>
+  //       <span>
+  //         Page {current.page} of {totalPages}
+  //       </span>
+  //       <button
+  //         onClick={() => fetchBookingsByStatus(status, current.page + 1)}
+  //         disabled={current.page >= totalPages || loading.list}
+  //         className="px-4 py-2 border rounded disabled:opacity-50"
+  //       >
+  //         Next
+  //       </button>
+  //     </div>
+  //   );
+  // };
 
   return (
     <BookingStatusErrorBoundary>
@@ -725,20 +748,6 @@ const PaginationControls = ({ status }) => {
                 Rejected Bookings ({bookings.rejected.total})
               </button>
             </div>
-            {/* {tab === "confirmed" && (
-              <button
-                onClick={refreshMaintenanceData}
-                disabled={loading.maintenance}
-                className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 disabled:opacity-50"
-              >
-                <RefreshCw
-                  className={`w-4 h-4 ${
-                    loading.maintenance ? "animate-spin" : ""
-                  }`}
-                />
-                Refresh Maintenance
-              </button>
-            )} */}
           </div>
 
           {loading.list && loading.tabChange ? (
@@ -774,7 +783,7 @@ const PaginationControls = ({ status }) => {
                   />
                 )}
               </div>
-              <PaginationControls status={tab} />
+              {/* <PaginationControls status={tab} /> */}
             </>
           )}
         </div>
