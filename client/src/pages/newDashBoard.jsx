@@ -511,10 +511,14 @@ function NewDashboard() {
         const maintenanceResponse = await axios.get(
           `${baseurl}/auth/maintenance/history`,
           {
-            userId,
-            type
+            headers: { Authorization: `Bearer ${token}` },
+            params: {
+              userId,
+              type,
+            },
           }
         );
+        
         console.log("Maintenance response:", maintenanceResponse.data);
         if (maintenanceResponse.data.success) {
           setMaintenanceHistory(maintenanceResponse.data.data || []);

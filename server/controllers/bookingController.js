@@ -1289,7 +1289,7 @@ exports.updateMaintenanceStatus = async (req, res) => {
 //get maintenance history for users
 exports.getMaintenanceHistory = async (req, res) => {
   try {
-    const { userId, type } = req.body;
+    const { userId, type } = req.query;
 
     if (!userId || type !== "student") {
       return res.status(400).json({ success: false, message: "Invalid request body." });
