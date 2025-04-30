@@ -678,8 +678,8 @@ function MessBars({
           })
         : [];
 
-      setMessData(prev => page === 1 ? filteredData : filteredData);
-      setPgCount(prev => page === 1 ? filteredData.length :  filteredData.length);
+      setMessData(prev => page === 1 ? filteredData : [...prev, ...filteredData]);
+      setPgCount(prev => page === 1 ? filteredData.length : prev + filteredData.length);
       setHasMore(filteredData.length > 0);
       
       if (filteredData.length > 0 && typeof coords === "function" && page === 1) {
@@ -702,12 +702,16 @@ function MessBars({
   }, [lastCardInView, isLoading, hasMore]);
 
   useEffect(() => {
-    fetchData();
-  }, [page, checkFeatures, userLocation, finalGender]);
-
-  useEffect(() => {
     setPage(1);
+    setMessData([]);
+    setDistanceMap({});
+    setHasMore(true);
   }, [checkFeatures, userLocation, finalGender]);
+  
+  useEffect(() => {
+    fetchData();
+  }, [page]);
+  
 
   useEffect(() => {
     if (!messData.length || !userLocation) return;
