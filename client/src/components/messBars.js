@@ -653,7 +653,7 @@ function MessBars({
           lat: parseFloat(userLocation.lat),
           lng: parseFloat(userLocation.lng),
           page,
-          limit: 10,
+          limit: 5,
         },
       });
 
@@ -678,8 +678,8 @@ function MessBars({
           })
         : [];
 
-      setMessData(prev => page === 1 ? filteredData : [...prev, ...filteredData]);
-      setPgCount(prev => page === 1 ? filteredData.length : prev + filteredData.length);
+      setMessData(prev => page === 1 ? filteredData : filteredData);
+      setPgCount(prev => page === 1 ? filteredData.length :  filteredData.length);
       setHasMore(filteredData.length > 0);
       
       if (filteredData.length > 0 && typeof coords === "function" && page === 1) {
