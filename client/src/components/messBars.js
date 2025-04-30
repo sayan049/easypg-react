@@ -35,7 +35,7 @@ function MessBars({
   const [visibleCount, setVisibleCount] = useState(5); // Initial number of cards to show
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(1); 
 
   const [lastCardRef, lastCardInView] = useInView({
     threshold: 0.1,
@@ -54,7 +54,7 @@ function MessBars({
         setVisibleCount((prev) => Math.min(prev + 5, messData.length));
         setIsLoading(false);
         setHasMore(visibleCount < messData.length);
-        setPage((prevPage) => prevPage + 1); // Update page
+        setPage(prevPage => prevPage + 1); // Update page
       }, 800);
     } else {
       setHasMore(false);
@@ -156,6 +156,7 @@ function MessBars({
     }
   };
 
+
   const fetchData = async () => {
     try {
       if (!userLocation || !userLocation.lat || !userLocation.lng) {
@@ -208,27 +209,30 @@ function MessBars({
   };
 
   useEffect(() => {
+
+
     fetchData();
-  }, [checkFeatures, userLocation, data]);
+  }, [checkFeatures, userLocation,page]);
 
   useEffect(() => {
     if (!visibleData.length || !userLocation) return;
 
     const fetchVisibleDistances = async () => {
-      const idsToFetch = visibleData.filter((owner) => !distanceMap[owner._id]);
-
+      const idsToFetch = visibleData.filter(
+        (owner) => !distanceMap[owner._id]
+      );
+    
       const results = await Promise.allSettled(
         idsToFetch.map((owner) =>
           getStreetDistance(userLocation, owner.location.coordinates)
         )
       );
-
+    
       const newDistanceMap = {};
       results.forEach((res, i) => {
-        newDistanceMap[idsToFetch[i]._id] =
-          res.status === "fulfilled" ? res.value : "N/A";
+        newDistanceMap[idsToFetch[i]._id] = res.status === 'fulfilled' ? res.value : "N/A";
       });
-
+    
       setDistanceMap((prev) => ({ ...prev, ...newDistanceMap }));
     };
 
