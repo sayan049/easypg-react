@@ -35,7 +35,7 @@ function MessBars({
   const [visibleCount, setVisibleCount] = useState(5); // Initial number of cards to show
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(1); 
+  const [page, setPage] = useState(1);
 
   const [lastCardRef, lastCardInView] = useInView({
     threshold: 0.1,
@@ -54,7 +54,7 @@ function MessBars({
         setVisibleCount((prev) => Math.min(prev + 5, messData.length));
         setIsLoading(false);
         setHasMore(visibleCount < messData.length);
-        setPage(prevPage => prevPage + 1); // Update page
+        setPage((prevPage) => prevPage + 1); // Update page
       }, 800);
     } else {
       setHasMore(false);
@@ -156,80 +156,79 @@ function MessBars({
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (!userLocation || !userLocation.lat || !userLocation.lng) {
-          console.error("❌ Invalid user location");
-          return;
-        }
-
-        const res = await axios.get(findMessUrl, {
-          params: {
-            lat: parseFloat(userLocation.lat),
-            lng: parseFloat(userLocation.lng),
-            page,
-            limit: 5,
-          },
-        });
-
-        const filteredData = Array.isArray(res.data)
-          ? res.data.filter((owner) => {
-              const facilitiesArray = Array.isArray(owner.facility)
-                ? owner.facility.flatMap((f) =>
-                    f.split(",").map((item) => item.trim().toLowerCase())
-                  )
-                : [];
-              const matchesFeatures =
-                checkFeatures.length > 0
-                  ? checkFeatures.some((feature) =>
-                      facilitiesArray.includes(feature.toLowerCase())
-                    )
-                  : true;
-              const matchesGender = finalGender
-                ? owner.gender?.toLowerCase() === finalGender.toLowerCase()
-                : true;
-
-              return matchesFeatures && matchesGender;
-            })
-          : [];
-
-        setMessData(filteredData);
-        setPgCount(filteredData.length);
-        setHasMore(filteredData.length === 5);
-        if (filteredData.length > 0 && typeof coords === "function") {
-          const [lng, lat] = filteredData[0].location.coordinates;
-          coords({ lat, lng });
-          setSelected(filteredData[0]._id);
-        }
-      } catch (err) {
-        console.error("❌ Fetch Error", err);
-        setError("Failed to fetch Messes");
+  const fetchData = async () => {
+    try {
+      if (!userLocation || !userLocation.lat || !userLocation.lng) {
+        console.error("❌ Invalid user location");
+        return;
       }
-    };
 
+      const res = await axios.get(findMessUrl, {
+        params: {
+          lat: parseFloat(userLocation.lat),
+          lng: parseFloat(userLocation.lng),
+          page,
+          limit: 5,
+        },
+      });
+
+      const filteredData = Array.isArray(res.data)
+        ? res.data.filter((owner) => {
+            const facilitiesArray = Array.isArray(owner.facility)
+              ? owner.facility.flatMap((f) =>
+                  f.split(",").map((item) => item.trim().toLowerCase())
+                )
+              : [];
+            const matchesFeatures =
+              checkFeatures.length > 0
+                ? checkFeatures.some((feature) =>
+                    facilitiesArray.includes(feature.toLowerCase())
+                  )
+                : true;
+            const matchesGender = finalGender
+              ? owner.gender?.toLowerCase() === finalGender.toLowerCase()
+              : true;
+
+            return matchesFeatures && matchesGender;
+          })
+        : [];
+
+      setMessData(filteredData);
+      setPgCount(filteredData.length);
+      setHasMore(filteredData.length === 5);
+      if (filteredData.length > 0 && typeof coords === "function") {
+        const [lng, lat] = filteredData[0].location.coordinates;
+        coords({ lat, lng });
+        setSelected(filteredData[0]._id);
+      }
+    } catch (err) {
+      console.error("❌ Fetch Error", err);
+      setError("Failed to fetch Messes");
+    }
+  };
+
+  useEffect(() => {
     fetchData();
-  }, [checkFeatures, userLocation]);
+  }, [checkFeatures, userLocation, data]);
 
   useEffect(() => {
     if (!visibleData.length || !userLocation) return;
 
     const fetchVisibleDistances = async () => {
-      const idsToFetch = visibleData.filter(
-        (owner) => !distanceMap[owner._id]
-      );
-    
+      const idsToFetch = visibleData.filter((owner) => !distanceMap[owner._id]);
+
       const results = await Promise.allSettled(
         idsToFetch.map((owner) =>
           getStreetDistance(userLocation, owner.location.coordinates)
         )
       );
-    
+
       const newDistanceMap = {};
       results.forEach((res, i) => {
-        newDistanceMap[idsToFetch[i]._id] = res.status === 'fulfilled' ? res.value : "N/A";
+        newDistanceMap[idsToFetch[i]._id] =
+          res.status === "fulfilled" ? res.value : "N/A";
       });
-    
+
       setDistanceMap((prev) => ({ ...prev, ...newDistanceMap }));
     };
 
