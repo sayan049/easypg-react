@@ -509,7 +509,7 @@ function NewDashboard() {
 
         // 3. Fetch maintenance history
         const maintenanceResponse = await axios.get(
-          `${baseurl}/maintenance/history`,
+          `${baseurl}/auth/maintenance/history`,
           {
             userId,
             type
