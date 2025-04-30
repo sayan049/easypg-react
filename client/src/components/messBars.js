@@ -32,7 +32,7 @@ function MessBars({
   const navigate = useNavigate();
   const [selected, setSelected] = useState(messData[0]?._id || null);
   const [flipped, setFlipped] = useState({});
-  const [visibleCount, setVisibleCount] = useState(10); // Initial number of cards to show
+  const [visibleCount, setVisibleCount] = useState(5); // Initial number of cards to show
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
@@ -66,7 +66,7 @@ function MessBars({
     }
   }, [lastCardInView, isLoading, hasMore, loadMoreCards]);
 
-  // Filter the data to only show visible cards
+  // Filtered and visible data
   const visibleData = useMemo(
     () => messData.slice(0, visibleCount),
     [messData, visibleCount]
@@ -166,6 +166,8 @@ function MessBars({
           params: {
             lat: parseFloat(userLocation.lat),
             lng: parseFloat(userLocation.lng),
+            page,
+            limit: 5,
           },
         });
 
@@ -192,6 +194,7 @@ function MessBars({
 
         setMessData(filteredData);
         setPgCount(filteredData.length);
+        setHasMore(filteredData.length === 5);
         if (filteredData.length > 0 && typeof coords === "function") {
           const [lng, lat] = filteredData[0].location.coordinates;
           coords({ lat, lng });
@@ -227,7 +230,7 @@ function MessBars({
     
       setDistanceMap((prev) => ({ ...prev, ...newDistanceMap }));
     };
-    
+
     fetchVisibleDistances();
   }, [visibleData, userLocation]);
 
