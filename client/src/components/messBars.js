@@ -1,6 +1,6 @@
 import axios from "axios";
 import { getDistance } from "ol/sphere";
-import React, { useEffect, useState , useMemo  } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { findMessUrl } from "../constant/urls";
 import { useInView } from "react-intersection-observer";
@@ -41,13 +41,13 @@ function MessBars({
     triggerOnce: false,
   });
 
- // Add loadMoreCards to dependencies
+  // Add loadMoreCards to dependencies
 
   const loadMoreCards = React.useCallback(() => {
     if (isLoading || !hasMore) return;
-  
+
     setIsLoading(true);
-  
+
     if (messData.length > visibleCount) {
       setTimeout(() => {
         setVisibleCount((prev) => Math.min(prev + 5, messData.length));
@@ -61,14 +61,16 @@ function MessBars({
   }, [visibleCount, messData.length, isLoading, hasMore]);
 
   useEffect(() => {
-  if (lastCardInView && !isLoading && hasMore) {
-    loadMoreCards();
-  }
-}, [lastCardInView, isLoading, hasMore, loadMoreCards]);
+    if (lastCardInView && !isLoading && hasMore) {
+      loadMoreCards();
+    }
+  }, [lastCardInView, isLoading, hasMore, loadMoreCards]);
 
   // Filter the data to only show visible cards
-  const visibleData = useMemo(() => messData.slice(0, visibleCount), [messData, visibleCount]);
-
+  const visibleData = useMemo(
+    () => messData.slice(0, visibleCount),
+    [messData, visibleCount]
+  );
 
   const amenities = [
     { id: "test1", label: "A/C", icon: <FaWind /> },
@@ -205,21 +207,45 @@ function MessBars({
   }, [checkFeatures, userLocation]);
 
   useEffect(() => {
-    const fetchDistances = async () => {
-      if (!messData.length || !userLocation) return;
-      const results = await Promise.allSettled(
-        messData.map((owner) => getStreetDistance(userLocation, owner.location.coordinates))
+    if (!visibleData.length || !userLocation) return;
+
+    const fetchVisibleDistances = async () => {
+      const idsToFetch = visibleData.filter(
+        (owner) => !distanceMap[owner._id]
       );
+    
+      const results = await Promise.allSettled(
+        idsToFetch.map((owner) =>
+          getStreetDistance(userLocation, owner.location.coordinates)
+        )
+      );
+    
       const newDistanceMap = {};
       results.forEach((res, i) => {
-        newDistanceMap[messData[i]._id] = res.status === 'fulfilled' ? res.value : "N/A";
+        newDistanceMap[idsToFetch[i]._id] = res.status === 'fulfilled' ? res.value : "N/A";
       });
-      setDistanceMap(newDistanceMap);
+    
+      setDistanceMap((prev) => ({ ...prev, ...newDistanceMap }));
     };
     
+    fetchVisibleDistances();
+  }, [visibleData, userLocation]);
 
-    fetchDistances();
-  }, [messData, userLocation]);
+  // useEffect(() => {
+  //   const fetchDistances = async () => {
+  //     if (!messData.length || !userLocation) return;
+  //     const results = await Promise.allSettled(
+  //       messData.map((owner) => getStreetDistance(userLocation, owner.location.coordinates))
+  //     );
+  //     const newDistanceMap = {};
+  //     results.forEach((res, i) => {
+  //       newDistanceMap[messData[i]._id] = res.status === 'fulfilled' ? res.value : "N/A";
+  //     });
+  //     setDistanceMap(newDistanceMap);
+  //   };
+
+  //   fetchDistances();
+  // }, [messData, userLocation]);
 
   if (error) {
     return <div>{error}</div>;
