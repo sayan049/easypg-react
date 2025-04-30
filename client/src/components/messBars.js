@@ -715,7 +715,7 @@ function MessBars({
   useEffect(() => {
     setMessData([]);
     setDistanceMap({});
-    setHasMore(true);
+    //setHasMore(true);
     setPgCount(0);
 
     // Delay setting page so lastCardInView doesn't trigger a fetch prematurely
