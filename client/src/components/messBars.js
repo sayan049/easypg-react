@@ -67,7 +67,8 @@ function MessBars({
 }, [lastCardInView, isLoading, hasMore, loadMoreCards]);
 
   // Filter the data to only show visible cards
-  const visibleData = messData.slice(0, visibleCount);
+  const visibleData = useMemo(() => messData.slice(0, visibleCount), [messData, visibleCount]);
+
 
   const amenities = [
     { id: "test1", label: "A/C", icon: <FaWind /> },
@@ -205,25 +206,17 @@ function MessBars({
 
   useEffect(() => {
     const fetchDistances = async () => {
-      if (messData.length === 0 || !userLocation) return;
-
+      if (!messData.length || !userLocation) return;
+      const results = await Promise.allSettled(
+        messData.map((owner) => getStreetDistance(userLocation, owner.location.coordinates))
+      );
       const newDistanceMap = {};
-      for (const owner of messData) {
-        if (owner?.location?.coordinates) {
-          try {
-            const distanceText = await getStreetDistance(
-              { lat: userLocation.lat, lng: userLocation.lng },
-              owner.location.coordinates
-            );
-            newDistanceMap[owner._id] = distanceText;
-          } catch (err) {
-            console.error(`❌ Distance error for ${owner.messName}:`, err);
-            newDistanceMap[owner._id] = "N/A";
-          }
-        }
-      }
+      results.forEach((res, i) => {
+        newDistanceMap[messData[i]._id] = res.status === 'fulfilled' ? res.value : "N/A";
+      });
       setDistanceMap(newDistanceMap);
     };
+    
 
     fetchDistances();
   }, [messData, userLocation]);
