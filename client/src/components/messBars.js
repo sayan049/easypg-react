@@ -516,7 +516,7 @@
 
 import axios from "axios";
 import { getDistance } from "ol/sphere";
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { findMessUrl } from "../constant/urls";
 import { useInView } from "react-intersection-observer";
@@ -548,7 +548,6 @@ function MessBars({
   const navigate = useNavigate();
   const [selected, setSelected] = useState(null);
   const [flipped, setFlipped] = useState({});
-  const [visibleCount, setVisibleCount] = useState(5);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
@@ -654,7 +653,7 @@ function MessBars({
           lat: parseFloat(userLocation.lat),
           lng: parseFloat(userLocation.lng),
           page,
-          limit: 10, // Fetch 10 at a time but show 5 initially
+          limit: 10,
         },
       });
 
@@ -681,7 +680,7 @@ function MessBars({
 
       setMessData(prev => page === 1 ? filteredData : [...prev, ...filteredData]);
       setPgCount(prev => page === 1 ? filteredData.length : prev + filteredData.length);
-      setHasMore(filteredData.length === 10);
+      setHasMore(filteredData.length > 0);
       
       if (filteredData.length > 0 && typeof coords === "function" && page === 1) {
         const [lng, lat] = filteredData[0].location.coordinates;
@@ -696,47 +695,25 @@ function MessBars({
     }
   };
 
-  const loadMoreCards = useCallback(() => {
-    if (isLoading || !hasMore) return;
-    setIsLoading(true);
-    
-    setTimeout(() => {
-      setVisibleCount(prev => Math.min(prev + 5, messData.length));
-      setIsLoading(false);
-      setHasMore(visibleCount < messData.length);
-      
-      // Fetch more data if we're close to the end
-      if (visibleCount + 5 >= messData.length && hasMore) {
-        setPage(prev => prev + 1);
-      }
-    }, 800);
-  }, [isLoading, hasMore, messData.length, visibleCount]);
-
   useEffect(() => {
     if (lastCardInView && !isLoading && hasMore) {
-      loadMoreCards();
+      setPage(prev => prev + 1);
     }
-  }, [lastCardInView, isLoading, hasMore, loadMoreCards]);
+  }, [lastCardInView, isLoading, hasMore]);
+
+  useEffect(() => {
+    fetchData();
+  }, [page, checkFeatures, userLocation, finalGender]);
 
   useEffect(() => {
     setPage(1);
-    setVisibleCount(5);
-    fetchData();
   }, [checkFeatures, userLocation, finalGender]);
 
   useEffect(() => {
-    if (page > 1) {
-      fetchData();
-    }
-  }, [page]);
-
-  const visibleData = useMemo(() => messData.slice(0, visibleCount), [messData, visibleCount]);
-
-  useEffect(() => {
-    if (!visibleData.length || !userLocation) return;
+    if (!messData.length || !userLocation) return;
 
     const calculateDistances = async () => {
-      const newItems = visibleData.filter(owner => !distanceMap[owner._id]);
+      const newItems = messData.filter(owner => !distanceMap[owner._id]);
       if (!newItems.length) return;
 
       const results = await Promise.allSettled(
@@ -756,7 +733,7 @@ function MessBars({
     };
 
     calculateDistances();
-  }, [visibleData, userLocation]);
+  }, [messData, userLocation]);
 
   if (error) {
     return <div>{error}</div>;
@@ -766,10 +743,10 @@ function MessBars({
     <>
       <style>{styles}</style>
       <div className={`grid gap-4 p-2 sm:p-4 ${isChecked ? "grid-cols-1" : ""}`}>
-        {visibleData.map((owner, index) => (
+        {messData.map((owner, index) => (
           <div
             key={owner._id}
-            ref={index === visibleData.length - 1 ? lastCardRef : null}
+            ref={index === messData.length - 1 ? lastCardRef : null}
             className={`relative flip-card mb-4 h-[35rem] md:h-[16rem] ${
               isChecked ? "w-full" : "w-full"
             } ${
@@ -784,7 +761,6 @@ function MessBars({
             }}
           >
             <div className={`flip-card-inner ${flipped[owner._id] ? "flipped" : ""}`}>
-              {/* FRONT SIDE */}
               <div className={`flip-card-front grid gap-4 w-full h-full ${
                 isChecked ? "grid-cols-1" : "md:grid-cols-[1fr_2fr]"
               }`}>
@@ -932,7 +908,6 @@ function MessBars({
                 </div>
               </div>
 
-              {/* BACK SIDE */}
               <div className="flip-card-back flex items-center justify-center bg-gray-100">
                 <div className="w-full h-full sm:h-full">
                   <iframe
@@ -969,12 +944,11 @@ function MessBars({
           </div>
         ))}
 
-        {isLoading &&
-          [...Array(3)].map((_, index) => (
-            <Skeleton key={`skeleton-${index}`} />
-          ))}
+        {isLoading && [...Array(3)].map((_, index) => (
+          <Skeleton key={`skeleton-${index}`} />
+        ))}
 
-        {!hasMore && messData.length > 0 && visibleCount >= messData.length && (
+        {!hasMore && messData.length > 0 && (
           <div className="text-center py-4 text-gray-500">
             You've reached the end
           </div>
