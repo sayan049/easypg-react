@@ -35,6 +35,7 @@ function MessBars({
   const [visibleCount, setVisibleCount] = useState(5); // Initial number of cards to show
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1); 
 
   const [lastCardRef, lastCardInView] = useInView({
     threshold: 0.1,
@@ -53,6 +54,7 @@ function MessBars({
         setVisibleCount((prev) => Math.min(prev + 5, messData.length));
         setIsLoading(false);
         setHasMore(visibleCount < messData.length);
+        setPage(prevPage => prevPage + 1); // Update page
       }, 800);
     } else {
       setHasMore(false);
