@@ -1286,7 +1286,53 @@ exports.updateMaintenanceStatus = async (req, res) => {
     return res.status(500).json({ message: "Failed to update maintenance request status" });
   }
 };
+//get maintenance history for users
+exports.getMaintenanceHistory = async (req, res) => {
+  try {
+    const { userId, type } = req.body;
 
+    if (!userId || type !== "student") {
+      return res.status(400).json({ success: false, message: "Invalid request body." });
+    }
+
+    // Verify that userId from body matches the one from JWT
+    if (req.user.id !== userId) {
+      return res.status(403).json({ success: false, message: "Unauthorized access." });
+    }
+
+    // Fetch maintenance requests made by the student
+    const requests = await MaintenanceRequest.find({ student: userId })
+    .select("title description status response cancellationReason createdAt booking pgOwner") // only select what's needed
+    .populate({
+      path: "booking",
+      select: "room", // only bring in the room from booking
+      
+    })
+    .populate({
+      path: "pgOwner",
+      select: "firstName lastName email messName", // only bring required fields from owner
+    });
+  
+  const formatted = requests.map((req) => ({
+    title: req.title,
+    description: req.description,
+    status: req.status,
+    response: req.response,
+    cancellationReason: req.cancellationReason,
+    createdAt: req.createdAt,
+    roomNo: req.booking?.room || "N/A",
+    ownerEmail: req.pgOwner?.email || "N/A",
+    messName: req.pgOwner?.messName || "N/A",
+    name: req.pgOwner ? `${req.pgOwner.firstName} ${req.pgOwner.lastName}` : "Unknown Owner",
+  }));
+  
+
+    return res.status(200).json({ success: true, data: formatted });
+  } catch (err) {
+    console.error("Maintenance history fetch error:", err);
+    return res.status(500).json({ success: false, message: "Server error." });
+  }
+};
 
 
 // Cancel booking (BED RESTORATION ONLY FOR CONFIRMED BOOKINGS)

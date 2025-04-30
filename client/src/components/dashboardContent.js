@@ -739,6 +739,7 @@ const DashboardContent = ({
   stats = {},
   daysRemaining = 0,
   totalAmountConfirmed = 0,
+  maintenanceHistory = [],
   loading = false,
 }) => {
   const [selectedStayId, setSelectedStayId] = useState("");
@@ -981,13 +982,13 @@ const DashboardContent = ({
                         {/* PG Type with Gender */}
                         <p className="flex items-center gap-2 text-sm">
                           <span
-                            className={`inline-flex items-center gap-2 px-3 py-1 rounded-full font-medium text-white transition-colors duration-300 ${
+                            className={`inline-flex items-center gap-2 px-3 py-1 rounded-full font-medium  transition-colors duration-300 ${
                               stay.pgOwner?.gender === "Girls Pg"
-                                ? "bg-pink-100"
+                                ? "bg-pink-100 text-pink-600"
                                 : stay.pgOwner?.gender === "Boys Pg"
-                                ? "bg-blue-100"
+                                ? "bg-blue-100 text-blue-600"
                                 : stay.pgOwner?.gender === "Coed Pg"
-                                ? "bg-green-100"
+                                ? "bg-green-100 text-green-600"
                                 : "bg-gray-100" // default color if not specified
                             }`}
                           >
@@ -1361,22 +1362,15 @@ const DashboardContent = ({
         </form>
         {/* Maintenance History */}
         <div>
-          <h2 className="text-lg font-semibold mb-4 text-gray-700">
-            Maintenance History
-          </h2>
-          <div className="bg-white p-4 rounded-lg shadow-md space-y-4">
-            <MaintenanceItem
-              title="Plumbing Issue"
-              date="Reported on Feb 15, 2025"
-              status="In Progress"
-              statusColor="bg-yellow-400"
-            />
-            <MaintenanceItem
-              title="Electrical Repair"
-              date="Reported on Feb 10, 2025"
-              status="Resolved"
-              statusColor="bg-green-400"
-            />
+          <h3 className="text-lg font-semibold mb-2">Maintenance History</h3>
+          <div className="bg-white p-4 rounded-lg shadow-md space-y-4 max-h-[400px] overflow-y-auto">
+            {maintenanceHistory.length > 0 ? (
+              maintenanceHistory.map((item, index) => (
+                <ExpandableMaintenanceItem key={index} item={item} />
+              ))
+            ) : (
+              <p className="text-gray-500 text-sm">No maintenance history found.</p>
+            )}
           </div>
         </div>
       </div>
@@ -1409,21 +1403,52 @@ function NotificationCard({ icon, title, description, date }) {
   );
 }
 
-function MaintenanceItem({ title, date, status, statusColor }) {
+const ExpandableMaintenanceItem = ({ item }) => {
+  const [showDetails, setShowDetails] = useState(false);
+
+  const statusColors = {
+    "in-progress": "bg-yellow-400",
+    resolved: "bg-green-500",
+    cancelled: "bg-red-500",
+  };
+
   return (
-    <div className="flex justify-between items-center">
-      <div>
-        <h4 className="font-semibold text-gray-800">{title}</h4>
-        <p className="text-xs text-gray-400">{date}</p>
+    <div className="border p-4 rounded-md relative bg-gray-50">
+      {/* Top row: Title + Status */}
+      <div className="flex justify-between items-start">
+        <h3 className="font-semibold text-sm">{item.title}</h3>
+        <span
+          className={`text-white text-xs px-2 py-1 rounded ${statusColors[item.status] || "bg-gray-400"}`}
+        >
+          {item.status?.replace("-", " ").toUpperCase()}
+        </span>
       </div>
-      <span
-        className={`text-xs text-white px-2 py-1 rounded-full ${statusColor}`}
+
+      {/* Reported on */}
+      <p className="text-xs text-gray-500 mt-1">
+        Reported on {formatDate(item.createdAt)}
+      </p>
+
+      {/* Toggle Button */}
+      <button
+        onClick={() => setShowDetails(!showDetails)}
+        className="text-blue-600 text-xs mt-2 hover:underline focus:outline-none"
       >
-        {status}
-      </span>
+        {showDetails ? "Hide Details" : "View Details"}
+      </button>
+
+      {/* Expanded details */}
+      {showDetails && (
+        <div className="mt-2 text-xs text-gray-700 space-y-1">
+          <p><strong>Mess:</strong> {item.messName || "N/A"}</p>
+          <p><strong>Room:</strong> {item.roomNo || "N/A"}</p>
+          <p><strong>Owner:</strong> {item.name || "N/A"}</p>
+          <p><strong>Email:</strong> {item.ownerEmail || "N/A"}</p>
+        </div>
+      )}
     </div>
   );
-}
+};
 
 function formatDate(dateString) {
   if (!dateString) return "N/A";
