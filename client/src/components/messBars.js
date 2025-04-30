@@ -35,7 +35,7 @@
 //   const [visibleCount, setVisibleCount] = useState(5); // Initial number of cards to show
 //   const [isLoading, setIsLoading] = useState(false);
 //   const [hasMore, setHasMore] = useState(true);
-//   const [page, setPage] = useState(1); 
+//   const [page, setPage] = useState(1);
 
 //   const [lastCardRef, lastCardInView] = useInView({
 //     threshold: 0.1,
@@ -156,7 +156,6 @@
 //     }
 //   };
 
-
 //   const fetchData = async () => {
 //     try {
 //       if (!userLocation || !userLocation.lat || !userLocation.lng) {
@@ -213,7 +212,6 @@
 
 //   useEffect(() => {
 
-
 //     fetchData();
 //   }, [checkFeatures, userLocation,page]);
 
@@ -231,18 +229,18 @@
 //       const idsToFetch = visibleData.filter(
 //         (owner) => !distanceMap[owner._id]
 //       );
-    
+
 //       const results = await Promise.allSettled(
 //         idsToFetch.map((owner) =>
 //           getStreetDistance(userLocation, owner.location.coordinates)
 //         )
 //       );
-    
+
 //       const newDistanceMap = {};
 //       results.forEach((res, i) => {
 //         newDistanceMap[idsToFetch[i]._id] = res.status === 'fulfilled' ? res.value : "N/A";
 //       });
-    
+
 //       setDistanceMap((prev) => ({ ...prev, ...newDistanceMap }));
 //     };
 
@@ -513,7 +511,6 @@
 
 // export default MessBars;
 
-
 import axios from "axios";
 import { getDistance } from "ol/sphere";
 import React, { useEffect, useState, useMemo } from "react";
@@ -647,7 +644,7 @@ function MessBars({
       }
 
       setIsLoading(true);
-      
+
       const res = await axios.get(findMessUrl, {
         params: {
           lat: parseFloat(userLocation.lat),
@@ -678,11 +675,24 @@ function MessBars({
           })
         : [];
 
-      setMessData(prev => page === 1 ? filteredData : [...prev, ...filteredData]);
-      setPgCount(prev => page === 1 ? filteredData.length : prev + filteredData.length);
-      setHasMore(filteredData.length > 0);
-      
-      if (filteredData.length > 0 && typeof coords === "function" && page === 1) {
+      if (filteredData.length === 0) {
+        setHasMore(false);
+        return;
+      }
+
+      setMessData((prev) =>
+        page === 1 ? filteredData : [...prev, ...filteredData]
+      );
+      setPgCount((prev) =>
+        page === 1 ? filteredData.length : prev + filteredData.length
+      );
+      setHasMore(true);
+
+      if (
+        filteredData.length > 0 &&
+        typeof coords === "function" &&
+        page === 1
+      ) {
         const [lng, lat] = filteredData[0].location.coordinates;
         coords({ lat, lng });
         setSelected(filteredData[0]._id);
@@ -697,7 +707,7 @@ function MessBars({
 
   useEffect(() => {
     if (lastCardInView && !isLoading && hasMore) {
-      setPage(prev => prev + 1);
+      setPage((prev) => prev + 1);
     }
   }, [lastCardInView, isLoading, hasMore]);
 
@@ -707,33 +717,32 @@ function MessBars({
     setDistanceMap({});
     setHasMore(true);
   }, [checkFeatures, userLocation, finalGender]);
-  
+
   useEffect(() => {
     fetchData();
   }, [page]);
-  
 
   useEffect(() => {
     if (!messData.length || !userLocation) return;
 
     const calculateDistances = async () => {
-      const newItems = messData.filter(owner => !distanceMap[owner._id]);
+      const newItems = messData.filter((owner) => !distanceMap[owner._id]);
       if (!newItems.length) return;
 
       const results = await Promise.allSettled(
-        newItems.map(owner => 
+        newItems.map((owner) =>
           getStreetDistance(userLocation, owner.location.coordinates)
         )
       );
 
       const newDistanceMap = {};
       results.forEach((res, i) => {
-        if (res.status === 'fulfilled') {
+        if (res.status === "fulfilled") {
           newDistanceMap[newItems[i]._id] = res.value;
         }
       });
 
-      setDistanceMap(prev => ({ ...prev, ...newDistanceMap }));
+      setDistanceMap((prev) => ({ ...prev, ...newDistanceMap }));
     };
 
     calculateDistances();
@@ -746,7 +755,9 @@ function MessBars({
   return (
     <>
       <style>{styles}</style>
-      <div className={`grid gap-4 p-2 sm:p-4 ${isChecked ? "grid-cols-1" : ""}`}>
+      <div
+        className={`grid gap-4 p-2 sm:p-4 ${isChecked ? "grid-cols-1" : ""}`}
+      >
         {messData.map((owner, index) => (
           <div
             key={owner._id}
@@ -764,10 +775,16 @@ function MessBars({
               }
             }}
           >
-            <div className={`flip-card-inner ${flipped[owner._id] ? "flipped" : ""}`}>
-              <div className={`flip-card-front grid gap-4 w-full h-full ${
-                isChecked ? "grid-cols-1" : "md:grid-cols-[1fr_2fr]"
-              }`}>
+            <div
+              className={`flip-card-inner ${
+                flipped[owner._id] ? "flipped" : ""
+              }`}
+            >
+              <div
+                className={`flip-card-front grid gap-4 w-full h-full ${
+                  isChecked ? "grid-cols-1" : "md:grid-cols-[1fr_2fr]"
+                }`}
+              >
                 {!isChecked && (
                   <div className="relative h-48 md:h-full rounded-lg overflow-hidden">
                     <img
@@ -948,9 +965,10 @@ function MessBars({
           </div>
         ))}
 
-        {isLoading && [...Array(3)].map((_, index) => (
-          <Skeleton key={`skeleton-${index}`} />
-        ))}
+        {isLoading &&
+          [...Array(3)].map((_, index) => (
+            <Skeleton key={`skeleton-${index}`} />
+          ))}
 
         {!hasMore && messData.length > 0 && (
           <div className="text-center py-4 text-gray-500">
