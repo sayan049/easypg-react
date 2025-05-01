@@ -82,7 +82,7 @@ const HomePage = () => {
     setSuggestions([]); // Clear suggestions
 
     navigate("/MessFind", {
-      state: { userLocation:   coords, item: suggestion.display_name  },
+      state: { userLocation: coords, item: suggestion.display_name },
     });
   };
 
@@ -186,13 +186,13 @@ const HomePage = () => {
             </a>
           </nav>
 
-          {IsAuthenticated || isOwnerAuthenticated ? (
+          {/* {IsAuthenticated || isOwnerAuthenticated ? (
             <>
               <div
                 className="imageProfile"
                 onClick={() => setShowDropdown(!showDropdown)}
               >
-                <UserProfile className="h-16 w-16" />
+                <UserProfile className="h-12 w-12" />
 
                 <div className="dropdown-content">
                   <p>
@@ -216,14 +216,60 @@ const HomePage = () => {
                 House Owner / Student
               </Link>
             </button>
+          )} */}
+          {IsAuthenticated || isOwnerAuthenticated ? (
+            <>
+              <div className="relative">
+                <div
+                  className="imageProfile cursor-pointer"
+                  onClick={() => setShowDropdown(!showDropdown)}
+                >
+                  <UserProfile className="h-12 w-12" />
+                </div>
+
+                {showDropdown && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
+                    <div className="py-1">
+                      <Link
+                        to={
+                          IsAuthenticated ? "/newDashboard" : "/DashboardOwner"
+                        }
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#2CA4B5] hover:text-white"
+                        onClick={() => setShowDropdown(false)}
+                      >
+                        Profile
+                      </Link>
+                      <div className="border-t border-gray-200"></div>
+                      <button
+                        onClick={() => {
+                          handleLogoutClick();
+                          setShowDropdown(false);
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#2CA4B5] hover:text-white"
+                      >
+                        Log Out
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <button className="hidden lg:block rounded-full bg-white text-black px-6 py-2 border border-black hover:bg-gray-100">
+              <Link to="/ProviderSeeker" className="font-semibold text-xs">
+                House Owner / Student
+              </Link>
+            </button>
           )}
 
-          <button
-            className="lg:hidden text-2xl text-gray-800"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            ☰
-          </button>
+          {!isOwnerAuthenticated && !IsAuthenticated && (
+            <button
+              className="lg:hidden text-2xl text-gray-800"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              ☰
+            </button>
+          )}
         </header>
 
         {/* Mobile Menu */}
