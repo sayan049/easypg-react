@@ -82,7 +82,7 @@ const HomePage = () => {
     setSuggestions([]); // Clear suggestions
 
     navigate("/MessFind", {
-      state: { userLocation:   coords, item: suggestion.display_name  },
+      state: { userLocation: coords, item: suggestion.display_name },
     });
   };
 
@@ -192,7 +192,7 @@ const HomePage = () => {
                 className="imageProfile"
                 onClick={() => setShowDropdown(!showDropdown)}
               >
-                <UserProfile className="h-16 w-16" />
+                <UserProfile className="h-12 w-12" />
 
                 <div className="dropdown-content">
                   <p>
@@ -217,13 +217,14 @@ const HomePage = () => {
               </Link>
             </button>
           )}
-
-          <button
-            className="lg:hidden text-2xl text-gray-800"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            ☰
-          </button>
+          {!isOwnerAuthenticated && !IsAuthenticated && (
+            <button
+              className="lg:hidden text-2xl text-gray-800"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              ☰
+            </button>
+          )}
         </header>
 
         {/* Mobile Menu */}

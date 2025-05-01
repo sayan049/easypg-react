@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import UserProfile from "./UserProfile";
 import { FaMapMarkerAlt } from "react-icons/fa";
-import { updateDetailsUrl,updatePasswordDashboardOwner } from "../constant/urls";
+import {
+  updateDetailsUrl,
+  updatePasswordDashboardOwner,
+} from "../constant/urls";
+import { toast,ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const input =
   "border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300 bg-text-bg bg-clip-text text-transparent";
 
@@ -64,16 +69,19 @@ const SettingsOwner = ({ userDetails }) => {
       !passwordData.newPassword ||
       !passwordData.confirmPassword
     ) {
+      toast.error("All fields are required");
       setPasswordError("All fields are required");
       return;
     }
 
     if (passwordData.newPassword !== passwordData.confirmPassword) {
+      toast.error("New passwords do not match");
       setPasswordError("New passwords do not match");
       return;
     }
 
     if (passwordData.newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters");
       setPasswordError("Password must be at least 8 characters");
       return;
     }
@@ -90,23 +98,26 @@ const SettingsOwner = ({ userDetails }) => {
           userId: userDetails._id,
           currentPassword: passwordData.currentPassword,
           newPassword: passwordData.newPassword,
-          confirmPassword: passwordData.confirmPassword
+          confirmPassword: passwordData.confirmPassword,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
+        toast.error(response.error.data.message || "Failed to update password");
         throw new Error(data.error || "Failed to update password");
       }
 
       setPasswordSuccess(true);
+      toast.success("Password updated successfully!");
       setPasswordData({
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
       });
     } catch (err) {
+      toast.error(err.message || "An error occurred");
       setPasswordError(err.message);
     } finally {
       setIsUpdatingPassword(false);
@@ -228,19 +239,26 @@ const SettingsOwner = ({ userDetails }) => {
 
       const result = await res.json();
       if (res.ok) {
-        alert("Updated successfully!");
+        toast.success("Updated successfully!");
+        //alert("Updated successfully!");
         console.log(result.data);
       } else {
-        alert(result.error || "Update failed.");
+        toast.error(result.error || "Update failed.");
+        // alert(result.error || "Update failed.");
       }
     } catch (err) {
       console.error("Update error:", err);
-      alert("An error occurred during update.");
+      toast.error("An error occurred during update.");
+      //alert("An error occurred during update.");
     }
   };
 
   return (
     <div className="p-4 max-w-6xl mx-auto space-y-8">
+      <ToastContainer
+        position="top-center"
+        toastClassName="!w-[300px]   mx-auto mt-4 sm:mt-0  "
+      />
       <div className="flex flex-col items-center space-y-2">
         <UserProfile className="w-24 h-24 rounded-full" readOnly />
         <h2 className="text-lg font-semibold">Owner</h2>
@@ -301,17 +319,17 @@ const SettingsOwner = ({ userDetails }) => {
           <h3 className="font-semibold text-lg">Update Password</h3>
 
           {/* Error/Success Messages */}
-          {passwordError && (
+          {/* {passwordError && (
             <div className="p-2 bg-red-100 text-red-700 rounded-md text-sm">
               {passwordError}
             </div>
-          )}
+          )} */}
 
-          {passwordSuccess && (
+          {/* {passwordSuccess && (
             <div className="p-2 bg-green-100 text-green-700 rounded-md text-sm">
               Password updated successfully!
             </div>
-          )}
+          )} */}
 
           <form onSubmit={handlePasswordUpdate} className="space-y-4">
             <input
@@ -446,7 +464,10 @@ const SettingsOwner = ({ userDetails }) => {
                   },
                   (error) => {
                     console.error("Location error:", error);
-                    alert(
+                    // alert(
+                    //   "Unable to fetch location. Please allow location access."
+                    // );
+                    toast.error(
                       "Unable to fetch location. Please allow location access."
                     );
                   }
