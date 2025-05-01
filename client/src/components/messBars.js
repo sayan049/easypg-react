@@ -675,7 +675,6 @@ function MessBars({
             return matchesFeatures && matchesGender;
           })
         : [];
-      const totalMess = res.data.total || 0;
 
       if (filteredData.length === 0) {
         setHasMore(false);
@@ -685,10 +684,9 @@ function MessBars({
       setMessData((prev) =>
         page === 1 ? filteredData : [...prev, ...filteredData]
       );
-      // setPgCount((prev) =>
-      //   page === 1 ? filteredData.length : prev + filteredData.length
-      // );
-      setPgCount(totalMess);
+      setPgCount((prev) =>
+        page === 1 ? filteredData.length : prev + filteredData.length
+      );
       setHasMore(true);
 
       if (
@@ -714,14 +712,15 @@ function MessBars({
     }
   }, [lastCardInView, isLoading, hasMore]);
 
-  useEffect(() => {
-    // Reset when filters change
-    setMessData([]);
-    setDistanceMap({});
-    setHasMore(true);
-    setPgCount(0);
-    setPage(1); // Reset to page 1 immediately
-  }, [checkFeatures, userLocation, finalGender]);
+useEffect(() => {
+  // Reset when filters change
+  setMessData([]);
+  setDistanceMap({});
+  setHasMore(true);
+  setPgCount(0);
+  setPage(1); // Reset to page 1 immediately
+}, [checkFeatures, userLocation, finalGender]);
+  
 
   useEffect(() => {
     fetchData();

@@ -365,7 +365,7 @@ exports.findMess = async (req, res) => {
 
     // Query MongoDB using correct geohashes
     const nearbyPGs = await PgOwner.find({ geoHash: { $in: neighbors } }).skip(skip).limit(limitNum);
-    const total = await PgOwner.countDocuments({ geoHash: { $in: neighbors } });
+    // const total = await PgOwner.countDocuments({ geoHash: { $in: neighbors } });
 
 
 
