@@ -142,9 +142,10 @@ const MessFind = () => {
   const navigate = useNavigate();
 
   const userLocation = location.state?.userLocation || null;
-  const item = location.state?.item || null;
+  // const item = location.state?.item || null;
 
   const [price, setPrice] = useState(1500);
+  const [item, setItem] = useState(location.state?.item || "");
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(userLocation);
@@ -204,6 +205,7 @@ const MessFind = () => {
     const coords = { lat: suggestion.lat, lng: suggestion.lon };
     setSearchQuery(suggestion.display_name);
     setSelectedLocation(coords);
+    setItem(suggestion.display_name); 
     setSuggestions([]);
     // navigate("/MessFind", {
     //   state: { userLocation: coords, item: suggestion.display_name },
