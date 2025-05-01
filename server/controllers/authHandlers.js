@@ -1,66 +1,78 @@
 const User = require("../modules/user");
 const PgOwner = require("../modules/pgProvider");
-const cloudinary = require('../cloudinary/cloudinaryConfig');
+const cloudinary = require("../cloudinary/cloudinaryConfig");
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const sendmail = require("../controllers/emailSender");
 const sendmailOwner = require("./emailSenderOwner");
 const jwt = require("jsonwebtoken");
-const geohash = require('ngeohash');
+const geohash = require("ngeohash");
 const { type } = require("os");
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
-
 exports.signupHandler = async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
-
   const existnigUser = await User.findOne({ email: email });
 
   if (existnigUser) {
-    return res.status(409).json({ message: "Email already exists", type: "error" });
-   // return console.log(`${email} already used`);
+    return res
+      .status(409)
+      .json({ message: "Email already exists", type: "error" });
+    // return console.log(`${email} already used`);
   }
   try {
     // Validate email format (basic)
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     if (!isValidEmail) {
-      return res.status(400).json({ message: "Invalid email format" , type: "error" });
+      return res
+        .status(400)
+        .json({ message: "Invalid email format", type: "error" });
     }
 
     // Validate password length
     if (!password || password.length < 8) {
-      return res.status(400).json({ message: "Password must be at least 8 characters" , type: "error" });
+      return res
+        .status(400)
+        .json({
+          message: "Password must be at least 8 characters",
+          type: "error",
+        });
     }
     // if (!User || !(await bcrypt.compare(password, User.password))) {
     //   return res.status(401).json({ message: "Incorrect email or password" ,type: "error" });
     // }
 
-    
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const newUser = await User.create({
       ...req.body,
       password: hashedPassword,
-      
     });
 
     sendmail(req.body.firstName, email, newUser._id);
-    
-    res.status(201).json({ message: "User registered. Please verify your email.", type: "success" });
-    
+
+    res
+      .status(201)
+      .json({
+        message: "User registered. Please verify your email.",
+        type: "success",
+      });
   } catch (error) {
     console.error("Error during signup:", error);
 
-    res.status(500).json({ message: "Server error" , type: "error" });
+    res.status(500).json({ message: "Server error", type: "error" });
   }
 };
 
 exports.loginHandler = async (req, res) => {
   const { email, password } = req.body;
-  const device = req.headers['x-device-info'] || req.headers['user-agent'] || 'Unknown Device'; // Extract device info from headers
+  const device =
+    req.headers["x-device-info"] ||
+    req.headers["user-agent"] ||
+    "Unknown Device"; // Extract device info from headers
 
   try {
     const user = await User.findOne({ email });
@@ -77,10 +89,12 @@ exports.loginHandler = async (req, res) => {
 
     if (!user.is_verified) {
       console.log("Email not verified");
-      return res.status(403).json({ message: "Please verify your email first." });
+      return res
+        .status(403)
+        .json({ message: "Please verify your email first." });
     }
 
-    const loginMethod = 'local';
+    const loginMethod = "local";
     const name = `${user.firstName} ${user.lastName}`;
 
     // Generate JWT Tokens
@@ -117,7 +131,6 @@ exports.loginHandler = async (req, res) => {
     res.status(500).json({ message: "Server error." });
   }
 };
-
 
 // Remove JSON.parse for roomInfo, no need to parse it manually
 // exports.signupHandlerOwner = async (req, res) => {
@@ -213,7 +226,6 @@ exports.loginHandler = async (req, res) => {
 //   }
 // };
 
-
 exports.signupHandlerOwner = async (req, res) => {
   const {
     firstName,
@@ -225,31 +237,30 @@ exports.signupHandlerOwner = async (req, res) => {
     mobileNo,
     messName,
     aboutMess,
-    location, 
+    location,
     facility,
     gender,
     roomInfo,
   } = req.body;
 
-  console.log(req.body.location);  // Log location to check the format
- // Process facility array
- let facilities = req.body.facility;
-    
- // Handle case where facility might come as string
- if (typeof facilities === 'string') {
-   try {
-     facilities = JSON.parse(facilities);
-   } catch (e) {
-     facilities = facilities.split(',').map(item => item.trim());
-   }
- }
+  console.log(req.body.location); // Log location to check the format
+  // Process facility array
+  let facilities = req.body.facility;
 
- // Ensure it's an array
- if (!Array.isArray(facilities)) {
-   facilities = [facilities];
- }
+  // Handle case where facility might come as string
+  if (typeof facilities === "string") {
+    try {
+      facilities = JSON.parse(facilities);
+    } catch (e) {
+      facilities = facilities.split(",").map((item) => item.trim());
+    }
+  }
 
- 
+  // Ensure it's an array
+  if (!Array.isArray(facilities)) {
+    facilities = [facilities];
+  }
+
   try {
     // Check if the user already exists
     const existingUser = await PgOwner.findOne({ email });
@@ -271,32 +282,46 @@ exports.signupHandlerOwner = async (req, res) => {
 
     // Parse roomInfo if it exists
     let parsedRoomInfo = [];
-    if (roomInfo && typeof roomInfo === 'string') {
+    if (roomInfo && typeof roomInfo === "string") {
       try {
         parsedRoomInfo = JSON.parse(roomInfo);
       } catch (error) {
         console.error("Error parsing roomInfo:", error);
-        return res.status(400).json({ message: 'Invalid roomInfo format' });
+        return res.status(400).json({ message: "Invalid roomInfo format" });
       }
     }
 
     // Parse location if it's a string
     let parsedLocation = {};
-    if (typeof location === 'string') {
+    if (typeof location === "string") {
       try {
         parsedLocation = JSON.parse(location);
       } catch (error) {
-        return res.status(400).json({ message: 'Invalid location format' });
+        return res.status(400).json({ message: "Invalid location format" });
       }
     }
 
     // Validate and process location
-    if (!parsedLocation || parsedLocation.type !== 'Point' || !Array.isArray(parsedLocation.coordinates) || parsedLocation.coordinates.length !== 2) {
-      return res.status(400).json({ message: 'Invalid location format. Location must be in GeoJSON format (type: "Point", coordinates: [longitude, latitude])' });
+    if (
+      !parsedLocation ||
+      parsedLocation.type !== "Point" ||
+      !Array.isArray(parsedLocation.coordinates) ||
+      parsedLocation.coordinates.length !== 2
+    ) {
+      return res
+        .status(400)
+        .json({
+          message:
+            'Invalid location format. Location must be in GeoJSON format (type: "Point", coordinates: [longitude, latitude])',
+        });
     }
 
     // ✅ Generate GeoHash for faster searches
-    const geoHash = geohash.encode(parsedLocation.coordinates[1], parsedLocation.coordinates[0], 5);
+    const geoHash = geohash.encode(
+      parsedLocation.coordinates[1],
+      parsedLocation.coordinates[0],
+      5
+    );
 
     // Create new PG Owner
     const newOwner = await PgOwner.create({
@@ -309,11 +334,11 @@ exports.signupHandlerOwner = async (req, res) => {
       mobileNo,
       messName,
       aboutMess,
-      location: parsedLocation,  // ✅ Store in GeoJSON format
-      geoHash,  // ✅ Store computed GeoHash
+      location: parsedLocation, // ✅ Store in GeoJSON format
+      geoHash, // ✅ Store computed GeoHash
       profilePhoto,
       messPhoto,
-      facility:facilities,
+      facility: facilities,
       gender,
       roomInfo: parsedRoomInfo,
     });
@@ -329,20 +354,15 @@ exports.signupHandlerOwner = async (req, res) => {
   }
 };
 
-
-
-
-
-
-
-
 exports.findMess = async (req, res) => {
   try {
     const { lat, lng, page = 1, limit = 5 } = req.query;
 
     // Validate latitude and longitude
     if (!lat || !lng) {
-      return res.status(400).json({ message: "Latitude and Longitude are required" });
+      return res
+        .status(400)
+        .json({ message: "Latitude and Longitude are required" });
     }
 
     const latitude = parseFloat(lat);
@@ -358,34 +378,41 @@ exports.findMess = async (req, res) => {
     console.log("🔍 User GeoHash:", userGeohash);
 
     // Get 7-character neighboring GeoHashes
-    let neighbors = geohash.neighbors(userGeohash).map(hash => hash.substring(0, 5));
+    let neighbors = geohash
+      .neighbors(userGeohash)
+      .map((hash) => hash.substring(0, 5));
     neighbors.push(userGeohash); // Include user's geohash
 
     console.log("🗺 Neighboring GeoHashes:", neighbors);
 
     // Query MongoDB using correct geohashes
-    const nearbyPGs = await PgOwner.find({ geoHash: { $in: neighbors } }).skip(skip).limit(limitNum);
-
-
+    const nearbyPGs = await PgOwner.find({ geoHash: { $in: neighbors } })
+      .skip(skip)
+      .limit(limitNum);
+    const total = await PgOwner.countDocuments({ geoHash: { $in: neighbors } });
 
     if (nearbyPGs.length === 0) {
       console.log(" No PGs found near this location.");
-      return res.status(200).json({ message: "No PGs found near this location", data: [] });
+      return res
+        .status(200)
+        .json({ message: "No PGs found near this location", data: [] });
     }
 
     console.log(" PGs Found:", nearbyPGs.length);
-    res.status(200).json(nearbyPGs);
+    // res.status(200).json(nearbyPGs);
+    res.status(200).json({ data: nearbyPGs, total: total });
   } catch (error) {
     console.error(" Error fetching PG owners:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-
-
 exports.loginHandlerOwner = async (req, res) => {
   const { email, password } = req.body;
-  const device = req.headers['x-device-info'] || req.headers['user-agent'] || 'Unknown Device'; // Extract device info
+  const device =
+    req.headers["x-device-info"] ||
+    req.headers["user-agent"] ||
+    "Unknown Device"; // Extract device info
 
   try {
     const pgOwner = await PgOwner.findOne({ email });
@@ -402,21 +429,35 @@ exports.loginHandlerOwner = async (req, res) => {
 
     if (!pgOwner.is_verified_Owner) {
       console.log("Email not verified");
-      return res.status(403).json({ message: "Please verify your email first." });
+      return res
+        .status(403)
+        .json({ message: "Please verify your email first." });
     }
 
-    const loginMethod = 'local';
+    const loginMethod = "local";
     const name = `${pgOwner.firstName} ${pgOwner.lastName}`;
 
     // Generate JWT Tokens
     const accessToken = jwt.sign(
-      { id: pgOwner._id, name, email: pgOwner.email, type: "owner", loginMethod },
+      {
+        id: pgOwner._id,
+        name,
+        email: pgOwner.email,
+        type: "owner",
+        loginMethod,
+      },
       JWT_SECRET,
       { expiresIn: "1h" }
     );
 
     const refreshToken = jwt.sign(
-      { id: pgOwner._id, name, email: pgOwner.email, type: "owner", loginMethod },
+      {
+        id: pgOwner._id,
+        name,
+        email: pgOwner.email,
+        type: "owner",
+        loginMethod,
+      },
       JWT_REFRESH_SECRET,
       { expiresIn: "10d" }
     );
@@ -424,7 +465,7 @@ exports.loginHandlerOwner = async (req, res) => {
     // Save Refresh Token with Device Info in the Database
     pgOwner.refreshTokens.push({
       token: refreshToken,
-      device:device,
+      device: device,
       createdAt: new Date(),
     });
 
@@ -442,9 +483,3 @@ exports.loginHandlerOwner = async (req, res) => {
     res.status(500).json({ message: "Server error." });
   }
 };
-
-
-
-
-
-

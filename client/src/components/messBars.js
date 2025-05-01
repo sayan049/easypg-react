@@ -654,9 +654,9 @@ function MessBars({
           limit: 5,
         },
       });
-
-      const filteredData = Array.isArray(res.data)
-        ? res.data.filter((owner) => {
+      const totalCount = res.data.total || 0;
+      const filteredData = Array.isArray(res.data.data)
+        ? res.data.data.filter((owner) => {
             const facilitiesArray = Array.isArray(owner.facility)
               ? owner.facility.flatMap((f) =>
                   f.split(",").map((item) => item.trim().toLowerCase())
@@ -684,9 +684,10 @@ function MessBars({
       setMessData((prev) =>
         page === 1 ? filteredData : [...prev, ...filteredData]
       );
-      setPgCount((prev) =>
-        page === 1 ? filteredData.length : prev + filteredData.length
-      );
+      // setPgCount((prev) =>
+      //   page === 1 ? filteredData.length : prev + filteredData.length
+      // );
+      setPgCount(totalCount);
       setHasMore(true);
 
       if (
@@ -712,14 +713,14 @@ function MessBars({
     }
   }, [lastCardInView, isLoading, hasMore]);
 
-  useEffect(() => {
-    // Reset when filters change
-    setMessData([]);
-    setDistanceMap({});
-    setHasMore(true);
-    setPgCount(0);
-    setPage(1); // Reset to page 1 immediately
-  }, [checkFeatures, userLocation, finalGender]);
+useEffect(() => {
+  // Reset when filters change
+  setMessData([]);
+  setDistanceMap({});
+  setHasMore(true);
+  setPgCount(0);
+  setPage(1); // Reset to page 1 immediately
+}, [checkFeatures, userLocation, finalGender]);
   
 
   useEffect(() => {
