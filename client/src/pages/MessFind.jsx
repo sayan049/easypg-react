@@ -237,7 +237,11 @@ const MessFind = () => {
     if (location.state?.userLocation) {
       setSelectedLocation(location.state.userLocation);
     }
-  }, [userLocation, finalGender, gender, checkFeatures]);
+    if (location.state?.item) {
+      setItem(location.state.item);
+    }
+  }, []);
+  // [userLocation, finalGender, gender, checkFeatures]
 
   const amenities = [
     {
