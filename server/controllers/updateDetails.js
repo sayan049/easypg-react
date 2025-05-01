@@ -289,7 +289,7 @@ exports.updateDetails = async (req, res) => {
       updatedUser.messPhoto = [...existingUrls, ...newPhotos];
       
     } else {
-      return res.status(400).json({ error: "Invalid user type" });
+      return res.status(400).json({ message: "Invalid user type" });
     }
 
     // Save updated user data
@@ -303,7 +303,7 @@ exports.updateDetails = async (req, res) => {
   } catch (error) {
     console.error("Error updating details:", error);
     res.status(500).json({
-      error: "An error occurred while updating details",
+      message: "An error occurred while updating details",
       details: error.message
     });
   }
