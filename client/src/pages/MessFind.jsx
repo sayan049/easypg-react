@@ -414,21 +414,28 @@ const MessFind = () => {
               value={searchQuery}
               onChange={handleInputChange}
               onKeyDown={(e) => {
-                // if (e.key === "Enter") {
-                //   if (!selectedLocation) return alert("Pick suggestion!");
-                //   setSuggestions([]);
+                if (e.key === "Enter") {
+                  if (!selectedLocation) return alert("Pick suggestion!");
+                  setSuggestions([]);
+                }
+                // if (suggestions.length > 0) {
+                //   handleSuggestionClick(suggestions[0]); // auto-pick first suggestion
+                // } else {
+                //   toast.error("Pick a valid location from suggestions");
                 // }
+              }}
+            />
+
+            <FaSearch
+              className="w-5 h-5 text-gray-400 cursor-pointer"
+              // onClick={performSearch}
+              onClick={(e) => {
                 if (suggestions.length > 0) {
                   handleSuggestionClick(suggestions[0]); // auto-pick first suggestion
                 } else {
                   toast.error("Pick a valid location from suggestions");
                 }
               }}
-            />
-
-            <FaSearch
-              className="w-5 h-5 text-gray-400 cursor-pointer"
-              onClick={performSearch}
             />
 
             {/* Suggestions Dropdown */}
