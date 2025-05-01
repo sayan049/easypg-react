@@ -450,10 +450,11 @@ function NewDashboard() {
   const [userDetails, setUserDetails] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [stats, setStats] = useState({ upcoming: 0, active: 0, past: 0 });
+  const [stats, setStats] = useState({ upcoming: 0, active: 0, past: 0,pending:0 });
   const [currentStay, setCurrentStay] = useState(null);
   const [upcomingStay, setUpcomingStay] = useState(null);
   const [pastStay, setPastStay] = useState(null);
+  const [pendingStay, setPendingStay] = useState(null);
   const [daysRemaining, setDaysRemaining] = useState(0);
   const [totalAmountConfirmed, setTotalAmountConfirmed] = useState(0);
   const [maintenanceHistory, setMaintenanceHistory] = useState([]);
@@ -498,11 +499,14 @@ function NewDashboard() {
             upcoming: response.data.stats.upcoming,
             active: response.data.stats.current,
             past: response.data.stats.past,
+            pending: response.data.stats.pending,
+
           });
 
           setCurrentStay(response.data.currentStays || []);
           setUpcomingStay(response.data.upcomingStays || []);
           setPastStay(response.data.pastStays || []);
+          setPendingStay(response.data.pendingStays || []);
           setDaysRemaining(response.data.daysRemaining || 0);
           setTotalAmountConfirmed(response.data.totalAmountConfirmed || 0);
         }
@@ -558,6 +562,7 @@ function NewDashboard() {
             currentStay={currentStay}
             upcomingStay={upcomingStay}
             pastStay={pastStay}
+            pendingStay={pendingStay}
             stats={stats}
             daysRemaining={daysRemaining}
             totalAmountConfirmed={totalAmountConfirmed}

@@ -692,7 +692,9 @@ exports.getOwnerBookings = async (req, res) => {
         let endDate = null;
         if (startDate && typeof duration === "number") {
           endDate = new Date(
-            new Date(startDate).setMonth(new Date(startDate).getMonth() + duration)
+            new Date(startDate).setMonth(
+              new Date(startDate).getMonth() + duration
+            )
           );
         }
 
@@ -773,7 +775,9 @@ exports.getAllOwnerBookings = async (req, res) => {
         let endDate = null;
         if (startDate && typeof duration === "number") {
           endDate = new Date(
-            new Date(startDate).setMonth(new Date(startDate).getMonth() + duration)
+            new Date(startDate).setMonth(
+              new Date(startDate).getMonth() + duration
+            )
           );
         }
 
@@ -805,8 +809,6 @@ exports.getAllOwnerBookings = async (req, res) => {
     });
   }
 };
-
-
 
 // Get user bookings
 // const mongoose = require('mongoose');
@@ -866,6 +868,8 @@ exports.getUserBookings = async (req, res) => {
         } else if (endDate < now) {
           bookingType = "past";
         }
+      } else if (booking.status === "pending") {
+        bookingType = "pending";
       }
 
       return {
@@ -887,6 +891,9 @@ exports.getUserBookings = async (req, res) => {
       (b) => b.bookingType === "upcoming"
     );
     const pastStays = processedBookings.filter((b) => b.bookingType === "past");
+    const pendingStays = processedBookings.filter(
+      (b) => b.bookingType === "pending"
+    );
 
     // Calculate days remaining for current stays (taking the earliest ending one)
     let daysRemaining = 0;
@@ -912,6 +919,7 @@ exports.getUserBookings = async (req, res) => {
       upcoming: upcomingStays.length,
       current: currentStays.length,
       past: pastStays.length,
+      pending: pendingStays.length,
       total: processedBookings.length,
     };
 
@@ -920,6 +928,7 @@ exports.getUserBookings = async (req, res) => {
       currentStays,
       upcomingStays,
       pastStays,
+      pendingStays,
       daysRemaining,
       totalAmountConfirmed,
       bookings: processedBookings,
@@ -1122,15 +1131,16 @@ exports.handleBookingApproval = async (req, res) => {
 };
 //maintenance request from user
 exports.maintenanceRequestHandler = async (req, res) => {
-  const userId=req.user.id;
+  const userId = req.user.id;
 
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
   const { studentId, bookingId, pgOwnerId, title, description } = req.body;
-  if(userId !== req.body.studentId){
-    return res.status(403).json({ message: "Unauthorized" }); }
+  if (userId !== req.body.studentId) {
+    return res.status(403).json({ message: "Unauthorized" });
+  }
 
   // Validation
   if (!studentId || !bookingId || !pgOwnerId || !title || !description) {
@@ -1146,11 +1156,9 @@ exports.maintenanceRequestHandler = async (req, res) => {
       const secondsLeft = Math.ceil(
         (RATE_LIMIT_DURATION - (now - lastRequestTime)) / 1000
       );
-      return res
-        .status(429)
-        .json({
-          message: `Please wait ${secondsLeft}s before submitting again.`,
-        });
+      return res.status(429).json({
+        message: `Please wait ${secondsLeft}s before submitting again.`,
+      });
     }
 
     // Update rate limiter
@@ -1182,62 +1190,57 @@ exports.maintenanceRequestHandler = async (req, res) => {
 exports.getRequestsByBookings = async (req, res) => {
   try {
     const { bookingIds } = req.query;
-    
+
     if (!bookingIds) {
       return res.status(400).json({
         success: false,
-        message: 'Booking IDs are required'
+        message: "Booking IDs are required",
       });
     }
 
-    const idsArray = bookingIds.split(',');
+    const idsArray = bookingIds.split(",");
 
     const requests = await MaintenanceRequest.find({
-      booking: { $in: idsArray }
+      booking: { $in: idsArray },
     })
-    .populate({
-      path: 'student',
-      select: 'firstName lastName email',
-      
-    })
-    .populate("booking", "_id ")
-    .sort({ createdAt: -1 }) // Newest first
-    .lean(); // Better performance
+      .populate({
+        path: "student",
+        select: "firstName lastName email",
+      })
+      .populate("booking", "_id ")
+      .sort({ createdAt: -1 }) // Newest first
+      .lean(); // Better performance
 
     // Format the response with only the required fields
-    const formattedRequests = requests.map(request => ({
+    const formattedRequests = requests.map((request) => ({
       _id: request._id,
       title: request.title,
       description: request.description,
       status: request.status,
       student: {
-        name: request.student ? 
-              `${request.student.firstName} ${request.student.lastName}` : 
-              'Unknown Student',
-        email: request.student?.email || ''
+        name: request.student
+          ? `${request.student.firstName} ${request.student.lastName}`
+          : "Unknown Student",
+        email: request.student?.email || "",
       },
       booking: request.booking?._id || null, // <-- only _id here, not object
-      createdAt: request.createdAt // Optional: include if you need timestamps
+      createdAt: request.createdAt, // Optional: include if you need timestamps
     }));
 
     res.status(200).json({
       success: true,
       count: formattedRequests.length,
-      requests: formattedRequests
+      requests: formattedRequests,
     });
-
   } catch (error) {
-    console.error('Error fetching maintenance requests:', error);
+    console.error("Error fetching maintenance requests:", error);
     res.status(500).json({
       success: false,
-      message: 'Server error while fetching maintenance requests',
-      error: error.message
+      message: "Server error while fetching maintenance requests",
+      error: error.message,
     });
   }
 };
-
-
-
 
 // Controller for updating the maintenance request status
 exports.updateMaintenanceStatus = async (req, res) => {
@@ -1277,13 +1280,15 @@ exports.updateMaintenanceStatus = async (req, res) => {
 
     await maintenanceRequest.save();
 
-    return res.status(200).json({ 
-      message: `Maintenance request ${status}`, 
-      request: maintenanceRequest 
+    return res.status(200).json({
+      message: `Maintenance request ${status}`,
+      request: maintenanceRequest,
     });
   } catch (error) {
     console.error("Error updating maintenance request:", error);
-    return res.status(500).json({ message: "Failed to update maintenance request status" });
+    return res
+      .status(500)
+      .json({ message: "Failed to update maintenance request status" });
   }
 };
 //get maintenance history for users
@@ -1292,40 +1297,46 @@ exports.getMaintenanceHistory = async (req, res) => {
     const { userId, type } = req.query;
     console.log(userId, type);
     if (!userId || type !== "student") {
-      return res.status(400).json({ success: false, message: "Invalid request body." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid request body." });
     }
 
     // Verify that userId from body matches the one from JWT
     if (req.user.id !== userId) {
-      return res.status(403).json({ success: false, message: "Unauthorized access." });
+      return res
+        .status(403)
+        .json({ success: false, message: "Unauthorized access." });
     }
 
     // Fetch maintenance requests made by the student
     const requests = await MaintenanceRequest.find({ student: userId })
-    .select("title description status response cancellationReason createdAt booking pgOwner") // only select what's needed
-    .populate({
-      path: "booking",
-      select: "room", // only bring in the room from booking
-      
-    })
-    .populate({
-      path: "pgOwner",
-      select: "firstName lastName email messName", // only bring required fields from owner
-    });
-  
-  const formatted = requests.map((req) => ({
-    title: req.title,
-    description: req.description,
-    status: req.status,
-    response: req.response,
-    cancellationReason: req.cancellationReason,
-    createdAt: req.createdAt,
-    roomNo: req.booking?.room || "N/A",
-    ownerEmail: req.pgOwner?.email || "N/A",
-    messName: req.pgOwner?.messName || "N/A",
-    name: req.pgOwner ? `${req.pgOwner.firstName} ${req.pgOwner.lastName}` : "Unknown Owner",
-  }));
-  
+      .select(
+        "title description status response cancellationReason createdAt booking pgOwner"
+      ) // only select what's needed
+      .populate({
+        path: "booking",
+        select: "room", // only bring in the room from booking
+      })
+      .populate({
+        path: "pgOwner",
+        select: "firstName lastName email messName", // only bring required fields from owner
+      });
+
+    const formatted = requests.map((req) => ({
+      title: req.title,
+      description: req.description,
+      status: req.status,
+      response: req.response,
+      cancellationReason: req.cancellationReason,
+      createdAt: req.createdAt,
+      roomNo: req.booking?.room || "N/A",
+      ownerEmail: req.pgOwner?.email || "N/A",
+      messName: req.pgOwner?.messName || "N/A",
+      name: req.pgOwner
+        ? `${req.pgOwner.firstName} ${req.pgOwner.lastName}`
+        : "Unknown Owner",
+    }));
 
     return res.status(200).json({ success: true, data: formatted });
   } catch (err) {
@@ -1333,7 +1344,6 @@ exports.getMaintenanceHistory = async (req, res) => {
     return res.status(500).json({ success: false, message: "Server error." });
   }
 };
-
 
 // Cancel booking (BED RESTORATION ONLY FOR CONFIRMED BOOKINGS)
 exports.cancelBooking = async (req, res) => {
