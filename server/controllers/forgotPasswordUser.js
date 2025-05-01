@@ -7,7 +7,7 @@ const USER_EMAIL = process.env.USER_EMAIL;
 const USER_PASSWORD = process.env.USER_PASSWORD;
 const JWT_SECRET = process.env.JWT_SECRET;
 const frontendUrl = process.env.CLIENT_URL || 'http://localhost:3000';
-
+console.log(frontendUrl, "frontendUrl");
 const forgotPasswordUser = async (req, res) => {
   const { email } = req.body;
 
