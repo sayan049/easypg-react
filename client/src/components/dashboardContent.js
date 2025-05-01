@@ -751,6 +751,7 @@ const DashboardContent = ({
   const [cancelReason, setCancelReason] = useState("");
   const handleCancelBooking = async (bookingId) => {
     try {
+      console.log("Cancel Booking ID:", bookingId);
       const token = localStorage.getItem("accessToken");
       const res = await axios.post(
         `${baseurl}/auth/bookings/${bookingId}/cancel`,
