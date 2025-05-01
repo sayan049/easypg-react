@@ -194,8 +194,11 @@ const MessFind = () => {
       lng: suggestion.lon,
     });
     //  setSearchQuery(suggestion.display_name);
-    performSearch();
+    // performSearch();
     setSuggestions([]);
+    navigate("/MessFind", {
+      state: { userLocation: coords, item: suggestion.display_name },
+    });
   };
   // const handleSuggestionClick = (suggestion) => {
   //   const newLocation = {
@@ -383,14 +386,30 @@ const MessFind = () => {
         <div className="flex flex-row md:flex-row justify-between items-center bg-white p-4  rounded-md relative">
           {/* Search Bar */}
           <div className="flex items-center gap-4 bg-white p-3 rounded-lg border border-gray-300 shadow-sm hover:border-blue-500 transition-colors w-full relative">
-            <input
+            {/* <input
               type="text"
               placeholder="Search mess by location"
               className="w-full p-1 text-base outline-none placeholder-gray-400"
               value={searchQuery}
               onChange={handleInputChange}
               onKeyDown={(e) => e.key === "Enter" && performSearch()}
+            /> */}
+            <input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  if (!selectedLocation) return alert("Pick suggestion!");
+                  navigate("/MessFind", {
+                    state: {
+                      userLocation: selectedLocation,
+                      item: searchQuery,
+                    },
+                  });
+                }
+              }}
             />
+
             <FaSearch
               className="w-5 h-5 text-gray-400 cursor-pointer"
               onClick={performSearch}
