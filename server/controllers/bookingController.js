@@ -1461,7 +1461,7 @@ exports.cancelBooking = async (req, res) => {
 
     await Promise.all([
       sendNotification(
-        booking.student,
+        booking.student._id,
         "User",
         "Booking Cancelled",
         msg,
@@ -1469,7 +1469,7 @@ exports.cancelBooking = async (req, res) => {
         booking._id
       ),
       sendNotification(
-        booking.pgOwner,
+        booking.pgOwner._id,
         "PgOwner",
         "Booking Cancelled",
         `Booking for ${booking.room} has been cancelled by ${fullname}`,
