@@ -397,7 +397,7 @@ const MessFind = () => {
               placeholder="Search mess by location"
               className="w-full p-1 text-base outline-none placeholder-gray-400"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleInputChange}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   if (!selectedLocation) return alert("Pick suggestion!");
