@@ -82,7 +82,7 @@ const HomePage = () => {
     setSuggestions([]); // Clear suggestions
 
     navigate("/MessFind", {
-      state: { userLocation:  { coords}, item: suggestion.display_name  },
+      state: { userLocation:   coords, item: suggestion.display_name  },
     });
   };
 
