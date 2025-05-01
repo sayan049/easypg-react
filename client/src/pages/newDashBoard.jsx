@@ -459,7 +459,7 @@ function NewDashboard() {
   const [totalAmountConfirmed, setTotalAmountConfirmed] = useState(0);
   const [maintenanceHistory, setMaintenanceHistory] = useState([]);
 
-  const { userName, user, owner, type } = useAuth();
+  const { userName, user, owner, type , handleLogout } = useAuth();
 
   const fetchAllData = async () => {
     try {
@@ -537,6 +537,8 @@ function NewDashboard() {
       setLoading(false);
     }
   };
+
+  
 
   useEffect(() => {
     if (user?.id) {
