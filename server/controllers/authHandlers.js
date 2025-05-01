@@ -338,7 +338,7 @@ exports.signupHandlerOwner = async (req, res) => {
 
 exports.findMess = async (req, res) => {
   try {
-    const { lat, lng } = req.query;
+    const { lat, lng, page = 1, limit = 5 } = req.query;
 
     // Validate latitude and longitude
     if (!lat || !lng) {
@@ -347,6 +347,9 @@ exports.findMess = async (req, res) => {
 
     const latitude = parseFloat(lat);
     const longitude = parseFloat(lng);
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
 
     console.log(" Latitude:", latitude, "Longitude:", longitude);
 
@@ -361,7 +364,7 @@ exports.findMess = async (req, res) => {
     console.log("🗺 Neighboring GeoHashes:", neighbors);
 
     // Query MongoDB using correct geohashes
-    const nearbyPGs = await PgOwner.find({ geoHash: { $in: neighbors } });
+    const nearbyPGs = await PgOwner.find({ geoHash: { $in: neighbors } }).skip(skip).limit(limitNum);
 
 
 
