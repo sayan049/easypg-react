@@ -147,7 +147,7 @@ const MessFind = () => {
   const [price, setPrice] = useState(1500);
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState(userLocation);
   const [checkFeatures, setCheckFeatures] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
@@ -440,7 +440,7 @@ const MessFind = () => {
               <MessBars
                 checkFeatures={checkFeatures}
                 isChecked={isChecked}
-                userLocation={userLocation}
+                userLocation={selectedLocation}
                 coords={handleCoordinatesChange}
                 setPgCount={setPgCount}
                 finalGender={finalGender}
