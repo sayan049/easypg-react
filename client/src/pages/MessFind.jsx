@@ -7,6 +7,7 @@ import Map from "../components/map";
 import { FaSearch } from "react-icons/fa";
 import { LocationIqurl } from "../constant/urls";
 import { FaMale, FaFemale, FaUserFriends } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
 import {
   MdOutlineAccessTime,
   MdOutlineHome,
@@ -26,6 +27,7 @@ import {
   MdWater,
 } from "react-icons/md";
 import { set } from "ol/transform";
+import { toast } from "sonner";
 
 const FilterModal = ({
   isOpen,
@@ -41,6 +43,7 @@ const FilterModal = ({
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+      <ToastContainer position="top-center" toastClassName="!w-[300px]  mx-auto mt-4 sm:mt-0 "  />
       <div className="bg-white p-6 rounded shadow-lg w-3/4 max-w-md">
         <h3 className="font-medium text-lg mb-4">Select Your Need</h3>
         <div className="mb-6">
@@ -214,7 +217,8 @@ const MessFind = () => {
 
   const performSearch = () => {
     if (!selectedLocation) {
-      alert("Please select a valid location from suggestions!");
+      toast.error("Please select a valid location from suggestions!");
+     // alert("Please select a valid location from suggestions!");
       return;
     }
     navigate("/MessFind", {
@@ -407,12 +411,6 @@ const MessFind = () => {
                 if (e.key === "Enter") {
                   if (!selectedLocation) return alert("Pick suggestion!");
                   setSuggestions([]);
-                  // navigate("/MessFind", {
-                  //   state: {
-                  //     userLocation: selectedLocation,
-                  //     item: searchQuery,
-                  //   },
-                  // });
                 }
               }}
             />
