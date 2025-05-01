@@ -162,7 +162,7 @@ const HomePage = () => {
     }
   };
 
-  clickProfile = () => {
+ const  clickProfile = () => {
     setShowDropdown(false);
     if (IsAuthenticated) {
       navigate("/newDashboard");
