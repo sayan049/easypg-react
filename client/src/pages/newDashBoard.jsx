@@ -482,7 +482,7 @@ function NewDashboard() {
         const response = await axios.get(`${baseurl}/auth/bookings/user`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-
+        console.log("Bookings response:", response.data);
         if (response.data && response.data.success) {
           const now = new Date();
           const bookingsData = response.data.bookings || [];
