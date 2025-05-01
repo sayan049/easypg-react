@@ -29,7 +29,6 @@ import {
 } from "react-icons/md";
 import { set } from "ol/transform";
 
-
 const FilterModal = ({
   isOpen,
   onClose,
@@ -44,7 +43,10 @@ const FilterModal = ({
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-      <ToastContainer position="top-center" toastClassName="!w-[300px]  mx-auto mt-4 sm:mt-0 "  />
+      <ToastContainer
+        position="top-center"
+        toastClassName="!w-[300px]  mx-auto mt-4 sm:mt-0 "
+      />
       <div className="bg-white p-6 rounded shadow-lg w-3/4 max-w-md">
         <h3 className="font-medium text-lg mb-4">Select Your Need</h3>
         <div className="mb-6">
@@ -152,7 +154,9 @@ const MessFind = () => {
   const [item, setItem] = useState(location.state?.item || "");
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState(location.state?.userLocation || null);
+  const [selectedLocation, setSelectedLocation] = useState(
+    location.state?.userLocation || null
+  );
   const [checkFeatures, setCheckFeatures] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
@@ -171,7 +175,7 @@ const MessFind = () => {
   const handleInputChange = async (event) => {
     const query = event.target.value;
     setSearchQuery(query);
-   // setSelectedLocation(null);
+    // setSelectedLocation(null);
 
     if (query.length > 3) {
       clearTimeout(debounceTimeout);
@@ -220,7 +224,7 @@ const MessFind = () => {
   const performSearch = () => {
     if (!selectedLocation) {
       toast.error("Please select a valid location from suggestions!");
-     // alert("Please select a valid location from suggestions!");
+      // alert("Please select a valid location from suggestions!");
       return;
     }
     navigate("/MessFind", {
@@ -410,9 +414,14 @@ const MessFind = () => {
               value={searchQuery}
               onChange={handleInputChange}
               onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  if (!selectedLocation) return alert("Pick suggestion!");
-                  setSuggestions([]);
+                // if (e.key === "Enter") {
+                //   if (!selectedLocation) return alert("Pick suggestion!");
+                //   setSuggestions([]);
+                // }
+                if (suggestions.length > 0) {
+                  handleSuggestionClick(suggestions[0]); // auto-pick first suggestion
+                } else {
+                  toast.error("Pick a valid location from suggestions");
                 }
               }}
             />
