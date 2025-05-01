@@ -194,12 +194,9 @@ const MessFind = () => {
       lng: suggestion.lon,
     });
   //  setSearchQuery(suggestion.display_name);
- 
+  performSearch();
   setSuggestions([]);
-
-  setTimeout(() => {
-    performSearch();
-  }, 100);
+ 
   };
   // const handleSuggestionClick = (suggestion) => {
   //   const newLocation = {
