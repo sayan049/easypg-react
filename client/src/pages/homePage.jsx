@@ -75,7 +75,7 @@ const HomePage = () => {
     setSearchItem(suggestion.display_name);
     setSelectedLocation({
       lat: suggestion.lat,
-      lng: suggestion.lon,
+      lng: suggestion.lng,
     });
 
     setSuggestions([]); // Clear suggestions
