@@ -194,9 +194,9 @@ const MessFind = () => {
       lng: suggestion.lon,
     });
   //  setSearchQuery(suggestion.display_name);
- 
-  setSuggestions([]);
   performSearch();
+  setSuggestions([]);
+ 
   };
   // const handleSuggestionClick = (suggestion) => {
   //   const newLocation = {
