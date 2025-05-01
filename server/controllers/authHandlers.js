@@ -376,7 +376,7 @@ exports.findMess = async (req, res) => {
 
     console.log(" PGs Found:", nearbyPGs.length);
     // res.status(200).json(nearbyPGs);
-    res.status(200).json({ data: nearbyPGs, total });
+    res.status(200).json({ data: nearbyPGs });
   } catch (error) {
     console.error(" Error fetching PG owners:", error);
     res.status(500).json({ message: "Server error" });
