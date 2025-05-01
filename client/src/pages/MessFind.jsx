@@ -205,13 +205,12 @@ const MessFind = () => {
     const coords = { lat: suggestion.lat, lng: suggestion.lon };
     setSearchQuery(suggestion.display_name);
     setSelectedLocation(coords);
-    setItem(suggestion.display_name); 
+    setItem(suggestion.display_name);
     setSuggestions([]);
     // navigate("/MessFind", {
     //   state: { userLocation: coords, item: suggestion.display_name },
     // });
   };
-  
 
   const performSearch = () => {
     if (!selectedLocation) {
@@ -460,15 +459,17 @@ const MessFind = () => {
           </div>
           <div className="flex" style={{ height: "104%" }}>
             <div className="flex-1 overflow-y-auto ">
-              <MessBars
-                key={`${selectedLocation.lat}-${selectedLocation.lng}`}
-                checkFeatures={checkFeatures}
-                isChecked={isChecked}
-                userLocation={selectedLocation}
-                coords={handleCoordinatesChange}
-                setPgCount={setPgCount}
-                finalGender={finalGender}
-              />
+              {selectedLocation && (
+                <MessBars
+                  key={`${selectedLocation.lat}-${selectedLocation.lng}`}
+                  checkFeatures={checkFeatures}
+                  isChecked={isChecked}
+                  userLocation={selectedLocation}
+                  coords={handleCoordinatesChange}
+                  setPgCount={setPgCount}
+                  finalGender={finalGender}
+                />
+              )}
             </div>
             {isChecked && (
               <div className="w-1/2 pl-4">
