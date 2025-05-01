@@ -187,31 +187,29 @@ const MessFind = () => {
     }
   };
 
-  const handleSuggestionClick = (suggestion) => {
-    setSearchQuery(suggestion.display_name);
-    setSelectedLocation({
-      lat: suggestion.lat,
-      lng: suggestion.lon,
-    });
-    //  setSearchQuery(suggestion.display_name);
-    // performSearch();
-    setSuggestions([]);
-    navigate("/MessFind", {
-      state: { userLocation: selectedLocation, item: suggestion.display_name },
-    });
-  };
   // const handleSuggestionClick = (suggestion) => {
-  //   const newLocation = {
+  //   setSearchQuery(suggestion.display_name);
+  //   setSelectedLocation({
   //     lat: suggestion.lat,
   //     lng: suggestion.lon,
-  //   };
-
-  //   setSearchQuery(suggestion.display_name);
-  //   setSelectedLocation(newLocation);
+  //   });
+  //   //  setSearchQuery(suggestion.display_name);
+  //   // performSearch();
   //   setSuggestions([]);
-
-  //   performSearch(newLocation); // use the correct new location
+  //   navigate("/MessFind", {
+  //     state: { userLocation: selectedLocation, item: suggestion.display_name },
+  //   });
   // };
+  const handleSuggestionClick = (suggestion) => {
+    const coords = { lat: suggestion.lat, lng: suggestion.lon };
+    setSearchQuery(suggestion.display_name);
+    setSelectedLocation(coords);
+    setSuggestions([]);
+    navigate("/MessFind", {
+      state: { userLocation: coords, item: suggestion.display_name },
+    });
+  };
+  
 
   const performSearch = () => {
     if (!selectedLocation) {
@@ -395,6 +393,9 @@ const MessFind = () => {
               onKeyDown={(e) => e.key === "Enter" && performSearch()}
             /> */}
             <input
+              type="text"
+              placeholder="Search mess by location"
+              className="w-full p-1 text-base outline-none placeholder-gray-400"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => {
