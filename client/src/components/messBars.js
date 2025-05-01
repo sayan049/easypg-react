@@ -725,7 +725,7 @@ useEffect(() => {
 
   useEffect(() => {
     fetchData();
-  }, [page]);
+  }, [page,userLocation]);
 
   useEffect(() => {
     if (!messData.length || !userLocation) return;

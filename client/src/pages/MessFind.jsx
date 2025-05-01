@@ -142,12 +142,13 @@ const MessFind = () => {
   const navigate = useNavigate();
 
   const userLocation = location.state?.userLocation || null;
-  const item = location.state?.item || null;
+  // const item = location.state?.item || null;
 
   const [price, setPrice] = useState(1500);
+  const [item, setItem] = useState(location.state?.item || "");
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState(location.state?.userLocation || null);
   const [checkFeatures, setCheckFeatures] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
@@ -187,29 +188,29 @@ const MessFind = () => {
     }
   };
 
-  const handleSuggestionClick = (suggestion) => {
-    setSearchQuery(suggestion.display_name);
-    setSelectedLocation({
-      lat: suggestion.lat,
-      lng: suggestion.lon,
-    });
-  //  setSearchQuery(suggestion.display_name);
-  performSearch();
-  setSuggestions([]);
- 
-  };
   // const handleSuggestionClick = (suggestion) => {
-  //   const newLocation = {
+  //   setSearchQuery(suggestion.display_name);
+  //   setSelectedLocation({
   //     lat: suggestion.lat,
   //     lng: suggestion.lon,
-  //   };
-
-  //   setSearchQuery(suggestion.display_name);
-  //   setSelectedLocation(newLocation);
+  //   });
+  //   //  setSearchQuery(suggestion.display_name);
+  //   // performSearch();
   //   setSuggestions([]);
-
-  //   performSearch(newLocation); // use the correct new location
+  //   navigate("/MessFind", {
+  //     state: { userLocation: selectedLocation, item: suggestion.display_name },
+  //   });
   // };
+  const handleSuggestionClick = (suggestion) => {
+    const coords = { lat: suggestion.lat, lng: suggestion.lon };
+    setSearchQuery(suggestion.display_name);
+    setSelectedLocation(coords);
+    setItem(suggestion.display_name);
+    setSuggestions([]);
+    // navigate("/MessFind", {
+    //   state: { userLocation: coords, item: suggestion.display_name },
+    // });
+  };
 
   const performSearch = () => {
     if (!selectedLocation) {
@@ -219,9 +220,15 @@ const MessFind = () => {
     navigate("/MessFind", {
       state: { userLocation: selectedLocation, item: searchQuery },
     });
-   // setSearchQuery("");
+    // setSearchQuery("");
   };
 
+  useEffect(() => {
+    if (location.state?.userLocation) {
+      window.scrollTo(0, 0); // optional scroll to top
+      setSelectedLocation(location.state.userLocation);
+    }
+  }, [location.key]); // location.key changes on navigation
 
   useEffect(() => {
     if (userLocation) {
@@ -230,7 +237,11 @@ const MessFind = () => {
     if (location.state?.userLocation) {
       setSelectedLocation(location.state.userLocation);
     }
-  }, [userLocation, finalGender, gender, checkFeatures,location.state]);
+    if (location.state?.item) {
+      setItem(location.state.item);
+    }
+  }, []);
+  // [userLocation, finalGender, gender, checkFeatures]
 
   const amenities = [
     {
@@ -378,14 +389,34 @@ const MessFind = () => {
         <div className="flex flex-row md:flex-row justify-between items-center bg-white p-4  rounded-md relative">
           {/* Search Bar */}
           <div className="flex items-center gap-4 bg-white p-3 rounded-lg border border-gray-300 shadow-sm hover:border-blue-500 transition-colors w-full relative">
-            <input
+            {/* <input
               type="text"
               placeholder="Search mess by location"
               className="w-full p-1 text-base outline-none placeholder-gray-400"
               value={searchQuery}
               onChange={handleInputChange}
               onKeyDown={(e) => e.key === "Enter" && performSearch()}
+            /> */}
+            <input
+              type="text"
+              placeholder="Search mess by location"
+              className="w-full p-1 text-base outline-none placeholder-gray-400"
+              value={searchQuery}
+              onChange={handleInputChange}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  if (!selectedLocation) return alert("Pick suggestion!");
+                  setSuggestions([]);
+                  // navigate("/MessFind", {
+                  //   state: {
+                  //     userLocation: selectedLocation,
+                  //     item: searchQuery,
+                  //   },
+                  // });
+                }
+              }}
             />
+
             <FaSearch
               className="w-5 h-5 text-gray-400 cursor-pointer"
               onClick={performSearch}
@@ -432,14 +463,17 @@ const MessFind = () => {
           </div>
           <div className="flex" style={{ height: "104%" }}>
             <div className="flex-1 overflow-y-auto ">
-              <MessBars
-                checkFeatures={checkFeatures}
-                isChecked={isChecked}
-                userLocation={userLocation}
-                coords={handleCoordinatesChange}
-                setPgCount={setPgCount}
-                finalGender={finalGender}
-              />
+              {selectedLocation && (
+                <MessBars
+                  key={`${selectedLocation.lat}-${selectedLocation.lng}`}
+                  checkFeatures={checkFeatures}
+                  isChecked={isChecked}
+                  userLocation={selectedLocation}
+                  coords={handleCoordinatesChange}
+                  setPgCount={setPgCount}
+                  finalGender={finalGender}
+                />
+              )}
             </div>
             {isChecked && (
               <div className="w-1/2 pl-4">
