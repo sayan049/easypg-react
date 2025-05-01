@@ -1348,98 +1348,142 @@ exports.getMaintenanceHistory = async (req, res) => {
 // Cancel booking (BED RESTORATION ONLY FOR CONFIRMED BOOKINGS)
 exports.cancelBooking = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { cancellationReason } = req.body;
-
-    const booking = await Booking.findById(id).populate("student pgOwner");
+    const bookingId = req.params.bookingId;
+    const userId = req.user.id;
+    const cancellationReason = req.body.reason || null;
+    const userName = await User.findById(userId);
+    if (!userName) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+    const fullname= `${userName.firstName} ${userName.lastName}`;
+    // 1. Fetch booking
+    const booking = await Booking.findById(bookingId);
     if (!booking) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Booking not found" });
+      return res.status(404).json({ success: false, message: "Booking not found" });
     }
 
-    if (!["pending", "confirmed"].includes(booking.status)) {
-      return res.status(400).json({
-        success: false,
-        message: `Booking cannot be cancelled in ${booking.status} status`,
-      });
+    // 2. Validate ownership
+    if (booking.student.toString() !== userId) {
+      return res.status(403).json({ success: false, message: "Unauthorized" });
     }
 
-    // Restore beds only if booking was confirmed
+    const now = new Date();
+    const startDate = new Date(booking.period.startDate);
+    const endDate = new Date(startDate);
+    endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
+
+    // 3. Pending booking → cancel directly
+    if (booking.status === "pending") {
+      booking.status = "cancelled";
+      await booking.save();
+   
+      // Notifications
+      const msg = cancellationReason
+        ? `You cancelled your booking for ${booking.room}.Reason: ${cancellationReason}`
+        : `You cancelled your booking for ${booking.room}`;
+
+      await Promise.all([
+        sendNotification(
+          booking.student,
+          "User",
+          "Booking Cancelled",
+          msg,
+          NOTIFICATION_TYPES.BOOKING,
+          booking._id
+        ),
+        sendNotification(
+          booking.pgOwner,
+          "PgOwner",
+          "Booking Cancelled",
+          `Booking for ${booking.room} has been cancelled by ${fullname}`,
+          NOTIFICATION_TYPES.BOOKING,
+          booking._id
+        ),
+      ]);
+
+      return res.json({ success: true, message: "Pending booking cancelled successfully." });
+    }
+
+    // 4. Confirmed booking → check timing
     if (booking.status === "confirmed") {
-      const owner = await PgOwner.findById(booking.pgOwner._id);
-      const room = owner.roomInfo.find((r) => r.room === booking.room);
+      const hoursDiff = (startDate - now) / (1000 * 60 * 60);
 
-      if (room) {
-        const currentBeds = bedCountToNumber[room.bedContains] || 0;
-        const newBeds = currentBeds + booking.bedsBooked;
-        room.bedContains = numberToBedCount[newBeds] || "one";
-        room.roomAvailable = newBeds > 0;
-        await owner.save();
+      // Current stays can't be cancelled
+      if (now >= startDate && now <= endDate) {
+        return res.status(400).json({
+          success: false,
+          message: "Cannot cancel a booking that has already started.",
+        });
       }
-    }
 
-    // Update booking status
-    booking.status = "cancelled";
-    booking.cancellationReason = cancellationReason;
-    booking.cancelledAt = new Date();
+      // Too late to cancel
+      if (startDate > now && hoursDiff <= 24) {
+        return res.status(400).json({
+          success: false,
+          message: "Can only cancel more than 24 hours before check-in.",
+        });
+      }
 
-    if (booking.payment.status === "paid") {
-      booking.payment.status = "refund_pending";
-    }
+      // 5. Restore beds
+      const owner = await PgOwner.findById(booking.pgOwner);
+      if (!owner) {
+        return res.status(404).json({ success: false, message: "PG Owner not found" });
+      }
 
-    await booking.save();
+      const room = owner.roomInfo.find((r) => r.room === booking.room);
+      if (!room) {
+        return res.status(400).json({ success: false, message: "Room not found in owner's data" });
+      }
 
-    // Send notifications
-    const notificationMessage = cancellationReason
-      ? `Your booking has been cancelled. Reason: ${cancellationReason}`
-      : "Your booking has been cancelled";
+      const currentBeds = bedCountToNumber[room.bedContains] || 0;
+      const restoredBeds = currentBeds + booking.bedsBooked;
+      if (restoredBeds > 5) {
+        return res.status(400).json({ success: false, message: "Restored beds exceed room capacity." });
+      }
+
+      room.bedContains = numberToBedCount[restoredBeds];
+      room.roomAvailable = true;
+      await owner.save();
+
+      // 6. Cancel and notify
+      booking.status = "cancelled";
+      await booking.save();
+
+      const msg = cancellationReason
+      ? `You cancelled your booking for ${booking.room}.Reason: ${cancellationReason}`
+      : `You cancelled your booking for ${booking.room}`;
 
     await Promise.all([
       sendNotification(
-        booking.student._id,
+        booking.student,
         "User",
         "Booking Cancelled",
-        notificationMessage,
+        msg,
         NOTIFICATION_TYPES.BOOKING,
         booking._id
       ),
       sendNotification(
-        booking.pgOwner._id,
-        "Pgowner",
+        booking.pgOwner,
+        "PgOwner",
         "Booking Cancelled",
-        `Booking for ${booking.room} has been cancelled`,
+        `Booking for ${booking.room} has been cancelled by ${fullname}`,
         NOTIFICATION_TYPES.BOOKING,
         booking._id
       ),
     ]);
 
-    // Socket notifications
-    const cancellationPayload = {
-      _id: booking._id,
-      message: notificationMessage,
-      cancellationReason,
-      status: "cancelled",
-    };
+      return res.json({ success: true, message: "Upcoming booking cancelled and beds restored." });
+    }
 
-    // SocketManager.notifyStudentBookingStatus(booking.student._id, cancellationPayload);
-    // SocketManager.notifyOwnerBookingUpdate(booking.pgOwner._id, {
-    //   ...cancellationPayload,
-    //   room: booking.room,
-    //   studentId: booking.student._id
-    // });
+    // 7. Past bookings or invalid status
+    return res.status(400).json({ success: false, message: "This booking cannot be cancelled." });
 
-    res.status(200).json({
-      success: true,
-      message: "Booking cancelled successfully",
-      booking: booking.toObject(),
-    });
   } catch (error) {
-    console.error("Booking cancellation error:", error);
+    console.error("Cancel Booking Error:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to cancel booking",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+      message: "Server error while cancelling booking.",
+      error: error.message,
     });
   }
 };

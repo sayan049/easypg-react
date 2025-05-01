@@ -227,7 +227,7 @@ function LoginOwner() {
         alert("Password successfully reset! Redirecting to login...");
         //toast.success("Password successfully reset! Redirecting to login...");
         setResetToken(null);
-        navigate("/LoginUser"); // Redirect to login page
+        navigate("/LoginOwner"); // Redirect to login page
       } else {
         setResetPasswordError("Error resetting password. Please try again....");
         toast.error("Error resetting password. Please try again.");

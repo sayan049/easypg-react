@@ -712,7 +712,7 @@ import {
   FaSwimmingPool,
   FaFemale,
   FaMale,
-  FaUsers
+  FaUsers,
 } from "react-icons/fa";
 import { FiAlertCircle } from "react-icons/fi";
 import { toast, ToastContainer } from "react-toastify";
@@ -747,6 +747,27 @@ const DashboardContent = ({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showCancelInput, setShowCancelInput] = useState(null); // bookingId
+  const [cancelReason, setCancelReason] = useState("");
+  const handleCancelBooking = async (bookingId) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const res = await axios.post(
+        `${baseurl}/bookings/${bookingId}/cancel`,
+        { reason: cancelReason },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      toast.success(res.data.message || "Booking cancelled successfully");
+      setShowCancelInput(null);
+      setCancelReason("");
+      window.location.reload(); // or refetch data
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to cancel booking");
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -907,7 +928,7 @@ const DashboardContent = ({
           )}
         </div>
       </div>
-        {/* pending stay section */}
+      {/* pending stay section */}
       {pendingStay.length > 0 && (
         <div className="mb-8">
           <h2 className="text-lg font-semibold mb-4 text-gray-700">
@@ -1090,9 +1111,42 @@ const DashboardContent = ({
                 {/* Action Buttons */}
                 <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-between items-center">
                   <div className="flex gap-3">
-                    <button className="px-4 py-2 text-sm border border-red-500 text-red-500 rounded-md hover:bg-red-50">
-                      Cancel Booking
-                    </button>
+                    {showCancelInput === stay._id ? (
+                      <div className="space-y-2">
+                        <textarea
+                          rows="3"
+                          className="w-full border rounded p-2 text-sm"
+                          placeholder="Optional: Reason for cancellation"
+                          value={cancelReason}
+                          onChange={(e) => setCancelReason(e.target.value)}
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleCancelBooking(stay._id)}
+                            className="px-3 py-1 bg-red-500 text-white rounded text-sm"
+                          >
+                            Submit Cancel
+                          </button>
+                          <button
+                            onClick={() => {
+                              setShowCancelInput(null);
+                              setCancelReason("");
+                            }}
+                            className="px-3 py-1 border rounded text-sm"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setShowCancelInput(stay._id)}
+                        className="px-4 py-2 text-sm border border-red-500 text-red-500 rounded-md hover:bg-red-50"
+                      >
+                        Cancel Booking
+                      </button>
+                    )}
+
                     <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
                       Contact Owner
                     </button>
@@ -1286,9 +1340,42 @@ const DashboardContent = ({
                 {/* Action Buttons */}
                 <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-between items-center">
                   <div className="flex gap-3">
-                    <button className="px-4 py-2 text-sm border border-red-500 text-red-500 rounded-md hover:bg-red-50">
-                      Cancel Booking
-                    </button>
+                    {showCancelInput === stay._id ? (
+                      <div className="space-y-2">
+                        <textarea
+                          rows="3"
+                          className="w-full border rounded p-2 text-sm"
+                          placeholder="Optional: Reason for cancellation"
+                          value={cancelReason}
+                          onChange={(e) => setCancelReason(e.target.value)}
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleCancelBooking(stay._id)}
+                            className="px-3 py-1 bg-red-500 text-white rounded text-sm"
+                          >
+                            Submit Cancel
+                          </button>
+                          <button
+                            onClick={() => {
+                              setShowCancelInput(null);
+                              setCancelReason("");
+                            }}
+                            className="px-3 py-1 border rounded text-sm"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setShowCancelInput(stay._id)}
+                        className="px-4 py-2 text-sm border border-red-500 text-red-500 rounded-md hover:bg-red-50"
+                      >
+                        Cancel Booking
+                      </button>
+                    )}
+
                     <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
                       Contact Owner
                     </button>
@@ -1362,7 +1449,7 @@ const DashboardContent = ({
                           <FaBed className="text-gray-500" /> Room Details
                         </h4>
                         <p className="text-sm text-gray-600">
-                          Beds Booked: {stay.bedsBooked|| 0}
+                          Beds Booked: {stay.bedsBooked || 0}
                         </p>
                         <p className="text-sm text-gray-600">
                           Price: ₹{stay.pricePerHead}/month
@@ -1435,11 +1522,11 @@ const DashboardContent = ({
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex justify-end mt-6">
+                {/* <div className="flex justify-end mt-6">
                   <button className="px-4 py-2 text-sm border border-gray-500 text-gray-500 rounded-md hover:bg-gray-50">
                     Book Again
                   </button>
-                </div>
+                </div> */}
               </div>
             ))}
           </div>
@@ -1565,7 +1652,9 @@ const DashboardContent = ({
                 <ExpandableMaintenanceItem key={index} item={item} />
               ))
             ) : (
-              <p className="text-gray-500 text-sm">No maintenance history found.</p>
+              <p className="text-gray-500 text-sm">
+                No maintenance history found.
+              </p>
             )}
           </div>
         </div>
@@ -1614,7 +1703,9 @@ const ExpandableMaintenanceItem = ({ item }) => {
       <div className="flex justify-between items-start">
         <h3 className="font-semibold text-sm">{item.title}</h3>
         <span
-          className={`text-white text-xs px-2 py-1 rounded ${statusColors[item.status] || "bg-gray-400"}`}
+          className={`text-white text-xs px-2 py-1 rounded ${
+            statusColors[item.status] || "bg-gray-400"
+          }`}
         >
           {item.status?.replace("-", " ").toUpperCase()}
         </span>
@@ -1636,10 +1727,18 @@ const ExpandableMaintenanceItem = ({ item }) => {
       {/* Expanded details */}
       {showDetails && (
         <div className="mt-2 text-xs text-gray-700 space-y-1">
-          <p><strong>Mess:</strong> {item.messName || "N/A"}</p>
-          <p><strong>Room:</strong> {item.roomNo || "N/A"}</p>
-          <p><strong>Owner:</strong> {item.name || "N/A"}</p>
-          <p><strong>Email:</strong> {item.ownerEmail || "N/A"}</p>
+          <p>
+            <strong>Mess:</strong> {item.messName || "N/A"}
+          </p>
+          <p>
+            <strong>Room:</strong> {item.roomNo || "N/A"}
+          </p>
+          <p>
+            <strong>Owner:</strong> {item.name || "N/A"}
+          </p>
+          <p>
+            <strong>Email:</strong> {item.ownerEmail || "N/A"}
+          </p>
         </div>
       )}
     </div>
