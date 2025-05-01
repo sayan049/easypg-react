@@ -655,8 +655,8 @@ function MessBars({
         },
       });
 
-      const filteredData = Array.isArray(res.data)
-        ? res.data.filter((owner) => {
+      const filteredData = Array.isArray(res.data.data)
+        ? res.data.data.filter((owner) => {
             const facilitiesArray = Array.isArray(owner.facility)
               ? owner.facility.flatMap((f) =>
                   f.split(",").map((item) => item.trim().toLowerCase())
