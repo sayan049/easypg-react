@@ -28,7 +28,7 @@ function Settings({ user }) {
     confirmPassword: "",
   });
 
-  const { userName, IsAuthenticated, owner, type } = useAuth();
+  const { userName, IsAuthenticated, owner, type , handleLogout } = useAuth();
   const [personalInfo, setPersonalInfo] = useState({
     fullName: user?.name || "",
     email: user?.email || "",
@@ -587,7 +587,7 @@ function Settings({ user }) {
               />
             </div> */}
             <div className="flex space-x-4 justify-center">
-              <button className="bg-red-500 text-white px-4 py-2 rounded-md">
+              <button className="bg-red-500 text-white px-4 py-2 rounded-md" onClick={()=>handleLogout()}>
                 Logout
               </button>
               <button className="bg-red-600 text-white px-4 py-2 rounded-md">

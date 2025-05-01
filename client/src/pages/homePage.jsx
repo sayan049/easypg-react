@@ -162,6 +162,15 @@ const HomePage = () => {
     }
   };
 
+  clickProfile = () => {
+    setShowDropdown(false);
+    if (IsAuthenticated) {
+      navigate("/newDashboard");
+    } else {
+      navigate("/DashboardOwner");
+    }
+  };
+
   return (
     <div>
       <div className="bg-gradient-to-r from-[#2CA4B5] to-white min-h-screen flex flex-col">
@@ -231,11 +240,12 @@ const HomePage = () => {
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
                     <div className="py-1">
                       <Link
-                        to={
-                          IsAuthenticated ? "/newDashboard" : "/DashboardOwner"
-                        }
+                        // to={
+                        //   IsAuthenticated ? "/newDashboard" : "/DashboardOwner"
+                        // }
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#2CA4B5] hover:text-white"
-                        onClick={() => setShowDropdown(false)}
+                        // onClick={() => setShowDropdown(false)}
+                        onClick={clickProfile}
                       >
                         Profile
                       </Link>
