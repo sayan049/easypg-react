@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 
 import "../designs/style.css";
 import FlashMessage from "../components/flashMessage";
-import { ToastContainer,toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import UserProfile from "../components/UserProfile";
 import "../designs/UserProfile.css";
@@ -80,9 +80,9 @@ const HomePage = () => {
 
     setSuggestions([]); // Clear suggestions
 
-    setTimeout(() => {
-      performSearch();
-    }, 100); 
+    navigate("/MessFind", {
+      state: { userLocation: selectedLocation, item: suggestion.display_name  },
+    });
   };
 
   const performSearch = () => {
@@ -93,7 +93,7 @@ const HomePage = () => {
     console.log("✅ Passing Location to MessFind:", selectedLocation);
 
     navigate("/MessFind", {
-      state: { userLocation: selectedLocation, item: searchItem  },
+      state: { userLocation: selectedLocation, item: searchItem },
     });
     setSearchItem(""); // Clear the input field after search
   };
@@ -333,10 +333,9 @@ const HomePage = () => {
             </div>
           )} */}
           <ToastContainer
-                  position="top-center"
-                  toastClassName="!w-[300px]   mx-auto mt-4 sm:mt-0  "
-                />
-
+            position="top-center"
+            toastClassName="!w-[300px]   mx-auto mt-4 sm:mt-0  "
+          />
         </div>
         <div
           style={{
