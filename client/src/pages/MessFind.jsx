@@ -8,6 +8,7 @@ import { FaSearch } from "react-icons/fa";
 import { LocationIqurl } from "../constant/urls";
 import { FaMale, FaFemale, FaUserFriends } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   MdOutlineAccessTime,
   MdOutlineHome,
@@ -27,7 +28,7 @@ import {
   MdWater,
 } from "react-icons/md";
 import { set } from "ol/transform";
-import { toast } from "sonner";
+
 
 const FilterModal = ({
   isOpen,
