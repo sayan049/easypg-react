@@ -920,7 +920,7 @@ const DashboardContent = ({
                 className="bg-white rounded-xl shadow-md overflow-hidden"
               >
                 {/* Header with PG name and status */}
-                <div className="bg-blue-50 p-4 border-b border-yellow-100">
+                <div className="bg-yellow-300 p-4 border-b border-yellow-100">
                   <div className="flex justify-between items-center">
                     <div>
                       <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
@@ -1116,7 +1116,7 @@ const DashboardContent = ({
                 className="bg-white rounded-xl shadow-md overflow-hidden"
               >
                 {/* Header with PG name and status */}
-                <div className="bg-blue-50 p-4 border-b border-blue-100">
+                <div className="bg-green-300 p-4 border-b border-green-100">
                   <div className="flex justify-between items-center">
                     <div>
                       <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">

@@ -155,9 +155,10 @@ const connectDB = require("./config/mongoDB");
 // const http = require('http');
 // const SocketManager = require('./sockets/bookingSocket'); // Update with correct path
 //  const ORIGIN =  process.env.CLIENT_URL || "https://messmate-client.onrender.com"; // Default to localhost if not set
- const ORIGIN =  "https://messmate-client.onrender.com";
+//  const ORIGIN =  "https://messmate-client.onrender.com";
+const ORIGIN = process.env.CLIENT_URL ; // Default to localhost if not set
 const PORT = process.env.PORT || 8080;
-
+console.log(ORIGIN, "origin");
 // Enhanced CORS configuration
 const corsOptions = {
   origin: ORIGIN,

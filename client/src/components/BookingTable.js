@@ -1141,7 +1141,7 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
           <h3 className="text-lg font-semibold">Current Accommodations ({currentStay.length})</h3>
           
           {currentStay.map((stay, index) => (
-            <div key={stay._id || index} className="bg-white shadow-md p-6 rounded-xl border-l-4 border-blue-200">
+            <div key={stay._id || index} className="bg-white shadow-md p-6 rounded-xl border-l-4 border-green-200">
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h2 className="text-xl font-bold flex items-center gap-2">
