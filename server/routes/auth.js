@@ -26,7 +26,8 @@ const {
   getRequestsByBookings,
   updateMaintenanceStatus,
   getAllOwnerBookings,
-  getMaintenanceHistory
+  getMaintenanceHistory,
+  cancelBooking
 } = require('../controllers/bookingController');
 
 
@@ -242,6 +243,8 @@ router.get('/maintenance/requests/owner', authenticateJWT, getRequestsByBookings
 router.post('/maintenance/:requestId/update-status', authenticateJWT, updateMaintenanceStatus);
 //maintenance history history for user
 router.get('/maintenance/history', authenticateJWT, getMaintenanceHistory);
+//cancel booking request
+router.post('/bookings/:id/cancel', authenticateJWT, cancelBooking);
 
 // User cancels the booking
 router.delete('/bookings/:id', cancelBooking);

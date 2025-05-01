@@ -753,7 +753,7 @@ const DashboardContent = ({
     try {
       const token = localStorage.getItem("accessToken");
       const res = await axios.post(
-        `${baseurl}/bookings/${bookingId}/cancel`,
+        `${baseurl}/auth/bookings/${bookingId}/cancel`,
         { reason: cancelReason },
         {
           headers: { Authorization: `Bearer ${token}` },
