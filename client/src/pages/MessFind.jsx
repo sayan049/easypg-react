@@ -171,7 +171,7 @@ const MessFind = () => {
   const handleInputChange = async (event) => {
     const query = event.target.value;
     setSearchQuery(query);
-    setSelectedLocation(null);
+   // setSelectedLocation(null);
 
     if (query.length > 3) {
       clearTimeout(debounceTimeout);
