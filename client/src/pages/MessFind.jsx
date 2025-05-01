@@ -197,7 +197,7 @@ const MessFind = () => {
     // performSearch();
     setSuggestions([]);
     navigate("/MessFind", {
-      state: { userLocation: coords, item: suggestion.display_name },
+      state: { userLocation: selectedLocation, item: suggestion.display_name },
     });
   };
   // const handleSuggestionClick = (suggestion) => {
