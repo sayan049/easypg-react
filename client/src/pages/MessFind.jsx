@@ -193,10 +193,9 @@ const MessFind = () => {
       lat: suggestion.lat,
       lng: suggestion.lon,
     });
-  //  setSearchQuery(suggestion.display_name);
-  performSearch();
-  setSuggestions([]);
- 
+    //  setSearchQuery(suggestion.display_name);
+    performSearch();
+    setSuggestions([]);
   };
   // const handleSuggestionClick = (suggestion) => {
   //   const newLocation = {
@@ -219,9 +218,15 @@ const MessFind = () => {
     navigate("/MessFind", {
       state: { userLocation: selectedLocation, item: searchQuery },
     });
-   // setSearchQuery("");
+    // setSearchQuery("");
   };
 
+  useEffect(() => {
+    if (location.state?.userLocation) {
+      window.scrollTo(0, 0); // optional scroll to top
+      setSelectedLocation(location.state.userLocation);
+    }
+  }, [location.key]); // location.key changes on navigation
 
   useEffect(() => {
     if (userLocation) {
@@ -230,7 +235,7 @@ const MessFind = () => {
     if (location.state?.userLocation) {
       setSelectedLocation(location.state.userLocation);
     }
-  }, [userLocation, finalGender, gender, checkFeatures,location.state]);
+  }, [userLocation, finalGender, gender, checkFeatures]);
 
   const amenities = [
     {
