@@ -654,7 +654,7 @@ function MessBars({
           limit: 5,
         },
       });
-
+      const totalCount = res.data.total || 0;
       const filteredData = Array.isArray(res.data.data)
         ? res.data.data.filter((owner) => {
             const facilitiesArray = Array.isArray(owner.facility)
@@ -684,9 +684,10 @@ function MessBars({
       setMessData((prev) =>
         page === 1 ? filteredData : [...prev, ...filteredData]
       );
-      setPgCount((prev) =>
-        page === 1 ? filteredData.length : prev + filteredData.length
-      );
+      // setPgCount((prev) =>
+      //   page === 1 ? filteredData.length : prev + filteredData.length
+      // );
+      setPgCount(totalCount);
       setHasMore(true);
 
       if (
