@@ -675,6 +675,7 @@ function MessBars({
             return matchesFeatures && matchesGender;
           })
         : [];
+      const totalMess = res.data.total || 0;
 
       if (filteredData.length === 0) {
         setHasMore(false);
@@ -684,9 +685,10 @@ function MessBars({
       setMessData((prev) =>
         page === 1 ? filteredData : [...prev, ...filteredData]
       );
-      setPgCount((prev) =>
-        page === 1 ? filteredData.length : prev + filteredData.length
-      );
+      // setPgCount((prev) =>
+      //   page === 1 ? filteredData.length : prev + filteredData.length
+      // );
+      setPgCount(totalMess);
       setHasMore(true);
 
       if (
@@ -720,7 +722,6 @@ function MessBars({
     setPgCount(0);
     setPage(1); // Reset to page 1 immediately
   }, [checkFeatures, userLocation, finalGender]);
-  
 
   useEffect(() => {
     fetchData();

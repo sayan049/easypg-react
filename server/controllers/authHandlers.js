@@ -365,6 +365,7 @@ exports.findMess = async (req, res) => {
 
     // Query MongoDB using correct geohashes
     const nearbyPGs = await PgOwner.find({ geoHash: { $in: neighbors } }).skip(skip).limit(limitNum);
+    const total = await PgOwner.countDocuments({ geoHash: { $in: neighbors } });
 
 
 
@@ -374,7 +375,8 @@ exports.findMess = async (req, res) => {
     }
 
     console.log(" PGs Found:", nearbyPGs.length);
-    res.status(200).json(nearbyPGs);
+    // res.status(200).json(nearbyPGs);
+    res.status(200).json({ data: nearbyPGs, total });
   } catch (error) {
     console.error(" Error fetching PG owners:", error);
     res.status(500).json({ message: "Server error" });
