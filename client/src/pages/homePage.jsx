@@ -77,11 +77,12 @@ const HomePage = () => {
       lat: suggestion.lat,
       lng: suggestion.lng,
     });
+    const coords = { lat: suggestion.lat, lng: suggestion.lon };
 
     setSuggestions([]); // Clear suggestions
 
     navigate("/MessFind", {
-      state: { userLocation: {lat , lng}, item: suggestion.display_name  },
+      state: { userLocation:  { coords}, item: suggestion.display_name  },
     });
   };
 
