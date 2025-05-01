@@ -205,9 +205,9 @@ const MessFind = () => {
     setSearchQuery(suggestion.display_name);
     setSelectedLocation(coords);
     setSuggestions([]);
-    navigate("/MessFind", {
-      state: { userLocation: coords, item: suggestion.display_name },
-    });
+    // navigate("/MessFind", {
+    //   state: { userLocation: coords, item: suggestion.display_name },
+    // });
   };
   
 
@@ -401,12 +401,13 @@ const MessFind = () => {
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   if (!selectedLocation) return alert("Pick suggestion!");
-                  navigate("/MessFind", {
-                    state: {
-                      userLocation: selectedLocation,
-                      item: searchQuery,
-                    },
-                  });
+                  setSuggestions([]);
+                  // navigate("/MessFind", {
+                  //   state: {
+                  //     userLocation: selectedLocation,
+                  //     item: searchQuery,
+                  //   },
+                  // });
                 }
               }}
             />
@@ -458,6 +459,7 @@ const MessFind = () => {
           <div className="flex" style={{ height: "104%" }}>
             <div className="flex-1 overflow-y-auto ">
               <MessBars
+                key={`${selectedLocation.lat}-${selectedLocation.lng}`}
                 checkFeatures={checkFeatures}
                 isChecked={isChecked}
                 userLocation={selectedLocation}
