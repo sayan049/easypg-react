@@ -1317,7 +1317,7 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
                         statusColors[booking.status]
                       }`}
                     >
-                      {booking.status}
+                      {booking.status.toUpperCase()}
                     </span>
                   </td>
                   <td className="py-3 px-4">
