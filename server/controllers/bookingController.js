@@ -1352,7 +1352,7 @@ exports.cancelBooking = async (req, res) => {
     const bookingId = req.params.id;
     const userId = req.user.id;
     const cancellationReason = req.body.reason || null;
-    console.log("Booking ID:", id);
+    console.log("Booking ID:", bookingId);
     console.log("User ID:", userId);
     console.log("Cancellation Reason:", cancellationReason);
 
