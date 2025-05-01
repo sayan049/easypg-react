@@ -1352,6 +1352,9 @@ exports.cancelBooking = async (req, res) => {
     const bookingId = req.params.bookingId;
     const userId = req.user.id;
     const cancellationReason = req.body.reason || null;
+    console.log("Booking ID:", bookingId);
+    console.log("User ID:", userId);
+    console.log("Cancellation Reason:", cancellationReason);
     const userName = await User.findById(userId);
     if (!userName) {
       return res.status(404).json({ success: false, message: "User not found" });
