@@ -88,7 +88,8 @@ const HomePage = () => {
 
   const performSearch = () => {
     if (!selectedLocation) {
-      alert("Please select a valid location!");
+      toast.error("Please select a location from the suggestions!");
+      //alert("Please select a valid location!");
       return;
     }
     console.log("✅ Passing Location to MessFind:", selectedLocation);
