@@ -1349,10 +1349,10 @@ exports.getMaintenanceHistory = async (req, res) => {
 // Cancel booking (BED RESTORATION ONLY FOR CONFIRMED BOOKINGS)
 exports.cancelBooking = async (req, res) => {
   try {
-    const bookingId = req.params.bookingId;
+    const bookingId = req.params.id;
     const userId = req.user.id;
     const cancellationReason = req.body.reason || null;
-    console.log("Booking ID:", bookingId);
+    console.log("Booking ID:", id);
     console.log("User ID:", userId);
     console.log("Cancellation Reason:", cancellationReason);
 
