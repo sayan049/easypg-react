@@ -18,7 +18,7 @@ const jwt = require('jsonwebtoken');
 const {
   createBookingRequest,
   handleBookingApproval,
-  cancelBooking,
+  
   getOwnerBookings,
   getUserBookings,
   downloadInvoice,
