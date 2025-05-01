@@ -1349,17 +1349,13 @@ exports.getMaintenanceHistory = async (req, res) => {
 // Cancel booking (BED RESTORATION ONLY FOR CONFIRMED BOOKINGS)
 exports.cancelBooking = async (req, res) => {
   try {
-    const bookingId = req.params.bookingId;
+    const bookingId = req.params.id;
     const userId = req.user.id;
     const cancellationReason = req.body.reason || null;
     console.log("Booking ID:", bookingId);
     console.log("User ID:", userId);
     console.log("Cancellation Reason:", cancellationReason);
-    const userName = await User.findById(userId);
-    if (!userName) {
-      return res.status(404).json({ success: false, message: "User not found" });
-    }
-    const fullname= `${userName.firstName} ${userName.lastName}`;
+
     // 1. Fetch booking
     const booking = await Booking.findById(bookingId);
     if (!booking) {
@@ -1370,6 +1366,12 @@ exports.cancelBooking = async (req, res) => {
     if (booking.student.toString() !== userId) {
       return res.status(403).json({ success: false, message: "Unauthorized" });
     }
+    //3.get fullname of user
+    const userName = await User.findById(userId);
+    if (!userName) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+    const fullname= `${userName.firstName} ${userName.lastName}`;
 
     const now = new Date();
     const startDate = new Date(booking.period.startDate);
