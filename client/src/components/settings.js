@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import UserProfile from "../components/UserProfile";
 import { useAuth } from "../contexts/AuthContext";
 import { updateDetailsUrl, resetPasswordDashboard } from "../constant/urls";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   faMapMarkerAlt,
   faEdit,
@@ -106,18 +108,22 @@ function Settings({ user }) {
       console.log("print data", formData);
 
       if (!response.ok) {
+        toast.error(response.error.data.message || "Failed to update details");
         throw new Error("Failed to update details");
       }
 
       const data = await response.json();
-      alert("Changes saved successfully!");
+      toast.success("Changes saved successfully!");
+      //alert("Changes saved successfully!");
     } catch (error) {
       console.error("Error saving changes:", error);
-      alert("Failed to save changes. Please try again.");
+      toast.error("Failed to save changes. Please try again.");
+      // alert("Failed to save changes. Please try again.");
     }
   };
 
   const handleReset = () => {
+    toast.success("Reset to default settings!");
     setPersonalInfo(intialData);
   };
 
@@ -176,15 +182,18 @@ function Settings({ user }) {
     const { currentPassword, newPassword, confirmPassword } = passwords;
     // Validate fields
     if (!currentPassword || !newPassword || !confirmPassword) {
-      alert("All fields are required!");
+      toast.error("All fields are required!");
+      //- alert("All fields are required!");
       return;
     }
     if (newPassword.length < 6) {
-      alert("New password must be at least 6 characters long!");
+      toast.error("New password must be at least 6 characters long!");
+      //alert("New password must be at least 6 characters long!");
       return;
     }
     if (newPassword !== confirmPassword) {
-      alert("New password and confirm password do not match!");
+      toast.error("New password and confirm password do not match!");
+      //alert("New password and confirm password do not match!");
       return;
     }
 
@@ -207,7 +216,7 @@ function Settings({ user }) {
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.error || "Password update failed");
-
+      toast.success("Password updated successfully!");
       alert("Password updated successfully!");
       setPasswords({
         currentPassword: "",
@@ -215,6 +224,7 @@ function Settings({ user }) {
         confirmPassword: "",
       });
     } catch (error) {
+      toast.error(error.message || "Error updating password");
       console.error("Error updating password:", error);
       alert(error.message);
     }
@@ -280,7 +290,8 @@ function Settings({ user }) {
   useEffect(() => {
     // console.log("verify",user.is_verified);
     if (!user._id) {
-      alert("something wnt wrong user id is null");
+      toast.error("User ID is null or undefined");
+     // alert("something wnt wrong user id is null");
     }
     if (user) {
       setPersonalInfo({
@@ -312,6 +323,10 @@ function Settings({ user }) {
 
   return (
     <div className="bg-white pb-16 pr-6 pt-6 pl-6 shadow rounded-md">
+      <ToastContainer
+        position="top-center"
+        toastClassName="!w-[300px]   mx-auto mt-4 sm:mt-0  "
+      />
       <h2 className="text-2xl font-bold mb-6">Profile Settings</h2>
       <div className="relative mb-4"></div>
       {/* Profile Picture Section (First Row) */}
@@ -361,12 +376,10 @@ function Settings({ user }) {
                     className="border border-gray-300 rounded-md p-2 w-full"
                     readOnly={editingField !== key}
                   />
-                  {(key === "email" || key === "fullName") ? (
-                  <button
-                //  className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-2xl text-blue-500"
-                >
-                
-                </button>
+                  {key === "email" || key === "fullName" ? (
+                    <button
+                    //  className="absolute top-2/4 right-3 transform -translate-y-2/4 cursor-pointer text-2xl text-blue-500"
+                    ></button>
                   ) : (
                     <button
                       onClick={() => handleEditClick(key)}
