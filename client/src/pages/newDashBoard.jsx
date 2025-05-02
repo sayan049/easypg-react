@@ -848,7 +848,6 @@ function NewDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Mobile Header */}
       <div className="md:hidden flex justify-between items-center p-4 bg-white shadow">
         <button onClick={() => setSidebarOpen(true)}>
           <Menu className="w-6 h-6 text-gray-700" />
@@ -858,13 +857,11 @@ function NewDashboard() {
       </div>
 
       <div className="flex">
-        {/* Sidebar */}
         <aside
-          className={`fixed md:static top-0 left-0 h-full md:h-screen w-64 bg-white border-r p-4 z-50 transition-transform duration-300 transform md:translate-x-0 ${
+          className={`fixed md:static top-0 left-0 w-64 h-screen bg-white border-r p-4 z-50 transition-transform duration-300 transform md:translate-x-0 shadow-md md:shadow-none ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          {/* Mobile Close Button */}
           <div className="md:hidden flex justify-end mb-4">
             <button onClick={() => setSidebarOpen(false)}>
               <X className="w-5 h-5 text-gray-500" />
@@ -883,8 +880,7 @@ function NewDashboard() {
           </button>
         </aside>
 
-        {/* Content */}
-        <main className="flex-1 p-4 ml-0 md:ml-64 transition-all duration-300 ease-in-out">
+        <main className="flex-1 p-4 md:ml-64 transition-all duration-300 ease-in-out">
           {renderContent()}
         </main>
       </div>
@@ -922,3 +918,4 @@ function ProfileHeader({ userName }) {
 }
 
 export default NewDashboard;
+
