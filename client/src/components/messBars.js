@@ -114,7 +114,11 @@ function MessBars({
   };
 
   const clickNavi = (owner) => {
-    navigate("/viewDetails", { state: { owner } });
+    const ownerParams = new URLSearchParams();
+    ownerParams.set("owner", JSON.stringify(owner));
+    // Add any other details you want to pass
+    navigate(`/viewDetails?${ownerParams.toString()}`);
+   // navigate("/viewDetails", { state: { owner } });
   };
 
   const clickBook = (owner) => {
@@ -261,7 +265,7 @@ function MessBars({
           <div
             key={owner._id}
             ref={index === messData.length - 1 ? lastCardRef : null}
-            className={`relative flip-card mb-4 min-h-[31rem] md:min-h-[16rem] lg:min-h-[14rem] ${
+            className={`relative flip-card mb-4 min-h-[32rem] md:min-h-[16rem] lg:min-h-[14rem] ${
               isChecked ? "w-full" : "w-full"
             } ${
               selected === owner._id && isChecked

@@ -6,7 +6,9 @@ import ConfirmBooking from "../components/confirmBooking";
 
 const ViewDetails = () => {
   const location = useLocation();
-  const { owner } = location.state || {};
+  //const { owner } = location.state || {};
+  const queryParams = new URLSearchParams(location.search);
+  const owner = queryParams.get("owner") ? JSON.parse(queryParams.get("owner")) : null;
 
   // State for modal visibility
   const [showModal, setShowModal] = useState(false);
