@@ -3,6 +3,7 @@ const User = require("../modules/user");
 const likedMesses = async (req, res) => {
     const userId = req.userId;
   const { messId, liked } = req.body;
+  console.log(userId, messId, liked, "likedMesses");
 
   try {
     if (liked) {
