@@ -2,7 +2,7 @@ import axios from "axios";
 import { getDistance } from "ol/sphere";
 import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { findMessUrl, likedMessesUrl } from "../constant/urls";
+import { findMessUrl, likedMessesUrl ,getLikedMessUrl } from "../constant/urls";
 import { useInView } from "react-intersection-observer";
 import Skeleton from "./Skeleton";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
@@ -131,6 +131,22 @@ function MessBars({
       return "N/A";
     }
   };
+
+  const fetchLikedMesses = async () => {
+    try {
+      const res = await axios.get(likedMessesUrl); // Adjust if needed
+      const likedData = res.data || [];
+      const likedMap = {};
+      likedData.forEach((id) => (likedMap[id] = true));
+      setLiked(likedMap);
+    } catch (err) {
+      console.error("Failed to fetch liked messes", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchLikedMesses();
+  },[]);
 
   const clickNavi = (owner) => {
     const ownerParams = new URLSearchParams();
