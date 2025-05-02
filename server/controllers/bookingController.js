@@ -1585,21 +1585,24 @@ exports.getOwnerDashboardStats = async (req, res) => {
           type: "booking_request",
           title: "New Booking Request",
           description: `Room ${b.room} – ${b.bedsBooked} bed(s)`,
-          time: b.updatedAt.toLocaleString(),
+          time: b.updatedAt.toLocaleString("en-IN", { timeZone: "Asia/Kolkata", hour: 'numeric', minute: '2-digit', hour12: true, day: 'numeric', month: 'short' }),
+
         });
       } else if (b.status === "confirmed") {
         recentActivity.push({
           type: "booking_confirmed",
           title: "Booking Confirmed",
           description: `Room ${b.room} confirmed`,
-          time: b.updatedAt.toLocaleString(),
+          time: b.updatedAt.toLocaleString("en-IN", { timeZone: "Asia/Kolkata", hour: 'numeric', minute: '2-digit', hour12: true, day: 'numeric', month: 'short' }),
+
         });
       } else if (b.status === "rejected") {
         recentActivity.push({
           type: "booking_rejected",
           title: "Booking Rejected",
           description: `Room ${b.room} was rejected`,
-          time: b.updatedAt.toLocaleString(),
+          time: b.updatedAt.toLocaleString("en-IN", { timeZone: "Asia/Kolkata", hour: 'numeric', minute: '2-digit', hour12: true, day: 'numeric', month: 'short' }),
+
         });
       }
     });
@@ -1616,7 +1619,8 @@ exports.getOwnerDashboardStats = async (req, res) => {
           type,
           title: `Maintenance ${req.status.charAt(0).toUpperCase() + req.status.slice(1)}`,
           description: req.message,
-          time: req.updatedAt.toLocaleString(),
+          time: b.updatedAt.toLocaleString("en-IN", { timeZone: "Asia/Kolkata", hour: 'numeric', minute: '2-digit', hour12: true, day: 'numeric', month: 'short' }),
+
         });
       });
 
