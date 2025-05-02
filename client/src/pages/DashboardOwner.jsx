@@ -233,7 +233,7 @@ export default function DashboardOwner() {
         params: { limit },
         headers: { Authorization: `Bearer ${token}` },
       });
-console.log("Bookings Response:", bookingsRes.data);
+// console.log("Bookings Response:", bookingsRes);
       const { pending, confirmed, rejected } = bookingsRes.data;
       const bookingIds = confirmed.bookings?.map((b) => b._id) || [];
 
@@ -245,7 +245,7 @@ console.log("Bookings Response:", bookingsRes.data);
         });
         maintenanceRequests.requests = maintenanceRes.data?.requests || [];
       }
-console.log("Maintenance Requests Response:", maintenanceRequests.requests);
+// console.log("Maintenance Requests Response:", maintenanceRequests.requests);
       setBookingData({
         bookings: {
           pending: {
