@@ -6,6 +6,7 @@ import { findMessUrl, likedMessesUrl ,getLikedMessUrl } from "../constant/urls";
 import { useInView } from "react-intersection-observer";
 import Skeleton from "./Skeleton";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+const token = localStorage.getItem('accessToken'); 
 import {
   FaWind,
   FaTv,
@@ -134,7 +135,9 @@ function MessBars({
 
   const fetchLikedMesses = async () => {
     try {
-      const res = await axios.get(likedMessesUrl); // Adjust if needed
+      const res = await axios.get(getLikedMessUrl,{
+        headers: { Authorization: `Bearer ${token}` },
+      }); // Adjust if needed
       const likedData = res.data || [];
       const likedMap = {};
       likedData.forEach((id) => (likedMap[id] = true));
