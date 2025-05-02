@@ -445,7 +445,14 @@ const HomePage = () => {
               </div>
               <button
                 className="absolute top-2 right-3 h-11 w-11 text-white bg-[#2CA4B5] rounded-full flex items-center justify-center"
-                onClick={performSearch}
+                //  onClick={performSearch}
+                onClick={(e) => {
+                  if (suggestions.length > 0) {
+                    handleSuggestionClick(suggestions[0]); // auto-pick first suggestion
+                  } else {
+                    toast.error("Pick a valid location from suggestions");
+                  }
+                }}
               >
                 {/* <span>🔍</span> */}
               </button>
