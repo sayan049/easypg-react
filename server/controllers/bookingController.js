@@ -1359,7 +1359,9 @@ exports.cancelBooking = async (req, res) => {
     // 1. Fetch booking
     const booking = await Booking.findById(bookingId);
     if (!booking) {
-      return res.status(404).json({ success: false, message: "Booking not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Booking not found" });
     }
 
     // 2. Validate ownership
@@ -1369,9 +1371,11 @@ exports.cancelBooking = async (req, res) => {
     //3.get fullname of user
     const userName = await User.findById(userId);
     if (!userName) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
-    const fullname= `${userName.firstName} ${userName.lastName}`;
+    const fullname = `${userName.firstName} ${userName.lastName}`;
 
     const now = new Date();
     const startDate = new Date(booking.period.startDate);
@@ -1382,7 +1386,7 @@ exports.cancelBooking = async (req, res) => {
     if (booking.status === "pending") {
       booking.status = "cancelled";
       await booking.save();
-   
+
       // Notifications
       const msg = cancellationReason
         ? `You cancelled your booking for ${booking.room}.Reason: ${cancellationReason}`
@@ -1407,7 +1411,10 @@ exports.cancelBooking = async (req, res) => {
         ),
       ]);
 
-      return res.json({ success: true, message: "Pending booking cancelled successfully." });
+      return res.json({
+        success: true,
+        message: "Pending booking cancelled successfully.",
+      });
     }
 
     // 4. Confirmed booking → check timing
@@ -1433,18 +1440,27 @@ exports.cancelBooking = async (req, res) => {
       // 5. Restore beds
       const owner = await PgOwner.findById(booking.pgOwner);
       if (!owner) {
-        return res.status(404).json({ success: false, message: "PG Owner not found" });
+        return res
+          .status(404)
+          .json({ success: false, message: "PG Owner not found" });
       }
 
       const room = owner.roomInfo.find((r) => r.room === booking.room);
       if (!room) {
-        return res.status(400).json({ success: false, message: "Room not found in owner's data" });
+        return res
+          .status(400)
+          .json({ success: false, message: "Room not found in owner's data" });
       }
 
       const currentBeds = bedCountToNumber[room.bedContains] || 0;
       const restoredBeds = currentBeds + booking.bedsBooked;
       if (restoredBeds > 5) {
-        return res.status(400).json({ success: false, message: "Restored beds exceed room capacity." });
+        return res
+          .status(400)
+          .json({
+            success: false,
+            message: "Restored beds exceed room capacity.",
+          });
       }
 
       room.bedContains = numberToBedCount[restoredBeds];
@@ -1456,34 +1472,38 @@ exports.cancelBooking = async (req, res) => {
       await booking.save();
 
       const msg = cancellationReason
-      ? `You cancelled your booking for ${booking.room}.Reason: ${cancellationReason}`
-      : `You cancelled your booking for ${booking.room}`;
+        ? `You cancelled your booking for ${booking.room}.Reason: ${cancellationReason}`
+        : `You cancelled your booking for ${booking.room}`;
 
-    await Promise.all([
-      sendNotification(
-        booking.student._id,
-        "User",
-        "Booking Cancelled",
-        msg,
-        NOTIFICATION_TYPES.BOOKING,
-        booking._id
-      ),
-      sendNotification(
-        booking.pgOwner._id,
-        "PgOwner",
-        "Booking Cancelled",
-        `Booking for ${booking.room} has been cancelled by ${fullname}`,
-        NOTIFICATION_TYPES.BOOKING,
-        booking._id
-      ),
-    ]);
+      await Promise.all([
+        sendNotification(
+          booking.student._id,
+          "User",
+          "Booking Cancelled",
+          msg,
+          NOTIFICATION_TYPES.BOOKING,
+          booking._id
+        ),
+        sendNotification(
+          booking.pgOwner._id,
+          "PgOwner",
+          "Booking Cancelled",
+          `Booking for ${booking.room} has been cancelled by ${fullname}`,
+          NOTIFICATION_TYPES.BOOKING,
+          booking._id
+        ),
+      ]);
 
-      return res.json({ success: true, message: "Upcoming booking cancelled and beds restored." });
+      return res.json({
+        success: true,
+        message: "Upcoming booking cancelled and beds restored.",
+      });
     }
 
     // 7. Past bookings or invalid status
-    return res.status(400).json({ success: false, message: "This booking cannot be cancelled." });
-
+    return res
+      .status(400)
+      .json({ success: false, message: "This booking cannot be cancelled." });
   } catch (error) {
     console.error("Cancel Booking Error:", error);
     res.status(500).json({
@@ -1499,7 +1519,7 @@ exports.submitFeedback = async (req, res) => {
   const userId = req.user.id;
   const { stayId, rating, comment } = req.body;
   console.log("User ID for ratings :", userId);
-  console.log(req.body)
+  console.log(req.body);
   if (!stayId || !rating) {
     return res.status(400).json({ message: "stayId and rating are required" });
   }
@@ -1540,37 +1560,53 @@ exports.submitFeedback = async (req, res) => {
     return res.status(200).json({ message: "Feedback submitted successfully" });
   } catch (error) {
     console.error("Feedback error:", error);
-    return res.status(500).json({ message: "Server error while submitting feedback" });
+    return res
+      .status(500)
+      .json({ message: "Server error while submitting feedback" });
   }
 };
 //ownerdashboard data and stats and recent activity
-
 
 exports.getOwnerDashboardStats = async (req, res) => {
   try {
     const ownerId = req.user.id;
 
     // Total Revenue from confirmed bookings
-    const confirmedBookings = await Booking.find({ pgOwner: ownerId, status: "confirmed" });
-    const totalRevenue = confirmedBookings.reduce((sum, b) => sum + (b.payment?.totalAmount || 0), 0);
+    const confirmedBookings = await Booking.find({
+      pgOwner: ownerId,
+      status: "confirmed",
+    });
+    const totalRevenue = confirmedBookings.reduce(
+      (sum, b) => sum + (b.payment?.totalAmount || 0),
+      0
+    );
 
     // Room stats
     const ownerData = await PgOwner.findById(ownerId);
-    const totalRooms = Array.isArray(ownerData.roomInfo) ? ownerData.roomInfo.length : 0;
+    const totalRooms = Array.isArray(ownerData.roomInfo)
+      ? ownerData.roomInfo.length
+      : 0;
 
     const roomsAvailable = Array.isArray(ownerData.roomInfo)
       ? ownerData.roomInfo.filter((room) => room.roomAvailable === true).length
       : 0;
-    
-    
 
     // Maintenance requests
-    const maintenanceRequests = await MaintenanceRequest.find({ pgOwner: ownerId });
-    const pending = maintenanceRequests.filter((r) => r.status === "in-progress").length;
-    const completed = maintenanceRequests.filter((r) => r.status === "resolved").length;
+    const maintenanceRequests = await MaintenanceRequest.find({
+      pgOwner: ownerId,
+    });
+    const pending = maintenanceRequests.filter(
+      (r) => r.status === "in-progress"
+    ).length;
+    const completed = maintenanceRequests.filter(
+      (r) => r.status === "resolved"
+    ).length;
 
     // Pending bookings count
-    const pendingBookings = await Booking.countDocuments({ pgOwner: ownerId, status: "pending" });
+    const pendingBookings = await Booking.countDocuments({
+      pgOwner: ownerId,
+      status: "pending",
+    });
 
     // Recent activity (from bookings and maintenance)
     const recentActivity = [];
@@ -1585,24 +1621,42 @@ exports.getOwnerDashboardStats = async (req, res) => {
           type: "booking_request",
           title: "New Booking Request",
           description: `Room ${b.room} – ${b.bedsBooked} bed(s)`,
-          time: b.updatedAt.toLocaleString("en-IN", { timeZone: "Asia/Kolkata", hour: 'numeric', minute: '2-digit', hour12: true, day: 'numeric', month: 'short' }),
-
+          time: b.updatedAt.toLocaleString("en-IN", {
+            timeZone: "Asia/Kolkata",
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+            day: "numeric",
+            month: "short",
+          }),
         });
       } else if (b.status === "confirmed") {
         recentActivity.push({
           type: "booking_confirmed",
           title: "Booking Confirmed",
           description: `Room ${b.room} confirmed`,
-          time: b.updatedAt.toLocaleString("en-IN", { timeZone: "Asia/Kolkata", hour: 'numeric', minute: '2-digit', hour12: true, day: 'numeric', month: 'short' }),
-
+          time: b.updatedAt.toLocaleString("en-IN", {
+            timeZone: "Asia/Kolkata",
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+            day: "numeric",
+            month: "short",
+          }),
         });
       } else if (b.status === "rejected") {
         recentActivity.push({
           type: "booking_rejected",
           title: "Booking Rejected",
           description: `Room ${b.room} was rejected`,
-          time: b.updatedAt.toLocaleString("en-IN", { timeZone: "Asia/Kolkata", hour: 'numeric', minute: '2-digit', hour12: true, day: 'numeric', month: 'short' }),
-
+          time: b.updatedAt.toLocaleString("en-IN", {
+            timeZone: "Asia/Kolkata",
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+            day: "numeric",
+            month: "short",
+          }),
         });
       }
     });
@@ -1617,10 +1671,18 @@ exports.getOwnerDashboardStats = async (req, res) => {
 
         recentActivity.push({
           type,
-          title: `Maintenance ${req.status.charAt(0).toUpperCase() + req.status.slice(1)}`,
+          title: `Maintenance ${
+            req.status.charAt(0).toUpperCase() + req.status.slice(1)
+          }`,
           description: req.message,
-          time: b.updatedAt.toLocaleString("en-IN", { timeZone: "Asia/Kolkata", hour: 'numeric', minute: '2-digit', hour12: true, day: 'numeric', month: 'short' }),
-
+          time: req.updatedAt.toLocaleString("en-IN", {
+            timeZone: "Asia/Kolkata",
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+            day: "numeric",
+            month: "short",
+          }),
         });
       });
 
@@ -1648,5 +1710,3 @@ exports.getOwnerDashboardStats = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch dashboard data" });
   }
 };
-
-
