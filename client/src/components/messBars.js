@@ -37,7 +37,7 @@ function MessBars({
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
-  const [liked, setLiked] = useState<{ [key: string]: boolean }>({});
+  const [liked, setLiked] = useState({});
 
   const [lastCardRef, lastCardInView] = useInView({
     threshold: 0.1,
@@ -305,7 +305,8 @@ function MessBars({
                         onClick={() => toggleLike(owner._id)}
                          className="absolute top-2 right-2 text-2xl text-red-500 hover:text-white"
                       >
-                        <AiOutlineHeart />
+                      {liked[owner._id] ? (<AiFillHeart />) : ( <AiOutlineHeart />)}
+                       
                       </button>
                     </>
                   </div>
