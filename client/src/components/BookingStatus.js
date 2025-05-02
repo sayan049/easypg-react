@@ -343,6 +343,33 @@ class BookingStatusErrorBoundary extends React.Component {
     return this.props.children;
   }
 }
+const BookingSkeletonCard = () => (
+  <div className="w-full md:w-[48%] bg-white rounded-xl shadow p-4 animate-pulse space-y-4">
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 bg-gray-200 rounded-full" />
+      <div className="flex-1 space-y-2">
+        <div className="h-4 bg-gray-200 rounded w-3/4" />
+        <div className="h-3 bg-gray-100 rounded w-1/2" />
+      </div>
+    </div>
+    <div className="space-y-2">
+      <div className="h-4 bg-gray-200 rounded w-full" />
+      <div className="h-4 bg-gray-200 rounded w-5/6" />
+      <div className="h-4 bg-gray-200 rounded w-3/4" />
+    </div>
+    <div className="h-8 bg-gray-300 rounded w-full" />
+  </div>
+);
+
+const StatSkeletonCard = () => (
+  <div className="bg-white rounded-xl shadow p-4 flex items-center justify-between animate-pulse">
+    <div className="space-y-2 w-full">
+      <div className="h-3 bg-gray-200 rounded w-1/2" />
+      <div className="h-6 bg-gray-300 rounded w-1/3" />
+    </div>
+    <div className="w-6 h-6 bg-gray-300 rounded-full" />
+  </div>
+);
 
 const BookingStatus = ({ owner }) => {
   const [tab, setTab] = useState("pending");
@@ -438,7 +465,7 @@ const BookingStatus = ({ owner }) => {
   const fetchAllBookings = async () => {
     try {
       setLoading((prev) => ({ ...prev, list: true }));
-      
+
       const response = await axios.get(`${baseurl}/auth/bookings/owner/all`, {
         params: {
           limit,
@@ -449,7 +476,7 @@ const BookingStatus = ({ owner }) => {
       });
 
       const { pending, confirmed, rejected } = response.data;
-console.log("All bookings response:", response.data);
+      console.log("All bookings response:", response.data);
       setBookings({
         pending: {
           data: pending.bookings || [],
@@ -469,7 +496,8 @@ console.log("All bookings response:", response.data);
       });
 
       setStats({
-        total: (pending.total || 0) + (confirmed.total || 0) + (rejected.total || 0),
+        total:
+          (pending.total || 0) + (confirmed.total || 0) + (rejected.total || 0),
         active: confirmed.total || 0,
         pending: pending.total || 0,
         rejected: rejected.total || 0,
@@ -541,7 +569,6 @@ console.log("All bookings response:", response.data);
   const handleTabChange = (newTab) => {
     setTab(newTab);
   };
-  
 
   const handleStatusChange = async (bookingId, status, reason = "") => {
     try {
@@ -666,12 +693,23 @@ console.log("All bookings response:", response.data);
   // };
   if (loading.list) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="p-4 space-y-6">
+        {/* Skeleton Stats Section */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <StatSkeletonCard key={i} />
+          ))}
+        </div>
+
+        {/* Skeleton Booking Cards */}
+        <div className="flex flex-col md:flex-row md:flex-wrap gap-4">
+          {[...Array(4)].map((_, i) => (
+            <BookingSkeletonCard key={i} />
+          ))}
+        </div>
       </div>
     );
   }
-  
 
   if (
     !loading.list &&
@@ -693,7 +731,6 @@ console.log("All bookings response:", response.data);
       </div>
     );
   }
-  
 
   return (
     <BookingStatusErrorBoundary>
@@ -781,8 +818,10 @@ console.log("All bookings response:", response.data);
           </div>
 
           {loading.list && loading.tabChange ? (
-            <div className="flex justify-center py-12">
-              <div className="animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent"></div>
+            <div className="flex flex-wrap gap-4">
+              {[...Array(4)].map((_, i) => (
+                <BookingSkeletonCard key={i} />
+              ))}
             </div>
           ) : (
             <>
