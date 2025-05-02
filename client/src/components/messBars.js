@@ -62,6 +62,7 @@ function MessBars({
   const toggleLike = async (id) => {
     setLiked((prev) => ({ ...prev, [id]: !prev[id] }));
     try {
+      console.log("Toggling like for mess ID:", id, "New state:", !liked[id], likedMessesUrl);
       await axios.post(likedMessesUrl, {
         messId: id,
         liked: !liked[id], // Send the new state
