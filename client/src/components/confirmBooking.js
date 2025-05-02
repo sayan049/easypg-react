@@ -12,7 +12,7 @@ function StickyBookingCard({ owner }) {
   const clickBook=()=>{
     const ownerParams = new URLSearchParams();
     ownerParams.set("owner",json.stringify(owner));
-    Navigate(`/confirmBooking?${ownerParams}`);
+    Navigate(`/booking?${ownerParams}`);
   }
   return (
     <div
