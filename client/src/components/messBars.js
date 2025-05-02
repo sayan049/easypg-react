@@ -63,10 +63,18 @@ function MessBars({
     const newLikedState = !liked[id];
     setLiked((prev) => ({ ...prev, [id]: newLikedState }));
     try {
-      await axios.post(likedMessesUrl, {
-        messId: id,
-        liked: newLikedState,
-      });
+      await axios.post(
+        likedMessesUrl,
+        {
+          messId: id,
+          liked: newLikedState,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // or however you store the token
+          },
+        }
+      );
     } catch (err) {
       console.error("Error liking mess:", err);
       // Revert the change
