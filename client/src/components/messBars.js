@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { findMessUrl } from "../constant/urls";
 import { useInView } from "react-intersection-observer";
 import Skeleton from "./Skeleton";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import {
   FaWind,
   FaTv,
@@ -284,15 +285,23 @@ function MessBars({
                       alt="Mess"
                       className="w-full h-full object-cover"
                     />
-                    {owner.roomInfo?.some((room) => room.roomAvailable) ? (
-                      <div className="absolute bottom-2 right-2  bg-green-100  bg-white text-green-700 text-xs px-2 py-1 rounded">
-                        Available
-                      </div>)
-                      :(
+                    <>
+                      {owner.roomInfo?.some((room) => room.roomAvailable) ? (
+                        <div className="absolute bottom-2 right-2  bg-green-100  bg-white text-green-700 text-xs px-2 py-1 rounded">
+                          Available
+                        </div>
+                      ) : (
                         <div className="absolute bottom-2 right-2  bg-red-100  bg-white text-red-700 text-xs px-2 py-1 rounded">
                           Not Available
                         </div>
-                    )}
+                      )}
+                      <button
+                        onClick={() => console.log("Liked")}
+                         className="absolute top-2 right-2 text-2xl text-red-500 hover:text-white hover:bg-red-500 bg-white rounded-full p-1"
+                      >
+                        <AiOutlineHeart />
+                      </button>
+                    </>
                   </div>
                 )}
 
