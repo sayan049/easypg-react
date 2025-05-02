@@ -1543,4 +1543,106 @@ exports.submitFeedback = async (req, res) => {
     return res.status(500).json({ message: "Server error while submitting feedback" });
   }
 };
+//ownerdashboard data and stats and recent activity
+
+
+exports.getOwnerDashboardStats = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+
+    // Total Revenue from confirmed bookings
+    const confirmedBookings = await Booking.find({ pgOwner: ownerId, status: "confirmed" });
+    const totalRevenue = confirmedBookings.reduce((sum, b) => sum + (b.payment?.totalAmount || 0), 0);
+
+    // Room stats
+    const ownerData = await PgOwner.findById(ownerId);
+    const totalRooms = Array.isArray(ownerData.roomInfo) ? ownerData.roomInfo.length : 0;
+
+    const roomsAvailable = Array.isArray(ownerData.roomInfo)
+      ? ownerData.roomInfo.filter((room) => room.roomAvailable === true).length
+      : 0;
+    
+    
+
+    // Maintenance requests
+    const maintenanceRequests = await MaintenanceRequest.find({ pgOwner: ownerId });
+    const pending = maintenanceRequests.filter((r) => r.status === "in-progress").length;
+    const completed = maintenanceRequests.filter((r) => r.status === "resolved").length;
+
+    // Pending bookings count
+    const pendingBookings = await Booking.countDocuments({ pgOwner: ownerId, status: "pending" });
+
+    // Recent activity (from bookings and maintenance)
+    const recentActivity = [];
+
+    const recentBookings = await Booking.find({ pgOwner: ownerId })
+      .sort({ updatedAt: -1 })
+      .limit(10);
+
+    recentBookings.forEach((b) => {
+      if (b.status === "pending") {
+        recentActivity.push({
+          type: "booking_request",
+          title: "New Booking Request",
+          description: `Room ${b.room} – ${b.bedsBooked} bed(s)`,
+          time: b.updatedAt.toLocaleString(),
+        });
+      } else if (b.status === "confirmed") {
+        recentActivity.push({
+          type: "booking_confirmed",
+          title: "Booking Confirmed",
+          description: `Room ${b.room} confirmed`,
+          time: b.updatedAt.toLocaleString(),
+        });
+      } else if (b.status === "rejected") {
+        recentActivity.push({
+          type: "booking_rejected",
+          title: "Booking Rejected",
+          description: `Room ${b.room} was rejected`,
+          time: b.updatedAt.toLocaleString(),
+        });
+      }
+    });
+
+    maintenanceRequests
+      .sort((a, b) => b.updatedAt - a.updatedAt)
+      .slice(0, 10)
+      .forEach((req) => {
+        let type = "maintenance_new";
+        if (req.status === "resolved") type = "maintenance_resolved";
+        else if (req.status === "cancelled") type = "maintenance_cancelled";
+
+        recentActivity.push({
+          type,
+          title: `Maintenance ${req.status.charAt(0).toUpperCase() + req.status.slice(1)}`,
+          description: req.message,
+          time: req.updatedAt.toLocaleString(),
+        });
+      });
+
+    // Sort all activity by latest time
+    recentActivity.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+    // Final response
+    res.status(200).json({
+      stats: {
+        totalRevenue,
+        revenueChangePercent: 12, // Static for now
+        roomsAvailable,
+        totalRooms,
+        serviceRequests: {
+          total: maintenanceRequests.length,
+          pending,
+          completed,
+        },
+        pendingBookings,
+      },
+      recentActivity,
+    });
+  } catch (error) {
+    console.error("Dashboard stats error:", error);
+    res.status(500).json({ message: "Failed to fetch dashboard data" });
+  }
+};
+
 
