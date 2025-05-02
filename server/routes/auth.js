@@ -13,7 +13,7 @@ const forgotPasswordOwner = require("../controllers/forgotPasswordOwner")
 const resetPasswordOwner = require("../controllers/resetPasswordOwner")
 const resetPasswordDashboard=require("../controllers/resetPasswordDashboard")
 const  updatePassword  =require("../controllers/updatePasswordDashboardOwner");
-const likedMesses = require("../controllers/likedMess");
+const likedMess = require("../controllers/likedMess");
 const frontendUrl = process.env.CLIENT_URL || 'http://localhost:3000';
 const jwt = require('jsonwebtoken');
 const {
@@ -64,7 +64,7 @@ router.post("/signup", authHandlers.signupHandler);
 router.post("/login", authHandlers.loginHandler);
 router.post("/signupOwner",uploadTemp, uploadToCloudinary, authHandlers.signupHandlerOwner);
 router.post("/loginOwner", authHandlers.loginHandlerOwner);
-router.post("/likedMess", authenticateJWT, likedMesses);
+router.post("/likedMess", authenticateJWT, likedMess);
 router.get("/findMess", authHandlers.findMess); 
 
 // router.get("/protected", ensureAuthenticated, (req, res) => {
