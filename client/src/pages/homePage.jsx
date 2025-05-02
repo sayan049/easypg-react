@@ -19,7 +19,7 @@ const HomePage = () => {
   const [message, setMessage] = useState("");
   const [searchItem, setSearchItem] = useState("");
   // const [IsAuthenticated, setIsAuthenticated] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);  
   const [logoutStatus, setLogoutStatus] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);

@@ -728,6 +728,7 @@ import {
   MdOpacity,
   MdBed,
   MdKitchen,
+  MdOutlineHome,
 } from "react-icons/md";
 
 const DashboardContent = ({
@@ -930,607 +931,591 @@ const DashboardContent = ({
         </div>
       </div>
       {/* pending stay section */}
-      {pendingStay.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-lg font-semibold mb-4 text-gray-700">
-            Pending Stays ({pendingStay.length})
-          </h2>
-          <div className="space-y-6">
-            {pendingStay.map((stay, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-xl shadow-md overflow-hidden"
-              >
-                {/* Header with PG name and status */}
-                <div className="bg-yellow-300 p-4 border-b border-yellow-100">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                        <FaHome className="text-blue-600" />
-                        {stay.pgOwner?.messName || "PG Name Not Available"}
-                      </h3>
-                      <p className="text-sm text-blue-600 font-medium mt-1">
-                        Pending Stay • Check-in:{" "}
-                        {formatDate(stay.period?.startDate)}
-                      </p>
-                    </div>
-                    <span className="text-yellow-700 bg-yellow-100 text-xs px-3 py-1 rounded-full">
-                      PENDING
+      {pendingStay?.length > 0 ? (
+        <div className="space-y-6 mb-6">
+          <h3 className="text-lg font-semibold">
+            Pending Accommodations ({pendingStay.length})
+          </h3>
+
+          {pendingStay.map((stay, index) => (
+            <div
+              key={stay._id || index}
+              className="bg-white shadow-md p-6 rounded-xl border-l-4 border-yellow-200"
+            >
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h2 className="text-xl font-bold flex items-center gap-2">
+                    <MdOutlineHome className="text-blue-500" />
+                    {stay.pgOwner?.messName || "PG Name Not Available"}
+                  </h2>
+                  {pendingStay.length > 1 && (
+                    <span className="text-sm text-gray-500">
+                      Stay #{index + 1}
                     </span>
-                  </div>
-                </div>
-
-                {/* PG Details */}
-                <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Owner Information */}
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="font-medium text-gray-700 mb-3 flex items-center gap-2">
-                        <FaUser className="text-gray-500" /> Owner Details
-                      </h4>
-                      <div className="space-y-2 pl-6">
-                        <p className="text-sm text-gray-600">
-                          {stay.pgOwner?.firstName} {stay.pgOwner?.lastName}
-                        </p>
-                        <p className="text-sm text-gray-600 flex items-center gap-2">
-                          <FaEnvelope className="text-gray-400" />{" "}
-                          {stay.pgOwner?.email}
-                        </p>
-                        <p className="text-sm text-gray-600 flex items-center gap-2">
-                          <FaPhone className="text-gray-400" />{" "}
-                          {stay.pgOwner?.mobileNo}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="font-medium text-gray-700 mb-3 flex items-center gap-2">
-                        <FaMapMarkerAlt className="text-gray-500" /> Address
-                      </h4>
-                      <p className="text-sm text-gray-600 pl-6">
-                        {stay.pgOwner?.address}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Stay Information */}
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="font-medium text-gray-700 mb-3 flex items-center gap-2">
-                        <FaBed className="text-gray-500" /> Room Details
-                      </h4>
-
-                      <div className="space-y-2 pl-6">
-                        {/* PG Type with Gender */}
-                        <p className="flex items-center gap-2 text-sm">
-                          <span
-                            className={`inline-flex items-center gap-2 px-3 py-1 rounded-full font-medium  transition-colors duration-300 ${
-                              stay.pgOwner?.gender === "Girls Pg"
-                                ? "bg-pink-100 text-pink-600"
-                                : stay.pgOwner?.gender === "Boys Pg"
-                                ? "bg-blue-100 text-blue-600"
-                                : stay.pgOwner?.gender === "Coed Pg"
-                                ? "bg-green-100 text-green-600"
-                                : "bg-gray-100" // default color if not specified
-                            }`}
-                          >
-                            {stay.pgOwner?.gender === "Girls Pg" && (
-                              <FaFemale className="text-xs" />
-                            )}
-                            {stay.pgOwner?.gender === "Boys Pg" && (
-                              <FaMale className="text-xs" />
-                            )}
-                            {stay.pgOwner?.gender === "Coed Pg" && (
-                              <FaUsers className="text-xs" />
-                            )}
-                            {stay.pgOwner?.gender || "Not specified"}
-                          </span>
-                        </p>
-
-                        {/* Room Information */}
-                        <p className="text-sm text-gray-600">
-                          <strong>Room:</strong> {stay.room || "Not specified"}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          <strong>Beds Booked:</strong> {stay.bedsBooked || 0}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          <strong>Price:</strong> ₹{stay.pricePerHead || 0}
-                          /month
-                        </p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="font-medium text-gray-700 mb-3 flex items-center gap-2">
-                        <FaCalendarAlt className="text-gray-500" /> Stay Period
-                      </h4>
-                      <div className="space-y-2 pl-6">
-                        <p className="text-sm text-gray-600">
-                          {formatDate(stay.period?.startDate)} -{" "}
-                          {formatDate(stay.period?.endDate)}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          Duration: {stay.period?.durationMonths} months
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          Total: ₹{stay.payment?.totalAmount || "N/A"}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Amenities */}
-                  {stay.pgOwner?.facility && (
-                    <div className="space-y-4">
-                      <h4 className="font-medium text-gray-700 mb-3">
-                        Amenities
-                      </h4>
-                      <div className="flex flex-wrap gap-3">
-                        {stay.pgOwner.facility.includes("A/C") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdOutlineAcUnit className="text-blue-500" /> A/C
-                          </span>
-                        )}
-                        {stay.pgOwner.facility.includes("TV") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdTv className="text-blue-500" /> TV
-                          </span>
-                        )}
-                        {stay.pgOwner.facility.includes("Power Backup") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdOutlinePower className="text-blue-500" /> Power
-                            Backup
-                          </span>
-                        )}
-                        {stay.pgOwner.facility.includes("WiFi") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdOutlineWifi className="text-blue-500" /> WiFi
-                          </span>
-                        )}
-                        {stay.pgOwner.facility.includes("Kitchen") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdOutlineKitchen className="text-blue-500" />{" "}
-                            Kitchen
-                          </span>
-                        )}
-                        {stay.pgOwner.facility.includes("Tank Water") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdOpacity className="text-blue-500" /> Tank Water
-                          </span>
-                        )}
-                        {stay.pgOwner.facility.includes("Double Bed") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdBed className="text-blue-500" /> Double Bed
-                          </span>
-                        )}
-                      </div>
-                    </div>
                   )}
                 </div>
+              </div>
 
-                {/* Action Buttons */}
-                <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-between items-center">
-                  <div className="flex gap-3">
-                    {showCancelInput === stay._id ? (
-                      <div className="space-y-2">
-                        <textarea
-                          rows="3"
-                          className="w-full border rounded p-2 text-sm"
-                          placeholder="Optional: Reason for cancellation"
-                          value={cancelReason}
-                          onChange={(e) => setCancelReason(e.target.value)}
-                        />
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleCancelBooking(stay._id)}
-                            className="px-3 py-1 bg-red-500 text-white rounded text-sm"
-                          >
-                            Submit Cancel
-                          </button>
-                          <button
-                            onClick={() => {
-                              setShowCancelInput(null);
-                              setCancelReason("");
-                            }}
-                            className="px-3 py-1 border rounded text-sm"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => setShowCancelInput(stay._id)}
-                        className="px-4 py-2 text-sm border border-red-500 text-red-500 rounded-md hover:bg-red-50"
-                      >
-                        Cancel Booking
-                      </button>
-                    )}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Owner Info */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-gray-700 flex items-center gap-2">
+                    <MdPersonOutline /> Owner Details
+                  </h4>
+                  <div className="pl-6 space-y-2">
+                    <p className="text-sm text-gray-600">
+                      {stay.pgOwner?.firstName} {stay.pgOwner?.lastName}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <MdEmail /> {stay.pgOwner?.email || "Email not specified"}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <MdPhone />{" "}
+                      {stay.pgOwner?.mobileNo || "Phone not specified"}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <HiOutlineLocationMarker />{" "}
+                      {stay.pgOwner?.address || "Address not specified"}
+                    </p>
+                  </div>
+                </div>
 
-                    <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                      Contact Owner
-                    </button>
+                {/* Stay Info */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-gray-700 flex items-center gap-2">
+                    <FaBed /> Room Details
+                  </h4>
+                  <div className="pl-6 space-y-2">
+                    <p className="text-sm text-gray-600">
+                      {stay.room || "Room not specified"}
+                      {stay.bedsBooked && (
+                        <span>
+                          {" "}
+                          ({stay.bedsBooked} bed{stay.bedsBooked > 1 ? "s" : ""}
+                          )
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <FaRupeeSign />
+                      {stay.payment?.totalAmount ? (
+                        <>
+                          ₹{stay.payment.totalAmount}
+                          {stay.pricePerHead && (
+                            <span> (₹{stay.pricePerHead}/month)</span>
+                          )}
+                        </>
+                      ) : (
+                        "Price not available"
+                      )}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <FaCalendarAlt />
+                      {stay.period?.startDate
+                        ? new Date(stay.period.startDate).toLocaleDateString()
+                        : "Start date not specified"}{" "}
+                      -{" "}
+                      {stay.period?.endDate
+                        ? new Date(stay.period.endDate).toLocaleDateString()
+                        : "End date not specified"}
+                    </p>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+
+              {/* Amenities */}
+              {stay.pgOwner?.facility?.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="font-medium text-gray-700 mb-2">Amenities</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {stay.pgOwner.facility.includes("A/C") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdOutlineAcUnit className="text-blue-500" /> A/C
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("TV") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdTv className="text-blue-500" /> TV
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("Power Backup") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdOutlinePower className="text-blue-500" /> Power
+                        Backup
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("WiFi") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdOutlineWifi className="text-blue-500" /> WiFi
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("Kitchen") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdKitchen className="text-blue-500" /> Kitchen
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("Tank Water") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdOpacity className="text-blue-500" /> Tank Water
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("Double Bed") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdBed className="text-blue-500" /> Double Bed
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons: Cancel + Contact */}
+              <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-between items-center mt-6">
+                <div className="flex gap-3 w-full md:w-auto">
+                  {showCancelInput === stay._id ? (
+                    <div className="space-y-2 w-full">
+                      <textarea
+                        rows="3"
+                        className="w-full border rounded p-2 text-sm"
+                        placeholder="Optional: Reason for cancellation"
+                        value={cancelReason}
+                        onChange={(e) => setCancelReason(e.target.value)}
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleCancelBooking(stay._id)}
+                          className="px-3 py-1 bg-red-500 text-white rounded text-sm"
+                        >
+                          Submit Cancel
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowCancelInput(null);
+                            setCancelReason("");
+                          }}
+                          className="px-3 py-1 border rounded text-sm"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setShowCancelInput(stay._id)}
+                      className="px-4 py-2 text-sm border border-red-500 text-red-500 rounded-md hover:bg-red-50"
+                    >
+                      Cancel Booking
+                    </button>
+                  )}
+
+                  <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    Contact Owner
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="bg-white shadow-md p-6 rounded-xl mb-6 text-center">
+          <MdOutlineHome className="mx-auto text-4xl text-gray-400 mb-3" />
+          <h3 className="text-lg font-semibold text-gray-700">
+            No Pending Stay
+          </h3>
+          <p className="text-gray-500 mt-1">
+            You don't have any Pending accommodations right now.
+          </p>
         </div>
       )}
+
       {/* Upcoming Stays Section - Enhanced UI */}
-      {upcomingStay.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-lg font-semibold mb-4 text-gray-700">
-            Upcoming Stays ({upcomingStay.length})
-          </h2>
-          <div className="space-y-6">
-            {upcomingStay.map((stay, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-xl shadow-md overflow-hidden"
-              >
-                {/* Header with PG name and status */}
-                <div className="bg-green-300 p-4 border-b border-green-100">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                        <FaHome className="text-blue-600" />
-                        {stay.pgOwner?.messName || "PG Name Not Available"}
-                      </h3>
-                      <p className="text-sm text-blue-600 font-medium mt-1">
-                        Upcoming Stay • Check-in:{" "}
-                        {formatDate(stay.period?.startDate)}
-                      </p>
-                    </div>
-                    <span className="text-green-700 bg-green-100 text-xs px-3 py-1 rounded-full">
-                      CONFIRMED
+      {upcomingStay?.length > 0 ? (
+        <div className="space-y-6 mb-6">
+          <h3 className="text-lg font-semibold">
+            Upcoming Accommodations ({upcomingStay.length})
+          </h3>
+
+          {upcomingStay.map((stay, index) => (
+            <div
+              key={stay._id || index}
+              className="bg-white shadow-md p-6 rounded-xl border-l-4 border-blue-200"
+            >
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h2 className="text-xl font-bold flex items-center gap-2">
+                    <MdOutlineHome className="text-blue-500" />
+                    {stay.pgOwner?.messName || "PG Name Not Available"}
+                  </h2>
+                  {upcomingStay.length > 1 && (
+                    <span className="text-sm text-gray-500">
+                      Stay #{index + 1}
                     </span>
-                  </div>
-                </div>
-
-                {/* PG Details */}
-                <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Owner Information */}
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="font-medium text-gray-700 mb-3 flex items-center gap-2">
-                        <FaUser className="text-gray-500" /> Owner Details
-                      </h4>
-                      <div className="space-y-2 pl-6">
-                        <p className="text-sm text-gray-600">
-                          {stay.pgOwner?.firstName} {stay.pgOwner?.lastName}
-                        </p>
-                        <p className="text-sm text-gray-600 flex items-center gap-2">
-                          <FaEnvelope className="text-gray-400" />{" "}
-                          {stay.pgOwner?.email}
-                        </p>
-                        <p className="text-sm text-gray-600 flex items-center gap-2">
-                          <FaPhone className="text-gray-400" />{" "}
-                          {stay.pgOwner?.mobileNo}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="font-medium text-gray-700 mb-3 flex items-center gap-2">
-                        <FaMapMarkerAlt className="text-gray-500" /> Address
-                      </h4>
-                      <p className="text-sm text-gray-600 pl-6">
-                        {stay.pgOwner?.address}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Stay Information */}
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="font-medium text-gray-700 mb-3 flex items-center gap-2">
-                        <FaBed className="text-gray-500" /> Room Details
-                      </h4>
-
-                      <div className="space-y-2 pl-6">
-                        {/* PG Type with Gender */}
-                        <p className="flex items-center gap-2 text-sm">
-                          <span
-                            className={`inline-flex items-center gap-2 px-3 py-1 rounded-full font-medium  transition-colors duration-300 ${
-                              stay.pgOwner?.gender === "Girls Pg"
-                                ? "bg-pink-100 text-pink-600"
-                                : stay.pgOwner?.gender === "Boys Pg"
-                                ? "bg-blue-100 text-blue-600"
-                                : stay.pgOwner?.gender === "Coed Pg"
-                                ? "bg-green-100 text-green-600"
-                                : "bg-gray-100" // default color if not specified
-                            }`}
-                          >
-                            {stay.pgOwner?.gender === "Girls Pg" && (
-                              <FaFemale className="text-xs" />
-                            )}
-                            {stay.pgOwner?.gender === "Boys Pg" && (
-                              <FaMale className="text-xs" />
-                            )}
-                            {stay.pgOwner?.gender === "Coed Pg" && (
-                              <FaUsers className="text-xs" />
-                            )}
-                            {stay.pgOwner?.gender || "Not specified"}
-                          </span>
-                        </p>
-
-                        {/* Room Information */}
-                        <p className="text-sm text-gray-600">
-                          <strong>Room:</strong> {stay.room || "Not specified"}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          <strong>Beds Booked:</strong> {stay.bedsBooked || 0}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          <strong>Price:</strong> ₹{stay.pricePerHead || 0}
-                          /month
-                        </p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="font-medium text-gray-700 mb-3 flex items-center gap-2">
-                        <FaCalendarAlt className="text-gray-500" /> Stay Period
-                      </h4>
-                      <div className="space-y-2 pl-6">
-                        <p className="text-sm text-gray-600">
-                          {formatDate(stay.period?.startDate)} -{" "}
-                          {formatDate(stay.period?.endDate)}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          Duration: {stay.period?.durationMonths} months
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          Total: ₹{stay.payment?.totalAmount || "N/A"}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Amenities */}
-                  {stay.pgOwner?.facility && (
-                    <div className="space-y-4">
-                      <h4 className="font-medium text-gray-700 mb-3">
-                        Amenities
-                      </h4>
-                      <div className="flex flex-wrap gap-3">
-                        {stay.pgOwner.facility.includes("A/C") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdOutlineAcUnit className="text-blue-500" /> A/C
-                          </span>
-                        )}
-                        {stay.pgOwner.facility.includes("TV") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdTv className="text-blue-500" /> TV
-                          </span>
-                        )}
-                        {stay.pgOwner.facility.includes("Power Backup") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdOutlinePower className="text-blue-500" /> Power
-                            Backup
-                          </span>
-                        )}
-                        {stay.pgOwner.facility.includes("WiFi") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdOutlineWifi className="text-blue-500" /> WiFi
-                          </span>
-                        )}
-                        {stay.pgOwner.facility.includes("Kitchen") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdOutlineKitchen className="text-blue-500" />{" "}
-                            Kitchen
-                          </span>
-                        )}
-                        {stay.pgOwner.facility.includes("Tank Water") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdOpacity className="text-blue-500" /> Tank Water
-                          </span>
-                        )}
-                        {stay.pgOwner.facility.includes("Double Bed") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdBed className="text-blue-500" /> Double Bed
-                          </span>
-                        )}
-                      </div>
-                    </div>
                   )}
                 </div>
+              </div>
 
-                {/* Action Buttons */}
-                <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-between items-center">
-                  <div className="flex gap-3">
-                    {showCancelInput === stay._id ? (
-                      <div className="space-y-2">
-                        <textarea
-                          rows="3"
-                          className="w-full border rounded p-2 text-sm"
-                          placeholder="Optional: Reason for cancellation"
-                          value={cancelReason}
-                          onChange={(e) => setCancelReason(e.target.value)}
-                        />
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleCancelBooking(stay._id)}
-                            className="px-3 py-1 bg-red-500 text-white rounded text-sm"
-                          >
-                            Submit Cancel
-                          </button>
-                          <button
-                            onClick={() => {
-                              setShowCancelInput(null);
-                              setCancelReason("");
-                            }}
-                            className="px-3 py-1 border rounded text-sm"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => setShowCancelInput(stay._id)}
-                        className="px-4 py-2 text-sm border border-red-500 text-red-500 rounded-md hover:bg-red-50"
-                      >
-                        Cancel Booking
-                      </button>
-                    )}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Owner Info */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-gray-700 flex items-center gap-2">
+                    <MdPersonOutline /> Owner Details
+                  </h4>
+                  <div className="pl-6 space-y-2">
+                    <p className="text-sm text-gray-600">
+                      {stay.pgOwner?.firstName} {stay.pgOwner?.lastName}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <MdEmail /> {stay.pgOwner?.email || "Email not specified"}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <MdPhone />{" "}
+                      {stay.pgOwner?.mobileNo || "Phone not specified"}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <HiOutlineLocationMarker />{" "}
+                      {stay.pgOwner?.address || "Address not specified"}
+                    </p>
+                  </div>
+                </div>
 
-                    <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                      Contact Owner
-                    </button>
+                {/* Stay Info */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-gray-700 flex items-center gap-2">
+                    <FaBed /> Room Details
+                  </h4>
+                  <div className="pl-6 space-y-2">
+                    <p className="text-sm text-gray-600">
+                      {stay.room || "Room not specified"}
+                      {stay.bedsBooked && (
+                        <span>
+                          {" "}
+                          ({stay.bedsBooked} bed{stay.bedsBooked > 1 ? "s" : ""}
+                          )
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <FaRupeeSign />
+                      {stay.payment?.totalAmount ? (
+                        <>
+                          ₹{stay.payment.totalAmount}
+                          {stay.pricePerHead && (
+                            <span> (₹{stay.pricePerHead}/month)</span>
+                          )}
+                        </>
+                      ) : (
+                        "Price not available"
+                      )}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <FaCalendarAlt />
+                      {stay.period?.startDate
+                        ? new Date(stay.period.startDate).toLocaleDateString()
+                        : "Start date not specified"}{" "}
+                      -{" "}
+                      {stay.period?.endDate
+                        ? new Date(stay.period.endDate).toLocaleDateString()
+                        : "End date not specified"}
+                    </p>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+
+              {/* Amenities */}
+              {stay.pgOwner?.facility?.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="font-medium text-gray-700 mb-2">Amenities</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {stay.pgOwner.facility.includes("A/C") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdOutlineAcUnit className="text-blue-500" /> A/C
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("TV") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdTv className="text-blue-500" /> TV
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("Power Backup") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdOutlinePower className="text-blue-500" /> Power
+                        Backup
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("WiFi") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdOutlineWifi className="text-blue-500" /> WiFi
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("Kitchen") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdKitchen className="text-blue-500" /> Kitchen
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("Tank Water") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdOpacity className="text-blue-500" /> Tank Water
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("Double Bed") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdBed className="text-blue-500" /> Double Bed
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons: Cancel + Contact */}
+              <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-between items-center mt-6">
+                <div className="flex gap-3 w-full md:w-auto">
+                  {showCancelInput === stay._id ? (
+                    <div className="space-y-2 w-full">
+                      <textarea
+                        rows="3"
+                        className="w-full border rounded p-2 text-sm"
+                        placeholder="Optional: Reason for cancellation"
+                        value={cancelReason}
+                        onChange={(e) => setCancelReason(e.target.value)}
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleCancelBooking(stay._id)}
+                          className="px-3 py-1 bg-red-500 text-white rounded text-sm"
+                        >
+                          Submit Cancel
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowCancelInput(null);
+                            setCancelReason("");
+                          }}
+                          className="px-3 py-1 border rounded text-sm"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setShowCancelInput(stay._id)}
+                      className="px-4 py-2 text-sm border border-red-500 text-red-500 rounded-md hover:bg-red-50"
+                    >
+                      Cancel Booking
+                    </button>
+                  )}
+
+                  <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    Contact Owner
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="bg-white shadow-md p-6 rounded-xl mb-6 text-center">
+          <MdOutlineHome className="mx-auto text-4xl text-gray-400 mb-3" />
+          <h3 className="text-lg font-semibold text-gray-700">
+            No Current Stay
+          </h3>
+          <p className="text-gray-500 mt-1">
+            You don't have any upcoming accommodations right now.
+          </p>
         </div>
       )}
 
       {/* Past Stays Section */}
-      {pastStay.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-lg font-semibold mb-4 text-gray-700">
-            Past Stays ({pastStay.length})
-          </h2>
-          <div className="space-y-4">
-            {pastStay.map((stay, index) => (
-              <div
-                key={index}
-                className="bg-white p-6 rounded-lg shadow-md border-l-4 border-gray-200"
-              >
-                <div className="flex flex-col md:flex-row  gap-6">
-                  {/* PG Details */}
-                  <div className="flex-1">
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="bg-gray-100 p-3 rounded-full">
-                        <FaHome className="text-gray-600 text-xl" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-semibold text-gray-800">
-                          {stay.pgOwner?.messName || "Unknown PG"}
-                        </h3>
-                        <p className="text-gray-500">{stay.room || "Room"}</p>
-                      </div>
-                    </div>
+      {pastStay?.length > 0 ? (
+        <div className="space-y-6 mb-6">
+          <h3 className="text-lg font-semibold">
+            Past Accommodations ({pastStay.length})
+          </h3>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* Owner Info */}
-                      <div className="space-y-2">
-                        <h4 className="font-medium text-gray-700 flex items-center gap-2">
-                          <FaUser className="text-gray-500" /> Owner Details
-                        </h4>
-                        <p className="text-sm text-gray-600">
-                          {stay.pgOwner?.firstName} {stay.pgOwner?.lastName}
-                        </p>
-                        <p className="text-sm text-gray-600 flex items-center gap-2">
-                          <FaEnvelope className="text-gray-400" />{" "}
-                          {stay.pgOwner?.email}
-                        </p>
-                        <p className="text-sm text-gray-600 flex items-center gap-2">
-                          <FaPhone className="text-gray-400" />{" "}
-                          {stay.pgOwner?.mobileNo}
-                        </p>
-                      </div>
-
-                      {/* Address */}
-                      <div className="space-y-2">
-                        <h4 className="font-medium text-gray-700 flex items-center gap-2">
-                          <FaMapMarkerAlt className="text-gray-500" /> Address
-                        </h4>
-                        <p className="text-sm text-gray-600">
-                          {stay.pgOwner?.address}
-                        </p>
-                      </div>
-
-                      {/* Room Info */}
-                      <div className="space-y-2">
-                        <h4 className="font-medium text-gray-700 flex items-center gap-2">
-                          <FaBed className="text-gray-500" /> Room Details
-                        </h4>
-                        <p className="text-sm text-gray-600">
-                          Beds Booked: {stay.bedsBooked || 0}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          Price: ₹{stay.pricePerHead}/month
-                        </p>
-                      </div>
-
-                      {/* Dates */}
-                      <div className="space-y-2">
-                        <h4 className="font-medium text-gray-700 flex items-center gap-2">
-                          <FaCalendarAlt className="text-gray-500" /> Stay
-                          Period
-                        </h4>
-                        <p className="text-sm text-gray-600">
-                          {formatDate(stay.period?.startDate)} -{" "}
-                          {formatDate(stay.period?.endDate)}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          Duration: {stay.period?.durationMonths} months
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Amenities */}
-                  {stay.pgOwner?.facility && (
-                    <div className="flex-1">
-                      <h4 className="font-medium text-gray-700 mb-3">
-                        Amenities
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {stay.pgOwner.facility.includes("A/C") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdOutlineAcUnit className="text-blue-500" /> A/C
-                          </span>
-                        )}
-                        {stay.pgOwner.facility.includes("TV") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdTv className="text-blue-500" /> TV
-                          </span>
-                        )}
-                        {stay.pgOwner.facility.includes("Power Backup") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdOutlinePower className="text-blue-500" /> Power
-                            Backup
-                          </span>
-                        )}
-                        {stay.pgOwner.facility.includes("WiFi") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdOutlineWifi className="text-blue-500" /> WiFi
-                          </span>
-                        )}
-                        {stay.pgOwner.facility.includes("Kitchen") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdKitchen className="text-blue-500" /> Kitchen
-                          </span>
-                        )}
-                        {stay.pgOwner.facility.includes("Tank Water") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdOpacity className="text-blue-500" /> Tank Water
-                          </span>
-                        )}
-                        {stay.pgOwner.facility.includes("Double Bed") && (
-                          <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                            <MdBed className="text-blue-500" /> Double Bed
-                          </span>
-                        )}
-                      </div>
-                    </div>
+          {pastStay.map((stay, index) => (
+            <div
+              key={stay._id || index}
+              className="bg-white shadow-md p-6 rounded-xl border-l-4 border-gray-200"
+            >
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h2 className="text-xl font-bold flex items-center gap-2">
+                    <MdOutlineHome className="text-blue-500" />
+                    {stay.pgOwner?.messName || "PG Name Not Available"}
+                  </h2>
+                  {pastStay.length > 1 && (
+                    <span className="text-sm text-gray-500">
+                      Stay #{index + 1}
+                    </span>
                   )}
                 </div>
-
-                {/* Action Buttons */}
-                {/* <div className="flex justify-end mt-6">
-                  <button className="px-4 py-2 text-sm border border-gray-500 text-gray-500 rounded-md hover:bg-gray-50">
-                    Book Again
-                  </button>
-                </div> */}
               </div>
-            ))}
-          </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Owner Info */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-gray-700 flex items-center gap-2">
+                    <MdPersonOutline /> Owner Details
+                  </h4>
+                  <div className="pl-6 space-y-2">
+                    <p className="text-sm text-gray-600">
+                      {stay.pgOwner?.firstName} {stay.pgOwner?.lastName}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <MdEmail /> {stay.pgOwner?.email || "Email not specified"}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <MdPhone />{" "}
+                      {stay.pgOwner?.mobileNo || "Phone not specified"}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <HiOutlineLocationMarker />{" "}
+                      {stay.pgOwner?.address || "Address not specified"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Stay Info */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-gray-700 flex items-center gap-2">
+                    <FaBed /> Room Details
+                  </h4>
+                  <div className="pl-6 space-y-2">
+                    <p className="text-sm text-gray-600">
+                      {stay.room || "Room not specified"}
+                      {stay.bedsBooked && (
+                        <span>
+                          {" "}
+                          ({stay.bedsBooked} bed{stay.bedsBooked > 1 ? "s" : ""}
+                          )
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <FaRupeeSign />
+                      {stay.payment?.totalAmount ? (
+                        <>
+                          ₹{stay.payment.totalAmount}
+                          {stay.pricePerHead && (
+                            <span> (₹{stay.pricePerHead}/month)</span>
+                          )}
+                        </>
+                      ) : (
+                        "Price not available"
+                      )}
+                    </p>
+                    <p className="text-sm text-gray-600 flex items-center gap-2">
+                      <FaCalendarAlt />
+                      {stay.period?.startDate
+                        ? new Date(stay.period.startDate).toLocaleDateString()
+                        : "Start date not specified"}{" "}
+                      -{" "}
+                      {stay.period?.endDate
+                        ? new Date(stay.period.endDate).toLocaleDateString()
+                        : "End date not specified"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Amenities */}
+              {stay.pgOwner?.facility?.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="font-medium text-gray-700 mb-2">Amenities</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {stay.pgOwner.facility.includes("A/C") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdOutlineAcUnit className="text-blue-500" /> A/C
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("TV") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdTv className="text-blue-500" /> TV
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("Power Backup") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdOutlinePower className="text-blue-500" /> Power
+                        Backup
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("WiFi") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdOutlineWifi className="text-blue-500" /> WiFi
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("Kitchen") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdKitchen className="text-blue-500" /> Kitchen
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("Tank Water") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdOpacity className="text-blue-500" /> Tank Water
+                      </span>
+                    )}
+                    {stay.pgOwner.facility.includes("Double Bed") && (
+                      <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                        <MdBed className="text-blue-500" /> Double Bed
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons: Cancel + Contact */}
+              {/* <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-between items-center mt-6">
+                <div className="flex gap-3 w-full md:w-auto">
+                  {showCancelInput === stay._id ? (
+                    <div className="space-y-2 w-full">
+                      <textarea
+                        rows="3"
+                        className="w-full border rounded p-2 text-sm"
+                        placeholder="Optional: Reason for cancellation"
+                        value={cancelReason}
+                        onChange={(e) => setCancelReason(e.target.value)}
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleCancelBooking(stay._id)}
+                          className="px-3 py-1 bg-red-500 text-white rounded text-sm"
+                        >
+                          Submit Cancel
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowCancelInput(null);
+                            setCancelReason("");
+                          }}
+                          className="px-3 py-1 border rounded text-sm"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setShowCancelInput(stay._id)}
+                      className="px-4 py-2 text-sm border border-red-500 text-red-500 rounded-md hover:bg-red-50"
+                    >
+                      Cancel Booking
+                    </button>
+                  )}
+
+                  <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    Contact Owner
+                  </button>
+                </div>
+              </div> */}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="bg-white shadow-md p-6 rounded-xl mb-6 text-center">
+          <MdOutlineHome className="mx-auto text-4xl text-gray-400 mb-3" />
+          <h3 className="text-lg font-semibold text-gray-700">No Past Stay</h3>
+          <p className="text-gray-500 mt-1">
+            You don't have any Past accommodations right now.
+          </p>
         </div>
       )}
 
@@ -1753,3 +1738,230 @@ function formatDate(dateString) {
 }
 
 export default DashboardContent;
+// {currentStay?.length > 0 ? (
+//   <div className="space-y-6 mb-6">
+//     <h3 className="text-lg font-semibold">
+//       Current Accommodations ({currentStay.length})
+//     </h3>
+
+//     {currentStay.map((stay, index) => (
+//       <div
+//         key={stay._id || index}
+//         className="bg-white shadow-md p-6 rounded-xl border-l-4 border-green-200"
+//       >
+//         <div className="flex justify-between items-start mb-4">
+//           <div>
+//             <h2 className="text-xl font-bold flex items-center gap-2">
+//               <MdOutlineHome className="text-blue-500" />
+//               {stay.pgOwner?.messName || "PG Name Not Available"}
+//             </h2>
+//             {currentStay.length > 1 && (
+//               <span className="text-sm text-gray-500">
+//                 Stay #{index + 1}
+//               </span>
+//             )}
+//           </div>
+//         </div>
+
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//           {/* Owner Info */}
+//           <div className="space-y-3">
+//             <h4 className="font-medium text-gray-700 flex items-center gap-2">
+//               <MdPersonOutline /> Owner Details
+//             </h4>
+//             <div className="pl-6 space-y-2">
+//               <p className="text-sm text-gray-600">
+//                 {stay.pgOwner?.firstName} {stay.pgOwner?.lastName}
+//               </p>
+//               <p className="text-sm text-gray-600 flex items-center gap-2">
+//                 <MdEmail /> {stay.pgOwner?.email || "Email not specified"}
+//               </p>
+//               <p className="text-sm text-gray-600 flex items-center gap-2">
+//                 <MdPhone />{" "}
+//                 {stay.pgOwner?.mobileNo || "Phone not specified"}
+//               </p>
+//               <p className="text-sm text-gray-600 flex items-center gap-2">
+//                 <HiOutlineLocationMarker />{" "}
+//                 {stay.pgOwner?.address || "Address not specified"}
+//               </p>
+//             </div>
+//           </div>
+
+//           {/* Stay Info */}
+//           <div className="space-y-3">
+//             <h4 className="font-medium text-gray-700 flex items-center gap-2">
+//               <FaBed /> Room Details
+//             </h4>
+//             <div className="pl-6 space-y-2">
+//               <p className="text-sm text-gray-600">
+//                 {stay.room || "Room not specified"}
+//                 {stay.bedsBooked && (
+//                   <span>
+//                     {" "}
+//                     ({stay.bedsBooked} bed{stay.bedsBooked > 1 ? "s" : ""}
+//                     )
+//                   </span>
+//                 )}
+//               </p>
+//               <p className="text-sm text-gray-600 flex items-center gap-2">
+//                 <FaRupeeSign />
+//                 {stay.payment?.totalAmount ? (
+//                   <>
+//                     ₹{stay.payment.totalAmount}
+//                     {stay.pricePerHead && (
+//                       <span> (₹{stay.pricePerHead}/month)</span>
+//                     )}
+//                   </>
+//                 ) : (
+//                   "Price not available"
+//                 )}
+//               </p>
+//               <p className="text-sm text-gray-600 flex items-center gap-2">
+//                 <FaCalendarAlt />
+//                 {stay.period?.startDate
+//                   ? new Date(stay.period.startDate).toLocaleDateString()
+//                   : "Start date not specified"}{" "}
+//                 -{" "}
+//                 {stay.period?.endDate
+//                   ? new Date(stay.period.endDate).toLocaleDateString()
+//                   : "End date not specified"}
+//               </p>
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* Amenities */}
+//         {stay.pgOwner?.facility?.length > 0 && (
+//           <div className="mt-4">
+//             <h4 className="font-medium text-gray-700 mb-2">Amenities</h4>
+//             <div className="flex flex-wrap gap-2">
+//               {stay.pgOwner.facility.includes("A/C") && (
+//                 <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+//                   <MdOutlineAcUnit className="text-blue-500" /> A/C
+//                 </span>
+//               )}
+//               {stay.pgOwner.facility.includes("TV") && (
+//                 <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+//                   <MdTv className="text-blue-500" /> TV
+//                 </span>
+//               )}
+//               {stay.pgOwner.facility.includes("Power Backup") && (
+//                 <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+//                   <MdOutlinePower className="text-blue-500" /> Power
+//                   Backup
+//                 </span>
+//               )}
+//               {stay.pgOwner.facility.includes("WiFi") && (
+//                 <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+//                   <MdOutlineWifi className="text-blue-500" /> WiFi
+//                 </span>
+//               )}
+//               {stay.pgOwner.facility.includes("Kitchen") && (
+//                 <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+//                   <MdKitchen className="text-blue-500" /> Kitchen
+//                 </span>
+//               )}
+//               {stay.pgOwner.facility.includes("Tank Water") && (
+//                 <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+//                   <MdOpacity className="text-blue-500" /> Tank Water
+//                 </span>
+//               )}
+//               {stay.pgOwner.facility.includes("Double Bed") && (
+//                 <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
+//                   <MdBed className="text-blue-500" /> Double Bed
+//                 </span>
+//               )}
+//             </div>
+//           </div>
+//         )}
+
+//         {/* Buttons: Invoice + Feedback */}
+//         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+//           {stay._id && (
+//             <button
+//               onClick={() => handleDownloadInvoice(stay._id)}
+//               className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg hover:bg-blue-700 bg-blue-600 text-white text-sm font-medium"
+//             >
+//               <FaDownload /> Download Invoice
+//             </button>
+//           )}
+//           <button
+//             onClick={() =>
+//               setShowFeedbackIndex(
+//                 showFeedbackIndex === index ? null : index
+//               )
+//             }
+//             className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg hover:bg-yellow-500 bg-yellow-400 text-white text-sm font-medium"
+//           >
+//             <FaPaperPlane /> Give Feedback
+//           </button>
+//         </div>
+
+//         {/* Feedback Form */}
+//         {showFeedbackIndex === index && (
+//           <div className="mt-4 p-4 border border-yellow-300 rounded-lg bg-yellow-50">
+//             <div className="mb-3">
+//               <p className="text-sm font-medium mb-1">Your Rating:</p>
+//               <div className="flex gap-1">
+//                 {[1, 2, 3, 4, 5].map((star) => (
+//                   <button
+//                     key={star}
+//                     onClick={() =>
+//                       setRatings((prev) => ({
+//                         ...prev,
+//                         [stay._id]: star,
+//                       }))
+//                     }
+//                     className="text-2xl text-yellow-500"
+//                   >
+//                     {ratings[stay._id] >= star ? (
+//                       <AiFillStar />
+//                     ) : (
+//                       <AiOutlineStar />
+//                     )}
+//                   </button>
+//                 ))}
+//               </div>
+//             </div>
+//             <div className="mb-3">
+//               <textarea
+//                 rows={4}
+//                 className="w-full p-2 border border-gray-300 rounded-lg text-sm"
+//                 placeholder="Write your feedback..."
+//                 value={comments[stay._id] || ""}
+//                 onChange={(e) =>
+//                   setComments((prev) => ({
+//                     ...prev,
+//                     [stay._id]: e.target.value,
+//                   }))
+//                 }
+//               ></textarea>
+//             </div>
+//             <button
+//               onClick={() =>
+//                 handleFeedbackSubmit(
+//                   stay._id,
+//                   ratings[stay._id],
+//                   comments[stay._id]
+//                 )
+//               }
+//               className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm"
+//             >
+//               <FaPaperPlane /> Submit Feedback
+//             </button>
+//           </div>
+//         )}
+//       </div>
+//     ))}
+//   </div>
+// ) : (
+//   <div className="bg-white shadow-md p-6 rounded-xl mb-6 text-center">
+//     <MdOutlineHome className="mx-auto text-4xl text-gray-400 mb-3" />
+//     <h3 className="text-lg font-semibold text-gray-700">
+//       No Current Stay
+//     </h3>
+//     <p className="text-gray-500 mt-1">
+//       You don't have any active accommodations right now.
+//     </p>
+//   </div>
+// )}
