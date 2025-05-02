@@ -807,7 +807,7 @@ function NewDashboard() {
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
-    setSidebarOpen(false); // Close sidebar on mobile after tab click
+    setSidebarOpen(false);
   };
 
   const renderContent = () => {
@@ -847,8 +847,8 @@ function NewDashboard() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-gray-100 relative">
-      {/* Mobile Hamburger */}
+    <div className="min-h-screen bg-gray-100">
+      {/* Mobile Header */}
       <div className="md:hidden flex justify-between items-center p-4 bg-white shadow">
         <button onClick={() => setSidebarOpen(true)}>
           <Menu className="w-6 h-6 text-gray-700" />
@@ -857,38 +857,37 @@ function NewDashboard() {
         <div className="w-6 h-6" />
       </div>
 
-      {/* Backdrop */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 z-40" onClick={() => setSidebarOpen(false)}></div>
-      )}
+      <div className="flex">
+        {/* Sidebar */}
+        <aside
+          className={`fixed md:static top-0 left-0 h-full md:h-screen w-64 bg-white border-r p-4 z-50 transition-transform duration-300 transform md:translate-x-0 ${
+            sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          {/* Mobile Close Button */}
+          <div className="md:hidden flex justify-end mb-4">
+            <button onClick={() => setSidebarOpen(false)}>
+              <X className="w-5 h-5 text-gray-500" />
+            </button>
+          </div>
 
-      {/* Sidebar */}
-      <aside
-        className={`fixed top-0 left-0 h-full w-64 bg-white border-r p-4 z-50 transition-transform duration-300 transform md:translate-x-0 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:relative md:translate-x-0`}
-      >
-        {/* Close button for mobile */}
-        <div className="md:hidden flex justify-end mb-4">
-          <button onClick={() => setSidebarOpen(false)}>
-            <X className="w-5 h-5 text-gray-500" />
+          <ProfileHeader userName={userName} />
+          <nav className="flex flex-col gap-4 mt-8">
+            <SidebarButton icon={<Home />} label="Dashboard" active={activeTab === "dashboard"} onClick={() => handleTabChange("dashboard")} />
+            <SidebarButton icon={<CalendarCheck />} label="My Bookings" active={activeTab === "bookings"} onClick={() => handleTabChange("bookings")} />
+            <SidebarButton icon={<CreditCard />} label="My Payments" active={activeTab === "payments"} onClick={() => handleTabChange("payments")} />
+            <SidebarButton icon={<Gear />} label="Settings" active={activeTab === "settings"} onClick={() => handleTabChange("settings")} />
+          </nav>
+          <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-2 rounded-md mt-10 text-red-600 hover:bg-red-100 transition">
+            <LogOutIcon className="w-4 h-4" /> Logout
           </button>
-        </div>
+        </aside>
 
-        <ProfileHeader userName={userName} />
-        <nav className="flex flex-col gap-4 mt-8">
-          <SidebarButton icon={<Home />} label="Dashboard" active={activeTab === "dashboard"} onClick={() => handleTabChange("dashboard")} />
-          <SidebarButton icon={<CalendarCheck />} label="My Bookings" active={activeTab === "bookings"} onClick={() => handleTabChange("bookings")} />
-          <SidebarButton icon={<CreditCard />} label="My Payments" active={activeTab === "payments"} onClick={() => handleTabChange("payments")} />
-          <SidebarButton icon={<Gear />} label="Settings" active={activeTab === "settings"} onClick={() => handleTabChange("settings")} />
-        </nav>
-        <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-2 rounded-md mt-10 text-red-600 hover:bg-red-100 transition">
-          <LogOutIcon className="w-4 h-4" /> Logout
-        </button>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 md:ml-64 p-2 pb-20">{renderContent()}</main>
+        {/* Content */}
+        <main className="flex-1 p-4 ml-0 md:ml-64 transition-all duration-300 ease-in-out">
+          {renderContent()}
+        </main>
+      </div>
     </div>
   );
 }
