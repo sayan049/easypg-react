@@ -299,7 +299,7 @@ const MessFind = () => {
   return (
     <div className="flex flex-col md:flex-row p-4 bg-gray-50 min-h-screen overflow-hidden">
       {/* Sidebar */}
-      <div className="w-full md:w-1/4 bg-white p-4 shadow rounded-md hidden md:block">
+      <div className="w-full md:w-1/4 bg-white p-4 shadow rounded-md hidden md:block h-screen overflow-y-auto">
         <h2 className="text-lg font-bold">Filter</h2>
         <div className="mt-6">
           <h3 className="font-medium">Price</h3>
