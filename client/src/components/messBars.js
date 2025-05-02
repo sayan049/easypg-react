@@ -38,6 +38,7 @@ function MessBars({
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const [liked, setLiked] = useState({});
+  const [showAllAmenities, setShowAllAmenities] = useState({});
 
   const [lastCardRef, lastCardInView] = useInView({
     threshold: 0.1,
@@ -60,7 +61,7 @@ function MessBars({
 
   const toggleLike = (id) => {
     setLiked((prev) => ({ ...prev, [id]: !prev[id] }));
-  }
+  };
 
   const styles = `
     .flip-card {
@@ -260,7 +261,7 @@ function MessBars({
           <div
             key={owner._id}
             ref={index === messData.length - 1 ? lastCardRef : null}
-            className={`relative flip-card mb-4 h-[36rem] md:h-[20rem] lg:h-[16rem] ${
+            className={`relative flip-card mb-4 min-h-[20rem] md:min-h-[16rem] lg:min-h-[14rem] ${
               isChecked ? "w-full" : "w-full"
             } ${
               selected === owner._id && isChecked
@@ -293,20 +294,23 @@ function MessBars({
                     />
                     <>
                       {owner.roomInfo?.some((room) => room.roomAvailable) ? (
-                        <div className="absolute bottom-2 right-2  bg-green-100  bg-white text-green-700 text-xs px-2 py-1 rounded">
+                        <div className="absolute bottom-2 right-2  bg-green-100 text-green-700 text-xs px-2 py-1 rounded">
                           Available
                         </div>
                       ) : (
-                        <div className="absolute bottom-2 right-2  bg-red-100  bg-white text-red-700 text-xs px-2 py-1 rounded">
+                        <div className="absolute bottom-2 right-2  bg-red-100   text-red-700 text-xs px-2 py-1 rounded">
                           Not Available
                         </div>
                       )}
                       <button
                         onClick={() => toggleLike(owner._id)}
-                         className="absolute top-2 right-2 text-2xl text-red-500 hover:text-white"
+                        className="absolute top-2 right-2 text-2xl text-red-500 "
                       >
-                      {liked[owner._id] ? (<AiFillHeart />) : ( <AiOutlineHeart />)}
-                       
+                        {liked[owner._id] ? (
+                          <AiFillHeart />
+                        ) : (
+                          <AiOutlineHeart />
+                        )}
                       </button>
                     </>
                   </div>
@@ -368,7 +372,26 @@ function MessBars({
                       </span>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      {owner.facility?.map((feature, index) => {
+                      {/* {owner.facility?.map((feature, index) => {
+                        const amenity = amenities.find(
+                          (a) =>
+                            a.label.toLowerCase() ===
+                            feature.trim().toLowerCase()
+                        );
+                        return (
+                          <span
+                            key={index}
+                            className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-[rgb(44 164 181)] text-xs rounded-full"
+                          >
+                            {amenity?.icon || null}
+                            {feature}
+                          </span>
+                        );
+                      })} */}
+                      {(showAllAmenities[owner._id]
+                        ? owner.facility
+                        : owner.facility?.slice(0, 3)
+                      )?.map((feature, index) => {
                         const amenity = amenities.find(
                           (a) =>
                             a.label.toLowerCase() ===
@@ -384,6 +407,23 @@ function MessBars({
                           </span>
                         );
                       })}
+
+                      {owner.facility?.length > 3 && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowAllAmenities((prev) => ({
+                              ...prev,
+                              [owner._id]: !prev[owner._id],
+                            }));
+                          }}
+                          className="text-blue-500 text-xs underline"
+                        >
+                          {showAllAmenities[owner._id]
+                            ? "See less"
+                            : "See more"}
+                        </button>
+                      )}
                     </div>
 
                     {owner?.gender && (
