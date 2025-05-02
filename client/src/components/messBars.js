@@ -131,7 +131,7 @@ function MessBars({
   const clickBook = (owner) => {
     const ownerParams = new URLSearchParams();
     ownerParams.set("owner",JSON.stringify(owner));
-    Navigate(`/booking?${ownerParams}`);
+    navigate(`/booking?${ownerParams}`);
   };
 
   const clickCords = (location, id) => {
