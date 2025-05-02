@@ -32,3 +32,4 @@ export const updatePasswordDashboardOwner= `${baseUrl}/auth/updatePasswordDashbo
 export const bookingRequestUrl= `${baseUrl}/auth/bookings`;
 export const bookingApprovalUrl= `${baseUrl}/auth/bookings/:id/status`;
 export const bookingCancelUrl= `${baseUrl}/auth/bookings/:id`;
+const likedMessesUrl= `${baseUrl}/auth/likedMesses`;

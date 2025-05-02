@@ -2,7 +2,7 @@ import axios from "axios";
 import { getDistance } from "ol/sphere";
 import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { findMessUrl } from "../constant/urls";
+import { findMessUr,likedMessesUrl } from "../constant/urls";
 import { useInView } from "react-intersection-observer";
 import Skeleton from "./Skeleton";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
@@ -59,8 +59,16 @@ function MessBars({
     setFlipped((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const toggleLike = (id) => {
+  const toggleLike = async (id) => {
     setLiked((prev) => ({ ...prev, [id]: !prev[id] }));
+    try {
+      await axios.post(likedMessesUrl, {
+        messId: id,
+        liked: !liked[id], // Send the new state
+      });
+    } catch (err) {
+      console.error("Error liking mess:", err);
+    }
   };
 
   const styles = `
