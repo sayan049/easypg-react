@@ -1271,7 +1271,7 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
               )}
                 {stay._id && (
                    <button
-                   onClick={() => handleDownloadInvoice(booking._id)}
+                   onClick={() => handleDownloadInvoice(stay._id)}
                    className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium"
                  >
                    <FaDownload /> Download Invoice
