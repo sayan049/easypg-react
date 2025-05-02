@@ -71,7 +71,7 @@ function MessBars({
         },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // or however you store the token
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         }
       );
