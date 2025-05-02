@@ -591,7 +591,7 @@ const SettingsOwner = ({ userDetails }) => {
 
               {/* Bed Contains */}
               <select
-                className={input}
+                className="border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300 text-gray-700 bg-white"
                 value={room.bedContains}
                 onChange={(e) => {
                   const updatedRooms = [...details.roomInfo];

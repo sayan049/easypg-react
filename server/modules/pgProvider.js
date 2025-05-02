@@ -129,6 +129,16 @@ const pgOwnerSchema = new mongoose.Schema({
         type: Boolean,
         default: false
    } ,
+   feedbacks: [
+    {
+      stayId: { type: mongoose.Schema.Types.ObjectId, required: true },
+      username: { type: String, required: true },
+      rating: { type: Number, required: true, min: 1, max: 5 },
+      comment: { type: String },
+      submittedAt: { type: Date, default: Date.now }
+    }
+  ],
+  
    googleId: {
     type: String,
     unique: true,

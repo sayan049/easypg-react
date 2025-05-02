@@ -1493,3 +1493,54 @@ exports.cancelBooking = async (req, res) => {
     });
   }
 };
+
+//feedback for booking from user
+exports.submitFeedback = async (req, res) => {
+  const userId = req.user.id;
+  const { stayId, rating, comment } = req.body;
+  console.log("User ID for ratings :", userId);
+  console.log(req.body)
+  if (!stayId || !rating) {
+    return res.status(400).json({ message: "stayId and rating are required" });
+  }
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const fullname = `${user.firstName} ${user.lastName}`;
+
+    const stay = await Booking.findById(stayId);
+    if (!stay) {
+      return res.status(404).json({ message: "Stay not found" });
+    }
+
+    // Ensure the user is the student who booked this stay and it's confirmed
+    if (stay.student.toString() !== userId || stay.status !== "confirmed") {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    const pgOwnerId = stay.pgOwner;
+    const pgOwner = await PgOwner.findById(pgOwnerId);
+    if (!pgOwner) {
+      return res.status(404).json({ message: "PG Owner not found" });
+    }
+
+    pgOwner.feedbacks = pgOwner.feedbacks || [];
+    pgOwner.feedbacks.push({
+      stayId,
+      username: fullname,
+      rating,
+      comment,
+    });
+
+    await pgOwner.save();
+
+    return res.status(200).json({ message: "Feedback submitted successfully" });
+  } catch (error) {
+    console.error("Feedback error:", error);
+    return res.status(500).json({ message: "Server error while submitting feedback" });
+  }
+};
+
