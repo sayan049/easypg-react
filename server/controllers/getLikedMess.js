@@ -1,4 +1,4 @@
-const  User  = require('../models/user');
+const  User  = require('../models/user'); // Adjust the path as necessary
 
 const getLikedMess = async (req, res) => {
     const userId = req.user.id;
