@@ -1019,7 +1019,7 @@
 // };
 
 // export default BookingTable;
-import React from "react";
+import {React,useState} from "react";
 import axios from "axios";
 import { baseurl } from "../constant/urls";
 import { toast } from "react-toastify";
@@ -1066,6 +1066,21 @@ const BookingTable = ({
     rejected: "text-red-700 bg-red-100",
     cancelled: "text-gray-700 bg-gray-100",
   };
+  const handleFeedbackSubmit = (stayId, rating, comment) => {
+    if (!rating) {
+      alert("Please provide a star rating.");
+      return;
+    }
+  
+    // Replace this with your actual POST request
+    console.log("Feedback Submitted:", { stayId, rating, comment });
+  
+    // Reset state
+    setRatings((prev) => ({ ...prev, [stayId]: 0 }));
+    setComments((prev) => ({ ...prev, [stayId]: "" }));
+    setShowFeedbackIndex(null);
+  };
+  
 
   const handleDownloadInvoice = async (bookingId) => {
     try {
