@@ -6,7 +6,6 @@ import { findMessUrl, likedMessesUrl ,getLikedMessUrl } from "../constant/urls";
 import { useInView } from "react-intersection-observer";
 import Skeleton from "./Skeleton";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-const token = localStorage.getItem('accessToken'); 
 import {
   FaWind,
   FaTv,
@@ -40,6 +39,7 @@ function MessBars({
   const [page, setPage] = useState(1);
   const [liked, setLiked] = useState({});
   const [showAllAmenities, setShowAllAmenities] = useState({});
+  const token = localStorage.getItem('accessToken'); 
 
   const [lastCardRef, lastCardInView] = useInView({
     threshold: 0.1,
