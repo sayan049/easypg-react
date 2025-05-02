@@ -1074,7 +1074,7 @@ const DashboardContent = ({
               )}
 
               {/* Action Buttons: Cancel + Contact */}
-              <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-between items-center mt-6">
+              <div className=" px-6 py-4 border-t border-gray-200 flex justify-between items-center mt-6">
                 <div className="flex gap-3 w-full md:w-auto">
                   {showCancelInput === stay._id ? (
                     <div className="space-y-2 w-full">
@@ -1271,7 +1271,7 @@ const DashboardContent = ({
               )}
 
               {/* Action Buttons: Cancel + Contact */}
-              <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-between items-center mt-6">
+              <div className="px-6 py-4 border-t border-gray-200 flex justify-between items-center mt-6">
                 <div className="flex gap-3 w-full md:w-auto">
                   {showCancelInput === stay._id ? (
                     <div className="space-y-2 w-full">
@@ -1321,7 +1321,7 @@ const DashboardContent = ({
         <div className="bg-white shadow-md p-6 rounded-xl mb-6 text-center">
           <MdOutlineHome className="mx-auto text-4xl text-gray-400 mb-3" />
           <h3 className="text-lg font-semibold text-gray-700">
-            No Current Stay
+            No Upcoming Stay
           </h3>
           <p className="text-gray-500 mt-1">
             You don't have any upcoming accommodations right now.
