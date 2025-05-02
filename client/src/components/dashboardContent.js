@@ -729,8 +729,13 @@ import {
   MdBed,
   MdKitchen,
   MdOutlineHome,
-} from "react-icons/md";
+  MdPersonOutline,
+  MdEmail,
+MdPhone,  
 
+
+} from "react-icons/md";
+import { HiOutlineLocationMarker } from "react-icons/hi";
 const DashboardContent = ({
   user,
   bookings = [],
