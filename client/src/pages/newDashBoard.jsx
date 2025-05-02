@@ -717,8 +717,6 @@ import {
 import axios from "axios";
 import { baseurl, fetchDetailsUrl } from "../constant/urls";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
-import Sidebar from "../components/sidebar";
 import BookingTable from "../components/BookingTable";
 import Settings from "../components/settings";
 import DashboardContent from "../components/dashboardContent";
@@ -838,7 +836,7 @@ function NewDashboard() {
       case "bookings":
         return <BookingTable bookings={bookings} stats={stats} currentStay={currentStay} loading={loading} />;
       case "payments":
-        return <div>Payments Content</div>;
+        return <div className="px-4">Payments Content</div>;
       case "settings":
         return <Settings user={userDetails} />;
       default:
@@ -859,7 +857,7 @@ function NewDashboard() {
       <aside
         className={`top-0 left-0 w-64 h-screen bg-white border-r p-4 z-40 transition-transform duration-300 transform shadow-md
           md:sticky md:translate-x-0 ${
-            sidebarOpen ? "fixed translate-x-0" : "fixed -translate-x-full"
+            sidebarOpen ? "fixed mt-14 translate-x-0" : "fixed -translate-x-full"
           }`}
       >
         <div className="md:hidden flex justify-end mb-4">
@@ -880,7 +878,7 @@ function NewDashboard() {
         </button>
       </aside>
 
-      <main className="flex-1 p-4">
+      <main className="flex-1 px-2 sm:px-4 pt-20 md:pt-4">
         {renderContent()}
       </main>
     </div>
@@ -917,4 +915,3 @@ function ProfileHeader({ userName }) {
 }
 
 export default NewDashboard;
-
