@@ -200,19 +200,18 @@ function MessBars({
     }
   }, [lastCardInView, isLoading, hasMore]);
 
-useEffect(() => {
-  // Reset when filters change
-  setMessData([]);
-  setDistanceMap({});
-  setHasMore(true);
-  setPgCount(0);
-  setPage(1); // Reset to page 1 immediately
-}, [checkFeatures, userLocation, finalGender]);
-  
+  useEffect(() => {
+    // Reset when filters change
+    setMessData([]);
+    setDistanceMap({});
+    setHasMore(true);
+    setPgCount(0);
+    setPage(1); // Reset to page 1 immediately
+  }, [checkFeatures, userLocation, finalGender]);
 
   useEffect(() => {
     fetchData();
-  }, [page,userLocation]);
+  }, [page, userLocation]);
 
   useEffect(() => {
     if (!messData.length || !userLocation) return;
@@ -285,6 +284,15 @@ useEffect(() => {
                       alt="Mess"
                       className="w-full h-full object-cover"
                     />
+                    {owner.roomInfo?.some((room) => room.roomAvailable) ? (
+                      <div className="absolute bottom-2 right-2 border-green-400 bg-white text-green-400 text-xs px-2 py-1 rounded">
+                        Available
+                      </div>)
+                      :(
+                        <div className="absolute bottom-2 right-2 border-red-400 bg-white text-red-400 text-xs px-2 py-1 rounded">
+                          Not Available
+                        </div>
+                    )}
                   </div>
                 )}
 
