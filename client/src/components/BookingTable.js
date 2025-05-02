@@ -1270,12 +1270,12 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
                 </div>
               )}
                 {stay._id && (
-                  <button
-                    onClick={() => handleDownloadInvoice(stay._id)}
-                    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm"
-                  >
-                    <FaDownload /> Invoice
-                  </button>
+                   <button
+                   onClick={() => handleDownloadInvoice(booking._id)}
+                   className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium"
+                 >
+                   <FaDownload /> Download Invoice
+                 </button>
                 )}
             </div>
           ))}
