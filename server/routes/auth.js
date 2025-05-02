@@ -27,7 +27,8 @@ const {
   updateMaintenanceStatus,
   getAllOwnerBookings,
   getMaintenanceHistory,
-  cancelBooking
+  cancelBooking,
+  submitFeedback
 } = require('../controllers/bookingController');
 
 
@@ -247,7 +248,8 @@ router.get('/maintenance/history', authenticateJWT, getMaintenanceHistory);
 router.post('/bookings/:id/cancel', authenticateJWT, cancelBooking);
 
 // User cancels the booking
-router.delete('/bookings/:id', cancelBooking);
-
+router.post('/bookings/:id', cancelBooking);
+// feed back for user
+router.post('/ratings-feedback', authenticateJWT, submitFeedback);
 
 module.exports = router;

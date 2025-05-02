@@ -1019,10 +1019,12 @@
 // };
 
 // export default BookingTable;
-import {React,useState} from "react";
+import { React, useState } from "react";
 import axios from "axios";
 import { baseurl } from "../constant/urls";
 import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 import {
   FaDownload,
   FaBed,
@@ -1066,21 +1068,41 @@ const BookingTable = ({
     rejected: "text-red-700 bg-red-100",
     cancelled: "text-gray-700 bg-gray-100",
   };
-  const handleFeedbackSubmit = (stayId, rating, comment) => {
+
+  const handleFeedbackSubmit = async (stayId, rating, comment) => {
     if (!rating) {
-      alert("Please provide a star rating.");
+      toast.warning("Please provide a star rating.");
       return;
     }
-  
-    // Replace this with your actual POST request
-    console.log("Feedback Submitted:", { stayId, rating, comment });
-  
-    // Reset state
-    setRatings((prev) => ({ ...prev, [stayId]: 0 }));
-    setComments((prev) => ({ ...prev, [stayId]: "" }));
-    setShowFeedbackIndex(null);
+
+    const token = localStorage.getItem("accessToken");
+
+    try {
+      const response = await axios.post(
+        `${baseurl}/auth/ratings-feedback`,
+        { stayId, rating, comment },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Feedback submitted successfully!");
+
+        // Reset state
+        setRatings((prev) => ({ ...prev, [stayId]: 0 }));
+        setComments((prev) => ({ ...prev, [stayId]: "" }));
+        setShowFeedbackIndex(null);
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      console.error("Feedback submission error:", error);
+      toast.error("An error occurred while submitting feedback.");
+    }
   };
-  
 
   const handleDownloadInvoice = async (bookingId) => {
     try {
@@ -1134,6 +1156,19 @@ const BookingTable = ({
 
   return (
     <div className="px-4 sm:px-6 md:px-8 lg:px-6 xl:px-4 py-4 mx-auto">
+      <ToastContainer
+        position="top-center"
+        autoClose={3000} // auto-close after 3 seconds
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light" // or "dark", "colored"
+      />
+
       {/* Booking Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center mb-6">
         <div className="flex items-center justify-between sm:justify-center bg-white shadow-md p-4 rounded-xl">
