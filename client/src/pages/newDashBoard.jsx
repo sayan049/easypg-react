@@ -847,8 +847,8 @@ function NewDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="md:hidden flex justify-between items-center p-4 bg-white shadow">
+    <div className="min-h-screen bg-gray-100 flex">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-4 bg-white shadow">
         <button onClick={() => setSidebarOpen(true)}>
           <Menu className="w-6 h-6 text-gray-700" />
         </button>
@@ -856,34 +856,33 @@ function NewDashboard() {
         <div className="w-6 h-6" />
       </div>
 
-      <div className="flex">
-        <aside
-          className={`fixed md:static top-0 left-0 w-64 h-screen bg-white border-r p-4 z-50 transition-transform duration-300 transform md:translate-x-0 shadow-md md:shadow-none ${
-            sidebarOpen ? "translate-x-0" : "-translate-x-full"
+      <aside
+        className={`top-0 left-0 w-64 h-screen bg-white border-r p-4 z-40 transition-transform duration-300 transform shadow-md
+          md:sticky md:translate-x-0 ${
+            sidebarOpen ? "fixed translate-x-0" : "fixed -translate-x-full"
           }`}
-        >
-          <div className="md:hidden flex justify-end mb-4">
-            <button onClick={() => setSidebarOpen(false)}>
-              <X className="w-5 h-5 text-gray-500" />
-            </button>
-          </div>
-
-          <ProfileHeader userName={userName} />
-          <nav className="flex flex-col gap-4 mt-8">
-            <SidebarButton icon={<Home />} label="Dashboard" active={activeTab === "dashboard"} onClick={() => handleTabChange("dashboard")} />
-            <SidebarButton icon={<CalendarCheck />} label="My Bookings" active={activeTab === "bookings"} onClick={() => handleTabChange("bookings")} />
-            <SidebarButton icon={<CreditCard />} label="My Payments" active={activeTab === "payments"} onClick={() => handleTabChange("payments")} />
-            <SidebarButton icon={<Gear />} label="Settings" active={activeTab === "settings"} onClick={() => handleTabChange("settings")} />
-          </nav>
-          <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-2 rounded-md mt-10 text-red-600 hover:bg-red-100 transition">
-            <LogOutIcon className="w-4 h-4" /> Logout
+      >
+        <div className="md:hidden flex justify-end mb-4">
+          <button onClick={() => setSidebarOpen(false)}>
+            <X className="w-5 h-5 text-gray-500" />
           </button>
-        </aside>
+        </div>
 
-        <main className="flex-1 p-4 md:ml-64 transition-all duration-300 ease-in-out">
-          {renderContent()}
-        </main>
-      </div>
+        <ProfileHeader userName={userName} />
+        <nav className="flex flex-col gap-4 mt-8">
+          <SidebarButton icon={<Home />} label="Dashboard" active={activeTab === "dashboard"} onClick={() => handleTabChange("dashboard")} />
+          <SidebarButton icon={<CalendarCheck />} label="My Bookings" active={activeTab === "bookings"} onClick={() => handleTabChange("bookings")} />
+          <SidebarButton icon={<CreditCard />} label="My Payments" active={activeTab === "payments"} onClick={() => handleTabChange("payments")} />
+          <SidebarButton icon={<Gear />} label="Settings" active={activeTab === "settings"} onClick={() => handleTabChange("settings")} />
+        </nav>
+        <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-2 rounded-md mt-10 text-red-600 hover:bg-red-100 transition">
+          <LogOutIcon className="w-4 h-4" /> Logout
+        </button>
+      </aside>
+
+      <main className="flex-1 p-4">
+        {renderContent()}
+      </main>
     </div>
   );
 }
