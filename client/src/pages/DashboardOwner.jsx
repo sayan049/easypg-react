@@ -164,7 +164,7 @@ import SettingsOwner from "../components/settingsOwner";
 import { fetchDetailsUrl } from "../constant/urls";
 import { useAuth } from "../contexts/AuthContext";
 
-const baseurl = process.env.REACT_APP_BASE_URL;
+import { baseurl } from "../constant/urls";
 
 const navItems = [
   { name: "Dashboard", icon: <Home />, key: "dashboard" },
@@ -220,6 +220,7 @@ export default function DashboardOwner() {
             Authorization: `Bearer ${token}`,
           },
         });
+        console.log("Dashboard response:", response);
 
         if (!response.ok) {
           throw new Error("Failed to fetch dashboard data");
