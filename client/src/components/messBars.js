@@ -297,7 +297,7 @@ function MessBars({
                       )}
                       <button
                         onClick={() => console.log("Liked")}
-                        className="absolute top-2 right-2 text-2xl text-red-500 hover:bg-red-500 bg-white"
+                         className="absolute top-2 right-2 text-2xl text-red-500 hover:text-white hover:bg-red-500 bg-white rounded-full p-1"
                       >
                         <AiOutlineHeart />
                       </button>
