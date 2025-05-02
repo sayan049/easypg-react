@@ -254,7 +254,7 @@ useEffect(() => {
           <div
             key={owner._id}
             ref={index === messData.length - 1 ? lastCardRef : null}
-            className={`relative flip-card mb-4 h-[35rem] md:h-[16rem] ${
+            className={`relative flip-card mb-4 h-[35rem] md:h-[20rem] lg:h-[16rem] ${
               isChecked ? "w-full" : "w-full"
             } ${
               selected === owner._id && isChecked
