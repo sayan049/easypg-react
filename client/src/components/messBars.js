@@ -65,13 +65,16 @@ function MessBars({
   const styles = `
     .flip-card {
       perspective: 1000px;
+      overflow: hidden;
+        height: 100%;  
     }
     .flip-card-inner {
-      position: relative;
+       position: relative;
       width: 100%;
       height: 100%;
       transition: transform 0.6s;
       transform-style: preserve-3d;
+      overflow: hidden;
     }
     .flip-card-front, .flip-card-back {
       position: absolute;
@@ -79,6 +82,7 @@ function MessBars({
       height: 100%;
       backface-visibility: hidden;
       border-radius: 0.75rem;
+      overflow:auto;
     }
     .flip-card-back {
       transform: rotateY(180deg);
