@@ -142,6 +142,9 @@ function MessBars({
       const likedMap = {};
       likedData.forEach((id) => (likedMap[id] = true));
       setLiked(likedMap);
+      likedData.forEach((id) => {
+        console.log("Liked Mess ID:", id);
+      })
       console.log("Liked Messes:", likedMap);
     } catch (err) {
       console.error("Failed to fetch liked messes", err);
