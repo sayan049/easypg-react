@@ -1,4 +1,4 @@
-const User = require("../models/User");
+const User = require("../modules/user");
 
 const likedMesses = async (req, res) => {
     const userId = req.userId;
