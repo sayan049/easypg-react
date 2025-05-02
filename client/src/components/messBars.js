@@ -2,7 +2,7 @@ import axios from "axios";
 import { getDistance } from "ol/sphere";
 import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { findMessUr ,likedMessesUrl } from "../constant/urls";
+import { findMessUrl ,likedMessesUrl } from "../constant/urls";
 import { useInView } from "react-intersection-observer";
 import Skeleton from "./Skeleton";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
