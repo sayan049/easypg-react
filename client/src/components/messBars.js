@@ -285,11 +285,11 @@ function MessBars({
                       className="w-full h-full object-cover"
                     />
                     {owner.roomInfo?.some((room) => room.roomAvailable) ? (
-                      <div className="absolute bottom-2 right-2 border border-green-700 bg-white text-green-700 text-xs px-2 py-1 rounded">
+                      <div className="absolute bottom-2 right-2 border bg-green-100 border-green-700 bg-white text-green-700 text-xs px-2 py-1 rounded">
                         Available
                       </div>)
                       :(
-                        <div className="absolute bottom-2 right-2 border border-red-700 bg-white text-red-700 text-xs px-2 py-1 rounded">
+                        <div className="absolute bottom-2 right-2 border bg-red-100 border-red-700 bg-white text-red-700 text-xs px-2 py-1 rounded">
                           Not Available
                         </div>
                     )}
