@@ -60,7 +60,7 @@ function MessBars({
 
   const toggleLike = (id) => {
     setLiked((prev) => ({ ...prev, [id]: !prev[id] }));
-  }
+  };
 
   const styles = `
     .flip-card {
@@ -293,20 +293,23 @@ function MessBars({
                     />
                     <>
                       {owner.roomInfo?.some((room) => room.roomAvailable) ? (
-                        <div className="absolute bottom-2 right-2  bg-green-100  bg-white text-green-700 text-xs px-2 py-1 rounded">
+                        <div className="absolute bottom-2 right-2  bg-green-100 text-green-700 text-xs px-2 py-1 rounded">
                           Available
                         </div>
                       ) : (
-                        <div className="absolute bottom-2 right-2  bg-red-100  bg-white text-red-700 text-xs px-2 py-1 rounded">
+                        <div className="absolute bottom-2 right-2  bg-red-100   text-red-700 text-xs px-2 py-1 rounded">
                           Not Available
                         </div>
                       )}
                       <button
                         onClick={() => toggleLike(owner._id)}
-                         className="absolute top-2 right-2 text-2xl text-red-500 hover:text-white"
+                        className="absolute top-2 right-2 text-2xl text-red-500 "
                       >
-                      {liked[owner._id] ? (<AiFillHeart />) : ( <AiOutlineHeart />)}
-                       
+                        {liked[owner._id] ? (
+                          <AiFillHeart />
+                        ) : (
+                          <AiOutlineHeart />
+                        )}
                       </button>
                     </>
                   </div>
