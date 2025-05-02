@@ -18,6 +18,7 @@ import {
   FaMale,
   FaUsers,
 } from "react-icons/fa";
+import { set } from "ol/transform";
 
 function MessBars({
   isChecked,
@@ -36,6 +37,7 @@ function MessBars({
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
+  const [liked, setLiked] = useState({});
 
   const [lastCardRef, lastCardInView] = useInView({
     threshold: 0.1,
@@ -55,6 +57,10 @@ function MessBars({
   const toggleFlip = (id) => {
     setFlipped((prev) => ({ ...prev, [id]: !prev[id] }));
   };
+
+  const toggleLike = (id) => {
+    setLiked((prev) => ({ ...prev, [id]: !prev[id] }));
+  }
 
   const styles = `
     .flip-card {
@@ -296,10 +302,11 @@ function MessBars({
                         </div>
                       )}
                       <button
-                        onClick={() => console.log("Liked")}
-                         className="absolute top-2 right-2 text-2xl text-red-500 hover:text-white hover:bg-red-500 bg-white rounded-full p-1"
+                        onClick={() => toggleLike(owner._id)}
+                         className="absolute top-2 right-2 text-2xl text-red-500 hover:text-white"
                       >
-                        <AiOutlineHeart />
+                      {liked[owner._id] ? (<AiFillHeart />) : ( <AiOutlineHeart />)}
+                       
                       </button>
                     </>
                   </div>
