@@ -38,6 +38,7 @@ function MessBars({
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const [liked, setLiked] = useState({});
+  const [showAllAmenities, setShowAllAmenities] = useState({});
 
   const [lastCardRef, lastCardInView] = useInView({
     threshold: 0.1,
@@ -371,7 +372,26 @@ function MessBars({
                       </span>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      {owner.facility?.map((feature, index) => {
+                      {/* {owner.facility?.map((feature, index) => {
+                        const amenity = amenities.find(
+                          (a) =>
+                            a.label.toLowerCase() ===
+                            feature.trim().toLowerCase()
+                        );
+                        return (
+                          <span
+                            key={index}
+                            className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-[rgb(44 164 181)] text-xs rounded-full"
+                          >
+                            {amenity?.icon || null}
+                            {feature}
+                          </span>
+                        );
+                      })} */}
+                      {(showAllAmenities[owner._id]
+                        ? owner.facility
+                        : owner.facility?.slice(0, 3)
+                      )?.map((feature, index) => {
                         const amenity = amenities.find(
                           (a) =>
                             a.label.toLowerCase() ===
@@ -387,6 +407,23 @@ function MessBars({
                           </span>
                         );
                       })}
+
+                      {owner.facility?.length > 3 && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowAllAmenities((prev) => ({
+                              ...prev,
+                              [owner._id]: !prev[owner._id],
+                            }));
+                          }}
+                          className="text-blue-500 text-xs underline"
+                        >
+                          {showAllAmenities[owner._id]
+                            ? "See less"
+                            : "See more"}
+                        </button>
+                      )}
                     </div>
 
                     {owner?.gender && (
