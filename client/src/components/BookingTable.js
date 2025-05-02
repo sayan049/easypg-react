@@ -1152,14 +1152,14 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
                     <span className="text-sm text-gray-500">Stay #{index + 1}</span>
                   )}
                 </div>
-                {stay._id && (
+                {/* {stay._id && (
                   <button
                     onClick={() => handleDownloadInvoice(stay._id)}
                     className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm"
                   >
                     <FaDownload /> Invoice
                   </button>
-                )}
+                )} */}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1269,6 +1269,14 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
                   </div>
                 </div>
               )}
+                {stay._id && (
+                  <button
+                    onClick={() => handleDownloadInvoice(stay._id)}
+                    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm"
+                  >
+                    <FaDownload /> Invoice
+                  </button>
+                )}
             </div>
           ))}
         </div>
