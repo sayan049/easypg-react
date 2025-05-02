@@ -664,6 +664,29 @@ console.log("All bookings response:", response.data);
   //     </div>
   //   );
   // };
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (!loading && bookings.length === 0) {
+    return (
+      <div className="px-4 py-8 text-center">
+        <div className="bg-white shadow-md rounded-xl p-8 max-w-md mx-auto">
+          <h3 className="text-xl font-semibold mb-4">No Bookings</h3>
+          <p className="text-gray-600 mb-6">
+            You haven't made any booking requests yet.
+          </p>
+          <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+            Browse Accommodations
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <BookingStatusErrorBoundary>
