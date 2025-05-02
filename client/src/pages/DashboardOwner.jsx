@@ -242,14 +242,12 @@ export default function DashboardOwner() {
   const renderComponent = () => {
     switch (activeTab) {
       case "dashboard":
-        return dashboardData.stats ? (
+        return  (
           <DashboardContentOwner
             stats={dashboardData.stats}
             recentActivity={dashboardData.recentActivity}
           />
-        ) : (
-          <div className="p-4 text-center text-gray-500">Loading dashboard...</div>
-        );
+        ) ;
       case "booking":
         return <BookingStatus />;
       case "payments":
