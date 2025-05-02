@@ -1,6 +1,6 @@
 const User = require("../modules/user");
 
-const likedMesses = async (req, res) => {
+const likedMess = async (req, res) => {
     const userId = req.user.id;
   const { messId, liked } = req.body;
   console.log(userId, messId, liked, "likedMesses");
@@ -20,4 +20,4 @@ const likedMesses = async (req, res) => {
   }
 };
 
-module.exports = likedMesses;
+module.exports = likedMess;
