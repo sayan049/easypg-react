@@ -771,13 +771,17 @@ import "react-toastify/dist/ReactToastify.css";
 export default function BookingPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { owner } = location.state || {};
+  // const { owner } = location.state || {};
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [showAllPhotos, setShowAllPhotos] = useState(false);
   const [duration, setDuration] = useState(6);
   const [checkInDate, setCheckInDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
+  const queryParams = new URLSearchParams(location.search);
+  const owner = JSON.parse(queryParams.get("owner"))
+    ? JSON.parse(queryParams.get("owner"))
+    : null;
 
   // Convert bedCount string to number
   const bedCountToNumber = {

@@ -116,13 +116,14 @@ function MessBars({
   const clickNavi = (owner) => {
     const ownerParams = new URLSearchParams();
     ownerParams.set("owner", JSON.stringify(owner));
-    // Add any other details you want to pass
+    
     navigate(`/viewDetails?${ownerParams.toString()}`);
-   // navigate("/viewDetails", { state: { owner } });
-  };
+  }
 
   const clickBook = (owner) => {
-    navigate("/booking", { state: { owner } });
+    const ownerParams = new URLSearchParams();
+    ownerParams.set("owner", JSON.stringify(owner));
+    navigate(`/booking$?${ownerParams.toString()}`);
   };
 
   const clickCords = (location, id) => {
