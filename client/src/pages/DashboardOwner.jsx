@@ -1,5 +1,155 @@
-import React, { useState, useEffect } from "react";
+// import React, { useState, useEffect } from "react";
 
+// import { Link } from "react-router-dom";
+// import {
+//   Home,
+//   CalendarCheck,
+//   CreditCard,
+//   Settings as Gear,
+// } from "lucide-react";
+// import { cn } from "../lib/utils";
+// import DashboardContentOwner from "../components/dashboardContentOwner";
+// import BookingStatus from "../components/BookingStatus";
+// import Payments from "../components/paymentOwner";
+// import SettingsOwner from "../components/settingsOwner";
+// import { fetchDetailsUrl } from "../constant/urls";
+// import { useAuth } from "../contexts/AuthContext";
+
+// const navItems = [
+//   { name: "Dashboard", icon: <Home />, key: "dashboard" },
+//   { name: "Booking Status", icon: <CalendarCheck />, key: "booking" },
+//   { name: "Payments", icon: <CreditCard />, key: "payments" },
+//   { name: "Settings", icon: <Gear />, key: "settings" },
+// ];
+
+// // const Dashboard = () => <div className="p-4">Dashboard Component</div>;
+// // const BookingStatus = () => <div className="p-4">Booking Status Component</div>;
+// // const Payments = () => <div className="p-4">Payments Component</div>;
+// // const Settings = () => <div className="p-4">Settings Component</div>;
+
+// export default function DashboardOwner() {
+//   const [activeTab, setActiveTab] = useState("dashboard");
+
+//   const renderComponent = () => {
+//     switch (activeTab) {
+//       case "dashboard":
+//         return <DashboardContentOwner />;
+//       case "booking":
+//         return <BookingStatus />;
+//       case "payments":
+//         return <Payments />;
+//       case "settings":
+//         return <SettingsOwner userDetails={userDetails} />;
+//       default:
+//         return null;
+//     }
+//   };
+//   const [userDetails, setUserDetails] = useState(null);
+//   const {
+//     userName,
+//     IsAuthenticated,
+//     isOwnerAuthenticated,
+//     ownerName,
+//     user,
+//     owner,
+//     type,
+//   } = useAuth();
+//   useEffect(() => {
+//     const fetchDetails = async () => {
+//       // setIsLoading(true);
+//       if (isOwnerAuthenticated) {
+//         try {
+//           const userId = type === "owner" ? owner?.id : user?.id;
+//           if (!userId) {
+//             console.error("User ID is missing");
+//             return;
+//           }
+
+//           const url = new URL(fetchDetailsUrl);
+//           url.searchParams.append("userId", userId);
+//           url.searchParams.append("type", type);
+
+//           const response = await fetch(url, { method: "GET" });
+
+//           if (!response.ok) {
+//             throw new Error("Failed to fetch details");
+//           }
+
+//           const data = await response.json();
+//           setUserDetails(data); // Pass this to Settings
+//         } catch (error) {
+//           console.error("Error fetching details:", error);
+//         } finally {
+//           //  setIsLoading(false);
+//         }
+//       } else {
+//         console.error("User is not authenticated as owner");
+//       }
+//     };
+
+//     fetchDetails();
+//   }, [type, user, owner]);
+
+//   return (
+//     <div className="min-h-screen flex flex-col md:flex-row">
+//       {/* Sidebar */}
+//       <div className="hidden md:flex md:flex-col w-64 bg-white shadow  p-4 items-center sticky top-0 h-screen">
+//         {/* <img
+//           src="https://via.placeholder.com/80"
+//           alt="Profile"
+//           className="w-20 h-20 rounded-full mb-2"
+//         /> */}
+//         <svg
+//           className="w-10 h-10 rounded-full mb-2 bg-gray-200"
+//           viewBox="0 0 100 100"
+//         >
+//           <circle cx="50" cy="40" r="20" fill="#4F46E5" />
+//           <circle cx="50" cy="80" r="25" fill="#4F46E5" />
+//         </svg>
+
+//         <div className="text-center mb-6">
+//           <div className="text-base font-semibold">{ownerName}</div>
+
+//           <div className="text-sm text-gray-500">Property Owner</div>
+//         </div>
+//         <nav className="flex flex-col gap-2 w-full">
+//           {navItems.map((item) => (
+//             <button
+//               key={item.key}
+//               className={cn(
+//                 "flex items-center gap-2 p-2 rounded hover:bg-gray-100",
+//                 activeTab === item.key && "bg-gray-100 font-medium"
+//               )}
+//               onClick={() => setActiveTab(item.key)}
+//             >
+//               {item.icon} {item.name}
+//             </button>
+//           ))}
+//         </nav>
+//       </div>
+
+//       {/* Main content */}
+//       <div className="flex-1 bg-gray-50 p-4 pb-[62px] md:pb-0 lg:pb-0">
+//         {renderComponent()}
+//       </div>
+
+//       {/* Mobile bottom nav */}
+//       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t shadow-md flex justify-around py-2">
+//         {navItems.map((item) => (
+//           <button
+//             key={item.key}
+//             onClick={() => setActiveTab(item.key)}
+//             className="flex flex-col items-center text-sm"
+//           >
+//             {item.icon}
+//             <span className="text-xs mt-1">{item.name}</span>
+//           </button>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Home,
@@ -14,6 +164,10 @@ import Payments from "../components/paymentOwner";
 import SettingsOwner from "../components/settingsOwner";
 import { fetchDetailsUrl } from "../constant/urls";
 import { useAuth } from "../contexts/AuthContext";
+import axios from "axios";
+import { toast } from "react-toastify";
+
+const baseurl = process.env.REACT_APP_BASE_URL;
 
 const navItems = [
   { name: "Dashboard", icon: <Home />, key: "dashboard" },
@@ -22,29 +176,24 @@ const navItems = [
   { name: "Settings", icon: <Gear />, key: "settings" },
 ];
 
-// const Dashboard = () => <div className="p-4">Dashboard Component</div>;
-// const BookingStatus = () => <div className="p-4">Booking Status Component</div>;
-// const Payments = () => <div className="p-4">Payments Component</div>;
-// const Settings = () => <div className="p-4">Settings Component</div>;
-
 export default function DashboardOwner() {
   const [activeTab, setActiveTab] = useState("dashboard");
-
-  const renderComponent = () => {
-    switch (activeTab) {
-      case "dashboard":
-        return <DashboardContentOwner />;
-      case "booking":
-        return <BookingStatus />;
-      case "payments":
-        return <Payments />;
-      case "settings":
-        return <SettingsOwner userDetails={userDetails} />;
-      default:
-        return null;
-    }
-  };
   const [userDetails, setUserDetails] = useState(null);
+  const [bookingData, setBookingData] = useState({
+    bookings: {
+      pending: { data: [], page: 1, total: 0 },
+      confirmed: { data: [], page: 1, total: 0 },
+      rejected: { data: [], page: 1, total: 0 },
+    },
+    stats: {
+      total: 0,
+      active: 0,
+      pending: 0,
+      rejected: 0,
+    },
+    maintenanceRequests: { requests: [] },
+  });
+
   const {
     userName,
     IsAuthenticated,
@@ -54,62 +203,120 @@ export default function DashboardOwner() {
     owner,
     type,
   } = useAuth();
-  useEffect(() => {
-    const fetchDetails = async () => {
-      // setIsLoading(true);
-      if (isOwnerAuthenticated) {
-        try {
-          const userId = type === "owner" ? owner?.id : user?.id;
-          if (!userId) {
-            console.error("User ID is missing");
-            return;
-          }
 
-          const url = new URL(fetchDetailsUrl);
-          url.searchParams.append("userId", userId);
-          url.searchParams.append("type", type);
+  const fetchDetails = async () => {
+    if (isOwnerAuthenticated) {
+      try {
+        const userId = type === "owner" ? owner?.id : user?.id;
+        if (!userId) return;
 
-          const response = await fetch(url, { method: "GET" });
+        const url = new URL(fetchDetailsUrl);
+        url.searchParams.append("userId", userId);
+        url.searchParams.append("type", type);
 
-          if (!response.ok) {
-            throw new Error("Failed to fetch details");
-          }
-
-          const data = await response.json();
-          setUserDetails(data); // Pass this to Settings
-        } catch (error) {
-          console.error("Error fetching details:", error);
-        } finally {
-          //  setIsLoading(false);
-        }
-      } else {
-        console.error("User is not authenticated as owner");
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Failed to fetch details");
+        const data = await response.json();
+        setUserDetails(data);
+      } catch (error) {
+        console.error("Error fetching details:", error);
       }
-    };
+    }
+  };
 
-    fetchDetails();
+  const fetchAllBookingsAndMaintenance = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const limit = 100;
+
+      const bookingsRes = await axios.get(`${baseurl}/auth/bookings/owner/all`, {
+        params: { limit },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+console.log("Bookings Response:", bookingsRes.data);
+      const { pending, confirmed, rejected } = bookingsRes.data;
+      const bookingIds = confirmed.bookings?.map((b) => b._id) || [];
+
+      let maintenanceRequests = { requests: [] };
+      if (bookingIds.length > 0) {
+        const maintenanceRes = await axios.get(`${baseurl}/auth/maintenance/requests/owner`, {
+          params: { bookingIds: bookingIds.join(",") },
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        maintenanceRequests.requests = maintenanceRes.data?.requests || [];
+      }
+console.log("Maintenance Requests Response:", maintenanceRequests.requests);
+      setBookingData({
+        bookings: {
+          pending: {
+            data: pending.bookings || [],
+            page: 1,
+            total: pending.total || 0,
+          },
+          confirmed: {
+            data: confirmed.bookings || [],
+            page: 1,
+            total: confirmed.total || 0,
+          },
+          rejected: {
+            data: rejected.bookings || [],
+            page: 1,
+            total: rejected.total || 0,
+          },
+        },
+        stats: {
+          total: (pending.total || 0) + (confirmed.total || 0) + (rejected.total || 0),
+          active: confirmed.total || 0,
+          pending: pending.total || 0,
+          rejected: rejected.total || 0,
+        },
+        maintenanceRequests,
+      });
+    } catch (error) {
+      console.error("Error fetching bookings and maintenance:", error);
+      toast.error("Failed to load booking/maintenance data");
+    }
+  };
+
+  useEffect(() => {
+    if (isOwnerAuthenticated) {
+      fetchDetails();
+      fetchAllBookingsAndMaintenance();
+    }
   }, [type, user, owner]);
+
+  const renderComponent = () => {
+    switch (activeTab) {
+      case "dashboard":
+        return <DashboardContentOwner />;
+      case "booking":
+        return (
+          <BookingStatus
+            bookings={bookingData.bookings}
+            stats={bookingData.stats}
+            maintenanceRequests={bookingData.maintenanceRequests}
+          />
+        );
+      case "payments":
+        return <Payments />;
+      case "settings":
+        return <SettingsOwner userDetails={userDetails} />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Sidebar */}
-      <div className="hidden md:flex md:flex-col w-64 bg-white shadow  p-4 items-center sticky top-0 h-screen">
-        {/* <img
-          src="https://via.placeholder.com/80"
-          alt="Profile"
-          className="w-20 h-20 rounded-full mb-2"
-        /> */}
-        <svg
-          className="w-10 h-10 rounded-full mb-2 bg-gray-200"
-          viewBox="0 0 100 100"
-        >
+      <div className="hidden md:flex md:flex-col w-64 bg-white shadow p-4 items-center sticky top-0 h-screen">
+        <svg className="w-10 h-10 rounded-full mb-2 bg-gray-200" viewBox="0 0 100 100">
           <circle cx="50" cy="40" r="20" fill="#4F46E5" />
           <circle cx="50" cy="80" r="25" fill="#4F46E5" />
         </svg>
 
         <div className="text-center mb-6">
           <div className="text-base font-semibold">{ownerName}</div>
-
           <div className="text-sm text-gray-500">Property Owner</div>
         </div>
         <nav className="flex flex-col gap-2 w-full">
