@@ -260,7 +260,7 @@ useEffect(() => {
               selected === owner._id && isChecked
                 ? "ring-2 ring-blue-500"
                 : "ring-1 ring-gray-200"
-            } bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4`}
+            } bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-2 md:p-4`}
             onClick={() => {
               if (owner?.location?.coordinates) {
                 clickCords(owner.location.coordinates, owner._id);
