@@ -940,7 +940,7 @@ const DashboardContent = ({
           {pendingStay.map((stay, index) => (
             <div
               key={stay._id || index}
-              className="bg-white shadow-md p-6 rounded-xl border-l-4 border-green-200"
+              className="bg-white shadow-md p-6 rounded-xl border-l-4 border-yellow-200"
             >
               <div className="flex justify-between items-start mb-4">
                 <div>
@@ -1137,7 +1137,7 @@ const DashboardContent = ({
           {upcomingStay.map((stay, index) => (
             <div
               key={stay._id || index}
-              className="bg-white shadow-md p-6 rounded-xl border-l-4 border-green-200"
+              className="bg-white shadow-md p-6 rounded-xl border-l-4 border-blue-200"
             >
               <div className="flex justify-between items-start mb-4">
                 <div>
@@ -1334,7 +1334,7 @@ const DashboardContent = ({
           {pastStay.map((stay, index) => (
             <div
               key={stay._id || index}
-              className="bg-white shadow-md p-6 rounded-xl border-l-4 border-green-200"
+              className="bg-white shadow-md p-6 rounded-xl border-l-4 border-gray-200"
             >
               <div className="flex justify-between items-start mb-4">
                 <div>

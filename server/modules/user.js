@@ -82,6 +82,8 @@ const userSchema = new mongoose.Schema({
       createdAt: { type: Date, default: Date.now }, // Creation timestamp
     },
   ],
+  likedMesses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'PgOwner' }]
+
  
 
 });

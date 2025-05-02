@@ -273,7 +273,7 @@ const ViewDetails = () => {
           </div>
         </div>
 
-        {!showModal && <ConfirmBooking />}
+        {!showModal && <ConfirmBooking owner={owner} />}
 
         <Footer />
       </div>
