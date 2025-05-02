@@ -2,7 +2,7 @@ import axios from "axios";
 import { getDistance } from "ol/sphere";
 import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { findMessUrl ,likedMessesUrl } from "../constant/urls";
+import { findMessUrl, likedMessesUrl } from "../constant/urls";
 import { useInView } from "react-intersection-observer";
 import Skeleton from "./Skeleton";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
@@ -60,15 +60,17 @@ function MessBars({
   };
 
   const toggleLike = async (id) => {
-    setLiked((prev) => ({ ...prev, [id]: !prev[id] }));
+    const newLikedState = !liked[id];
+    setLiked((prev) => ({ ...prev, [id]: newLikedState }));
     try {
-      console.log("Toggling like for mess ID:", id, "New state:", !liked[id], likedMessesUrl);
       await axios.post(likedMessesUrl, {
         messId: id,
-        liked: !liked[id], // Send the new state
+        liked: newLikedState,
       });
     } catch (err) {
       console.error("Error liking mess:", err);
+      // Revert the change
+      setLiked((prev) => ({ ...prev, [id]: !newLikedState }));
     }
   };
 
@@ -125,13 +127,13 @@ function MessBars({
   const clickNavi = (owner) => {
     const ownerParams = new URLSearchParams();
     ownerParams.set("owner", JSON.stringify(owner));
-    
+
     navigate(`/viewDetails?${ownerParams.toString()}`);
-  }
+  };
 
   const clickBook = (owner) => {
     const ownerParams = new URLSearchParams();
-    ownerParams.set("owner",JSON.stringify(owner));
+    ownerParams.set("owner", JSON.stringify(owner));
     navigate(`/booking?${ownerParams}`);
   };
 
