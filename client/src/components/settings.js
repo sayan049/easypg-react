@@ -957,6 +957,7 @@ function Settings({ user }) {
               >
                 &times;
               </button>
+              xxxx
             </div>
             
             <div className="flex flex-col gap-3">
