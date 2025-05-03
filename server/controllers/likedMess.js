@@ -29,8 +29,9 @@ const cartMess = async (req, res) => {
 
     if (!user.likedMesses || user.likedMesses.length === 0)
       return res.status(404).json({ message: "No liked messes" });
+    const messes = await pgProvider.find({ _id: { $in: likedMesses } });
 
-    return res.status(200).json(user.likedMesses);
+    return res.status(200).json(messes);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server error" });

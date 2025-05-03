@@ -71,7 +71,7 @@ router.post("/loginOwner", authHandlers.loginHandlerOwner);
 router.post("/likedMess", authenticateJWT, likedMess.likedMess);
 router.get("/getLikedMess", authenticateJWT, getLikedMess);
 router.get("/findMess", authHandlers.findMess);
-router.get("/getCart",likedMess.cartMess);
+router.get("/getCart",authenticateJWT,likedMess.cartMess);
 
 // router.get("/protected", ensureAuthenticated, (req, res) => {
 //   res.json({ message: "This is a protected route", user: req.session.user });
