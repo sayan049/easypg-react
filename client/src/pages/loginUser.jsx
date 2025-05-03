@@ -59,7 +59,6 @@ function LoginUser() {
 
   const messageLoc = location.state?.message;
 
-
   useEffect(() => {
     toast.success(messageLoc);
     const tokenFromUrl = searchParams.get("resetToken");
@@ -189,78 +188,50 @@ function LoginUser() {
     }, 500),
     []
   );
+
+  // Single optimized effect for all verification checks
   useEffect(() => {
     const handleStorageChange = (e) => {
-      if (e.key === 'verificationCompleted' && e.newValue === 'true') {
-        const storedEmail = localStorage.getItem('verificationEmail');
+      if (e.key === "verificationCompleted" && e.newValue === "true") {
+        const storedEmail = localStorage.getItem("verificationEmail");
         if (storedEmail === email) {
+          // Immediately update UI and clear storage
           setIsEmailVerified(true);
-          setVerificationCompleted(true);
-          localStorage.removeItem('verificationCompleted');
-          localStorage.removeItem('verificationEmail');
-        }
-      }
-    };
-  
-    window.addEventListener('storage', handleStorageChange);
-    
-    // Also check when the window regains focus
-    const checkOnFocus = () => {
-      if (email && localStorage.getItem('verificationCompleted') === 'true') {
-        const storedEmail = localStorage.getItem('verificationEmail');
-        if (storedEmail === email) {
+          localStorage.removeItem("verificationCompleted");
+          localStorage.removeItem("verificationEmail");
+          // Optionally verify with server if needed
           checkEmailVerification(email);
         }
       }
     };
-    
-    window.addEventListener('focus', checkOnFocus);
-  
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('focus', checkOnFocus);
-    };
-  }, [email, checkEmailVerification]);
 
-  useEffect(() => {
-    checkEmailVerification(email);
-    return () => checkEmailVerification.cancel();
+    window.addEventListener("storage", handleStorageChange);
+
+    // Initial check when email changes
+    if (email) {
+      checkEmailVerification(email);
+    }
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      checkEmailVerification.cancel();
+    };
   }, [email, checkEmailVerification]);
 
   const resendVerificationEmail = async () => {
     try {
       setIsSendingVerification(true);
-      // Store email in localStorage before sending verification
-      localStorage.setItem('verificationEmail', email);
-      setAwaitingVerification(true);
-      
-      const response = await axios.post(`${baseurl}/auth/resend-verification`, { email });
+      localStorage.setItem("verificationEmail", email);
+      const response = await axios.post(`${baseurl}/auth/resend-verification`, {
+        email,
+      });
       toast.success("Verification email sent successfully!");
-      console.log("Verification email sent:", response);
     } catch (error) {
       toast.error("Failed to send verification email. Please try again.");
-      console.error("Error resending verification:", error);
     } finally {
       setIsSendingVerification(false);
     }
   };
-  
-  // Add this useEffect to check verification status when email changes or component mounts
-  useEffect(() => {
-    if (email) {
-      checkEmailVerification(email);
-    }
-    
-    // Check if we have a pending verification
-    if (localStorage.getItem('verificationCompleted') === 'true') {
-      const storedEmail = localStorage.getItem('verificationEmail');
-      if (storedEmail === email) {
-        checkEmailVerification(email);
-        localStorage.removeItem('verificationCompleted');
-        localStorage.removeItem('verificationEmail');
-      }
-    }
-  }, [email]);
 
   const loginwithgoogle = () => {
     const deviceInfo = navigator.userAgent; // You can capture any other device info as needed
@@ -393,7 +364,7 @@ function LoginUser() {
                 placeholder="example@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+                className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a] pr-24 sm:pr-32" // Added padding-right
                 autoComplete="off"
               />
               {isCheckingVerification && (
@@ -421,18 +392,21 @@ function LoginUser() {
                 </div>
               )}
               {!isCheckingVerification && isEmailVerified === false && (
-                <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">
-                  <span className="text-red-500 text-xs">Unverified</span>
+                <div className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 flex flex-col sm:flex-row items-end gap-1 sm:gap-2">
+                  <span className="text-red-500 text-xs whitespace-nowrap">
+                    Unverified
+                  </span>
                   <button
                     type="button"
                     onClick={resendVerificationEmail}
                     disabled={isSendingVerification}
-                    className="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 disabled:bg-blue-300"
+                    className="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 disabled:bg-blue-300 whitespace-nowrap"
                   >
                     {isSendingVerification ? "Sending..." : "Verify"}
                   </button>
                 </div>
               )}
+
               {!isCheckingVerification && isEmailVerified === true && (
                 <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center">
                   <span className="text-green-500 text-xs flex items-center">
