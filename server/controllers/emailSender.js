@@ -20,7 +20,8 @@ async function sendmail(name, email, userId) {
         to: email,
         subject: 'Verification Email',
         // html: '<h3>Hi, ' + name + ' Click <a href="https://easypg-react-client.onrender.com/MailVerify?id=' + userId + '">here</a> to verify you email </h3>'
-         html : `<h3>Hi, ${name}. Click <a href="${frontendUrl}/MailVerify?id=${userId}">here</a> to verify your email.</h3>`
+        html: `<h3>Hi, ${name}. Click <a href="${frontendUrl}/MailVerify?id=${userId}">here</a> to verify your email.</h3>`
+
 
     }
     try {
