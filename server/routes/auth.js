@@ -62,6 +62,9 @@ const url = `https://api.locationiq.com/v1/autocomplete?key=${apiKey}&q=${input}
   
 });
 router.post("/signup", authHandlers.signupHandler);
+router.post("/resend-verification", authHandlers.resendVerificationEmail);
+router.get('/check-email-verification', authHandlers.checkEmailVerification);
+
 router.post("/login", authHandlers.loginHandler);
 router.post("/signupOwner",uploadTemp, uploadToCloudinary, authHandlers.signupHandlerOwner);
 router.post("/loginOwner", authHandlers.loginHandlerOwner);

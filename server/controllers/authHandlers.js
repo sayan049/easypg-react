@@ -35,12 +35,10 @@ exports.signupHandler = async (req, res) => {
 
     // Validate password length
     if (!password || password.length < 8) {
-      return res
-        .status(400)
-        .json({
-          message: "Password must be at least 8 characters",
-          type: "error",
-        });
+      return res.status(400).json({
+        message: "Password must be at least 8 characters",
+        type: "error",
+      });
     }
     // if (!User || !(await bcrypt.compare(password, User.password))) {
     //   return res.status(401).json({ message: "Incorrect email or password" ,type: "error" });
@@ -54,16 +52,91 @@ exports.signupHandler = async (req, res) => {
 
     sendmail(req.body.firstName, email, newUser._id);
 
-    res
-      .status(201)
-      .json({
-        message: "User registered. Please verify your email.",
-        type: "success",
-      });
+    res.status(201).json({
+      message: "User registered. Please verify your email.",
+      type: "success",
+    });
   } catch (error) {
     console.error("Error during signup:", error);
 
     res.status(500).json({ message: "Server error", type: "error" });
+  }
+};
+exports.checkEmailVerification = async (req, res) => {
+  try {
+    const { email } = req.query;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: "Email is required",
+      });
+    }
+
+    const user = await User.findOne({ email }).select("is_verified");
+    console.log("User fetched for verification check:", user);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      verified: user.is_verified,
+    });
+  } catch (error) {
+    console.error("Error checking email verification:", error);
+    res.status(500).json({
+      success: false,
+      error: "Server error",
+    });
+  }
+};
+exports.resendVerificationEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: "Email is required",
+      });
+    }
+
+    // Find user with only the fields we need
+    const user = await User.findOne({ email }).select(
+      "firstName email is_verified"
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: "User not found",
+      });
+    }
+
+    if (user.is_verified) {
+      return res.status(400).json({
+        success: false,
+        error: "Email is already verified",
+      });
+    }
+
+    // Call your existing sendmail function
+    await sendmail(user.firstName, email, user._id);
+
+    res.status(200).json({
+      success: true,
+      message: "Verification email sent successfully",
+    });
+  } catch (error) {
+    console.error("Error resending verification email:", error);
+    res.status(500).json({
+      success: false,
+      error: "Error sending verification email",
+    });
   }
 };
 
@@ -308,12 +381,10 @@ exports.signupHandlerOwner = async (req, res) => {
       !Array.isArray(parsedLocation.coordinates) ||
       parsedLocation.coordinates.length !== 2
     ) {
-      return res
-        .status(400)
-        .json({
-          message:
-            'Invalid location format. Location must be in GeoJSON format (type: "Point", coordinates: [longitude, latitude])',
-        });
+      return res.status(400).json({
+        message:
+          'Invalid location format. Location must be in GeoJSON format (type: "Point", coordinates: [longitude, latitude])',
+      });
     }
 
     // ✅ Generate GeoHash for faster searches
