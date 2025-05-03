@@ -30,6 +30,6 @@ async function sendmail(name, email, userId) {
         console.log("Error: ", error);
     }
 
-}
+} 
 
 module.exports = sendmail;
