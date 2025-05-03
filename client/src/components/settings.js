@@ -929,7 +929,7 @@ function Settings({ user }) {
           Account Options
         </button>
         
-        <div className="flex gap-2">
+        <div className="flex gap-5">
           <button
             onClick={handleReset}
             className="bg-gray-200 text-gray-800 px-3 py-1.5 rounded text-sm"
@@ -959,7 +959,7 @@ function Settings({ user }) {
               </button>
             </div>
             
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-3">
               <button 
                 onClick={handleLogout}
                 className="bg-red-500 text-white px-4 py-2 rounded text-sm"
