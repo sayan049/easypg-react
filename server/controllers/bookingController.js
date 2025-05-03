@@ -824,7 +824,7 @@ exports.getUserBookings = async (req, res) => {
     // Find all bookings for this user
     const bookings = await Booking.find({ student: userId })
       .select(
-        "room status bedsBooked pricePerHead period payment.totalAmount pgOwner"
+        "room status bedsBooked pricePerHead period payment.totalAmount pgOwner userCancellationReason ownerRejectionReason"
       )
       .populate({
         path: "pgOwner",
@@ -1083,7 +1083,7 @@ exports.handleBookingApproval = async (req, res) => {
     // Update booking status
     booking.status = status;
     if (status === "rejected") {
-      booking.rejectionReason = rejectionReason;
+      booking.ownerRejectionReason = rejectionReason;
     }
     await booking.save();
 
@@ -1385,6 +1385,7 @@ exports.cancelBooking = async (req, res) => {
     // 3. Pending booking → cancel directly
     if (booking.status === "pending") {
       booking.status = "cancelled";
+      booking.userCancellationReason = cancellationReason || "";
       await booking.save();
 
       // Notifications
@@ -1469,6 +1470,7 @@ exports.cancelBooking = async (req, res) => {
 
       // 6. Cancel and notify
       booking.status = "cancelled";
+      booking.userCancellationReason = cancellationReason || "";
       await booking.save();
 
       const msg = cancellationReason
