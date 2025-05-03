@@ -59,13 +59,14 @@ const Cart = () => {
 
   // Remove item from cart
   const fetchMessData = async () => {
+    console.log(getCartUrl, localStorage.getItem("accessToken"),"xxx");
     try {
       const res = await axios.get(getCartUrl, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
-      console.log(getCartUrl, localStorage.getItem("accessToken"),"xxx")
+      
       if (!res || !res.data) {
         toast.error("Failed to fetch mess data");
         return;
