@@ -106,7 +106,7 @@ const MailVerify = () => {
         } else if (!id) {
             setMessage('No verification id provided.');
             setVerified(null);
-        }
+        } 
     }, [id, email]);
 
     // Close the window automatically after successful verification
