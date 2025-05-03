@@ -927,7 +927,7 @@ function Settings({ user }) {
       </div>
 
       {/* Account Management */}
-      <div className="mt-8 flex flex-col  justify-between items-center gap-4">
+      <div className="mt-8 flex   justify-between items-center gap-4">
         {/* <button
           onClick={() => setIsModalOpen(true)}
           className="text-blue-500 hover:text-blue-700 text-sm"
