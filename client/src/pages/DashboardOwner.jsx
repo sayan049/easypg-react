@@ -361,7 +361,7 @@ export default function DashboardOwner() {
       if (isOwnerAuthenticated) {
         try {
           const userId = type === "owner" ? owner?.id : user?.id;
-          if (!userId) return;
+          if (!userId) return; 
 
           const url = new URL(fetchDetailsUrl);
           url.searchParams.append("userId", userId);
