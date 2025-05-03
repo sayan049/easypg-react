@@ -16,6 +16,7 @@ import {
 } from "../constant/urls";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 // import Skeleton from "react-loading-skeleton";
 // import "react-loading-skeleton/dist/skeleton.css";
@@ -53,7 +54,11 @@ function LoginUser() {
   const [isEmailVerified, setIsEmailVerified] = useState(null);
   const [isCheckingVerification, setIsCheckingVerification] = useState(false);
   const [isSendingVerification, setIsSendingVerification] = useState(false);
+  const [verificationCompleted, setVerificationCompleted] = useState(false);
+  const [awaitingVerification, setAwaitingVerification] = useState(false);
+
   const messageLoc = location.state?.message;
+
 
   useEffect(() => {
     toast.success(messageLoc);
@@ -170,7 +175,9 @@ function LoginUser() {
       try {
         setIsCheckingVerification(true);
         const response = await axios.get(
-          `${baseurl}/auth/check-email-verification?email=${encodeURIComponent(email)}`
+          `${baseurl}/auth/check-email-verification?email=${encodeURIComponent(
+            email
+          )}`
         );
         setIsEmailVerified(response.data.verified);
       } catch (error) {
@@ -182,6 +189,38 @@ function LoginUser() {
     }, 500),
     []
   );
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'verificationCompleted' && e.newValue === 'true') {
+        const storedEmail = localStorage.getItem('verificationEmail');
+        if (storedEmail === email) {
+          setIsEmailVerified(true);
+          setVerificationCompleted(true);
+          localStorage.removeItem('verificationCompleted');
+          localStorage.removeItem('verificationEmail');
+        }
+      }
+    };
+  
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also check when the window regains focus
+    const checkOnFocus = () => {
+      if (email && localStorage.getItem('verificationCompleted') === 'true') {
+        const storedEmail = localStorage.getItem('verificationEmail');
+        if (storedEmail === email) {
+          checkEmailVerification(email);
+        }
+      }
+    };
+    
+    window.addEventListener('focus', checkOnFocus);
+  
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('focus', checkOnFocus);
+    };
+  }, [email, checkEmailVerification]);
 
   useEffect(() => {
     checkEmailVerification(email);
@@ -191,6 +230,10 @@ function LoginUser() {
   const resendVerificationEmail = async () => {
     try {
       setIsSendingVerification(true);
+      // Store email in localStorage before sending verification
+      localStorage.setItem('verificationEmail', email);
+      setAwaitingVerification(true);
+      
       const response = await axios.post(`${baseurl}/auth/resend-verification`, { email });
       toast.success("Verification email sent successfully!");
       console.log("Verification email sent:", response);
@@ -201,6 +244,23 @@ function LoginUser() {
       setIsSendingVerification(false);
     }
   };
+  
+  // Add this useEffect to check verification status when email changes or component mounts
+  useEffect(() => {
+    if (email) {
+      checkEmailVerification(email);
+    }
+    
+    // Check if we have a pending verification
+    if (localStorage.getItem('verificationCompleted') === 'true') {
+      const storedEmail = localStorage.getItem('verificationEmail');
+      if (storedEmail === email) {
+        checkEmailVerification(email);
+        localStorage.removeItem('verificationCompleted');
+        localStorage.removeItem('verificationEmail');
+      }
+    }
+  }, [email]);
 
   const loginwithgoogle = () => {
     const deviceInfo = navigator.userAgent; // You can capture any other device info as needed
@@ -412,7 +472,7 @@ function LoginUser() {
                   onClick={togglePasswordVisibility}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"
                 >
-                  {isPasswordVisible ? "🙈" : "👁️"}
+                  {isPasswordVisible ? <FiEyeOff /> : <FiEye />}
                 </button>
               </div>
             </div>
@@ -574,7 +634,7 @@ function LoginUser() {
                 onClick={toggleNewPasswordVisibility}
                 className="absolute right-4 top-[37%] transform -translate-y-1/2 text-gray-500"
               >
-                {isNewPasswordVisible ? "🙈" : "👁️"}
+                {isPasswordVisible ? <FiEyeOff /> : <FiEye />}
               </button>
             </div>
 
@@ -592,7 +652,7 @@ function LoginUser() {
                 onClick={toggleConfirmPasswordVisibility}
                 className="absolute right-4 top-[37%] transform -translate-y-1/2 text-gray-500"
               >
-                {isConfirmPasswordVisible ? "🙈" : "👁️"}
+                {isPasswordVisible ? <FiEyeOff /> : <FiEye />}
               </button>
             </div>
 
