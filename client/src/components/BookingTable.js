@@ -1040,7 +1040,7 @@ import {
   MdOutlineHome,
   MdOutlineHistory,
   MdOutlineWifi,
-  MdOutlineKitchen,
+ 
   MdOutlinePower,
   MdTv,
   MdOutlineAcUnit,
