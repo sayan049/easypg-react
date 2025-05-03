@@ -873,7 +873,7 @@ function NewDashboard() {
           <SidebarButton icon={<CreditCard />} label="My Payments" active={activeTab === "payments"} onClick={() => handleTabChange("payments")} />
           <SidebarButton icon={<Gear />} label="Settings" active={activeTab === "settings"} onClick={() => handleTabChange("settings")} />
         </nav>
-        <button onClick={handleLogout} className="absolute bottom-5 flex items-center gap-3 px-4 py-2 rounded-md mt-10 text-red-600 hover:bg-red-100 transition">
+        <button onClick={handleLogout} className="absolute bottom-14 flex items-center gap-3 px-4 py-2 rounded-md mt-10 text-red-600 hover:bg-red-100 transition">
           <LogOutIcon className="w-4 h-4" /> Logout
         </button>
       </aside>
