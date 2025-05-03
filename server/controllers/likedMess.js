@@ -21,27 +21,23 @@ const likedMess = async (req, res) => {
   }
 };
 
-module.exports = likedMess;
-
 const cartMess = async (req, res) => {
   const userId = req.user.id;
   try {
     const user = await User.findById(userId).populate("likedMesses");
-    if (!user) {
-      req.status(400, { message: "couldn't find user" });
-    }
-    const likedMesses = user.likedMesses;
-    if (!likedMesses || likedMesses.length === 0) {
-      res.status(401, { message: "no liked messes" });
-    }
-    //res.status(200).json(likedMesses);
-    const messOwners = await pgProvider.find({ _id: { $in: likedMesses } });
+    if (!user) return res.status(400).json({ message: "Couldn't find user" });
 
-    return res.status(200).json(messOwners);
+    if (!user.likedMesses || user.likedMesses.length === 0)
+      return res.status(404).json({ message: "No liked messes" });
+
+    return res.status(200).json(user.likedMesses);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Server error" }); // Handle server errors
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
-module.exports = cartMess;
+module.exports = {
+  likedMess,
+  cartMess,
+};
