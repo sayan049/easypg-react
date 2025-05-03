@@ -5,6 +5,7 @@ import { signupUrl } from "../constant/urls";
 import FlashMessage from "../components/flashMessage";
 import { toast,ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 function SignUpForm() {
   useEffect(() => {
@@ -47,7 +48,7 @@ function SignUpForm() {
       });
 
       if (response.status === 201) {
-        const message = "Please verify your email to log in";
+        const message = "User registration successful";
         localStorage.setItem("loginMessage", message);
         navigate("/LoginUser", { state: { message } });
       } else {
@@ -208,7 +209,7 @@ function SignUpForm() {
                   onClick={togglePasswordVisibility}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"
                 >
-                  {isPasswordVisible ? "🙈" : "👁️"}
+                   {isPasswordVisible ? <FiEyeOff /> : <FiEye />}
                 </button>
               </div>
               <input
