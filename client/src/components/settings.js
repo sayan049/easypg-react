@@ -625,33 +625,19 @@
 // }
 
 // export default Settings;
+"use client"
 
-"use client";
-
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
+import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+import { Separator } from "@/components/ui/separator"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -662,29 +648,17 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { useToast } from "@/hooks/use-toast";
-import {
-  User,
-  MapPin,
-  Lock,
-  Bell,
-  LogOut,
-  Trash2,
-  Save,
-  RefreshCw,
-  Edit,
-  Check,
-  Upload,
-} from "lucide-react";
+} from "@/components/ui/alert-dialog"
+import { useToast } from "@/hooks/use-toast"
+import { User, MapPin, Lock, Bell, LogOut, Trash2, Save, RefreshCw, Edit, Check, Upload } from 'lucide-react'
 
 export default function Settings({ user }) {
-  const { toast } = useToast();
-  const [image, setImage] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingField, setEditingField] = useState(null);
-  const [isLocationChanged, setIsLocationChanged] = useState(false);
-  const [initialData, setInitialData] = useState({});
+  const { toast } = useToast()
+  const [image, setImage] = useState(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editingField, setEditingField] = useState(null)
+  const [isLocationChanged, setIsLocationChanged] = useState(false)
+  const [initialData, setInitialData] = useState({})
 
   const [personalInfo, setPersonalInfo] = useState({
     fullName: user?.name || "",
@@ -693,117 +667,117 @@ export default function Settings({ user }) {
     pin: user?.pin || "",
     location: user?.location || { type: "Point", coordinates: [] },
     messType: user?.messType || "",
-  });
+  })
 
   const [passwords, setPasswords] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
-  });
+  })
 
   const [notifications, setNotifications] = useState({
     email: true,
     sms: true,
     push: true,
-  });
+  })
 
   const handleEditClick = (field) => {
-    setEditingField(editingField === field ? null : field);
-    setIsEditing(true);
-  };
+    setEditingField(editingField === field ? null : field)
+    setIsEditing(true)
+  }
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    if (name === "location") return; // prevent overriding the object
-    setPersonalInfo({ ...personalInfo, [name]: value });
-  };
+    const { name, value } = e.target
+    if (name === "location") return // prevent overriding the object
+    setPersonalInfo({ ...personalInfo, [name]: value })
+  }
 
   const handleMessTypeChange = (value) => {
-    setPersonalInfo({ ...personalInfo, messType: value });
-    setIsEditing(true);
-  };
+    setPersonalInfo({ ...personalInfo, messType: value })
+    setIsEditing(true)
+  }
 
   const handlePasswordChange = (e) => {
-    const { name, value } = e.target;
-    setPasswords({ ...passwords, [name]: value });
-  };
+    const { name, value } = e.target
+    setPasswords({ ...passwords, [name]: value })
+  }
 
   const handleNotificationChange = (key, value) => {
-    setNotifications({ ...notifications, [key]: value });
-  };
+    setNotifications({ ...notifications, [key]: value })
+  }
 
   const handleSaveChanges = async () => {
     // Validation
-    const phone = personalInfo.phone;
-    const phoneRegex = /^[0-9]{10}$/;
+    const phone = personalInfo.phone
+    const phoneRegex = /^[0-9]{10}$/
 
     if (phone && !phoneRegex.test(phone)) {
       toast({
         title: "Invalid phone number",
         description: "Please enter a valid 10-digit phone number.",
         variant: "destructive",
-      });
-      return;
+      })
+      return
     }
 
     // Mock API call
     try {
       // In a real app, you would send this data to your API
-      const formData = new FormData();
-      formData.append("userId", user._id);
-      formData.append("type", "student"); // Assuming type is student
+      const formData = new FormData()
+      formData.append("userId", user._id)
+      formData.append("type", "student") // Assuming type is student
 
       Object.keys(personalInfo).forEach((key) => {
         if (personalInfo[key]) {
           if (key === "location") {
-            formData.append(key, JSON.stringify(personalInfo[key]));
+            formData.append(key, JSON.stringify(personalInfo[key]))
           } else {
-            formData.append(key, personalInfo[key]);
+            formData.append(key, personalInfo[key])
           }
         }
-      });
+      })
 
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
       toast({
         title: "Success",
         description: "Your profile has been updated successfully.",
-      });
+      })
 
-      setEditingField(null);
-      setIsEditing(false);
-      setIsLocationChanged(false);
+      setEditingField(null)
+      setIsEditing(false)
+      setIsLocationChanged(false)
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to save changes. Please try again.",
         variant: "destructive",
-      });
+      })
     }
-  };
+  }
 
   const handleReset = () => {
-    setPersonalInfo(initialData);
+    setPersonalInfo(initialData)
     toast({
       title: "Reset complete",
       description: "Your settings have been reset to default values.",
-    });
-  };
+    })
+  }
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files[0]
     if (file) {
-      setImage(file);
+      setImage(file)
       toast({
         title: "Image selected",
         description: "Click Save Changes to update your profile picture.",
-      });
+      })
     }
-  };
+  }
 
   const handlePasswordReset = async () => {
-    const { currentPassword, newPassword, confirmPassword } = passwords;
+    const { currentPassword, newPassword, confirmPassword } = passwords
 
     // Validation
     if (!currentPassword || !newPassword || !confirmPassword) {
@@ -811,8 +785,8 @@ export default function Settings({ user }) {
         title: "Missing fields",
         description: "All password fields are required.",
         variant: "destructive",
-      });
-      return;
+      })
+      return
     }
 
     if (newPassword.length < 6) {
@@ -820,8 +794,8 @@ export default function Settings({ user }) {
         title: "Password too short",
         description: "New password must be at least 6 characters long.",
         variant: "destructive",
-      });
-      return;
+      })
+      return
     }
 
     if (newPassword !== confirmPassword) {
@@ -829,97 +803,93 @@ export default function Settings({ user }) {
         title: "Passwords don't match",
         description: "New password and confirm password do not match.",
         variant: "destructive",
-      });
-      return;
+      })
+      return
     }
 
     try {
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
       toast({
         title: "Password updated",
         description: "Your password has been updated successfully.",
-      });
+      })
 
       setPasswords({
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
-      });
+      })
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to update password. Please try again.",
         variant: "destructive",
-      });
+      })
     }
-  };
+  }
 
   const handleLogout = () => {
     toast({
       title: "Logged out",
       description: "You have been logged out successfully.",
-    });
+    })
     // In a real app, you would redirect to login page or clear auth state
-  };
+  }
 
   const handleDeleteAccount = () => {
     toast({
       title: "Account deleted",
       description: "Your account has been deleted successfully.",
-    });
+    })
     // In a real app, you would make an API call to delete the account
-  };
+  }
 
   const mapMake = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const { latitude, longitude } = position.coords;
+          const { latitude, longitude } = position.coords
 
           const updatedLocation = {
             type: "Point",
             coordinates: [longitude, latitude],
-          };
+          }
 
           setPersonalInfo((prevData) => ({
             ...prevData,
             location: updatedLocation,
-          }));
+          }))
 
-          setIsLocationChanged(true);
+          setIsLocationChanged(true)
 
           toast({
             title: "Location updated",
             description: "Your current location has been captured.",
-          });
+          })
         },
         () => {
           toast({
             title: "Location error",
-            description:
-              "Unable to get your location. Please check permissions.",
+            description: "Unable to get your location. Please check permissions.",
             variant: "destructive",
-          });
-        }
-      );
+          })
+        },
+      )
     } else {
       toast({
         title: "Not supported",
         description: "Geolocation is not supported by this browser.",
         variant: "destructive",
-      });
+      })
     }
-  };
+  }
 
   useEffect(() => {
     if (user) {
       const userData = {
-        fullName:
-          user.firstName && user.lastName
-            ? `${user.firstName} ${user.lastName}`.trim()
-            : user.name || "",
+        fullName: user.firstName && user.lastName ? `${user.firstName} ${user.lastName}`.trim() : user.name || "",
         email: user.email || "",
         pin: user.pin || "",
         phone: user.phone || "",
@@ -928,12 +898,12 @@ export default function Settings({ user }) {
           type: "Point",
           coordinates: user.location?.coordinates || [0, 0],
         },
-      };
+      }
 
-      setPersonalInfo(userData);
-      setInitialData(userData);
+      setPersonalInfo(userData)
+      setInitialData(userData)
     }
-  }, [user]);
+  }, [user])
 
   // Animation variants
   const containerVariants = {
@@ -945,7 +915,7 @@ export default function Settings({ user }) {
         delayChildren: 0.2,
       },
     },
-  };
+  }
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
@@ -954,12 +924,12 @@ export default function Settings({ user }) {
       opacity: 1,
       transition: { type: "spring", stiffness: 300, damping: 24 },
     },
-  };
+  }
 
   const fadeIn = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.4 } },
-  };
+  }
 
   return (
     <motion.div
@@ -968,16 +938,10 @@ export default function Settings({ user }) {
       animate="visible"
       variants={containerVariants}
     >
-      <motion.div
-        className="flex flex-col items-center mb-8"
-        variants={itemVariants}
-      >
+      <motion.div className="flex flex-col items-center mb-8" variants={itemVariants}>
         <div className="relative group">
           <Avatar className="h-32 w-32 border-4 border-primary/20">
-            <AvatarImage
-              src={image ? URL.createObjectURL(image) : "/placeholder-user.jpg"}
-              alt="Profile"
-            />
+            <AvatarImage src={image ? URL.createObjectURL(image) : "/placeholder-user.jpg"} alt="Profile" />
             <AvatarFallback className="text-2xl">
               {personalInfo.fullName
                 .split(" ")
@@ -995,13 +959,7 @@ export default function Settings({ user }) {
             <span className="sr-only">Upload profile picture</span>
           </label>
 
-          <input
-            type="file"
-            id="profile-upload"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="hidden"
-          />
+          <input type="file" id="profile-upload" accept="image/*" onChange={handleFileChange} className="hidden" />
         </div>
 
         <motion.h1 className="text-2xl font-bold mt-4" variants={fadeIn}>
@@ -1033,24 +991,15 @@ export default function Settings({ user }) {
         </TabsList>
 
         <TabsContent value="personal">
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
+          <motion.div variants={containerVariants} initial="hidden" animate="visible">
             <Card>
               <CardHeader>
                 <CardTitle>Personal Information</CardTitle>
-                <CardDescription>
-                  Update your personal details and preferences
-                </CardDescription>
+                <CardDescription>Update your personal details and preferences</CardDescription>
               </CardHeader>
 
               <CardContent className="space-y-4">
-                <motion.div
-                  className="grid gap-4 md:grid-cols-2"
-                  variants={containerVariants}
-                >
+                <motion.div className="grid gap-4 md:grid-cols-2" variants={containerVariants}>
                   <motion.div className="space-y-2" variants={itemVariants}>
                     <Label htmlFor="fullName">Full Name</Label>
                     <div className="relative">
@@ -1060,11 +1009,7 @@ export default function Settings({ user }) {
                         value={personalInfo.fullName}
                         onChange={handleInputChange}
                         readOnly={editingField !== "fullName"}
-                        className={
-                          editingField === "fullName"
-                            ? "pr-10 border-primary"
-                            : "pr-10"
-                        }
+                        className={editingField === "fullName" ? "pr-10 border-primary" : "pr-10"}
                       />
                       <Button
                         variant="ghost"
@@ -1083,13 +1028,7 @@ export default function Settings({ user }) {
 
                   <motion.div className="space-y-2" variants={itemVariants}>
                     <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      value={personalInfo.email}
-                      readOnly
-                      className="bg-muted/50"
-                    />
+                    <Input id="email" name="email" value={personalInfo.email} readOnly className="bg-muted/50" />
                   </motion.div>
 
                   <motion.div className="space-y-2" variants={itemVariants}>
@@ -1101,11 +1040,7 @@ export default function Settings({ user }) {
                         value={personalInfo.phone}
                         onChange={handleInputChange}
                         readOnly={editingField !== "phone"}
-                        className={
-                          editingField === "phone"
-                            ? "pr-10 border-primary"
-                            : "pr-10"
-                        }
+                        className={editingField === "phone" ? "pr-10 border-primary" : "pr-10"}
                       />
                       <Button
                         variant="ghost"
@@ -1131,11 +1066,7 @@ export default function Settings({ user }) {
                         value={personalInfo.pin}
                         onChange={handleInputChange}
                         readOnly={editingField !== "pin"}
-                        className={
-                          editingField === "pin"
-                            ? "pr-10 border-primary"
-                            : "pr-10"
-                        }
+                        className={editingField === "pin" ? "pr-10 border-primary" : "pr-10"}
                       />
                       <Button
                         variant="ghost"
@@ -1166,12 +1097,7 @@ export default function Settings({ user }) {
                         readOnly
                         className="pr-10"
                       />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute right-0 top-0 h-full"
-                        onClick={mapMake}
-                      >
+                      <Button variant="ghost" size="icon" className="absolute right-0 top-0 h-full" onClick={mapMake}>
                         <MapPin className="h-4 w-4 text-primary" />
                       </Button>
                     </div>
@@ -1179,17 +1105,12 @@ export default function Settings({ user }) {
 
                   <motion.div className="space-y-2" variants={itemVariants}>
                     <Label htmlFor="messType">Mess Type</Label>
-                    <Select
-                      value={personalInfo.messType || ""}
-                      onValueChange={handleMessTypeChange}
-                    >
+                    <Select value={personalInfo.messType || "default"} onValueChange={handleMessTypeChange}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select Mess Type" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="default">
-                          Select Mess Type
-                        </SelectItem>
+                        <SelectItem value="default">Select Mess Type</SelectItem>
                         <SelectItem value="Boys Pg">Boys PG</SelectItem>
                         <SelectItem value="Girls Pg">Girls PG</SelectItem>
                         <SelectItem value="Coed Pg">Co-ed PG</SelectItem>
@@ -1204,10 +1125,7 @@ export default function Settings({ user }) {
                   <RefreshCw className="mr-2 h-4 w-4" />
                   Reset
                 </Button>
-                <Button
-                  onClick={handleSaveChanges}
-                  disabled={!isEditing && !isLocationChanged}
-                >
+                <Button onClick={handleSaveChanges} disabled={!isEditing && !isLocationChanged}>
                   <Save className="mr-2 h-4 w-4" />
                   Save Changes
                 </Button>
@@ -1217,17 +1135,11 @@ export default function Settings({ user }) {
         </TabsContent>
 
         <TabsContent value="security">
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
+          <motion.div variants={containerVariants} initial="hidden" animate="visible">
             <Card>
               <CardHeader>
                 <CardTitle>Security Settings</CardTitle>
-                <CardDescription>
-                  Manage your password and account security
-                </CardDescription>
+                <CardDescription>Manage your password and account security</CardDescription>
               </CardHeader>
 
               <CardContent className="space-y-4">
@@ -1255,9 +1167,7 @@ export default function Settings({ user }) {
                   </motion.div>
 
                   <motion.div className="space-y-2" variants={itemVariants}>
-                    <Label htmlFor="confirmPassword">
-                      Confirm New Password
-                    </Label>
+                    <Label htmlFor="confirmPassword">Confirm New Password</Label>
                     <Input
                       id="confirmPassword"
                       name="confirmPassword"
@@ -1271,34 +1181,25 @@ export default function Settings({ user }) {
                 <Separator className="my-4" />
 
                 <motion.div variants={itemVariants}>
-                  <h3 className="text-lg font-medium mb-4">
-                    Account Management
-                  </h3>
+                  <h3 className="text-lg font-medium mb-4">Account Management</h3>
                   <div className="flex flex-col sm:flex-row gap-4">
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className="border-amber-500 text-amber-500 hover:bg-amber-50"
-                        >
+                        <Button variant="outline" className="border-amber-500 text-amber-500 hover:bg-amber-50">
                           <LogOut className="mr-2 h-4 w-4" />
                           Logout
                         </Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>
-                            Are you sure you want to logout?
-                          </AlertDialogTitle>
+                          <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>
                           <AlertDialogDescription>
                             You will need to login again to access your account.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={handleLogout}>
-                            Logout
-                          </AlertDialogAction>
+                          <AlertDialogAction onClick={handleLogout}>Logout</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
@@ -1315,13 +1216,10 @@ export default function Settings({ user }) {
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>
-                            Are you absolutely sure?
-                          </AlertDialogTitle>
+                          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This action cannot be undone. This will permanently
-                            delete your account and remove your data from our
-                            servers.
+                            This action cannot be undone. This will permanently delete your account and remove your data
+                            from our servers.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
@@ -1342,11 +1240,7 @@ export default function Settings({ user }) {
               <CardFooter>
                 <Button
                   onClick={handlePasswordReset}
-                  disabled={
-                    !passwords.currentPassword ||
-                    !passwords.newPassword ||
-                    !passwords.confirmPassword
-                  }
+                  disabled={!passwords.currentPassword || !passwords.newPassword || !passwords.confirmPassword}
                 >
                   <Lock className="mr-2 h-4 w-4" />
                   Update Password
@@ -1357,85 +1251,52 @@ export default function Settings({ user }) {
         </TabsContent>
 
         <TabsContent value="preferences">
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
+          <motion.div variants={containerVariants} initial="hidden" animate="visible">
             <Card>
               <CardHeader>
                 <CardTitle>Notification Preferences</CardTitle>
-                <CardDescription>
-                  Manage how you receive notifications
-                </CardDescription>
+                <CardDescription>Manage how you receive notifications</CardDescription>
               </CardHeader>
 
               <CardContent className="space-y-4">
                 <motion.div className="space-y-4" variants={containerVariants}>
-                  <motion.div
-                    className="flex items-center justify-between"
-                    variants={itemVariants}
-                  >
+                  <motion.div className="flex items-center justify-between" variants={itemVariants}>
                     <div className="space-y-0.5">
-                      <Label htmlFor="email-notifications">
-                        Email Notifications
-                      </Label>
-                      <p className="text-sm text-muted-foreground">
-                        Receive notifications via email
-                      </p>
+                      <Label htmlFor="email-notifications">Email Notifications</Label>
+                      <p className="text-sm text-muted-foreground">Receive notifications via email</p>
                     </div>
                     <Switch
                       id="email-notifications"
                       checked={notifications.email}
-                      onCheckedChange={(checked) =>
-                        handleNotificationChange("email", checked)
-                      }
+                      onCheckedChange={(checked) => handleNotificationChange("email", checked)}
                     />
                   </motion.div>
 
                   <Separator />
 
-                  <motion.div
-                    className="flex items-center justify-between"
-                    variants={itemVariants}
-                  >
+                  <motion.div className="flex items-center justify-between" variants={itemVariants}>
                     <div className="space-y-0.5">
-                      <Label htmlFor="sms-notifications">
-                        SMS Notifications
-                      </Label>
-                      <p className="text-sm text-muted-foreground">
-                        Receive notifications via text message
-                      </p>
+                      <Label htmlFor="sms-notifications">SMS Notifications</Label>
+                      <p className="text-sm text-muted-foreground">Receive notifications via text message</p>
                     </div>
                     <Switch
                       id="sms-notifications"
                       checked={notifications.sms}
-                      onCheckedChange={(checked) =>
-                        handleNotificationChange("sms", checked)
-                      }
+                      onCheckedChange={(checked) => handleNotificationChange("sms", checked)}
                     />
                   </motion.div>
 
                   <Separator />
 
-                  <motion.div
-                    className="flex items-center justify-between"
-                    variants={itemVariants}
-                  >
+                  <motion.div className="flex items-center justify-between" variants={itemVariants}>
                     <div className="space-y-0.5">
-                      <Label htmlFor="push-notifications">
-                        Push Notifications
-                      </Label>
-                      <p className="text-sm text-muted-foreground">
-                        Receive push notifications on your devices
-                      </p>
+                      <Label htmlFor="push-notifications">Push Notifications</Label>
+                      <p className="text-sm text-muted-foreground">Receive push notifications on your devices</p>
                     </div>
                     <Switch
                       id="push-notifications"
                       checked={notifications.push}
-                      onCheckedChange={(checked) =>
-                        handleNotificationChange("push", checked)
-                      }
+                      onCheckedChange={(checked) => handleNotificationChange("push", checked)}
                     />
                   </motion.div>
                 </motion.div>
@@ -1446,8 +1307,7 @@ export default function Settings({ user }) {
                   onClick={() =>
                     toast({
                       title: "Preferences saved",
-                      description:
-                        "Your notification preferences have been updated.",
+                      description: "Your notification preferences have been updated.",
                     })
                   }
                 >
@@ -1459,5 +1319,5 @@ export default function Settings({ user }) {
         </TabsContent>
       </Tabs>
     </motion.div>
-  );
+  )
 }
