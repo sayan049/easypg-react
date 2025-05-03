@@ -940,13 +940,13 @@ function Settings({ user }) {
           onClick={handleReset}
           className="bg-gray-200 text-gray-800 px-3 py-1.5 rounded text-sm"
         >
-          Reset
+          Reset to default
         </button>
         <button
           onClick={handleSaveChanges}
           className="bg-blue-500 text-white px-3 py-1.5 rounded text-sm"
         >
-          Save All
+          Save All changes
         </button>
         {/* </div> */}
       </div>
