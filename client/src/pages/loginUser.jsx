@@ -58,38 +58,7 @@ function LoginUser() {
   const [awaitingVerification, setAwaitingVerification] = useState(false);
 
   const messageLoc = location.state?.message;
-  useEffect(() => {
-    const handleStorageChange = (e) => {
-      if (e.key === 'verificationCompleted' && e.newValue === 'true') {
-        const storedEmail = localStorage.getItem('verificationEmail');
-        if (storedEmail === email) {
-          setIsEmailVerified(true);
-          setVerificationCompleted(true);
-          localStorage.removeItem('verificationCompleted');
-          localStorage.removeItem('verificationEmail');
-        }
-      }
-    };
-  
-    window.addEventListener('storage', handleStorageChange);
-    
-    // Also check when the window regains focus
-    const checkOnFocus = () => {
-      if (email && localStorage.getItem('verificationCompleted') === 'true') {
-        const storedEmail = localStorage.getItem('verificationEmail');
-        if (storedEmail === email) {
-          checkEmailVerification(email);
-        }
-      }
-    };
-    
-    window.addEventListener('focus', checkOnFocus);
-  
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('focus', checkOnFocus);
-    };
-  }, [email, checkEmailVerification]);
+
 
   useEffect(() => {
     toast.success(messageLoc);
@@ -220,6 +189,38 @@ function LoginUser() {
     }, 500),
     []
   );
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'verificationCompleted' && e.newValue === 'true') {
+        const storedEmail = localStorage.getItem('verificationEmail');
+        if (storedEmail === email) {
+          setIsEmailVerified(true);
+          setVerificationCompleted(true);
+          localStorage.removeItem('verificationCompleted');
+          localStorage.removeItem('verificationEmail');
+        }
+      }
+    };
+  
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also check when the window regains focus
+    const checkOnFocus = () => {
+      if (email && localStorage.getItem('verificationCompleted') === 'true') {
+        const storedEmail = localStorage.getItem('verificationEmail');
+        if (storedEmail === email) {
+          checkEmailVerification(email);
+        }
+      }
+    };
+    
+    window.addEventListener('focus', checkOnFocus);
+  
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('focus', checkOnFocus);
+    };
+  }, [email, checkEmailVerification]);
 
   useEffect(() => {
     checkEmailVerification(email);
