@@ -840,7 +840,7 @@ function NewDashboard() {
         return <div className="px-4">Payments Content</div>;
       case "settings":
         return <Settings user={userDetails} />;
-      case "saved PG":
+      case "Cart":
          return <Cart/>;
       default:
         return <DashboardContent />;
@@ -875,6 +875,7 @@ function NewDashboard() {
           <SidebarButton icon={<CalendarCheck />} label="My Bookings" active={activeTab === "bookings"} onClick={() => handleTabChange("bookings")} />
           <SidebarButton icon={<CreditCard />} label="My Payments" active={activeTab === "payments"} onClick={() => handleTabChange("payments")} />
           <SidebarButton icon={<Gear />} label="Settings" active={activeTab === "settings"} onClick={() => handleTabChange("settings")} />
+          <SidebarButton icon={<Gear />} label="Cart" active={activeTab === "Cart"} onClick={() => handleTabChange("Cart")} />
         </nav>
         <button onClick={handleLogout} className="absolute bottom-28 md:bottom-14 flex items-center gap-3 px-4 py-2 rounded-md mt-10 text-red-600 hover:bg-red-100 transition">
           <LogOutIcon className="w-4 h-4" /> Logout
