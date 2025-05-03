@@ -343,16 +343,7 @@ export default function DashboardOwner() {
   });
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-  const {
-    userName,
-    IsAuthenticated,
-    isOwnerAuthenticated,
-    ownerName,
-    user,
-    owner,
-    type,
-    handleLogout
-  } = useAuth();
+  const { ownerName, isOwnerAuthenticated, owner, type,handleLogout } = useAuth();
 
 
 
@@ -360,8 +351,8 @@ export default function DashboardOwner() {
     const fetchDetails = async () => {
       if (isOwnerAuthenticated) {
         try {
-          const userId = type === "owner" ? owner?.id : user?.id;
-          if (!userId) return; 
+          const userId = type === "owner" ? owner?.id : null;
+          if (!userId) return;
 
           const url = new URL(fetchDetailsUrl);
           url.searchParams.append("userId", userId);
@@ -397,7 +388,7 @@ export default function DashboardOwner() {
       fetchDetails();
       fetchDashboardData();
     }
-  }, [type, user, owner, isOwnerAuthenticated]);
+  }, [type, owner, isOwnerAuthenticated]);
 
   const renderComponent = () => {
     switch (activeTab) {
@@ -421,7 +412,7 @@ export default function DashboardOwner() {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row relative">
-      {/* Hamburger menu for mobile */}
+      {/* Mobile Header */}
       <div className="md:hidden flex justify-between items-center p-4 bg-white shadow">
         <button onClick={() => setMobileSidebarOpen(true)}>
           <Menu className="w-6 h-6" />
@@ -430,16 +421,17 @@ export default function DashboardOwner() {
         <div className="w-6" />
       </div>
 
-      {/* Sidebar - Desktop */}
+      {/* Desktop Sidebar */}
       <div className="hidden md:flex md:flex-col w-64 bg-white shadow p-4 items-center sticky top-0 h-screen">
-        <svg className="w-10 h-10 rounded-full mb-2 bg-gray-200" viewBox="0 0 100 100">
-          <circle cx="50" cy="40" r="20" fill="#4F46E5" />
-          <circle cx="50" cy="80" r="25" fill="#4F46E5" />
-        </svg>
-
-        <div className="text-center mb-6">
-          <div className="text-base font-semibold">{ownerName}</div>
-          <div className="text-sm text-gray-500">Property Owner</div>
+        <div className="flex flex-col items-center mb-6">
+          <svg className="w-10 h-10 rounded-full mb-2 bg-gray-200" viewBox="0 0 100 100">
+            <circle cx="50" cy="40" r="20" fill="#4F46E5" />
+            <circle cx="50" cy="80" r="25" fill="#4F46E5" />
+          </svg>
+          <div className="text-center">
+            <div className="text-base font-semibold">{ownerName}</div>
+            <div className="text-sm text-gray-500">Property Owner</div>
+          </div>
         </div>
 
         <nav className="flex flex-col gap-2 w-full">
@@ -447,8 +439,8 @@ export default function DashboardOwner() {
             <button
               key={item.key}
               className={cn(
-                "flex items-center gap-2 p-2 rounded hover:bg-blue-100 w-full",
-                activeTab === item.key && "bg-blue-100 font-medium"
+                "flex items-center gap-2 p-2 rounded hover:bg-gray-100 w-full transition-colors",
+                activeTab === item.key && "bg-blue-100 text-blue-600 font-medium"
               )}
               onClick={() => setActiveTab(item.key)}
             >
@@ -459,76 +451,72 @@ export default function DashboardOwner() {
 
         <button
           onClick={handleLogout}
-          className="mt-auto flex items-center gap-2 p-2 rounded text-red-600 hover:bg-red-100 w-full"
+          className="mt-auto flex items-center gap-2 p-2 rounded text-red-600 hover:bg-red-100 w-full transition-colors"
         >
           <LogOut /> Logout
         </button>
       </div>
 
-      {/* Sidebar - Mobile Drawer */}
+      {/* Mobile Sidebar */}
       <div
-        className={cn(
-          "fixed inset-0 z-50 flex transition-all duration-300",
-          mobileSidebarOpen ? "translate-x-0" : "translate-x-full pointer-events-none"
-        )}
+        className={`fixed inset-0 z-50 transition-opacity duration-300 ${
+          mobileSidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        } bg-black/30`}
       >
-        <div
-          className={cn(
-            "w-64 bg-white shadow-md p-4 flex flex-col transform transition-transform duration-300",
-            mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
-          )}
-        >
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">Menu</h2>
-            <button onClick={() => setMobileSidebarOpen(false)}>
-              <X className="w-6 h-6" />
+        <div className="flex h-full">
+          <div
+            className={`transform transition-transform duration-300 ease-in-out ${
+              mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
+            } w-64 bg-white shadow-md p-4 flex flex-col`}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Menu</h2>
+              <button onClick={() => setMobileSidebarOpen(false)}>
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="flex flex-col items-center mb-6">
+              <svg className="w-10 h-10 rounded-full mb-2 bg-gray-200" viewBox="0 0 100 100">
+                <circle cx="50" cy="40" r="20" fill="#4F46E5" />
+                <circle cx="50" cy="80" r="25" fill="#4F46E5" />
+              </svg>
+              <div className="text-center">
+                <div className="text-base font-semibold">{ownerName}</div>
+                <div className="text-sm text-gray-500">Property Owner</div>
+              </div>
+            </div>
+
+            <nav className="flex flex-col gap-2">
+              {navItems.map((item) => (
+                <button
+                  key={item.key}
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded hover:bg-gray-100 text-left transition-colors",
+                    activeTab === item.key && "bg-blue-100 text-blue-600 font-medium"
+                  )}
+                  onClick={() => {
+                    setActiveTab(item.key);
+                    setMobileSidebarOpen(false);
+                  }}
+                >
+                  {item.icon} {item.name}
+                </button>
+              ))}
+            </nav>
+
+            <button
+              onClick={handleLogout}
+              className="mt-auto flex items-center gap-2 p-2 rounded text-red-600 hover:bg-red-100 transition-colors"
+            >
+              <LogOut /> Logout
             </button>
           </div>
-
-          <svg className="w-10 h-10 rounded-full mb-2 bg-gray-200 self-center" viewBox="0 0 100 100">
-            <circle cx="50" cy="40" r="20" fill="#4F46E5" />
-            <circle cx="50" cy="80" r="25" fill="#4F46E5" />
-          </svg>
-
-          <div className="text-center mb-6">
-            <div className="text-base font-semibold">{ownerName}</div>
-            <div className="text-sm text-gray-500">Property Owner</div>
-          </div>
-
-          <nav className="flex flex-col gap-2">
-            {navItems.map((item) => (
-              <button
-                key={item.key}
-                className={cn(
-                  "flex items-center gap-2 p-2 rounded hover:bg-blue-100 text-left",
-                  activeTab === item.key && "bg-blue-100 font-medium"
-                )}
-                onClick={() => {
-                  setActiveTab(item.key);
-                  setMobileSidebarOpen(false);
-                }}
-              >
-                {item.icon} {item.name}
-              </button>
-            ))}
-          </nav>
-
-          <button
-            onClick={handleLogout}
-            className="mt-auto flex items-center gap-2 p-2 rounded text-red-600 hover:bg-red-100"
-          >
-            <LogOut /> Logout
-          </button>
+          <div className="flex-1" onClick={() => setMobileSidebarOpen(false)} />
         </div>
-
-        {/* Background overlay */}
-        <div
-          className="flex-1 bg-black bg-opacity-30"
-          onClick={() => setMobileSidebarOpen(false)}
-        />
       </div>
 
-      {/* Main content */}
+      {/* Main Content */}
       <div className="flex-1 bg-gray-50 p-4 pb-[62px] md:pb-0 lg:pb-0">
         {renderComponent()}
       </div>
