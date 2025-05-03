@@ -708,13 +708,93 @@ function Settings({ user }) {
 
       if (!response.ok) throw new Error("Failed to update details");
       await response.json();
-      toast.success("Changes saved successfully!");
+      toast.success("Profile details updated!");
       setIsEditing(false);
       setEditingField(null);
     } catch (error) {
       toast.error(error.message);
+      return;
+    }
+
+    // Handle password change if any field is filled
+    const { currentPassword, newPassword, confirmPassword } = passwords;
+    if (currentPassword || newPassword || confirmPassword) {
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        toast.error("All password fields are required!");
+        return;
+      }
+      if (newPassword.length < 6) {
+        toast.error("Password must be at least 6 characters");
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        toast.error("Passwords don't match!");
+        return;
+      }
+
+      try {
+        const passResponse = await fetch(resetPasswordDashboard, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: type === "student" ? user?._id : owner?._id,
+            type,
+            currentPassword,
+            newPassword,
+          }),
+        });
+
+        if (!passResponse.ok) throw new Error("Password update failed");
+
+        toast.success("Password updated successfully!");
+        setPasswords({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
+      } catch (error) {
+        toast.error(error.message);
+      }
     }
   };
+
+  // const handleSaveChanges = async () => {
+  //   const phoneRegex = /^[0-9]{10}$/;
+  //   if (personalInfo.phone && !phoneRegex.test(personalInfo.phone)) {
+  //     toast.error("Please enter a valid 10-digit phone number");
+  //     return;
+  //   }
+
+  //   const formData = new FormData();
+  //   formData.append("userId", user._id);
+  //   formData.append("type", type);
+
+  //   Object.keys(personalInfo).forEach((key) => {
+  //     if (personalInfo[key]) {
+  //       formData.append(
+  //         key,
+  //         key === "location"
+  //           ? JSON.stringify(personalInfo[key])
+  //           : personalInfo[key]
+  //       );
+  //     }
+  //   });
+
+  //   try {
+  //     const response = await fetch(updateDetailsUrl, {
+  //       method: "POST",
+  //       body: formData,
+  //     });
+
+  //     if (!response.ok) throw new Error("Failed to update details");
+  //     await response.json();
+  //     toast.success("Changes saved successfully!");
+  //     setIsEditing(false);
+  //     setEditingField(null);
+  //   } catch (error) {
+  //     toast.error(error.message);
+  //   }
+  // };
 
   const handleReset = () => {
     setPersonalInfo(initialData);
@@ -889,14 +969,14 @@ function Settings({ user }) {
             <option value="Coed Pg">Co-ed PG</option>
           </select>
 
-          {(isEditing || isLocationChanged) && (
+          {/* {(isEditing || isLocationChanged) && (
             <button
               onClick={handleSaveChanges}
               className="mt-2 bg-blue-500 text-white px-3 py-1.5 rounded text-sm"
             >
               Save Changes
             </button>
-          )}
+          )} */}
         </section>
 
         {/* Password Management */}
@@ -964,7 +1044,7 @@ function Settings({ user }) {
                 &times;
               </button>
             </div>
-{/* lsmfdlsfemlsmef */}
+            {/* lsmfdlsfemlsmef */}
             <div className="flex flex-col gap-3">
               <button
                 onClick={handleLogout}
