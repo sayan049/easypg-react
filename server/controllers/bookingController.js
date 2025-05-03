@@ -1406,7 +1406,7 @@ exports.cancelBooking = async (req, res) => {
           booking.pgOwner,
           "PgOwner",
           "Booking Cancelled",
-          `Booking for ${booking.room} has been cancelled by ${fullname}`,
+          `Booking for ${booking.room} has been cancelled by ${fullname} for reason: ${cancellationReason}`,
           NOTIFICATION_TYPES.BOOKING,
           booking._id
         ),

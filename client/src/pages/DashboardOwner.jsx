@@ -149,22 +149,183 @@
 //     </div>
 //   );
 // }
+// import React, { useState, useEffect } from "react";
+// import {
+//   Home,
+//   CalendarCheck,
+//   CreditCard,
+//   Settings as Gear,
+// } from "lucide-react";
+// import { cn } from "../lib/utils";
+// import DashboardContentOwner from "../components/dashboardContentOwner";
+// import BookingStatus from "../components/BookingStatus";
+// import Payments from "../components/paymentOwner";
+// import SettingsOwner from "../components/settingsOwner";
+// import { fetchDetailsUrl } from "../constant/urls";
+// import { useAuth } from "../contexts/AuthContext";
+
+// import { baseurl } from "../constant/urls";
+
+// const navItems = [
+//   { name: "Dashboard", icon: <Home />, key: "dashboard" },
+//   { name: "Booking Status", icon: <CalendarCheck />, key: "booking" },
+//   { name: "Payments", icon: <CreditCard />, key: "payments" },
+//   { name: "Settings", icon: <Gear />, key: "settings" },
+// ];
+
+// export default function DashboardOwner() {
+//   const [activeTab, setActiveTab] = useState("dashboard");
+//   const [userDetails, setUserDetails] = useState(null);
+//   const [dashboardData, setDashboardData] = useState({
+//     stats: null,
+//     recentActivity: [],
+//   });
+
+//   const {
+//     userName,
+//     IsAuthenticated,
+//     isOwnerAuthenticated,
+//     ownerName,
+//     user,
+//     owner,
+//     type,
+//   } = useAuth();
+
+//   useEffect(() => {
+//     const fetchDetails = async () => {
+//       if (isOwnerAuthenticated) {
+//         try {
+//           const userId = type === "owner" ? owner?.id : user?.id;
+//           if (!userId) return;
+
+//           const url = new URL(fetchDetailsUrl);
+//           url.searchParams.append("userId", userId);
+//           url.searchParams.append("type", type);
+
+//           const response = await fetch(url);
+//           if (!response.ok) throw new Error("Failed to fetch details");
+//           const data = await response.json();
+//           setUserDetails(data);
+//         } catch (error) {
+//           console.error("Error fetching details:", error);
+//         }
+//       }
+//     };
+
+//     const fetchDashboardData = async () => {
+//       try {
+//         const token = localStorage.getItem("accessToken");
+//         const response = await fetch(`${baseurl}/auth/dashboard/owner-stats`, {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         });
+//         console.log("Dashboard response:", response);
+
+//         if (!response.ok) {
+//           throw new Error("Failed to fetch dashboard data");
+//         }
+
+//         const data = await response.json();
+//         setDashboardData(data);
+//       } catch (error) {
+//         console.error("Dashboard fetch error:", error);
+//       }
+//     };
+
+//     if (isOwnerAuthenticated) {
+//       fetchDetails();
+//       fetchDashboardData();
+//     }
+//   }, [type, user, owner, isOwnerAuthenticated]);
+
+//   const renderComponent = () => {
+//     switch (activeTab) {
+//       case "dashboard":
+//         return  (
+//           <DashboardContentOwner
+//             stats={dashboardData.stats}
+//             recentActivity={dashboardData.recentActivity}
+//           />
+//         ) ;
+//       case "booking":
+//         return <BookingStatus />;
+//       case "payments":
+//         return <Payments />;
+//       case "settings":
+//         return <SettingsOwner userDetails={userDetails} />;
+//       default:
+//         return null;
+//     }
+//   };
+
+//   return (
+//     <div className="min-h-screen flex flex-col md:flex-row">
+//       {/* Sidebar */}
+//       <div className="hidden md:flex md:flex-col w-64 bg-white shadow p-4 items-center sticky top-0 h-screen">
+//         <svg className="w-10 h-10 rounded-full mb-2 bg-gray-200" viewBox="0 0 100 100">
+//           <circle cx="50" cy="40" r="20" fill="#4F46E5" />
+//           <circle cx="50" cy="80" r="25" fill="#4F46E5" />
+//         </svg>
+
+//         <div className="text-center mb-6">
+//           <div className="text-base font-semibold">{ownerName}</div>
+//           <div className="text-sm text-gray-500">Property Owner</div>
+//         </div>
+//         <nav className="flex flex-col gap-2 w-full">
+//           {navItems.map((item) => (
+//             <button
+//               key={item.key}
+//               className={cn(
+//                 "flex items-center gap-2 p-2 rounded hover:bg-gray-100",
+//                 activeTab === item.key && "bg-gray-100 font-medium"
+//               )}
+//               onClick={() => setActiveTab(item.key)}
+//             >
+//               {item.icon} {item.name}
+//             </button>
+//           ))}
+//         </nav>
+//       </div>
+
+//       {/* Main content */}
+//       <div className="flex-1 bg-gray-50 p-4 pb-[62px] md:pb-0 lg:pb-0">
+//         {renderComponent()}
+//       </div>
+
+//       {/* Mobile bottom nav */}
+//       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t shadow-md flex justify-around py-2">
+//         {navItems.map((item) => (
+//           <button
+//             key={item.key}
+//             onClick={() => setActiveTab(item.key)}
+//             className="flex flex-col items-center text-sm"
+//           >
+//             {item.icon}
+//             <span className="text-xs mt-1">{item.name}</span>
+//           </button>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
 import React, { useState, useEffect } from "react";
 import {
   Home,
   CalendarCheck,
   CreditCard,
   Settings as Gear,
+  LogOut,
+  Menu,
+  X,
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import DashboardContentOwner from "../components/dashboardContentOwner";
 import BookingStatus from "../components/BookingStatus";
 import Payments from "../components/paymentOwner";
 import SettingsOwner from "../components/settingsOwner";
-import { fetchDetailsUrl } from "../constant/urls";
+import { fetchDetailsUrl, baseurl } from "../constant/urls";
 import { useAuth } from "../contexts/AuthContext";
-
-import { baseurl } from "../constant/urls";
 
 const navItems = [
   { name: "Dashboard", icon: <Home />, key: "dashboard" },
@@ -180,6 +341,7 @@ export default function DashboardOwner() {
     stats: null,
     recentActivity: [],
   });
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   const {
     userName,
@@ -190,6 +352,11 @@ export default function DashboardOwner() {
     owner,
     type,
   } = useAuth();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = "/";
+  };
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -220,12 +387,7 @@ export default function DashboardOwner() {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log("Dashboard response:", response);
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch dashboard data");
-        }
-
+        if (!response.ok) throw new Error("Failed to fetch dashboard data");
         const data = await response.json();
         setDashboardData(data);
       } catch (error) {
@@ -242,12 +404,12 @@ export default function DashboardOwner() {
   const renderComponent = () => {
     switch (activeTab) {
       case "dashboard":
-        return  (
+        return (
           <DashboardContentOwner
             stats={dashboardData.stats}
             recentActivity={dashboardData.recentActivity}
           />
-        ) ;
+        );
       case "booking":
         return <BookingStatus />;
       case "payments":
@@ -260,8 +422,17 @@ export default function DashboardOwner() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
-      {/* Sidebar */}
+    <div className="min-h-screen flex flex-col md:flex-row relative">
+      {/* Hamburger menu for mobile */}
+      <div className="md:hidden flex justify-between items-center p-4 bg-white shadow">
+        <button onClick={() => setMobileSidebarOpen(true)}>
+          <Menu className="w-6 h-6" />
+        </button>
+        <h1 className="text-lg font-semibold">Dashboard</h1>
+        <div className="w-6" /> {/* Placeholder for symmetry */}
+      </div>
+
+      {/* Sidebar - Desktop */}
       <div className="hidden md:flex md:flex-col w-64 bg-white shadow p-4 items-center sticky top-0 h-screen">
         <svg className="w-10 h-10 rounded-full mb-2 bg-gray-200" viewBox="0 0 100 100">
           <circle cx="50" cy="40" r="20" fill="#4F46E5" />
@@ -272,12 +443,13 @@ export default function DashboardOwner() {
           <div className="text-base font-semibold">{ownerName}</div>
           <div className="text-sm text-gray-500">Property Owner</div>
         </div>
+
         <nav className="flex flex-col gap-2 w-full">
           {navItems.map((item) => (
             <button
               key={item.key}
               className={cn(
-                "flex items-center gap-2 p-2 rounded hover:bg-gray-100",
+                "flex items-center gap-2 p-2 rounded hover:bg-gray-100 w-full",
                 activeTab === item.key && "bg-gray-100 font-medium"
               )}
               onClick={() => setActiveTab(item.key)}
@@ -286,25 +458,60 @@ export default function DashboardOwner() {
             </button>
           ))}
         </nav>
+
+        <button
+          onClick={handleLogout}
+          className="mt-auto flex items-center gap-2 p-2 rounded text-red-600 hover:bg-red-100 w-full"
+        >
+          <LogOut /> Logout
+        </button>
       </div>
+
+      {/* Sidebar - Mobile Drawer */}
+      {mobileSidebarOpen && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-30 flex">
+          <div className="w-64 bg-white shadow-md p-4 flex flex-col">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Menu</h2>
+              <button onClick={() => setMobileSidebarOpen(false)}>
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <nav className="flex flex-col gap-2">
+              {navItems.map((item) => (
+                <button
+                  key={item.key}
+                  className={cn(
+                    "flex items-center gap-2 p-2 rounded hover:bg-gray-100 text-left",
+                    activeTab === item.key && "bg-gray-100 font-medium"
+                  )}
+                  onClick={() => {
+                    setActiveTab(item.key);
+                    setMobileSidebarOpen(false);
+                  }}
+                >
+                  {item.icon} {item.name}
+                </button>
+              ))}
+            </nav>
+
+            <button
+              onClick={handleLogout}
+              className="mt-auto flex items-center gap-2 p-2 rounded text-red-600 hover:bg-red-100"
+            >
+              <LogOut /> Logout
+            </button>
+          </div>
+
+          {/* Close area */}
+          <div className="flex-1" onClick={() => setMobileSidebarOpen(false)} />
+        </div>
+      )}
 
       {/* Main content */}
       <div className="flex-1 bg-gray-50 p-4 pb-[62px] md:pb-0 lg:pb-0">
         {renderComponent()}
-      </div>
-
-      {/* Mobile bottom nav */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t shadow-md flex justify-around py-2">
-        {navItems.map((item) => (
-          <button
-            key={item.key}
-            onClick={() => setActiveTab(item.key)}
-            className="flex flex-col items-center text-sm"
-          >
-            {item.icon}
-            <span className="text-xs mt-1">{item.name}</span>
-          </button>
-        ))}
       </div>
     </div>
   );
