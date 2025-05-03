@@ -63,7 +63,7 @@ const MailVerify = () => {
     const navigate = useNavigate();
     const query = new URLSearchParams(location.search);
     const id = query.get('id');
-    const email = query.get('email');
+    const email = query.get('email'); // Assuming you can pass email as query parameter
     const [message, setMessage] = useState('Verifying your email...');
     const [verified, setVerified] = useState(null);
     const requestSent = useRef(false);
@@ -71,13 +71,6 @@ const MailVerify = () => {
     useEffect(() => {
         if (id && !requestSent.current) {
             requestSent.current = true;
-            
-            // Notify the parent window immediately that verification is in progress
-            localStorage.setItem('verificationInProgress', 'true');
-            if (email) {
-                localStorage.setItem('verificationEmail', email);
-            }
-
             fetch(`${mailVerifyUrl}?id=${id}`)
                 .then(response => response.json())
                 .then(data => {
@@ -85,45 +78,43 @@ const MailVerify = () => {
                         setMessage('Your email has been verified successfully!');
                         setVerified(true);
                         
-                        // Notify the parent window
+                        // Notify the original login tab
                         localStorage.setItem('verificationCompleted', 'true');
-                        localStorage.removeItem('verificationInProgress');
+                        if (email) {
+                            localStorage.setItem('verificationEmail', email);
+                        }
                         
                         // Try to communicate with opener window if it exists
                         if (window.opener) {
                             window.opener.postMessage({
                                 type: 'verificationCompleted',
-                                email: email,
-                                success: true
+                                email: email
                             }, '*');
                         }
-                    } else {
-                        setMessage(data.message || 'Verification failed or already verified.');
+                    } else if (data.verified === 'false') {
+                        setMessage('Verification failed or already verified.');
                         setVerified(false);
-                        localStorage.setItem('verificationFailed', 'true');
+                    } else {
+                        setMessage('An error occurred during verification.');
+                        setVerified(null);
                     }
                 })
-                .catch((error) => {
-                    console.error('Verification error:', error);
+                .catch(() => {
                     setMessage('An error occurred during verification.');
-                    setVerified(false);
-                    localStorage.setItem('verificationFailed', 'true');
-                })
-                .finally(() => {
-                    localStorage.removeItem('verificationInProgress');
+                    setVerified(null);
                 });
         } else if (!id) {
-            setMessage('No verification token provided.');
-            setVerified(false);
+            setMessage('No verification id provided.');
+            setVerified(null);
         }
     }, [id, email]);
 
-    // Auto-close the window after successful verification
+    // Close the window automatically after successful verification
     useEffect(() => {
         if (verified === true) {
             const timer = setTimeout(() => {
                 window.close();
-            }, 3000);
+            }, 3000); // Close after 3 seconds
             return () => clearTimeout(timer);
         }
     }, [verified]);
@@ -149,33 +140,11 @@ const MailVerify = () => {
                         border: 'none',
                         borderRadius: '5px',
                         cursor: 'pointer',
-                        fontSize: '16px',
-                        marginTop: '20px'
-                    }} 
-                    onClick={() => {
-                        navigate('/LoginUser');
-                        window.close();
-                    }}
-                >
-                    Go to Login
-                </button>
-            )}
-            
-            {verified === false && (
-                <button 
-                    style={{ 
-                        padding: '10px 20px',
-                        backgroundColor: '#f0f0f0',
-                        color: '#333',
-                        border: 'none',
-                        borderRadius: '5px',
-                        cursor: 'pointer',
-                        fontSize: '16px',
-                        marginTop: '20px'
+                        fontSize: '16px'
                     }} 
                     onClick={() => navigate('/LoginUser')}
                 >
-                    Return to Login
+                    Go to Login
                 </button>
             )}
         </div>
