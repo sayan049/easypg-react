@@ -362,7 +362,7 @@ function Settings({ user }) {
                 type="password"
                 name={field}
                 value={passwords[field]}
-                //onChange={handlePasswordChange}
+                onChange={handlePasswordChange}
                 placeholder={field.replace(/([A-Z])/g, " $1")}
                 className="w-full p-2 border rounded text-sm"
               />
