@@ -45,10 +45,10 @@ function Settings({ user }) {
     setPersonalInfo({ ...personalInfo, [name]: value });
   };
 
-  // const handlePasswordChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setPasswords({ ...passwords, [name]: value });
-  // };
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setPasswords({ ...passwords, [name]: value });
+  };
 
   const handleSaveChanges = async () => {
     const phoneRegex = /^[0-9]{10}$/;
@@ -173,46 +173,46 @@ function Settings({ user }) {
     toast.success("Reset to default settings!");
   };
 
-  const handlePasswordReset = async () => {
-    const { currentPassword, newPassword, confirmPassword } = passwords;
+  // const handlePasswordReset = async () => {
+  //   const { currentPassword, newPassword, confirmPassword } = passwords;
 
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      toast.error("All fields are required!");
-      return;
-    }
-    if (newPassword.length < 6) {
-      toast.error("Password must be at least 6 characters");
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      toast.error("Passwords don't match!");
-      return;
-    }
+  //   if (!currentPassword || !newPassword || !confirmPassword) {
+  //     toast.error("All fields are required!");
+  //     return;
+  //   }
+  //   if (newPassword.length < 6) {
+  //     toast.error("Password must be at least 6 characters");
+  //     return;
+  //   }
+  //   if (newPassword !== confirmPassword) {
+  //     toast.error("Passwords don't match!");
+  //     return;
+  //   }
 
-    try {
-      const response = await fetch(resetPasswordDashboard, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: type === "student" ? user?._id : owner?._id,
-          type,
-          currentPassword,
-          newPassword,
-        }),
-      });
+  //   try {
+  //     const response = await fetch(resetPasswordDashboard, {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         userId: type === "student" ? user?._id : owner?._id,
+  //         type,
+  //         currentPassword,
+  //         newPassword,
+  //       }),
+  //     });
 
-      if (!response.ok) throw new Error("Password update failed");
+  //     if (!response.ok) throw new Error("Password update failed");
 
-      toast.success("Password updated successfully!");
-      setPasswords({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-      });
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
+  //     toast.success("Password updated successfully!");
+  //     setPasswords({
+  //       currentPassword: "",
+  //       newPassword: "",
+  //       confirmPassword: "",
+  //     });
+  //   } catch (error) {
+  //     toast.error(error.message);
+  //   }
+  // };
 
   const mapMake = () => {
     navigator.geolocation.getCurrentPosition((position) => {
