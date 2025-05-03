@@ -17,7 +17,7 @@ async function sendmailOwner(name,email,userId){
         to:  email,
         subject:'Verification Email',
         // html:'<h3>Hi, '+name+' Click <a href="https://easypg-react-client.onrender.com/MailVerifyOwner?id='+userId+'">here</a> to verify you email </h3>'
-         html : `<h3>Hi, ${name}. Click <a href="${frontendUrl}MailVerifyOwner?id=${userId}">here</a> to verify your email.</h3>`
+         html : `<h3>Hi, ${name}. Click <a href="${frontendUrl}/MailVerifyOwner?id=${userId}">here</a> to verify your email.</h3>`
     }
     try {
         const result = await transporter.sendMail(mailOptions);
