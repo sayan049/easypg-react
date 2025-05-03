@@ -59,14 +59,14 @@ const Cart = () => {
 
   // Remove item from cart
   const fetchMessData = async () => {
-    console.log(getCartUrl, localStorage.getItem("accessToken"),"xxx");
+    console.log(getCartUrl, localStorage.getItem("accessToken"), "xxx");
     try {
       const res = await axios.get(getCartUrl, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
-      
+
       if (!res || !res.data) {
         toast.error("Failed to fetch mess data");
         return;
@@ -279,7 +279,11 @@ const Cart = () => {
                 </h3>
                 <div className="flex items-start gap-1.5 text-gray-600 mb-3">
                   <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">{mess?.location}</span>
+                  <span className="text-sm">
+                    {typeof mess?.location === "object"
+                      ? `Lat: ${mess.location.coordinates[1]}, Lng: ${mess.location.coordinates[0]}`
+                      : mess?.location}
+                  </span>
                 </div>
 
                 <div className="flex flex-wrap gap-2 mb-4">
