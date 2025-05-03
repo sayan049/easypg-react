@@ -693,8 +693,8 @@ function Settings({ user }) {
       if (personalInfo[key]) {
         formData.append(
           key,
-          key === "location" 
-            ? JSON.stringify(personalInfo[key]) 
+          key === "location"
+            ? JSON.stringify(personalInfo[key])
             : personalInfo[key]
         );
       }
@@ -723,7 +723,7 @@ function Settings({ user }) {
 
   const handlePasswordReset = async () => {
     const { currentPassword, newPassword, confirmPassword } = passwords;
-    
+
     if (!currentPassword || !newPassword || !confirmPassword) {
       toast.error("All fields are required!");
       return;
@@ -750,7 +750,7 @@ function Settings({ user }) {
       });
 
       if (!response.ok) throw new Error("Password update failed");
-      
+
       toast.success("Password updated successfully!");
       setPasswords({
         currentPassword: "",
@@ -765,7 +765,7 @@ function Settings({ user }) {
   const mapMake = () => {
     navigator.geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords;
-      setPersonalInfo(prev => ({
+      setPersonalInfo((prev) => ({
         ...prev,
         location: {
           type: "Point",
@@ -796,12 +796,12 @@ function Settings({ user }) {
 
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6">
-      <ToastContainer 
+      <ToastContainer
         position="top-center"
         toastClassName="!w-full max-w-xs !text-sm"
         autoClose={3000}
       />
-      
+
       <h2 className="text-xl sm:text-2xl font-bold mb-4">Profile Settings</h2>
 
       {/* Profile Picture */}
@@ -815,7 +815,9 @@ function Settings({ user }) {
             className="hidden"
           />
           <label htmlFor="profileUpload" className="cursor-pointer">
-            {IsAuthenticated && <UserProfile className="!h-24 !w-24 sm:!h-32 sm:!w-32" />}
+            {IsAuthenticated && (
+              <UserProfile className="!h-24 !w-24 sm:!h-32 sm:!w-32" />
+            )}
             {/* <div className="mt-2 text-sm text-gray-600">Click to upload photo</div> */}
           </label>
         </div>
@@ -826,7 +828,7 @@ function Settings({ user }) {
         {/* Personal Information */}
         <section className="space-y-4">
           <h3 className="text-lg font-semibold">Personal Information</h3>
-          
+
           {Object.entries(personalInfo)
             .filter(([key]) => !["location", "messType"].includes(key))
             .map(([key, value]) => (
@@ -836,7 +838,7 @@ function Settings({ user }) {
                   name={key}
                   value={value}
                   onChange={handleInputChange}
-                  placeholder={`Your ${key.replace(/([A-Z])/g, ' $1')}`}
+                  placeholder={`Your ${key.replace(/([A-Z])/g, " $1")}`}
                   readOnly={editingField !== key}
                   className="w-full p-2 border rounded text-sm pr-10"
                 />
@@ -845,8 +847,8 @@ function Settings({ user }) {
                     onClick={() => handleEditClick(key)}
                     className="absolute right-2 top-1/2 -translate-y-1/2 text-blue-500"
                   >
-                    <FontAwesomeIcon 
-                      icon={editingField === key ? faSave : faEdit} 
+                    <FontAwesomeIcon
+                      icon={editingField === key ? faSave : faEdit}
                       size="sm"
                     />
                   </button>
@@ -863,7 +865,7 @@ function Settings({ user }) {
               placeholder="Click to set location"
               className="w-full p-2 border rounded text-sm pr-10 cursor-pointer"
             />
-            <FontAwesomeIcon 
+            <FontAwesomeIcon
               icon={faMapMarkerAlt}
               className="absolute right-2 top-1/2 -translate-y-1/2 text-green-600"
               size="sm"
@@ -879,7 +881,9 @@ function Settings({ user }) {
             }}
             className="w-full p-2 border rounded text-sm"
           >
-            <option value="" disabled>Select Mess Type</option>
+            <option value="" disabled>
+              Select Mess Type
+            </option>
             <option value="Boys Pg">Boys PG</option>
             <option value="Girls Pg">Girls PG</option>
             <option value="Coed Pg">Co-ed PG</option>
@@ -898,19 +902,21 @@ function Settings({ user }) {
         {/* Password Management */}
         <section className="space-y-4">
           <h3 className="text-lg font-semibold">Password</h3>
-          
-          {["currentPassword", "newPassword", "confirmPassword"].map((field) => (
-            <input
-              key={field}
-              type="password"
-              name={field}
-              value={passwords[field]}
-              onChange={handlePasswordChange}
-              placeholder={field.replace(/([A-Z])/g, ' $1')}
-              className="w-full p-2 border rounded text-sm"
-            />
-          ))}
-          
+
+          {["currentPassword", "newPassword", "confirmPassword"].map(
+            (field) => (
+              <input
+                key={field}
+                type="password"
+                name={field}
+                value={passwords[field]}
+                onChange={handlePasswordChange}
+                placeholder={field.replace(/([A-Z])/g, " $1")}
+                className="w-full p-2 border rounded text-sm"
+              />
+            )
+          )}
+
           <button
             onClick={handlePasswordReset}
             className="bg-blue-500 text-white px-3 py-1.5 rounded text-sm"
@@ -922,27 +928,27 @@ function Settings({ user }) {
 
       {/* Account Management */}
       <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <button
+        {/* <button
           onClick={() => setIsModalOpen(true)}
           className="text-blue-500 hover:text-blue-700 text-sm"
         >
           Account Options
+        </button> */}
+
+        {/* <div className="flex gap-5"> */}
+        <button
+          onClick={handleReset}
+          className="bg-gray-200 text-gray-800 px-3 py-1.5 rounded text-sm"
+        >
+          Reset
         </button>
-        
-        <div className="flex gap-2">
-          <button
-            onClick={handleReset}
-            className="bg-gray-200 text-gray-800 px-3 py-1.5 rounded text-sm"
-          >
-            Reset
-          </button>
-          <button
-            onClick={handleSaveChanges}
-            className="bg-blue-500 text-white px-3 py-1.5 rounded text-sm"
-          >
-            Save All
-          </button>
-        </div>
+        <button
+          onClick={handleSaveChanges}
+          className="bg-blue-500 text-white px-3 py-1.5 rounded text-sm"
+        >
+          Save All
+        </button>
+        {/* </div> */}
       </div>
 
       {/* Account Modal */}
@@ -951,24 +957,22 @@ function Settings({ user }) {
           <div className="bg-white rounded-lg p-6 max-w-sm w-full">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-semibold">Account Management</h3>
-              <button 
+              <button
                 onClick={() => setIsModalOpen(false)}
                 className="text-gray-500 hover:text-gray-700"
               >
                 &times;
               </button>
             </div>
-            
-            <div className="flex flex-col gap-6">
-              <button 
+
+            <div className="flex flex-col gap-3">
+              <button
                 onClick={handleLogout}
                 className="bg-red-500 text-white px-4 py-2 rounded text-sm"
               >
                 Logout
               </button>
-              <button 
-                className="bg-red-600 text-white px-4 py-2 rounded text-sm"
-              >
+              <button className="bg-red-600 text-white px-4 py-2 rounded text-sm">
                 Delete Account
               </button>
             </div>
