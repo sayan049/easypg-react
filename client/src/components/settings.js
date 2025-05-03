@@ -922,14 +922,14 @@ function Settings({ user }) {
 
       {/* Account Management */}
       <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <button
+        {/* <button
           onClick={() => setIsModalOpen(true)}
           className="text-blue-500 hover:text-blue-700 text-sm"
         >
           Account Options
-        </button>
+        </button> */}
         
-        <div className="flex gap-5">
+        {/* <div className="flex gap-5"> */}
           <button
             onClick={handleReset}
             className="bg-gray-200 text-gray-800 px-3 py-1.5 rounded text-sm"
@@ -942,7 +942,7 @@ function Settings({ user }) {
           >
             Save All
           </button>
-        </div>
+        {/* </div> */}
       </div>
 
       {/* Account Modal */}
