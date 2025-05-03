@@ -15,6 +15,7 @@ const resetPasswordDashboard=require("../controllers/resetPasswordDashboard")
 const  updatePassword  =require("../controllers/updatePasswordDashboardOwner");
 const likedMess = require("../controllers/likedMess");
 const frontendUrl = process.env.CLIENT_URL || 'http://localhost:3000';
+const getLikedMess = require("../controllers/getLikedMess");
 const jwt = require('jsonwebtoken');
 const {
   createBookingRequest,
@@ -65,6 +66,7 @@ router.post("/login", authHandlers.loginHandler);
 router.post("/signupOwner",uploadTemp, uploadToCloudinary, authHandlers.signupHandlerOwner);
 router.post("/loginOwner", authHandlers.loginHandlerOwner);
 router.post("/likedMess", authenticateJWT, likedMess);
+router.get("/getLikedMess", authenticateJWT, getLikedMess);
 router.get("/findMess", authHandlers.findMess); 
 
 // router.get("/protected", ensureAuthenticated, (req, res) => {

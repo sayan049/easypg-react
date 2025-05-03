@@ -2,7 +2,7 @@ import axios from "axios";
 import { getDistance } from "ol/sphere";
 import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { findMessUrl ,likedMessesUrl } from "../constant/urls";
+import { findMessUrl, likedMessesUrl, getLikedMessUrl } from "../constant/urls";
 import { useInView } from "react-intersection-observer";
 import Skeleton from "./Skeleton";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
@@ -39,6 +39,7 @@ function MessBars({
   const [page, setPage] = useState(1);
   const [liked, setLiked] = useState({});
   const [showAllAmenities, setShowAllAmenities] = useState({});
+  const token = localStorage.getItem("accessToken");
 
   const [lastCardRef, lastCardInView] = useInView({
     threshold: 0.1,
@@ -60,14 +61,25 @@ function MessBars({
   };
 
   const toggleLike = async (id) => {
-    setLiked((prev) => ({ ...prev, [id]: !prev[id] }));
+    const newLikedState = !liked[id];
+    setLiked((prev) => ({ ...prev, [id]: newLikedState }));
     try {
-      await axios.post(likedMessesUrl, {
-        messId: id,
-        liked: !liked[id], // Send the new state
-      });
+      await axios.post(
+        likedMessesUrl,
+        {
+          messId: id,
+          liked: newLikedState,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
     } catch (err) {
       console.error("Error liking mess:", err);
+      // Revert the change
+      setLiked((prev) => ({ ...prev, [id]: !newLikedState }));
     }
   };
 
@@ -121,16 +133,42 @@ function MessBars({
     }
   };
 
+  const fetchLikedMesses = async () => {
+    try {
+      const res = await axios.get(getLikedMessUrl, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const likedData = res.data || [];
+      const likedMap = {};
+
+      // Assuming likedData is an array of mess objects, not just IDs
+      likedData.forEach((mess) => {
+        likedMap[mess._id] = true; // Storing the mess ID in the map
+        console.log("Liked Mess ID:", mess._id); // Log the actual mess ID
+      });
+
+      console.log("Liked Messes:", likedMap); // Log the full map of liked messes
+      setLiked(likedMap); // Update state with the liked messes map
+    } catch (err) {
+      console.error("Failed to fetch liked messes", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchLikedMesses();
+  }, []);
+
   const clickNavi = (owner) => {
     const ownerParams = new URLSearchParams();
     ownerParams.set("owner", JSON.stringify(owner));
-    
+
     navigate(`/viewDetails?${ownerParams.toString()}`);
-  }
+  };
 
   const clickBook = (owner) => {
     const ownerParams = new URLSearchParams();
-    ownerParams.set("owner",JSON.stringify(owner));
+    ownerParams.set("owner", JSON.stringify(owner));
     navigate(`/booking?${ownerParams}`);
   };
 
