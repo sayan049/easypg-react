@@ -16,7 +16,7 @@ import {
 } from "../constant/urls";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { baseurl } from "../constant/urls";
+
 // import Skeleton from "react-loading-skeleton";
 // import "react-loading-skeleton/dist/skeleton.css";
 
