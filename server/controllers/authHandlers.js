@@ -50,7 +50,7 @@ exports.signupHandler = async (req, res) => {
       password: hashedPassword,
     });
 
-    sendmail(req.body.firstName, email, newUser._id);
+    // sendmail(req.body.firstName, email, newUser._id);
 
     res.status(201).json({
       message: "User registered. Please verify your email.",
