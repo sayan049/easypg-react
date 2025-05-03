@@ -625,7 +625,7 @@
 // }
 
 // export default Settings;
-import  { React, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMapMarkerAlt,
@@ -682,7 +682,9 @@ const Settings = ({ user }) => {
     Object.keys(personalInfo).forEach((key) => {
       formData.append(
         key,
-        key === "location" ? JSON.stringify(personalInfo[key]) : personalInfo[key]
+        key === "location"
+          ? JSON.stringify(personalInfo[key])
+          : personalInfo[key]
       );
     });
 
@@ -704,7 +706,12 @@ const Settings = ({ user }) => {
 
   const handlePasswordReset = async () => {
     const { currentPassword, newPassword, confirmPassword } = passwords;
-    if (!currentPassword || !newPassword || !confirmPassword || newPassword !== confirmPassword)
+    if (
+      !currentPassword ||
+      !newPassword ||
+      !confirmPassword ||
+      newPassword !== confirmPassword
+    )
       return toast.error("Password validation failed.");
 
     try {
@@ -723,7 +730,11 @@ const Settings = ({ user }) => {
 
       await response.json();
       toast.success("Password updated successfully!");
-      setPasswords({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      setPasswords({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
     } catch (error) {
       toast.error(error.message);
     }
@@ -733,26 +744,46 @@ const Settings = ({ user }) => {
     navigator.geolocation.getCurrentPosition(({ coords }) => {
       setPersonalInfo((prev) => ({
         ...prev,
-        location: { type: "Point", coordinates: [coords.longitude, coords.latitude] },
+        location: {
+          type: "Point",
+          coordinates: [coords.longitude, coords.latitude],
+        },
       }));
       setIsLocationChanged(true);
     });
   };
 
   return (
-    <motion.div className="max-w-4xl mx-auto bg-white shadow p-6 rounded-lg space-y-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+    <motion.div
+      className="max-w-4xl mx-auto bg-white shadow p-6 rounded-lg space-y-6"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
       <ToastContainer position="top-center" />
       <h2 className="text-2xl font-bold">Profile Settings</h2>
 
       <div className="text-center">
-        <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} className="hidden" id="profileUpload" />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImage(e.target.files[0])}
+          className="hidden"
+          id="profileUpload"
+        />
         {IsAuthenticated && <UserProfile className="mx-auto h-36 w-36" />}
-        <label htmlFor="profileUpload" className="text-blue-600 cursor-pointer mt-2 block">Upload Profile Photo</label>
+        <label
+          htmlFor="profileUpload"
+          className="text-blue-600 cursor-pointer mt-2 block"
+        >
+          Upload Profile Photo
+        </label>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <section>
-          <h3 className="text-xl font-semibold mb-4">Edit Personal Information</h3>
+          <h3 className="text-xl font-semibold mb-4">
+            Edit Personal Information
+          </h3>
           {Object.entries(personalInfo)
             .filter(([key]) => key !== "location" && key !== "messType")
             .map(([key, value]) => (
@@ -767,8 +798,13 @@ const Settings = ({ user }) => {
                   className="w-full border rounded p-2 pr-10"
                 />
                 {key !== "email" && (
-                  <button onClick={() => handleEditClick(key)} className="absolute top-1/2 right-3 -translate-y-1/2 text-blue-500">
-                    <FontAwesomeIcon icon={editingField === key ? faSave : faEdit} />
+                  <button
+                    onClick={() => handleEditClick(key)}
+                    className="absolute top-1/2 right-3 -translate-y-1/2 text-blue-500"
+                  >
+                    <FontAwesomeIcon
+                      icon={editingField === key ? faSave : faEdit}
+                    />
                   </button>
                 )}
               </div>
@@ -783,7 +819,11 @@ const Settings = ({ user }) => {
               className="w-full border rounded p-2 pr-10 cursor-pointer"
               placeholder="Click to update location"
             />
-            <FontAwesomeIcon icon={faMapMarkerAlt} className="absolute top-1/2 right-3 -translate-y-1/2 text-green-600 cursor-pointer" onClick={mapMake} />
+            <FontAwesomeIcon
+              icon={faMapMarkerAlt}
+              className="absolute top-1/2 right-3 -translate-y-1/2 text-green-600 cursor-pointer"
+              onClick={mapMake}
+            />
           </div>
 
           <select
@@ -795,7 +835,9 @@ const Settings = ({ user }) => {
             }}
             className="w-full border rounded p-2"
           >
-            <option value="" disabled>Select Mess Type</option>
+            <option value="" disabled>
+              Select Mess Type
+            </option>
             <option value="Boys Pg">Boys PG</option>
             <option value="Girls Pg">Girls PG</option>
             <option value="Coed Pg">Co-ed PG</option>
@@ -814,17 +856,19 @@ const Settings = ({ user }) => {
 
         <section>
           <h3 className="text-xl font-semibold mb-4">Password Management</h3>
-          {["currentPassword", "newPassword", "confirmPassword"].map((field) => (
-            <input
-              key={field}
-              type="password"
-              name={field}
-              placeholder={field.replace(/([A-Z])/g, " $1")}
-              value={passwords[field]}
-              onChange={handlePasswordChange}
-              className="w-full border rounded p-2 mb-3"
-            />
-          ))}
+          {["currentPassword", "newPassword", "confirmPassword"].map(
+            (field) => (
+              <input
+                key={field}
+                type="password"
+                name={field}
+                placeholder={field.replace(/([A-Z])/g, " $1")}
+                value={passwords[field]}
+                onChange={handlePasswordChange}
+                className="w-full border rounded p-2 mb-3"
+              />
+            )
+          )}
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={handlePasswordReset}
