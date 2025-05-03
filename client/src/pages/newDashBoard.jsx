@@ -704,6 +704,7 @@
 
 // export default NewDashboard;
 import React, { useState, useEffect } from "react";
+import Cart from "../components/cart";
 import { useAuth } from "../contexts/AuthContext";
 import {
   Home,
@@ -839,6 +840,8 @@ function NewDashboard() {
         return <div className="px-4">Payments Content</div>;
       case "settings":
         return <Settings user={userDetails} />;
+      case "saved PG":
+         return <Cart/>;
       default:
         return <DashboardContent />;
     }
@@ -873,7 +876,7 @@ function NewDashboard() {
           <SidebarButton icon={<CreditCard />} label="My Payments" active={activeTab === "payments"} onClick={() => handleTabChange("payments")} />
           <SidebarButton icon={<Gear />} label="Settings" active={activeTab === "settings"} onClick={() => handleTabChange("settings")} />
         </nav>
-        <button onClick={handleLogout} className="absolute bottom-24 md:bottom-14 flex items-center gap-3 px-4 py-2 rounded-md mt-10 text-red-600 hover:bg-red-100 transition">
+        <button onClick={handleLogout} className="absolute bottom-28 md:bottom-14 flex items-center gap-3 px-4 py-2 rounded-md mt-10 text-red-600 hover:bg-red-100 transition">
           <LogOutIcon className="w-4 h-4" /> Logout
         </button>
       </aside>
