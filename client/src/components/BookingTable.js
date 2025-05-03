@@ -1019,7 +1019,7 @@
 // };
 
 // export default BookingTable;
-import { React, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { baseurl } from "../constant/urls";
 import { toast } from "react-toastify";
