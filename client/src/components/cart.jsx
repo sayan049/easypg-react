@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getCartUrl } from "../constant/urls";
+import axios from "axios";
 import {
   Search,
   Filter,
@@ -52,8 +54,33 @@ const Cart = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [priceFilter, setPriceFilter] = useState({ min: 0, max: 50000 });
   const [amenityFilters, setAmenityFilters] = useState([]);
+  const [messData,setMessData]= useState([]);
 
   // Remove item from cart
+  const fetchMessData = async () => {
+    try {
+      const res = await axios.get(getCartUrl, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+  
+      if (!res || !res.data) {
+        toast.error("Failed to fetch mess data");
+        return;
+      }
+  
+      setMessData(res.data);
+    } catch (error) {
+      console.error(error);
+      toast.error("Error fetching mess data");
+    }
+  };
+
+  useEffect(()=>{
+    fetchMessData();
+  },[]);
+  
   const removeItem = (id) => {
     setSavedMesses(savedMesses.filter((mess) => mess.id !== id));
   };
@@ -214,26 +241,26 @@ const Cart = () => {
 
         {/* Mess cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredMesses.map((mess) => (
+          {messData.map((mess) => (
             <div
               key={mess.id}
               className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
             >
               <div className="relative">
                 <img
-                  src={mess.image || "/placeholder.svg"}
-                  alt={mess.name}
+                  src={mess.profilePhoto || "/placeholder.svg"}
+                  alt={mess.messName}
                   className="w-full h-48 object-cover"
                 />
                 <div className="absolute top-3 left-3">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      mess.available
+                      mess?.available
                         ? "bg-teal-100 text-teal-800"
                         : "bg-red-100 text-red-800"
                     }`}
                   >
-                    {mess.available ? "Available" : "Unavailable"}
+                    {mess?.available ? "Available" : "Unavailable"}
                   </span>
                 </div>
                 <button
@@ -246,15 +273,15 @@ const Cart = () => {
 
               <div className="p-4">
                 <h3 className="font-semibold text-lg text-gray-800 mb-1">
-                  {mess.name}
+                  {mess?.name}
                 </h3>
                 <div className="flex items-start gap-1.5 text-gray-600 mb-3">
                   <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">{mess.location}</span>
+                  <span className="text-sm">{mess?.location}</span>
                 </div>
 
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {mess.amenities.map((amenity) => (
+                  {mess?.amenities?.map((amenity) => (
                     <div
                       key={amenity}
                       className="flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full"
@@ -268,7 +295,7 @@ const Cart = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <span className="text-lg font-bold text-gray-900">
-                      ₹{mess.price.toLocaleString()}
+                      ₹{mess?.price?.toLocaleString()}
                     </span>
                     <span className="text-gray-500 text-sm">/month</span>
                   </div>
