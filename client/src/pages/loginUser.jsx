@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import debounce from "lodash.debounce";
 import {
   Link,
   useNavigate,
@@ -15,6 +16,7 @@ import {
 } from "../constant/urls";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { baseurl } from "../constant/urls";
 // import Skeleton from "react-loading-skeleton";
 // import "react-loading-skeleton/dist/skeleton.css";
 
@@ -48,6 +50,9 @@ function LoginUser() {
   const [resetPasswordError, setResetPasswordError] = useState(""); // Error state for reset password
   const [loading, setLoading] = useState(true);
   const [searchParams] = useSearchParams();
+  const [isEmailVerified, setIsEmailVerified] = useState(null);
+  const [isCheckingVerification, setIsCheckingVerification] = useState(false);
+  const [isSendingVerification, setIsSendingVerification] = useState(false);
   const messageLoc = location.state?.message;
 
   useEffect(() => {
@@ -59,7 +64,7 @@ function LoginUser() {
     } else {
       setLoading(false); // Stop loading if no token
     }
-  }, [searchParams,messageLoc]);
+  }, [searchParams, messageLoc]);
 
   const verifyResetToken = async (token) => {
     try {
@@ -91,7 +96,10 @@ function LoginUser() {
     event.preventDefault();
     const jsonData = { email, password };
     const deviceInfo = navigator.userAgent || "Unknown Device";
-
+    if (isEmailVerified === false) {
+      toast.error("Please verify your email before logging in");
+      return;
+    }
     try {
       setIsSubmitting(true);
       setIsButtonDisabled(true);
@@ -117,7 +125,7 @@ function LoginUser() {
         // const message = Welcome ${userData.name}!;
         // Navigate to homepage or another page after successful login
         localStorage.setItem("sId_message", "Successfully logged in");
-       // navigate("/");
+        // navigate("/");
         navigate("/", { state: { message: "succesfully logged in" } });
         window.location.reload();
       }
@@ -128,28 +136,69 @@ function LoginUser() {
       // Check if the error response exists and handle specific cases
       if (error.response) {
         const res = error.response;
-        
+
         // Check for specific error messages from the backend
         if (res.data.message) {
-          errorMsg = res.data.message;  // e.g., "Invalid email or password."
+          errorMsg = res.data.message; // e.g., "Invalid email or password."
         } else if (res.data.errors) {
-          errorMsg = res.data.errors.join(", ");  // Join multiple errors if present
+          errorMsg = res.data.errors.join(", "); // Join multiple errors if present
         }
       } else if (error.request) {
         errorMsg = "Server not responding. Check your internet.";
       } else {
         errorMsg = "Error: " + error.message; // Default error message
       }
-  
+
       // Log the error and show the toast
       console.error("Error details:", error);
       toast.error(errorMsg);
-      console.log("Error:", error.response?.data?.message ,  errorMsg);
+      console.log("Error:", error.response?.data?.message, errorMsg);
     } finally {
       setTimeout(() => {
         setIsButtonDisabled(false);
         setIsSubmitting(false);
       }, 5000);
+    }
+  };
+  const checkEmailVerification = useCallback(
+    debounce(async (email) => {
+      if (!email) {
+        setIsEmailVerified(null);
+        return;
+      }
+
+      try {
+        setIsCheckingVerification(true);
+        const response = await axios.get(
+          `${baseurl}/auth/check-email-verification?email=${encodeURIComponent(email)}`
+        );
+        setIsEmailVerified(response.data.verified);
+      } catch (error) {
+        console.error("Error checking email verification:", error);
+        setIsEmailVerified(null);
+      } finally {
+        setIsCheckingVerification(false);
+      }
+    }, 500),
+    []
+  );
+
+  useEffect(() => {
+    checkEmailVerification(email);
+    return () => checkEmailVerification.cancel();
+  }, [email, checkEmailVerification]);
+
+  const resendVerificationEmail = async () => {
+    try {
+      setIsSendingVerification(true);
+      const response = await axios.post(`${baseurl}/auth/resend-verification`, { email });
+      toast.success("Verification email sent successfully!");
+      console.log("Verification email sent:", response);
+    } catch (error) {
+      toast.error("Failed to send verification email. Please try again.");
+      console.error("Error resending verification:", error);
+    } finally {
+      setIsSendingVerification(false);
     }
   };
 
@@ -185,20 +234,19 @@ function LoginUser() {
         toast.error("Error sending email. Please try again.");
       }
     } catch (error) {
-
       setForgotPasswordMessage("Error sending email. Please try again.");
-      if(error.response) {
+      if (error.response) {
         const res = error.response;
         if (res.data.message) {
-         // setForgotPasswordMessage(res.data.message); // e.g., "Invalid email or password."
-        return  toast.error(res.data.message);
+          // setForgotPasswordMessage(res.data.message); // e.g., "Invalid email or password."
+          return toast.error(res.data.message);
         } else if (res.data.errors) {
-         // setForgotPasswordMessage(res.data.errors.join(", ")); // Join multiple errors if present
-         return  toast.error(res.data.errors.join(", "));
+          // setForgotPasswordMessage(res.data.errors.join(", ")); // Join multiple errors if present
+          return toast.error(res.data.errors.join(", "));
         }
       }
       toast.error("Error sending email. Please try again.");
-    } finally{
+    } finally {
       setTimeout(() => {
         setIsSendingEmail(false);
       }, 5000);
@@ -242,7 +290,10 @@ function LoginUser() {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
-     <ToastContainer position="top-center" toastClassName="!w-[300px]  mx-auto mt-4 sm:mt-0 "  />
+      <ToastContainer
+        position="top-center"
+        toastClassName="!w-[300px]  mx-auto mt-4 sm:mt-0 "
+      />
 
       {/* Left Section */}
       <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6">
@@ -275,15 +326,75 @@ function LoginUser() {
               autoComplete="off"
             />
 
-            <input
-              type="email"
-              name="email"
-              placeholder="example@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
-              autoComplete="off"
-            />
+            <div className="relative">
+              <input
+                type="email"
+                name="email"
+                placeholder="example@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+                autoComplete="off"
+              />
+              {isCheckingVerification && (
+                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                  <svg
+                    className="animate-spin h-5 w-5 text-gray-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                </div>
+              )}
+              {!isCheckingVerification && isEmailVerified === false && (
+                <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">
+                  <span className="text-red-500 text-xs">Unverified</span>
+                  <button
+                    type="button"
+                    onClick={resendVerificationEmail}
+                    disabled={isSendingVerification}
+                    className="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 disabled:bg-blue-300"
+                  >
+                    {isSendingVerification ? "Sending..." : "Verify"}
+                  </button>
+                </div>
+              )}
+              {!isCheckingVerification && isEmailVerified === true && (
+                <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center">
+                  <span className="text-green-500 text-xs flex items-center">
+                    Verified{" "}
+                    <svg
+                      className="w-4 h-4 ml-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </span>
+                </div>
+              )}
+            </div>
 
             <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
               <div className="relative flex-1">
@@ -428,8 +539,7 @@ function LoginUser() {
                 !forgotEmail ? "bg-gray-300 cursor-not-allowed" : ""
               }`}
             >
-            {isSendingEmail ? "Sending..." : "Send Reset Email"}
-             
+              {isSendingEmail ? "Sending..." : "Send Reset Email"}
             </button>
             <p className="text-center text-sm text-gray-600 mt-2">
               {/* {forgotPasswordMessage} */}
