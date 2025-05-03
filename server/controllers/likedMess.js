@@ -26,6 +26,7 @@ const cartMess = async (req, res) => {
   try {
     const user = await User.findById(userId).populate("likedMesses");
     if (!user) return res.status(400).json({ message: "Couldn't find user" });
+    const likedMesses = user.likedMesses;
 
     if (!user.likedMesses || user.likedMesses.length === 0)
       return res.status(404).json({ message: "No liked messes" });
