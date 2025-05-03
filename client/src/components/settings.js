@@ -416,7 +416,7 @@ function Settings({ user }) {
                 &times;
               </button>
             </div>
-            {/* lsmfdlsfemlsmef */}
+
             <div className="flex flex-col gap-3">
               <button
                 onClick={handleLogout}
