@@ -1061,7 +1061,11 @@ const BookingTable = ({
   const [showFeedbackIndex, setShowFeedbackIndex] = useState(null);
   const [ratings, setRatings] = useState({});
   const [comments, setComments] = useState({});
-
+  const [expandedBookingId, setExpandedBookingId] = useState(null);
+  const [openDetails, setOpenDetails] = useState(null);
+  const toggleDetails = (id) => {
+    setExpandedBookingId((prev) => (prev === id ? null : id));
+  };
   const statusColors = {
     confirmed: "text-green-700 bg-green-100",
     pending: "text-yellow-700 bg-yellow-100",
@@ -1448,45 +1452,89 @@ const BookingTable = ({
               </tr>
             </thead>
             <tbody className="text-sm text-gray-800">
-              {bookings.map((booking) => (
-                <tr
-                  key={booking._id}
-                  className="border-t border-gray-100 hover:bg-gray-50"
-                >
-                  <td className="py-3 px-4">
-                    #{booking._id.slice(-6).toUpperCase()}
-                  </td>
-                  <td className="py-3 px-4">{booking.pgOwner?.messName}</td>
-                  <td className="py-3 px-4">
-                    {new Date(booking.period.startDate).toLocaleDateString()} -{" "}
-                    {new Date(booking.period.endDate).toLocaleDateString()}
-                  </td>
-                  <td className="py-3 px-4">₹{booking.payment.totalAmount}</td>
-                  <td className="py-3 px-4">
-                    <span
-                      className={`text-xs px-2 py-1 rounded-full ${
-                        statusColors[booking.status]
-                      }`}
-                    >
-                      {booking.status.toUpperCase()}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4">
-                    {booking.status === "confirmed" ? (
-                      <button
-                        onClick={() => handleDownloadInvoice(booking._id)}
-                        className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
-                      >
-                        <FaDownload /> Invoice
-                      </button>
-                    ) : (
-                      <button className="text-blue-600 hover:text-blue-800 flex items-center gap-1">
-                        <FaEye /> Details
-                      </button>
+              {bookings.map((booking) => {
+                const showDetailsBtn =
+                  booking.status === "cancelled" ||
+                  booking.status === "rejected";
+                const isExpanded = expandedBookingId === booking._id;
+
+                return (
+                  <React.Fragment key={booking._id}>
+                    <tr className="border-t border-gray-100 hover:bg-gray-50">
+                      <td className="py-3 px-4">
+                        #{booking._id.slice(-6).toUpperCase()}
+                      </td>
+                      <td className="py-3 px-4">{booking.pgOwner?.messName}</td>
+                      <td className="py-3 px-4">
+                        {new Date(
+                          booking.period.startDate
+                        ).toLocaleDateString()}{" "}
+                        -{" "}
+                        {new Date(booking.period.endDate).toLocaleDateString()}
+                      </td>
+                      <td className="py-3 px-4">
+                        ₹{booking.payment.totalAmount}
+                      </td>
+                      <td className="py-3 px-4">
+                        <span
+                          className={`text-xs px-2 py-1 rounded-full ${
+                            statusColors[booking.status]
+                          }`}
+                        >
+                          {booking.status.toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        {booking.status === "confirmed" && (
+                          <button
+                            onClick={() => handleDownloadInvoice(booking._id)}
+                            className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                          >
+                            <FaDownload /> Invoice
+                          </button>
+                        )}
+                        {showDetailsBtn && (
+                          <button
+                            onClick={() => toggleDetails(booking._id)}
+                            className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                          >
+                            <FaEye /> Details
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+
+                    {isExpanded && (
+                      <tr className="border-t border-gray-100 bg-gray-50">
+                        <td colSpan={6} className="p-4 transition-all">
+                          <div className="text-sm text-gray-700">
+                            {booking.status === "cancelled" && (
+                              <p>
+                                <strong>You cancelled</strong> this booking for
+                                the reason:{" "}
+                                <span className="italic text-red-600">
+                                  {booking.userCancellationReason ||
+                                    "No reason provided"}
+                                </span>
+                              </p>
+                            )}
+                            {booking.status === "rejected" && (
+                              <p>
+                                <strong>PG Owner rejected</strong> your booking
+                                for the reason:{" "}
+                                <span className="italic text-red-600">
+                                  {booking.ownerRejectionReason ||
+                                    "No reason provided"}
+                                </span>
+                              </p>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
                     )}
-                  </td>
-                </tr>
-              ))}
+                  </React.Fragment>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -1496,57 +1544,87 @@ const BookingTable = ({
       <div className="md:hidden bg-white shadow-md p-4 rounded-xl mb-6">
         <h3 className="text-lg font-semibold mb-4">Booking History</h3>
         <div className="space-y-4">
-          {bookings.map((booking) => (
-            <div
-              key={booking._id}
-              className="border border-gray-200 rounded-xl p-4 bg-white shadow-sm"
-            >
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-xs text-gray-500">
-                    Booking ID: #{booking._id.slice(-6).toUpperCase()}
-                  </p>
-                  <h4 className="text-md font-semibold">
-                    {booking.pgOwner?.messName}
-                  </h4>
-                </div>
-                <span
-                  className={`text-xs px-2 py-1 rounded-full ${
-                    statusColors[booking.status]
-                  }`}
-                >
-                  {booking.status}
-                </span>
-              </div>
+          {bookings.map((booking) => {
+            const isOpen = openDetails === booking._id;
+            const showDetailsButton =
+              booking.status === "cancelled" || booking.status === "rejected";
 
-              <div className="mt-2 text-sm text-gray-700">
-                <div className="flex items-center gap-2">
-                  <FaCalendarAlt className="text-gray-400" />
-                  {new Date(
-                    booking.period.startDate
-                  ).toLocaleDateString()} -{" "}
-                  {new Date(booking.period.endDate).toLocaleDateString()}
+            return (
+              <div
+                key={booking._id}
+                className="border border-gray-200 rounded-xl p-4 bg-white shadow-sm"
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-xs text-gray-500">
+                      Booking ID: #{booking._id.slice(-6).toUpperCase()}
+                    </p>
+                    <h4 className="text-md font-semibold">
+                      {booking.pgOwner?.messName}
+                    </h4>
+                  </div>
+                  <span
+                    className={`text-xs px-2 py-1 rounded-full ${
+                      statusColors[booking.status]
+                    }`}
+                  >
+                    {booking.status.toUpperCase()}
+                  </span>
                 </div>
-                <div className="mt-1 flex items-center">
-                  <FaRupeeSign className="mr-1" />
-                  {booking.payment.totalAmount}
-                </div>
-              </div>
 
-              {booking.status === "confirmed" ? (
-                <button
-                  onClick={() => handleDownloadInvoice(booking._id)}
-                  className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium"
-                >
-                  <FaDownload /> Download Invoice
-                </button>
-              ) : (
-                <button className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gray-200 text-gray-800 text-sm font-medium">
-                  <FaEye /> View Details
-                </button>
-              )}
-            </div>
-          ))}
+                <div className="mt-2 text-sm text-gray-700">
+                  <div className="flex items-center gap-2">
+                    <FaCalendarAlt className="text-gray-400" />
+                    {new Date(
+                      booking.period.startDate
+                    ).toLocaleDateString()} -{" "}
+                    {new Date(booking.period.endDate).toLocaleDateString()}
+                  </div>
+                  <div className="mt-1 flex items-center">
+                    <FaRupeeSign className="mr-1" />
+                    {booking.payment.totalAmount}
+                  </div>
+                </div>
+
+                {booking.status === "confirmed" ? (
+                  <button
+                    onClick={() => handleDownloadInvoice(booking._id)}
+                    className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium"
+                  >
+                    <FaDownload /> Download Invoice
+                  </button>
+                ) : showDetailsButton ? (
+                  <>
+                    <button
+                      onClick={() =>
+                        setOpenDetails(isOpen ? null : booking._id)
+                      }
+                      className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gray-200 text-gray-800 text-sm font-medium"
+                    >
+                      <FaEye /> View Details
+                    </button>
+
+                    <div
+                      className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                        isOpen ? "max-h-40 mt-2" : "max-h-0"
+                      }`}
+                    >
+                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-700">
+                        {booking.status === "cancelled" &&
+                          `You cancelled this booking for the reason: ${
+                            booking.userCancellationReason || "N/A"
+                          }`}
+                        {booking.status === "rejected" &&
+                          `PG owner rejected your booking for the reason: ${
+                            booking.ownerRejectionReason || "N/A"
+                          }`}
+                      </div>
+                    </div>
+                  </>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

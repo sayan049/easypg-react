@@ -85,7 +85,7 @@ const mongoose = require("mongoose");
 //       },
 //     },
 //   },
-//   { 
+//   {
 //     timestamps: true,
 //     indexes: [
 //       // Common query patterns
@@ -143,6 +143,16 @@ const bookingSchema = new mongoose.Schema(
         default: "pending",
       },
     },
+    userCancellationReason: {
+      type: String,
+      default: "", // Optional, only filled when user cancels
+      trim: true,
+    },
+    ownerRejectionReason: {
+      type: String,
+      default: "", // Optional, only filled when user cancels
+      trim: true,
+    },
   },
   { timestamps: true }
 );
@@ -162,22 +172,37 @@ const bookingSchema = new mongoose.Schema(
 // bookingSchema.index({ room: 1, pgOwner: 1 }); // For room-specific queries
 // bookingSchema.index({ student: 1, pgOwner: 1, room: 1, status: 1 });
 // 1. Student Portal Index (covers 90% of user queries)
-bookingSchema.index({ student: 1, status: 1 }, { name: "student_portal_index" });
-bookingSchema.index({ pgOwner: 1, createdAt: -1, status: 1 }, { name: "owner_management_index" });
-bookingSchema.index({ "period.startDate": 1, status: 1 }, { 
-  name: "date_filter_index",
-  partialFilterExpression: { status: { $in: ["confirmed", "pending"] } 
-}});
-bookingSchema.index({ room: 1, pgOwner: 1, status: 1 }, {
-  name: "room_availability_index",
-  partialFilterExpression: { status: "confirmed" }
-});
+bookingSchema.index(
+  { student: 1, status: 1 },
+  { name: "student_portal_index" }
+);
+bookingSchema.index(
+  { pgOwner: 1, createdAt: -1, status: 1 },
+  { name: "owner_management_index" }
+);
+bookingSchema.index(
+  { "period.startDate": 1, status: 1 },
+  {
+    name: "date_filter_index",
+    partialFilterExpression: { status: { $in: ["confirmed", "pending"] } },
+  }
+);
+bookingSchema.index(
+  { room: 1, pgOwner: 1, status: 1 },
+  {
+    name: "room_availability_index",
+    partialFilterExpression: { status: "confirmed" },
+  }
+);
 
 // Maintenance Index
-bookingSchema.index({ createdAt: 1 }, { 
-  expireAfterSeconds: 5184000,
-  partialFilterExpression: { status: { $in: ["cancelled", "rejected"] } }
-});
+bookingSchema.index(
+  { createdAt: 1 },
+  {
+    expireAfterSeconds: 5184000,
+    partialFilterExpression: { status: { $in: ["cancelled", "rejected"] } },
+  }
+);
 
-
-module.exports = mongoose.models.Booking || mongoose.model("Booking", bookingSchema);
+module.exports =
+  mongoose.models.Booking || mongoose.model("Booking", bookingSchema);
