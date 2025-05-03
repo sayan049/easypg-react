@@ -351,12 +351,10 @@ export default function DashboardOwner() {
     user,
     owner,
     type,
+    handleLogout
   } = useAuth();
 
-  const handleLogout = () => {
-    localStorage.clear();
-    window.location.href = "/";
-  };
+
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -429,7 +427,7 @@ export default function DashboardOwner() {
           <Menu className="w-6 h-6" />
         </button>
         <h1 className="text-lg font-semibold">Dashboard</h1>
-        <div className="w-6" /> {/* Placeholder for symmetry */}
+        <div className="w-6" />
       </div>
 
       {/* Sidebar - Desktop */}
@@ -449,8 +447,8 @@ export default function DashboardOwner() {
             <button
               key={item.key}
               className={cn(
-                "flex items-center gap-2 p-2 rounded hover:bg-gray-100 w-full",
-                activeTab === item.key && "bg-gray-100 font-medium"
+                "flex items-center gap-2 p-2 rounded hover:bg-blue-100 w-full",
+                activeTab === item.key && "bg-blue-100 font-medium"
               )}
               onClick={() => setActiveTab(item.key)}
             >
@@ -468,46 +466,67 @@ export default function DashboardOwner() {
       </div>
 
       {/* Sidebar - Mobile Drawer */}
-      {mobileSidebarOpen && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-30 flex">
-          <div className="w-64 bg-white shadow-md p-4 flex flex-col">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Menu</h2>
-              <button onClick={() => setMobileSidebarOpen(false)}>
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-
-            <nav className="flex flex-col gap-2">
-              {navItems.map((item) => (
-                <button
-                  key={item.key}
-                  className={cn(
-                    "flex items-center gap-2 p-2 rounded hover:bg-gray-100 text-left",
-                    activeTab === item.key && "bg-gray-100 font-medium"
-                  )}
-                  onClick={() => {
-                    setActiveTab(item.key);
-                    setMobileSidebarOpen(false);
-                  }}
-                >
-                  {item.icon} {item.name}
-                </button>
-              ))}
-            </nav>
-
-            <button
-              onClick={handleLogout}
-              className="mt-auto flex items-center gap-2 p-2 rounded text-red-600 hover:bg-red-100"
-            >
-              <LogOut /> Logout
+      <div
+        className={cn(
+          "fixed inset-0 z-50 flex transition-all duration-300",
+          mobileSidebarOpen ? "translate-x-0" : "translate-x-full pointer-events-none"
+        )}
+      >
+        <div
+          className={cn(
+            "w-64 bg-white shadow-md p-4 flex flex-col transform transition-transform duration-300",
+            mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          )}
+        >
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-semibold">Menu</h2>
+            <button onClick={() => setMobileSidebarOpen(false)}>
+              <X className="w-6 h-6" />
             </button>
           </div>
 
-          {/* Close area */}
-          <div className="flex-1" onClick={() => setMobileSidebarOpen(false)} />
+          <svg className="w-10 h-10 rounded-full mb-2 bg-gray-200 self-center" viewBox="0 0 100 100">
+            <circle cx="50" cy="40" r="20" fill="#4F46E5" />
+            <circle cx="50" cy="80" r="25" fill="#4F46E5" />
+          </svg>
+
+          <div className="text-center mb-6">
+            <div className="text-base font-semibold">{ownerName}</div>
+            <div className="text-sm text-gray-500">Property Owner</div>
+          </div>
+
+          <nav className="flex flex-col gap-2">
+            {navItems.map((item) => (
+              <button
+                key={item.key}
+                className={cn(
+                  "flex items-center gap-2 p-2 rounded hover:bg-blue-100 text-left",
+                  activeTab === item.key && "bg-blue-100 font-medium"
+                )}
+                onClick={() => {
+                  setActiveTab(item.key);
+                  setMobileSidebarOpen(false);
+                }}
+              >
+                {item.icon} {item.name}
+              </button>
+            ))}
+          </nav>
+
+          <button
+            onClick={handleLogout}
+            className="mt-auto flex items-center gap-2 p-2 rounded text-red-600 hover:bg-red-100"
+          >
+            <LogOut /> Logout
+          </button>
         </div>
-      )}
+
+        {/* Background overlay */}
+        <div
+          className="flex-1 bg-black bg-opacity-30"
+          onClick={() => setMobileSidebarOpen(false)}
+        />
+      </div>
 
       {/* Main content */}
       <div className="flex-1 bg-gray-50 p-4 pb-[62px] md:pb-0 lg:pb-0">
