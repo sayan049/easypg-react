@@ -816,7 +816,7 @@ function Settings({ user }) {
           />
           <label htmlFor="profileUpload" className="cursor-pointer">
             {IsAuthenticated && <UserProfile className="!h-24 !w-24 sm:!h-32 sm:!w-32" />}
-            <div className="mt-2 text-sm text-gray-600">Click to upload photo</div>
+            {/* <div className="mt-2 text-sm text-gray-600">Click to upload photo</div> */}
           </label>
         </div>
       </div>
@@ -959,7 +959,7 @@ function Settings({ user }) {
               </button>
             </div>
             
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-6">
               <button 
                 onClick={handleLogout}
                 className="bg-red-500 text-white px-4 py-2 rounded text-sm"
