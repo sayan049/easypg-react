@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { getCartUrl } from "../constant/urls";
 import axios from "axios";
-import { ToastContainer,toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import {
   Search,
   Filter,
@@ -55,7 +55,7 @@ const Cart = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [priceFilter, setPriceFilter] = useState({ min: 0, max: 50000 });
   const [amenityFilters, setAmenityFilters] = useState([]);
-  const [messData,setMessData]= useState([]);
+  const [messData, setMessData] = useState([]);
 
   // Remove item from cart
   const fetchMessData = async () => {
@@ -65,12 +65,12 @@ const Cart = () => {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
-  
+      console.log(getCartUrl, localStorage.getItem("accessToken"),"xxx")
       if (!res || !res.data) {
         toast.error("Failed to fetch mess data");
         return;
       }
-  
+
       setMessData(res.data);
     } catch (error) {
       console.error(error);
@@ -78,10 +78,10 @@ const Cart = () => {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchMessData();
-  },[]);
-  
+  }, []);
+
   const removeItem = (id) => {
     setSavedMesses(savedMesses.filter((mess) => mess.id !== id));
   };
