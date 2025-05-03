@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getCartUrl } from "../constant/urls";
 import axios from "axios";
+import { ToastContainer,toast } from "react-toastify";
 import {
   Search,
   Filter,
