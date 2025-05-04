@@ -381,7 +381,7 @@ const Cart = () => {
   const [amenityFilters, setAmenityFilters] = useState([]);
   const [liked, setLiked] = useState({});
   const token = localStorage.getItem("accessToken");
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const fetchMessData = async () => {
     try {
@@ -662,17 +662,13 @@ const Cart = () => {
                   <div className="flex gap-2">
                     <button
                       className="text-teal-600 hover:text-teal-700 text-sm font-medium"
-                      onClick={(mess) => {
-                        clickNavi(mess);
-                      }}
+                      onClick={() => clickNavi(mess)}
                     >
                       View Details
                     </button>
                     <button
                       className="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1 rounded-lg text-sm font-medium transition-colors"
-                      onClick={(mess) => {
-                        clickBook(mess);
-                      }}
+                      onClick={() => clickBook(mess)}
                     >
                       Book Now
                     </button>
