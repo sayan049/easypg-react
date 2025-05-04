@@ -201,7 +201,7 @@ function MessBars({
           limit: 5,
         },
       });
-      // const totalCount = res.data.total || 0;
+      const totalCount = res.data.total || 0;
       // const filteredData = Array.isArray(res.data.data)
       //   ? res.data.data.filter((owner) => {
       //       const facilitiesArray = Array.isArray(owner.facility)
@@ -226,19 +226,19 @@ function MessBars({
 
       //       return matchesFeatures && matchesGender && matchesPrice;
       const filteredData = Array.isArray(res.data.data)
-        ? res.data.data.filter((mess) => {
-            const matchesPrice = mess?.roomInfo?.some(
+        ? res.data.data.filter((owner) => {
+            const matchesPrice = owner?.roomInfo?.some(
               (room) =>
-                room.pricePerHead >= priceFilter.min &&
-                room.pricePerHead <= priceFilter.max
+                room.pricePerHead >= finalPrice.min &&
+                room.pricePerHead <= finalPrice.max
             );
 
             const matchesAmenities =
-              amenityFilters.length === 0 ||
-              amenityFilters.every((af) => owner.facility?.includes(af));
+              checkFeatures.length === 0 ||
+              checkFeatures.every((af) => mess.facility?.includes(af));
 
             const matchesGender = gender
-              ? mess.gender?.toLowerCase() === gender.toLowerCase()
+              ? owner.gender?.toLowerCase() === gender.toLowerCase()
               : true;
 
             return matchesPrice && matchesAmenities && matchesGender;
