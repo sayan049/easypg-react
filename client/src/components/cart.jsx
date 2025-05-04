@@ -455,9 +455,33 @@ const Cart = () => {
                     </span>
                     <span className="text-gray-500 text-sm">/month</span>
                   </div>
+                  <div>
+                    {owner?.gender && (
+                      <div className="mt-3 flex items-center gap-2 text-sm font-medium text-gray-700">
+                        {owner.gender.toLowerCase() === "girls pg" && (
+                          <span className="flex items-center gap-1 bg-pink-100 text-pink-600 px-2 py-1 rounded-full">
+                            <FaFemale />
+                            Girls PG
+                          </span>
+                        )}
+                        {owner.gender.toLowerCase() === "boys pg" && (
+                          <span className="flex items-center gap-1 bg-blue-100 text-blue-600 px-2 py-1 rounded-full">
+                            <FaMale />
+                            Boys PG
+                          </span>
+                        )}
+                        {owner.gender.toLowerCase() === "coed pg" && (
+                          <span className="flex items-center gap-1 bg-green-100 text-green-600 px-2 py-1 rounded-full">
+                            <FaUsers />
+                            Co-ed PG
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                <div className="flex gap-3 m-3 justify-between">
+                <div className="flex m-3 justify-between">
                   <button
                     className="text-teal-600 hover:text-teal-700 text-sm font-medium"
                     onClick={() => clickNavi(mess)}
@@ -472,8 +496,6 @@ const Cart = () => {
                   </button>
                 </div>
               </div>
-
-
             </div>
           ))}
         </div>
