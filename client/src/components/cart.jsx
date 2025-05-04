@@ -330,6 +330,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { getCartUrl } from "../constant/urls";
 import { ToastContainer, toast } from "react-toastify";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import {
   MdOutlineAcUnit,
   MdTv,
@@ -342,13 +343,33 @@ import {
 import { MapPin, Filter, Search, Trash2, Heart } from "lucide-react";
 
 const amenities = [
-  { id: "test1", label: "A/C", icon: <MdOutlineAcUnit className="text-blue-500" /> },
+  {
+    id: "test1",
+    label: "A/C",
+    icon: <MdOutlineAcUnit className="text-blue-500" />,
+  },
   { id: "test2", label: "TV", icon: <MdTv className="text-blue-500" /> },
-  { id: "test3", label: "Power Backup", icon: <MdOutlinePower className="text-blue-500" /> },
+  {
+    id: "test3",
+    label: "Power Backup",
+    icon: <MdOutlinePower className="text-blue-500" />,
+  },
   { id: "test4", label: "WiFi", icon: <MdWifi className="text-blue-500" /> },
-  { id: "test5", label: "Kitchen", icon: <MdKitchen className="text-blue-500" /> },
-  { id: "test6", label: "Tank Water", icon: <MdWater className="text-blue-500" /> },
-  { id: "test7", label: "Double Bed", icon: <MdBed className="text-blue-500" /> },
+  {
+    id: "test5",
+    label: "Kitchen",
+    icon: <MdKitchen className="text-blue-500" />,
+  },
+  {
+    id: "test6",
+    label: "Tank Water",
+    icon: <MdWater className="text-blue-500" />,
+  },
+  {
+    id: "test7",
+    label: "Double Bed",
+    icon: <MdBed className="text-blue-500" />,
+  },
 ];
 
 const Cart = () => {
@@ -357,6 +378,7 @@ const Cart = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [priceFilter, setPriceFilter] = useState({ min: 0, max: 50000 });
   const [amenityFilters, setAmenityFilters] = useState([]);
+  const [liked, setLiked] = useState({});
 
   const fetchMessData = async () => {
     try {
@@ -375,6 +397,55 @@ const Cart = () => {
   useEffect(() => {
     fetchMessData();
   }, []);
+
+  const fetchLikedMesses = async () => {
+    try {
+      const res = await axios.get(getLikedMessUrl, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const likedData = res.data || [];
+      const likedMap = {};
+
+      // Assuming likedData is an array of mess objects, not just IDs
+      likedData.forEach((mess) => {
+        likedMap[mess._id] = true; // Storing the mess ID in the map
+        console.log("Liked Mess ID:", mess._id); // Log the actual mess ID
+      });
+
+      console.log("Liked Messes:", likedMap); // Log the full map of liked messes
+      setLiked(likedMap); // Update state with the liked messes map
+    } catch (err) {
+      console.error("Failed to fetch liked messes", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchLikedMesses();
+  }, []);
+
+  const toggleLike = async (id) => {
+    const newLikedState = !liked[id];
+    setLiked((prev) => ({ ...prev, [id]: newLikedState }));
+    try {
+      await axios.post(
+        likedMessesUrl,
+        {
+          messId: id,
+          liked: newLikedState,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+    } catch (err) {
+      console.error("Error liking mess:", err);
+      // Revert the change
+      setLiked((prev) => ({ ...prev, [id]: !newLikedState }));
+    }
+  };
 
   const toggleAmenityFilter = (label) => {
     setAmenityFilters((prev) =>
@@ -449,7 +520,10 @@ const Cart = () => {
                     className="w-full p-2 border rounded-md"
                     value={priceFilter.min}
                     onChange={(e) =>
-                      setPriceFilter({ ...priceFilter, min: Number(e.target.value) })
+                      setPriceFilter({
+                        ...priceFilter,
+                        min: Number(e.target.value),
+                      })
                     }
                   />
                   <span>to</span>
@@ -459,7 +533,10 @@ const Cart = () => {
                     className="w-full p-2 border rounded-md"
                     value={priceFilter.max}
                     onChange={(e) =>
-                      setPriceFilter({ ...priceFilter, max: Number(e.target.value) })
+                      setPriceFilter({
+                        ...priceFilter,
+                        max: Number(e.target.value),
+                      })
                     }
                   />
                 </div>
@@ -522,11 +599,17 @@ const Cart = () => {
                       : "Unavailable"}
                   </span>
                 </div>
-                <button
+                {/* <button
                   className="absolute top-3 right-3 p-1.5 bg-white rounded-full shadow-md hover:bg-red-50 transition-colors"
                   onClick={() => removeItem(mess._id)}
                 >
                   <Trash2 className="w-4 h-4 text-red-500" />
+                </button> */}
+                <button
+                  onClick={() => toggleLike(owner._id)}
+                  className="absolute top-2 right-2 text-2xl text-red-500 "
+                >
+                  {liked[owner._id] ? <AiFillHeart /> : <AiOutlineHeart />}
                 </button>
               </div>
               <div className="p-4">
