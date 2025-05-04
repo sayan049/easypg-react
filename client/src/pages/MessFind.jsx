@@ -29,7 +29,7 @@ import {
 } from "react-icons/md";
 import { set } from "ol/transform";
 
-const FilterModal = ({
+export const FilterModal = ({
   isOpen,
   onClose,
   price,

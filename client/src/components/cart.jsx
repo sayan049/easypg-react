@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -6,6 +5,7 @@ import axios from "axios";
 import { getCartUrl, getLikedMessUrl, likedMessesUrl } from "../constant/urls";
 import { ToastContainer, toast } from "react-toastify";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { FilterModal } from "../pages/MessFind";
 import { useNavigate } from "react-router-dom";
 import {
   MdOutlineAcUnit,
@@ -199,7 +199,7 @@ const Cart = () => {
         </div>
 
         {/* Filters */}
-        {showFilters && (
+        {/* {showFilters && (
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -253,7 +253,8 @@ const Cart = () => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
+        {showFilters && <FilterModal />}
 
         {/* Empty State */}
         {filteredMesses.length === 0 && (
