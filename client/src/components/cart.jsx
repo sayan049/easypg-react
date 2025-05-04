@@ -16,7 +16,7 @@ import {
   MdBed,
 } from "react-icons/md";
 import { MapPin, Filter, Search, Trash2, Heart } from "lucide-react";
-import { FaMale, FaFemale, FaUserFriends } from "react-icons/fa";
+import { FaMale, FaFemale, FaUsers } from "react-icons/fa";
 
 const amenities = [
   {
