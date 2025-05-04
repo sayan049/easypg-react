@@ -723,6 +723,7 @@ import { toast } from "react-toastify";
 import BookingTable from "../components/BookingTable";
 import Settings from "../components/settings";
 import DashboardContent from "../components/dashboardContent";
+import Payments from "../components/payment";
 
 function NewDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -839,7 +840,7 @@ function NewDashboard() {
       case "bookings":
         return <BookingTable bookings={bookings} stats={stats} currentStay={currentStay} loading={loading} />;
       case "payments":
-        return <div className="px-4">Payments Content</div>;
+        return <Payments/>;
       case "settings":
         return <Settings user={userDetails} />;
       case "Cart":

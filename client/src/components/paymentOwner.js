@@ -121,9 +121,14 @@
 
 // export default Payments;
 import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Lock, CreditCard, ShieldCheck, Smartphone } from "lucide-react";
 
 const Payments = () => {
+  const navigate = useNavigate();
+  const handleBack = () => {
+    navigate(-1); // Go back to the previous page
+  };
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10 bg-gradient-to-b from-white to-gray-100 text-gray-800">
       {/* Title */}
@@ -131,7 +136,7 @@ const Payments = () => {
         <Lock className="mx-auto text-blue-500" size={32} />
         <h1 className="text-3xl md:text-4xl font-bold mt-2">Payments Coming Soon</h1>
         <p className="mt-2 text-sm md:text-base text-gray-600 max-w-md mx-auto">
-          We're currently offering our services for free as we grow. Secure and seamless payments are on their way!
+          We're currently offering our services for free. Secure and seamless payments are on their way!
         </p>
       </div>
 
@@ -165,7 +170,7 @@ const Payments = () => {
       </div>
 
       {/* Notify Section */}
-      <div className="bg-blue-50 p-6 rounded-xl w-full max-w-xl text-center mb-8">
+      <div className="bg-blue-100 p-6 rounded-xl w-full max-w-xl text-center mb-8">
         <h3 className="font-semibold text-lg mb-4">Get Notified When We Launch</h3>
         <div className="flex flex-col sm:flex-row items-center gap-4 justify-center">
           <input
@@ -181,10 +186,10 @@ const Payments = () => {
 
       {/* Navigation Buttons */}
       <div className="flex gap-4">
-        <button className="bg-black text-white px-5 py-2 rounded-md hover:bg-gray-800">
+        <button className="bg-black text-white px-5 py-2 rounded-md hover:bg-gray-800" onClick={handleBack}>
           ← Back to Dashboard
         </button>
-        <button className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700">
+        <button className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700" navigate="/">
           Explore PGs Now →
         </button>
       </div>
