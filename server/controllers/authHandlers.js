@@ -12,20 +12,71 @@ const { type } = require("os");
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
+// exports.signupHandler = async (req, res) => {
+//   const email = req.body.email;
+//   const password = req.body.password;
+
+//   const existnigUser = await User.findOne({ email: email }) && await PgOwner.findOne({ email: email });
+
+//   if (existnigUser) {
+//     return res
+//       .status(409)
+//       .json({ message: "Email already exists", type: "error" });
+//     // return console.log(`${email} already used`);
+//   }
+//   try {
+//     // Validate email format (basic)
+//     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+//     if (!isValidEmail) {
+//       return res
+//         .status(400)
+//         .json({ message: "Invalid email format", type: "error" });
+//     }
+
+//     // Validate password length
+//     if (!password || password.length < 8) {
+//       return res.status(400).json({
+//         message: "Password must be at least 8 characters",
+//         type: "error",
+//       });
+//     }
+//     // if (!User || !(await bcrypt.compare(password, User.password))) {
+//     //   return res.status(401).json({ message: "Incorrect email or password" ,type: "error" });
+//     // }
+
+//     const hashedPassword = await bcrypt.hash(req.body.password, 10);
+//     const newUser = await User.create({
+//       ...req.body,
+//       password: hashedPassword,
+//     });
+
+//     // sendmail(req.body.firstName, email, newUser._id);
+
+//     res.status(201).json({
+//       message: "User registered. Please verify your email.",
+//       type: "success",
+//     });
+//   } catch (error) {
+//     console.error("Error during signup:", error);
+
+//     res.status(500).json({ message: "Server error", type: "error" });
+//   }
+// };
 exports.signupHandler = async (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
+  const { email, password } = req.body;
 
-  const existnigUser = await User.findOne({ email: email });
-
-  if (existnigUser) {
-    return res
-      .status(409)
-      .json({ message: "Email already exists", type: "error" });
-    // return console.log(`${email} already used`);
-  }
   try {
-    // Validate email format (basic)
+    // Check if email exists in either User or PgOwner collection
+    const userExists = await User.findOne({ email });
+    const ownerExists = await PgOwner.findOne({ email });
+
+    if (userExists || ownerExists) {
+      return res
+        .status(409)
+        .json({ message: "Email already exists", type: "error" });
+    }
+
+    // Validate email format
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     if (!isValidEmail) {
       return res
@@ -33,23 +84,22 @@ exports.signupHandler = async (req, res) => {
         .json({ message: "Invalid email format", type: "error" });
     }
 
-    // Validate password length
+    // Validate password
     if (!password || password.length < 8) {
       return res.status(400).json({
         message: "Password must be at least 8 characters",
         type: "error",
       });
     }
-    // if (!User || !(await bcrypt.compare(password, User.password))) {
-    //   return res.status(401).json({ message: "Incorrect email or password" ,type: "error" });
-    // }
 
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    // Hash password and create new user
+    const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({
       ...req.body,
       password: hashedPassword,
     });
 
+    // Optionally send email verification
     // sendmail(req.body.firstName, email, newUser._id);
 
     res.status(201).json({
@@ -58,10 +108,10 @@ exports.signupHandler = async (req, res) => {
     });
   } catch (error) {
     console.error("Error during signup:", error);
-
     res.status(500).json({ message: "Server error", type: "error" });
   }
 };
+
 exports.checkEmailVerification = async (req, res) => {
   try {
     const { email } = req.query;
@@ -299,6 +349,131 @@ exports.loginHandler = async (req, res) => {
 //   }
 // };
 
+// exports.signupHandlerOwner = async (req, res) => {
+//   const {
+//     firstName,
+//     lastName,
+//     email,
+//     address,
+//     password,
+//     pincode,
+//     mobileNo,
+//     messName,
+//     aboutMess,
+//     location,
+//     facility,
+//     gender,
+//     roomInfo,
+//   } = req.body;
+
+//   console.log(req.body.location); // Log location to check the format
+//   // Process facility array
+//   let facilities = req.body.facility;
+
+//   // Handle case where facility might come as string
+//   if (typeof facilities === "string") {
+//     try {
+//       facilities = JSON.parse(facilities);
+//     } catch (e) {
+//       facilities = facilities.split(",").map((item) => item.trim());
+//     }
+//   }
+
+//   // Ensure it's an array
+//   if (!Array.isArray(facilities)) {
+//     facilities = [facilities];
+//   }
+
+//   try {
+//     // Check if the user already exists
+//     const existingUser = await PgOwner.findOne({ email });
+//     if (existingUser) {
+//       return res.status(400).json({ message: ` already exists` });
+//     }
+
+//     // Validate password
+//     if (!password) {
+//       return res.status(400).json({ message: "Password is required" });
+//     }
+
+//     // Hash the password
+//     const hashedPassword = await bcrypt.hash(password, 10);
+
+//     // Get processed image URLs from the middleware
+//     const profilePhoto = req.cloudinaryResults?.profilePhoto?.[0] || null;
+//     const messPhoto = req.cloudinaryResults?.messPhoto || [];
+
+//     // Parse roomInfo if it exists
+//     let parsedRoomInfo = [];
+//     if (roomInfo && typeof roomInfo === "string") {
+//       try {
+//         parsedRoomInfo = JSON.parse(roomInfo);
+//       } catch (error) {
+//         console.error("Error parsing roomInfo:", error);
+//         return res.status(400).json({ message: "Invalid roomInfo format" });
+//       }
+//     }
+
+//     // Parse location if it's a string
+//     let parsedLocation = {};
+//     if (typeof location === "string") {
+//       try {
+//         parsedLocation = JSON.parse(location);
+//       } catch (error) {
+//         return res.status(400).json({ message: "Invalid location format" });
+//       }
+//     }
+
+//     // Validate and process location
+//     if (
+//       !parsedLocation ||
+//       parsedLocation.type !== "Point" ||
+//       !Array.isArray(parsedLocation.coordinates) ||
+//       parsedLocation.coordinates.length !== 2
+//     ) {
+//       return res.status(400).json({
+//         message:
+//           'Invalid location format. Location must be in GeoJSON format (type: "Point", coordinates: [longitude, latitude])',
+//       });
+//     }
+
+//     // ✅ Generate GeoHash for faster searches
+//     const geoHash = geohash.encode(
+//       parsedLocation.coordinates[1],
+//       parsedLocation.coordinates[0],
+//       5
+//     );
+
+//     // Create new PG Owner
+//     const newOwner = await PgOwner.create({
+//       firstName,
+//       lastName,
+//       email,
+//       address,
+//       password: hashedPassword,
+//       pincode,
+//       mobileNo,
+//       messName,
+//       aboutMess,
+//       location: parsedLocation, // ✅ Store in GeoJSON format
+//       geoHash, // ✅ Store computed GeoHash
+//       profilePhoto,
+//       messPhoto,
+//       facility: facilities,
+//       gender,
+//       roomInfo: parsedRoomInfo,
+//     });
+
+//     // // Send confirmation email
+//     // sendmailOwner(firstName, email, newOwner._id);
+
+//     // Return success response
+//     return res.status(201).json(newOwner);
+//   } catch (error) {
+//     console.error("Error creating user:", error);
+//     return res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };
 exports.signupHandlerOwner = async (req, res) => {
   const {
     firstName,
@@ -316,11 +491,9 @@ exports.signupHandlerOwner = async (req, res) => {
     roomInfo,
   } = req.body;
 
-  console.log(req.body.location); // Log location to check the format
-  // Process facility array
-  let facilities = req.body.facility;
+  console.log(req.body.location);
 
-  // Handle case where facility might come as string
+  let facilities = facility;
   if (typeof facilities === "string") {
     try {
       facilities = JSON.parse(facilities);
@@ -328,53 +501,47 @@ exports.signupHandlerOwner = async (req, res) => {
       facilities = facilities.split(",").map((item) => item.trim());
     }
   }
-
-  // Ensure it's an array
   if (!Array.isArray(facilities)) {
     facilities = [facilities];
   }
 
   try {
-    // Check if the user already exists
-    const existingUser = await PgOwner.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: ` already exists` });
+    // ❗ Check if email exists in User or PgOwner collection
+    const userExists = await User.findOne({ email });
+    const ownerExists = await PgOwner.findOne({ email });
+
+    if (userExists || ownerExists) {
+      return res.status(409).json({ message: "Email already exists", type: "error" });
     }
 
-    // Validate password
     if (!password) {
-      return res.status(400).json({ message: "Password is required" });
+      return res.status(400).json({ message: "Password is required", type: "error" });
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Get processed image URLs from the middleware
     const profilePhoto = req.cloudinaryResults?.profilePhoto?.[0] || null;
     const messPhoto = req.cloudinaryResults?.messPhoto || [];
 
-    // Parse roomInfo if it exists
     let parsedRoomInfo = [];
     if (roomInfo && typeof roomInfo === "string") {
       try {
         parsedRoomInfo = JSON.parse(roomInfo);
       } catch (error) {
         console.error("Error parsing roomInfo:", error);
-        return res.status(400).json({ message: "Invalid roomInfo format" });
+        return res.status(400).json({ message: "Invalid roomInfo format", type: "error" });
       }
     }
 
-    // Parse location if it's a string
     let parsedLocation = {};
     if (typeof location === "string") {
       try {
         parsedLocation = JSON.parse(location);
       } catch (error) {
-        return res.status(400).json({ message: "Invalid location format" });
+        return res.status(400).json({ message: "Invalid location format", type: "error" });
       }
     }
 
-    // Validate and process location
     if (
       !parsedLocation ||
       parsedLocation.type !== "Point" ||
@@ -382,19 +549,17 @@ exports.signupHandlerOwner = async (req, res) => {
       parsedLocation.coordinates.length !== 2
     ) {
       return res.status(400).json({
-        message:
-          'Invalid location format. Location must be in GeoJSON format (type: "Point", coordinates: [longitude, latitude])',
+        message: 'Invalid location format. Must be GeoJSON { type: "Point", coordinates: [lng, lat] }',
+        type: "error",
       });
     }
 
-    // ✅ Generate GeoHash for faster searches
     const geoHash = geohash.encode(
       parsedLocation.coordinates[1],
       parsedLocation.coordinates[0],
       5
     );
 
-    // Create new PG Owner
     const newOwner = await PgOwner.create({
       firstName,
       lastName,
@@ -405,8 +570,8 @@ exports.signupHandlerOwner = async (req, res) => {
       mobileNo,
       messName,
       aboutMess,
-      location: parsedLocation, // ✅ Store in GeoJSON format
-      geoHash, // ✅ Store computed GeoHash
+      location: parsedLocation,
+      geoHash,
       profilePhoto,
       messPhoto,
       facility: facilities,
@@ -414,16 +579,19 @@ exports.signupHandlerOwner = async (req, res) => {
       roomInfo: parsedRoomInfo,
     });
 
-    // // Send confirmation email
     // sendmailOwner(firstName, email, newOwner._id);
 
-    // Return success response
-    return res.status(201).json(newOwner);
+    return res.status(201).json({
+      message: "PG Owner registered successfully. Please verify your email.",
+      type: "success",
+      data: newOwner,
+    });
   } catch (error) {
-    console.error("Error creating user:", error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    console.error("Error creating PG Owner:", error);
+    return res.status(500).json({ message: "Internal Server Error", type: "error" });
   }
 };
+
 
 exports.checkEmailVerificationOwner = async (req, res) => {
   try {
