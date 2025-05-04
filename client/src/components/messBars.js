@@ -201,30 +201,47 @@ function MessBars({
           limit: 5,
         },
       });
-      const totalCount = res.data.total || 0;
+      // const totalCount = res.data.total || 0;
+      // const filteredData = Array.isArray(res.data.data)
+      //   ? res.data.data.filter((owner) => {
+      //       const facilitiesArray = Array.isArray(owner.facility)
+      //         ? owner.facility.flatMap((f) =>
+      //             f.split(",").map((item) => item.trim().toLowerCase())
+      //           )
+      //         : [];
+      //       const matchesFeatures =
+      //         checkFeatures.length > 0
+      //           ? checkFeatures.some((feature) =>
+      //               facilitiesArray.includes(feature.toLowerCase())
+      //             )
+      //           : true;
+      //       const matchesGender = finalGender
+      //         ? owner.gender?.toLowerCase() === finalGender.toLowerCase()
+      //         : true;
+      //       const matchesPrice = owner?.roomInfo?.some(
+      //         (room) =>
+      //           room.pricePerHead >= finalPrice.min &&
+      //           room.pricePerHead <= finalPrice.max
+      //       );
+
+      //       return matchesFeatures && matchesGender && matchesPrice;
       const filteredData = Array.isArray(res.data.data)
-        ? res.data.data.filter((owner) => {
-            const facilitiesArray = Array.isArray(owner.facility)
-              ? owner.facility.flatMap((f) =>
-                  f.split(",").map((item) => item.trim().toLowerCase())
-                )
-              : [];
-            const matchesFeatures =
-              checkFeatures.length > 0
-                ? checkFeatures.some((feature) =>
-                    facilitiesArray.includes(feature.toLowerCase())
-                  )
-                : true;
-            const matchesGender = finalGender
-              ? owner.gender?.toLowerCase() === finalGender.toLowerCase()
-              : true;
-            const matchesPrice = owner?.roomInfo?.some(
+        ? res.data.data.filter((mess) => {
+            const matchesPrice = mess?.roomInfo?.some(
               (room) =>
-                room.pricePerHead >= finalPrice.min &&
-                room.pricePerHead <= finalPrice.max
+                room.pricePerHead >= priceFilter.min &&
+                room.pricePerHead <= priceFilter.max
             );
 
-            return matchesFeatures && matchesGender && matchesPrice;
+            const matchesAmenities =
+              amenityFilters.length === 0 ||
+              amenityFilters.every((af) => owner.facility?.includes(af));
+
+            const matchesGender = gender
+              ? mess.gender?.toLowerCase() === gender.toLowerCase()
+              : true;
+
+            return matchesPrice && matchesAmenities && matchesGender;
           })
         : [];
 
