@@ -328,7 +328,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { getCartUrl } from "../constant/urls";
+import { getCartUrl , getLikedMessUrl , likedMessesUrl } from "../constant/urls";
 import { ToastContainer, toast } from "react-toastify";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import {
@@ -379,6 +379,7 @@ const Cart = () => {
   const [priceFilter, setPriceFilter] = useState({ min: 0, max: 50000 });
   const [amenityFilters, setAmenityFilters] = useState([]);
   const [liked, setLiked] = useState({});
+  const token = localStorage.getItem("accessToken");
 
   const fetchMessData = async () => {
     try {
@@ -606,10 +607,10 @@ const Cart = () => {
                   <Trash2 className="w-4 h-4 text-red-500" />
                 </button> */}
                 <button
-                  onClick={() => toggleLike(owner._id)}
+                  onClick={() => toggleLike(mess._id)}
                   className="absolute top-2 right-2 text-2xl text-red-500 "
                 >
-                  {liked[owner._id] ? <AiFillHeart /> : <AiOutlineHeart />}
+                  {liked[mess._id] ? <AiFillHeart /> : <AiOutlineHeart />}
                 </button>
               </div>
               <div className="p-4">
