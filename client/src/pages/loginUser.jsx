@@ -392,8 +392,8 @@ function LoginUser() {
                 </div>
               )}
               {!isCheckingVerification && isEmailVerified === false && (
-                <div className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 flex flex-col sm:flex-row items-end gap-1 sm:gap-2">
-                  <span className="text-red-500 text-xs whitespace-nowrap">
+                <div className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 flex items-center gap-1 sm:gap-2">
+                  <span className="hidden sm:inline text-red-500 text-xs whitespace-nowrap">
                     Unverified
                   </span>
                   <button
