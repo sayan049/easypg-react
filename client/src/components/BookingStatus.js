@@ -69,7 +69,7 @@ const BookingCard = React.memo(
           {/* Booking Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img
+              {/* <img
                 src={
                   booking.student?.avatar ||
                   `https://i.pravatar.cc/150?u=${
@@ -78,7 +78,7 @@ const BookingCard = React.memo(
                 }
                 alt={booking.student?.firstName || "Student"}
                 className="w-10 h-10 rounded-full"
-              />
+              /> */}
               <div>
                 <p className="font-semibold">
                   {booking.student?.firstName && booking.student?.lastName
