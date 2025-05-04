@@ -293,7 +293,7 @@ function MessBars({
 
   useEffect(() => {
     fetchData();
-  }, [page, userLocation]);
+  }, [page, userLocation,finalGender,finalPrice,checkFeatures]);
 
   useEffect(() => {
     if (!messData.length || !userLocation) return;
