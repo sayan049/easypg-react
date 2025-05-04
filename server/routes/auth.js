@@ -67,6 +67,9 @@ router.get('/check-email-verification', authHandlers.checkEmailVerification);
 
 router.post("/login", authHandlers.loginHandler);
 router.post("/signupOwner",uploadTemp, uploadToCloudinary, authHandlers.signupHandlerOwner);
+router.get("/check-email-verification-owner", authHandlers.checkEmailVerificationOwner);
+router.post("/resend-verification-owner", authHandlers.resendVerificationEmailOwner);
+
 router.post("/loginOwner", authHandlers.loginHandlerOwner);
 router.post("/likedMess", authenticateJWT, likedMess.likedMess);
 router.get("/getLikedMess", authenticateJWT, getLikedMess);
