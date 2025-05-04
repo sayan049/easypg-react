@@ -328,7 +328,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { getCartUrl , getLikedMessUrl , likedMessesUrl } from "../constant/urls";
+import { getCartUrl, getLikedMessUrl, likedMessesUrl } from "../constant/urls";
 import { ToastContainer, toast } from "react-toastify";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import {
@@ -446,6 +446,19 @@ const Cart = () => {
       // Revert the change
       setLiked((prev) => ({ ...prev, [id]: !newLikedState }));
     }
+  };
+
+  const clickNavi = (owner) => {
+    const ownerParams = new URLSearchParams();
+    ownerParams.set("owner", JSON.stringify(owner));
+
+    navigate(`/viewDetails?${ownerParams.toString()}`);
+  };
+
+  const clickBook = (owner) => {
+    const ownerParams = new URLSearchParams();
+    ownerParams.set("owner", JSON.stringify(owner));
+    navigate(`/booking?${ownerParams}`);
   };
 
   const toggleAmenityFilter = (label) => {
@@ -645,10 +658,20 @@ const Cart = () => {
                     <span className="text-gray-500 text-sm">/month</span>
                   </div>
                   <div className="flex gap-2">
-                    <button className="text-teal-600 hover:text-teal-700 text-sm font-medium">
+                    <button
+                      className="text-teal-600 hover:text-teal-700 text-sm font-medium"
+                      onClick={(mess) => {
+                        clickNavi(mess);
+                      }}
+                    >
                       View Details
                     </button>
-                    <button className="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1 rounded-lg text-sm font-medium transition-colors">
+                    <button
+                      className="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1 rounded-lg text-sm font-medium transition-colors"
+                      onClick={(mess) => {
+                        clickBook(mess);
+                      }}
+                    >
                       Book Now
                     </button>
                   </div>
