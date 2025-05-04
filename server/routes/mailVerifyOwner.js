@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Pg = require('../modules/pgProvider'); // Ensure you have the correct path to your User model
+const PgOwner = require('../modules/pgProvider'); // Ensure you have the correct path to your User model
 
 // Email verification route
 router.get('/verify-email-pgOwner', async (req, res) => {
@@ -12,7 +12,7 @@ router.get('/verify-email-pgOwner', async (req, res) => {
             return res.status(400).json({ verified: 'error' });
         }
 
-        const user = await Pg.findById(userId);
+        const user = await PgOwner.findById(userId);
         console.log("Initial fetch user:", user);
 
         if (!user) {

@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaWind, FaTv, FaBatteryFull, FaWifi, FaUtensils, FaTint, FaBed } from "react-icons/fa";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 
 function SignupOwner() {
@@ -473,7 +474,7 @@ function SignupOwner() {
                   onClick={toggleEye}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-lg"
                 >
-                  {isPasswordVisible ? "🙈" : "👁️"}
+                 {isPasswordVisible ? <FiEyeOff /> : <FiEye />}
                 </span>
               </div>
               <div className="mb-4 w-full">
