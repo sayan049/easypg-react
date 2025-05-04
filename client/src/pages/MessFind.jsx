@@ -197,7 +197,7 @@ const MessFind = () => {
   const [pgCount, setPgCount] = useState(0);
   const [gender, setGender] = useState("");
   const [finalGender, setFinalGender] = useState("");
-  const [priceFilter, setPriceFilter] = useState({ min: 1500, max: 9000 });
+  const [priceFilter, setPriceFilter] = useState({ min: 0, max: 100000 });
 
 
   let debounceTimeout;
