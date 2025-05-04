@@ -257,7 +257,7 @@ const Cart = () => {
          
         )} */}
         {showFilters && (
-          <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+          <div className=" bottom-[24px] inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white p-6 rounded shadow-lg w-3/4 max-w-md">
               <h3 className="font-medium text-lg mb-4">Select Your Need</h3>
 
@@ -296,7 +296,7 @@ const Cart = () => {
               {/* Amenities */}
               <div className="mb-6">
                 <h4 className="font-medium mb-2">Amenities</h4>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 flex-col">
                   {amenities.map((facility) => (
                     <label
                       key={facility.id}
