@@ -455,22 +455,25 @@ const Cart = () => {
                     </span>
                     <span className="text-gray-500 text-sm">/month</span>
                   </div>
-                  <div className="flex gap-2">
-                    <button
-                      className="text-teal-600 hover:text-teal-700 text-sm font-medium"
-                      onClick={() => clickNavi(mess)}
-                    >
-                      View Details
-                    </button>
-                    <button
-                      className="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1 rounded-lg text-sm font-medium transition-colors"
-                      onClick={() => clickBook(mess)}
-                    >
-                      Book Now
-                    </button>
-                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    className="text-teal-600 hover:text-teal-700 text-sm font-medium"
+                    onClick={() => clickNavi(mess)}
+                  >
+                    View Details
+                  </button>
+                  <button
+                    className="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1 rounded-lg text-sm font-medium transition-colors"
+                    onClick={() => clickBook(mess)}
+                  >
+                    Book Now
+                  </button>
                 </div>
               </div>
+
+              
             </div>
           ))}
         </div>
