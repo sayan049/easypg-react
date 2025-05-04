@@ -331,6 +331,7 @@ import axios from "axios";
 import { getCartUrl, getLikedMessUrl, likedMessesUrl } from "../constant/urls";
 import { ToastContainer, toast } from "react-toastify";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 import {
   MdOutlineAcUnit,
   MdTv,
@@ -380,6 +381,7 @@ const Cart = () => {
   const [amenityFilters, setAmenityFilters] = useState([]);
   const [liked, setLiked] = useState({});
   const token = localStorage.getItem("accessToken");
+  const navigate=useNavigate();
 
   const fetchMessData = async () => {
     try {
