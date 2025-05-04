@@ -237,8 +237,8 @@ function MessBars({
               checkFeatures.length === 0 ||
               checkFeatures.every((af) => mess.facility?.includes(af));
 
-            const matchesGender = gender
-              ? owner.gender?.toLowerCase() === gender.toLowerCase()
+            const matchesGender = finalGender
+              ? owner.gender?.toLowerCase() === finalGender.toLowerCase()
               : true;
 
             return matchesPrice && matchesAmenities && matchesGender;
