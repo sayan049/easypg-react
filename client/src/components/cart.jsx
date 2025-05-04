@@ -5,7 +5,6 @@ import axios from "axios";
 import { getCartUrl, getLikedMessUrl, likedMessesUrl } from "../constant/urls";
 import { ToastContainer, toast } from "react-toastify";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { FilterModal } from "../pages/MessFind";
 import { useNavigate } from "react-router-dom";
 import {
   MdOutlineAcUnit,
@@ -57,6 +56,7 @@ const Cart = () => {
   const [liked, setLiked] = useState({});
   const token = localStorage.getItem("accessToken");
   const navigate = useNavigate();
+  const [gender,setGender]=useState("");
 
   const fetchMessData = async () => {
     try {
@@ -199,62 +199,162 @@ const Cart = () => {
         </div>
 
         {/* Filters */}
-        {/* {showFilters && (
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="font-medium mb-3">Price Range (₹)</h3>
-                <div className="flex items-center gap-4">
-                  <input
-                    type="number"
-                    placeholder="Min"
-                    className="w-full p-2 border rounded-md"
-                    value={priceFilter.min}
-                    onChange={(e) =>
-                      setPriceFilter({
-                        ...priceFilter,
-                        min: Number(e.target.value),
-                      })
-                    }
-                  />
-                  <span>to</span>
-                  <input
-                    type="number"
-                    placeholder="Max"
-                    className="w-full p-2 border rounded-md"
-                    value={priceFilter.max}
-                    onChange={(e) =>
-                      setPriceFilter({
-                        ...priceFilter,
-                        max: Number(e.target.value),
-                      })
-                    }
-                  />
+        {showFilters && (
+          // <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+          //   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          //     <div>
+          //       <h3 className="font-medium mb-3">Price Range (₹)</h3>
+          //       <div className="flex items-center gap-4">
+          //         <input
+          //           type="number"
+          //           placeholder="Min"
+          //           className="w-full p-2 border rounded-md"
+          //           value={priceFilter.min}
+          //           onChange={(e) =>
+          //             setPriceFilter({
+          //               ...priceFilter,
+          //               min: Number(e.target.value),
+          //             })
+          //           }
+          //         />
+          //         <span>to</span>
+          //         <input
+          //           type="number"
+          //           placeholder="Max"
+          //           className="w-full p-2 border rounded-md"
+          //           value={priceFilter.max}
+          //           onChange={(e) =>
+          //             setPriceFilter({
+          //               ...priceFilter,
+          //               max: Number(e.target.value),
+          //             })
+          //           }
+          //         />
+          //       </div>
+          //     </div>
+          //     <div>
+          //       <h3 className="font-medium mb-3">Amenities</h3>
+          //       <div className="flex flex-wrap gap-2">
+          //         {amenities.map(({ label, icon }) => (
+          //           <button
+          //             key={label}
+          //             className={`px-3 py-1.5 rounded-full text-sm flex items-center gap-1.5 ${
+          //               amenityFilters.includes(label)
+          //                 ? "bg-teal-100 text-teal-800 border-teal-200"
+          //                 : "bg-white border border-gray-300 text-gray-700"
+          //             }`}
+          //             onClick={() => toggleAmenityFilter(label)}
+          //           >
+          //             {icon}
+          //             {label}
+          //           </button>
+          //         ))}
+          //       </div>
+          //     </div>
+          //   </div>
+          // </div>
+          <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+            <ToastContainer
+              position="top-center"
+              toastClassName="!w-[300px]  mx-auto mt-4 sm:mt-0 "
+            />
+            <div className="bg-white p-6 rounded shadow-lg w-3/4 max-w-md">
+              <h3 className="font-medium text-lg mb-4">Select Your Need</h3>
+              <div className="mb-6">
+                <h4 className="font-medium">Price</h4>
+                <div className="flex justify-between text-sm text-gray-500 mt-2">
+                  <span>₹{price}</span>
+                  <span>₹9000</span>
+                </div>
+                <input
+                  type="range"
+                  className="w-full mt-2 accent-blue-500"
+                  min="1500"
+                  max="9000"
+                  value={price}
+                  onChange={(e) => setPriceFilter(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col gap-4">
+                <h4 className="font-medium">Amenities</h4>
+                {amenities.map((facility) => (
+                  <label
+                    key={facility.id}
+                    className="flex items-center text-sm"
+                  >
+                    <input
+                      type="checkbox"
+                      onClick={featureChanges}
+                      value={facility.label}
+                      className="mr-2 accent-blue-500"
+                    />
+                    <span className="text-lg mr-2">{facility.icon}</span>
+                    {facility.label}
+                  </label>
+                ))}
+              </div>
+
+              <div className="mb-6 mt-2">
+                <h4 className="font-medium">Gender</h4>
+                <div className="flex flex-col gap-2 mt-2 text-sm">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="modal-gender" // Unique name for the modal's radio group
+                      value="boys pg"
+                      checked={gender === "boys pg"}
+                      onChange={(e) => setGender(e.target.value)}
+                      className="mr-2 accent-blue-500"
+                    />
+                    <FaMale className="text-blue-500 mr-2" /> Boys PG
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="modal-gender" // Unique name
+                      value="girls pg"
+                      checked={gender === "girls pg"}
+                      onChange={(e) => setGender(e.target.value)}
+                      className="mr-2 accent-pink-500"
+                    />
+                    <FaFemale className="text-pink-500 mr-2" /> Girls PG
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="modal-gender" // Unique name
+                      value="coed pg"
+                      checked={gender === "coed pg"}
+                      onChange={(e) => setGender(e.target.value)}
+                      className="mr-2 accent-green-500"
+                    />
+                    <FaUserFriends className="text-green-500 mr-2" /> Co-ed PG
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="modal-gender" // Unique name
+                      value=""
+                      checked={gender === ""}
+                      onChange={(e) => setGender("")}
+                      className="mr-2 accent-gray-500"
+                    />
+                    <span className="text-gray-500 mr-2">🌐</span> Any
+                  </label>
                 </div>
               </div>
-              <div>
-                <h3 className="font-medium mb-3">Amenities</h3>
-                <div className="flex flex-wrap gap-2">
-                  {amenities.map(({ label, icon }) => (
-                    <button
-                      key={label}
-                      className={`px-3 py-1.5 rounded-full text-sm flex items-center gap-1.5 ${
-                        amenityFilters.includes(label)
-                          ? "bg-teal-100 text-teal-800 border-teal-200"
-                          : "bg-white border border-gray-300 text-gray-700"
-                      }`}
-                      onClick={() => toggleAmenityFilter(label)}
-                    >
-                      {icon}
-                      {label}
-                    </button>
-                  ))}
-                </div>
+
+              <div className="mt-6 flex justify-end">
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded shadow"
+                  onClick={onApplyFilters}
+                >
+                  Apply Filters
+                </button>
               </div>
             </div>
           </div>
-        )} */}
-        {showFilters && <FilterModal />}
+        )}
 
         {/* Empty State */}
         {filteredMesses.length === 0 && (
