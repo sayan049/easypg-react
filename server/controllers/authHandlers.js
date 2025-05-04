@@ -414,14 +414,92 @@ exports.signupHandlerOwner = async (req, res) => {
       roomInfo: parsedRoomInfo,
     });
 
-    // Send confirmation email
-    sendmailOwner(firstName, email, newOwner._id);
+    // // Send confirmation email
+    // sendmailOwner(firstName, email, newOwner._id);
 
     // Return success response
     return res.status(201).json(newOwner);
   } catch (error) {
     console.error("Error creating user:", error);
     return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+exports.checkEmailVerificationOwner = async (req, res) => {
+  try {
+    const { email } = req.query;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: "Email is required",
+      });
+    }
+
+    const user = await PgOwner.findOne({ email }).select("is_verified_Owner");
+    console.log("Owner fetched for verification check:", user);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: "Owner not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      verified: user.is_verified_Owner,
+    });
+  } catch (error) {
+    console.error("Error checking email verification:", error);
+    res.status(500).json({
+      success: false,
+      error: "Server error",
+    });
+  }
+};
+exports.resendVerificationEmailOwner = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: "Email is required",
+      });
+    }
+
+    // Find user with only the fields we need
+    const user = await PgOwner.findOne({ email }).select(
+      "firstName email is_verified_Owner"
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: "User not found",
+      });
+    }
+
+    if (user.is_verified_Owner) {
+      return res.status(400).json({
+        success: false,
+        error: "Email is already verified",
+      });
+    }
+
+    // Call your existing sendmail function
+    await sendmail(user.firstName, email, user._id);
+
+    res.status(200).json({
+      success: true,
+      message: "Verification email sent successfully",
+    });
+  } catch (error) {
+    console.error("Error resending verification email:", error);
+    res.status(500).json({
+      success: false,
+      error: "Error sending verification email",
+    });
   }
 };
 

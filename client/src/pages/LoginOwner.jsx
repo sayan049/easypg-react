@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+
 import {
   Link,
   useNavigate,
@@ -16,7 +17,8 @@ import {
 import "../designs/loginForMessOwner.css";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Toaster from "sonner";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import debounce from "lodash.debounce";
 
 function LoginOwner() {
   useEffect(() => {
@@ -47,6 +49,12 @@ function LoginOwner() {
   const [loading, setLoading] = useState(true);
   const [isSendingEmail, setIsSendingEmail] = useState(false); // State to track email sending status
   const [searchParams] = useSearchParams();
+  const [isEmailVerified, setIsEmailVerified] = useState(null);
+  const [isCheckingVerification, setIsCheckingVerification] = useState(false);
+  const [isSendingVerification, setIsSendingVerification] = useState(false);
+  const [verificationCompleted, setVerificationCompleted] = useState(false);
+  const [awaitingVerification, setAwaitingVerification] = useState(false);
+
   useEffect(() => {
     const tokenFromUrl = searchParams.get("resetToken");
     if (tokenFromUrl) {
@@ -131,7 +139,7 @@ function LoginOwner() {
         // const message = `Welcome ${userData.name}!`;
         // localStorage.setItem("sId_message", message);
         localStorage.setItem("sId_message", "Successfully logged in");
-       // navigate("/");
+        // navigate("/");
         navigate("/", { state: { message: "succesfully logged in" } });
 
         console.log("succesfully logged in");
@@ -171,6 +179,77 @@ function LoginOwner() {
       }, 5000);
     }
   };
+  const checkEmailVerification = useCallback(
+    debounce(async (email) => {
+      if (!email) {
+        setIsEmailVerified(null);
+        return;
+      }
+
+      try {
+        setIsCheckingVerification(true);
+        const response = await axios.get(
+          `${baseurl}/auth/check-email-verification-owner?email=${encodeURIComponent(
+            email
+          )}`
+        );
+        setIsEmailVerified(response.data.verified);
+      } catch (error) {
+        console.error("Error checking email verification:", error);
+        setIsEmailVerified(null);
+      } finally {
+        setIsCheckingVerification(false);
+      }
+    }, 500),
+    []
+  );
+
+  // Single optimized effect for all verification checks
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === "verificationCompleted" && e.newValue === "true") {
+        const storedEmail = localStorage.getItem("verificationEmail");
+        if (storedEmail === email) {
+          // Immediately update UI and clear storage
+          setIsEmailVerified(true);
+          localStorage.removeItem("verificationCompleted");
+          localStorage.removeItem("verificationEmail");
+          // Optionally verify with server if needed
+          checkEmailVerification(email);
+        }
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    // Initial check when email changes
+    if (email) {
+      checkEmailVerification(email);
+    }
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      checkEmailVerification.cancel();
+    };
+  }, [email, checkEmailVerification]);
+
+  const resendVerificationEmail = async () => {
+    try {
+      setIsSendingVerification(true);
+      localStorage.setItem("verificationEmail", email);
+      const response = await axios.post(
+        `${baseurl}/auth/resend-verification-owner`,
+        {
+          email,
+        }
+      );
+      toast.success("Verification email sent successfully!");
+    } catch (error) {
+      toast.error("Failed to send verification email. Please try again.");
+    } finally {
+      setIsSendingVerification(false);
+    }
+  };
   const loginwithgoogleOwner = () => {
     const deviceInfo = navigator.userAgent; // Capture device info (e.g., user agent)
     const state = JSON.stringify({ type: "owner", device: deviceInfo }); // Add device info in the state
@@ -203,10 +282,10 @@ function LoginOwner() {
     } catch (error) {
       setForgotPasswordMessage("Error sending email. Please try again.");
       toast.error("Error sending email. Please try again.");
-    } finally{
-      setTimeout(()=>{
+    } finally {
+      setTimeout(() => {
         setIsSendingEmail(false); // Reset loading state after 5 seconds
-      },5000)
+      }, 5000);
     }
   };
   const submitResetPassword = async () => {
@@ -280,16 +359,78 @@ function LoginOwner() {
               autoComplete="off"
             />
 
-            <input
-              type="email"
-              name="email"
-              placeholder="example@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
-              autoComplete="off"
-            />
+            <div className="relative">
+              <input
+                type="email"
+                name="email"
+                placeholder="example@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a] pr-24 sm:pr-32" // Added padding-right
+                autoComplete="off"
+              />
+              {isCheckingVerification && (
+                <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                  <svg
+                    className="animate-spin h-5 w-5 text-gray-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                </div>
+              )}
+              {!isCheckingVerification && isEmailVerified === false && (
+                <div className="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 flex items-center gap-1 sm:gap-2">
+                  <span className="hidden sm:inline text-red-500 text-xs whitespace-nowrap">
+                    Unverified
+                  </span>
+                  <button
+                    type="button"
+                    onClick={resendVerificationEmail}
+                    disabled={isSendingVerification}
+                    className="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 disabled:bg-blue-300 whitespace-nowrap"
+                  >
+                    {isSendingVerification ? "Sending..." : "Verify"}
+                  </button>
+                </div>
+              )}
 
+              {!isCheckingVerification && isEmailVerified === true && (
+                <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center">
+                  <span className="text-green-500 text-xs flex items-center">
+                    Verified{" "}
+                    <svg
+                      className="w-4 h-4 ml-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </span>
+                </div>
+              )}
+            </div>
             <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
               <div className="relative flex-1">
                 <input
@@ -306,7 +447,7 @@ function LoginOwner() {
                   onClick={togglePasswordVisibility}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"
                 >
-                  {isPasswordVisible ? "🙈" : "👁️"}
+                  {isPasswordVisible ? <FiEyeOff /> : <FiEye />}
                 </button>
               </div>
             </div>
@@ -469,7 +610,7 @@ function LoginOwner() {
                 onClick={toggleNewPasswordVisibility}
                 className="absolute right-4 top-[37%] transform -translate-y-1/2 text-gray-500"
               >
-                {isNewPasswordVisible ? "🙈" : "👁️"}
+                {isPasswordVisible ? <FiEyeOff /> : <FiEye />}
               </button>
             </div>
 
@@ -487,7 +628,7 @@ function LoginOwner() {
                 onClick={toggleConfirmPasswordVisibility}
                 className="absolute right-4 top-[37%] transform -translate-y-1/2 text-gray-500"
               >
-                {isConfirmPasswordVisible ? "🙈" : "👁️"}
+                {isPasswordVisible ? <FiEyeOff /> : <FiEye />}
               </button>
             </div>
 
