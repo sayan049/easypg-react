@@ -126,9 +126,7 @@ import { Lock, CreditCard, ShieldCheck, Smartphone } from "lucide-react";
 
 const Payments = () => {
   const navigate = useNavigate();
-  const handleBack = () => {
-    navigate(-1); // Go back to the previous page
-  };
+ 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10 bg-gradient-to-b from-white to-gray-100 text-gray-800">
       {/* Title */}
@@ -186,10 +184,10 @@ const Payments = () => {
 
       {/* Navigation Buttons */}
       <div className="flex gap-4">
-        <button className="bg-black text-white px-5 py-2 rounded-md hover:bg-gray-800" onClick={handleBack}>
+        <button className="bg-black text-white px-5 py-2 rounded-md hover:bg-gray-800"  onClick={() => navigate("/DashboardOwner")}>
           ← Back to Dashboard
         </button>
-        <button className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700" navigate="/">
+        <button className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700"  onClick={() => navigate("/")}>
           Explore PGs Now →
         </button>
       </div>
