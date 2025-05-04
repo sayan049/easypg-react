@@ -27,6 +27,7 @@ function MessBars({
   coords,
   setPgCount,
   finalGender,
+  finalPrice,
 }) {
   const [messData, setMessData] = useState([]);
   const [distanceMap, setDistanceMap] = useState({});
@@ -217,8 +218,13 @@ function MessBars({
             const matchesGender = finalGender
               ? owner.gender?.toLowerCase() === finalGender.toLowerCase()
               : true;
+            const matchesPrice = owner?.roomInfo?.some(
+              (room) =>
+                room.pricePerHead >= finalPrice.min &&
+                room.pricePerHead <= finalPrice.max
+            );
 
-            return matchesFeatures && matchesGender;
+            return matchesFeatures && matchesGender && matchesPrice;
           })
         : [];
 

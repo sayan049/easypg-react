@@ -162,7 +162,7 @@ export const FilterModal = ({
           </div>
         </div>
 
-        <div className="mt-6 flex justify-end">
+        <div className="mt-6 flex justify-center">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded shadow"
             onClick={onApplyFilters}
@@ -449,7 +449,7 @@ const MessFind = () => {
             </div>
 
             <button
-              className="bg-blue-500 text-white px-4 py-2 rounded shadow w-1/2 left-1/4 relative"
+              className="bg-blue-500 text-white px-4 py-2 rounded shadow w-1/2 left-1/4 relative mb-3"
               onClick={onApplyFilters}
             >
               Apply Filters
@@ -552,6 +552,7 @@ const MessFind = () => {
                   coords={handleCoordinatesChange}
                   setPgCount={setPgCount}
                   finalGender={finalGender}
+                  finalPrice={priceFilter}
                 />
               )}
             </div>
