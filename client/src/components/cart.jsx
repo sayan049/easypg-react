@@ -257,7 +257,7 @@ const Cart = () => {
          
         )} */}
         {showFilters && (
-          <div className="h-screen fixed bottom-[24px] inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="h-screen fixed top-[-24px] inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white p-6 rounded shadow-lg w-3/4 max-w-md">
               <h3 className="font-medium text-lg mb-4">Select Your Need</h3>
 
