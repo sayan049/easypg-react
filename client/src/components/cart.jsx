@@ -445,7 +445,7 @@ const Cart = () => {
                   ))}
                 </div>
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between flex-wrap">
                   <div>
                     <span className="text-lg font-bold text-gray-900">
                       ₹
@@ -456,21 +456,21 @@ const Cart = () => {
                     <span className="text-gray-500 text-sm">/month</span>
                   </div>
                   <div>
-                    {owner?.gender && (
+                    {mess?.gender && (
                       <div className="mt-3 flex items-center gap-2 text-sm font-medium text-gray-700">
-                        {owner.gender.toLowerCase() === "girls pg" && (
+                        {mess.gender.toLowerCase() === "girls pg" && (
                           <span className="flex items-center gap-1 bg-pink-100 text-pink-600 px-2 py-1 rounded-full">
                             <FaFemale />
                             Girls PG
                           </span>
                         )}
-                        {owner.gender.toLowerCase() === "boys pg" && (
+                        {mess.gender.toLowerCase() === "boys pg" && (
                           <span className="flex items-center gap-1 bg-blue-100 text-blue-600 px-2 py-1 rounded-full">
                             <FaMale />
                             Boys PG
                           </span>
                         )}
-                        {owner.gender.toLowerCase() === "coed pg" && (
+                        {mess.gender.toLowerCase() === "coed pg" && (
                           <span className="flex items-center gap-1 bg-green-100 text-green-600 px-2 py-1 rounded-full">
                             <FaUsers />
                             Co-ed PG
