@@ -165,7 +165,11 @@ const Cart = () => {
       amenityFilters.length === 0 ||
       amenityFilters.every((af) => mess.facility?.includes(af));
 
-    return matchesSearch && matchesPrice && matchesAmenities;
+      const matchesGender = gender
+      ? mess.gender?.toLowerCase() === gender.toLowerCase()
+      : true;
+
+    return matchesSearch && matchesPrice && matchesAmenities && matchesGender;
   });
 
   const getAmenityIcon = (label) =>
