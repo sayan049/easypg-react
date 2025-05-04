@@ -27,6 +27,7 @@ function MessBars({
   coords,
   setPgCount,
   finalGender,
+  finalPrice,
 }) {
   const [messData, setMessData] = useState([]);
   const [distanceMap, setDistanceMap] = useState({});
@@ -201,24 +202,46 @@ function MessBars({
         },
       });
       const totalCount = res.data.total || 0;
+      // const filteredData = Array.isArray(res.data.data)
+      //   ? res.data.data.filter((owner) => {
+      //       const facilitiesArray = Array.isArray(owner.facility)
+      //         ? owner.facility.flatMap((f) =>
+      //             f.split(",").map((item) => item.trim().toLowerCase())
+      //           )
+      //         : [];
+      //       const matchesFeatures =
+      //         checkFeatures.length > 0
+      //           ? checkFeatures.some((feature) =>
+      //               facilitiesArray.includes(feature.toLowerCase())
+      //             )
+      //           : true;
+      //       const matchesGender = finalGender
+      //         ? owner.gender?.toLowerCase() === finalGender.toLowerCase()
+      //         : true;
+      //       const matchesPrice = owner?.roomInfo?.some(
+      //         (room) =>
+      //           room.pricePerHead >= finalPrice.min &&
+      //           room.pricePerHead <= finalPrice.max
+      //       );
+
+      //       return matchesFeatures && matchesGender && matchesPrice;
       const filteredData = Array.isArray(res.data.data)
         ? res.data.data.filter((owner) => {
-            const facilitiesArray = Array.isArray(owner.facility)
-              ? owner.facility.flatMap((f) =>
-                  f.split(",").map((item) => item.trim().toLowerCase())
-                )
-              : [];
-            const matchesFeatures =
-              checkFeatures.length > 0
-                ? checkFeatures.some((feature) =>
-                    facilitiesArray.includes(feature.toLowerCase())
-                  )
-                : true;
+            const matchesPrice = owner?.roomInfo?.some(
+              (room) =>
+                room.pricePerHead >= finalPrice.min &&
+                room.pricePerHead <= finalPrice.max
+            );
+
+            const matchesAmenities =
+              checkFeatures.length === 0 ||
+              checkFeatures.every((af) => owner.facility?.includes(af));
+
             const matchesGender = finalGender
               ? owner.gender?.toLowerCase() === finalGender.toLowerCase()
               : true;
 
-            return matchesFeatures && matchesGender;
+            return matchesPrice && matchesAmenities && matchesGender;
           })
         : [];
 
