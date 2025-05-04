@@ -289,11 +289,11 @@ function MessBars({
     setHasMore(true);
     setPgCount(0);
     setPage(1); // Reset to page 1 immediately
-  }, [checkFeatures, userLocation, finalGender]);
+  }, [ userLocation,]);
 
   useEffect(() => {
     fetchData();
-  }, [page, userLocation]);
+  }, [page, userLocation ,finalGender ,finalPrice ,checkFeatures]);
 
   useEffect(() => {
     if (!messData.length || !userLocation) return;
