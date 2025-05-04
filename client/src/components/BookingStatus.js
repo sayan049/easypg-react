@@ -730,9 +730,9 @@ const BookingStatus = ({ owner }) => {
           <p className="text-gray-600 mb-6">
             You haven't made any booking requests yet.
           </p>
-          <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+          {/* <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
             Browse Accommodations
-          </button>
+          </button> */}
         </div>
       </div>
     );
