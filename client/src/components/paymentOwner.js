@@ -137,7 +137,7 @@ const Payments = () => {
 
       {/* Illustration */}
       <img
-        src="https://cdn3d.iconscout.com/3d/premium/thumb/secure-wallet-8063066-6451967.png"
+        src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746379420/hhg9bcto5gzo9nq3kd4n.png"
         alt="Secure Wallet Illustration"
         className="w-60 md:w-72 h-auto my-6"
       />
