@@ -16,6 +16,7 @@ import {
   MdBed,
 } from "react-icons/md";
 import { MapPin, Filter, Search, Trash2, Heart } from "lucide-react";
+import { FaMale, FaFemale, FaUserFriends } from "react-icons/fa";
 
 const amenities = [
   {
@@ -56,7 +57,7 @@ const Cart = () => {
   const [liked, setLiked] = useState({});
   const token = localStorage.getItem("accessToken");
   const navigate = useNavigate();
-  const [gender,setGender]=useState("");
+  const [gender, setGender] = useState("");
 
   const fetchMessData = async () => {
     try {
@@ -263,7 +264,7 @@ const Cart = () => {
               <div className="mb-6">
                 <h4 className="font-medium">Price</h4>
                 <div className="flex justify-between text-sm text-gray-500 mt-2">
-                  <span>₹{price}</span>
+                  <span>₹{priceFilter}</span>
                   <span>₹9000</span>
                 </div>
                 <input
@@ -271,7 +272,7 @@ const Cart = () => {
                   className="w-full mt-2 accent-blue-500"
                   min="1500"
                   max="9000"
-                  value={price}
+                  value={priceFilter}
                   onChange={(e) => setPriceFilter(e.target.value)}
                 />
               </div>
@@ -284,7 +285,7 @@ const Cart = () => {
                   >
                     <input
                       type="checkbox"
-                      onClick={featureChanges}
+                      // onClick={featureChanges}
                       value={facility.label}
                       className="mr-2 accent-blue-500"
                     />
@@ -347,7 +348,7 @@ const Cart = () => {
               <div className="mt-6 flex justify-end">
                 <button
                   className="bg-blue-500 text-white px-4 py-2 rounded shadow"
-                  onClick={onApplyFilters}
+                  //onClick={onApplyFilters}
                 >
                   Apply Filters
                 </button>
