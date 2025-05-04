@@ -39,6 +39,8 @@ export const FilterModal = ({
   onApplyFilters,
   gender,
   setGender,
+  priceFilter,
+  setPriceFilter
 }) => {
   if (!isOpen) return null;
   return (
