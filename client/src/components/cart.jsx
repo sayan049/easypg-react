@@ -457,7 +457,7 @@ const Cart = () => {
                   </div>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-3 m-3 justify-between">
                   <button
                     className="text-teal-600 hover:text-teal-700 text-sm font-medium"
                     onClick={() => clickNavi(mess)}
@@ -473,7 +473,7 @@ const Cart = () => {
                 </div>
               </div>
 
-              
+
             </div>
           ))}
         </div>
