@@ -39,6 +39,8 @@ export const FilterModal = ({
   onApplyFilters,
   gender,
   setGender,
+  priceFilter,
+  setPriceFilter
 }) => {
   if (!isOpen) return null;
   return (
@@ -49,7 +51,7 @@ export const FilterModal = ({
       />
       <div className="bg-white p-6 rounded shadow-lg w-3/4 max-w-md">
         <h3 className="font-medium text-lg mb-4">Select Your Need</h3>
-        <div className="mb-6">
+        {/* <div className="mb-6">
           <h4 className="font-medium">Price</h4>
           <div className="flex justify-between text-sm text-gray-500 mt-2">
             <span>₹{price}</span>
@@ -63,6 +65,36 @@ export const FilterModal = ({
             value={price}
             onChange={(e) => setPrice(e.target.value)}
           />
+        </div> */}
+        <div className="mb-6">
+          <h4 className="font-medium">Price Range (₹)</h4>
+          <div className="flex items-center gap-4 mt-2">
+            <input
+              type="number"
+              placeholder="Min"
+              className="w-full p-2 border rounded-md"
+              value={priceFilter.min}
+              onChange={(e) =>
+                setPriceFilter((prev) => ({
+                  ...prev,
+                  min: Number(e.target.value),
+                }))
+              }
+            />
+            <span>to</span>
+            <input
+              type="number"
+              placeholder="Max"
+              className="w-full p-2 border rounded-md"
+              value={priceFilter.max}
+              onChange={(e) =>
+                setPriceFilter((prev) => ({
+                  ...prev,
+                  max: Number(e.target.value),
+                }))
+              }
+            />
+          </div>
         </div>
         <div className="flex flex-col gap-4">
           <h4 className="font-medium">Amenities</h4>
@@ -165,6 +197,8 @@ const MessFind = () => {
   const [pgCount, setPgCount] = useState(0);
   const [gender, setGender] = useState("");
   const [finalGender, setFinalGender] = useState("");
+  const [priceFilter, setPriceFilter] = useState({ min: 1500, max: 9000 });
+
 
   let debounceTimeout;
 
@@ -301,7 +335,7 @@ const MessFind = () => {
       {/* Sidebar */}
       <div className="w-full md:w-1/4 bg-white p-4 shadow rounded-md hidden md:block h-screen overflow-y-auto">
         <h2 className="text-lg font-bold">Filter</h2>
-        <div className="mt-6">
+        {/* <div className="mt-6">
           <h3 className="font-medium">Price</h3>
           <div className="flex justify-between text-sm text-gray-500 mt-2">
             <span>₹{price}</span>
@@ -315,6 +349,36 @@ const MessFind = () => {
             value={price}
             onChange={(e) => setPrice(e.target.value)}
           />
+        </div> */}
+        <div className="mb-6">
+          <h4 className="font-medium">Price Range (₹)</h4>
+          <div className="flex items-center gap-4 mt-2">
+            <input
+              type="number"
+              placeholder="Min"
+              className="w-full p-2 border rounded-md"
+              value={priceFilter.min}
+              onChange={(e) =>
+                setPriceFilter((prev) => ({
+                  ...prev,
+                  min: Number(e.target.value),
+                }))
+              }
+            />
+            <span>to</span>
+            <input
+              type="number"
+              placeholder="Max"
+              className="w-full p-2 border rounded-md"
+              value={priceFilter.max}
+              onChange={(e) =>
+                setPriceFilter((prev) => ({
+                  ...prev,
+                  max: Number(e.target.value),
+                }))
+              }
+            />
+          </div>
         </div>
         <div className="mt-6">
           <h3 className="font-medium">Select Your Need</h3>
@@ -511,6 +575,8 @@ const MessFind = () => {
         onApplyFilters={onApplyFilters}
         gender={gender}
         setGender={setGender}
+        priceFilter={priceFilter}
+        setPriceFilter={setPriceFilter}
       />
     </div>
   );

@@ -16,7 +16,7 @@ import {
   MdBed,
 } from "react-icons/md";
 import { MapPin, Filter, Search, Trash2, Heart } from "lucide-react";
-import { FaMale, FaFemale, FaUserFriends } from "react-icons/fa";
+import { FaMale, FaFemale, FaUsers ,FaUserFriends } from "react-icons/fa";
 
 const amenities = [
   {
@@ -165,7 +165,11 @@ const Cart = () => {
       amenityFilters.length === 0 ||
       amenityFilters.every((af) => mess.facility?.includes(af));
 
-    return matchesSearch && matchesPrice && matchesAmenities;
+      const matchesGender = gender
+      ? mess.gender?.toLowerCase() === gender.toLowerCase()
+      : true;
+
+    return matchesSearch && matchesPrice && matchesAmenities && matchesGender;
   });
 
   const getAmenityIcon = (label) =>
@@ -445,7 +449,7 @@ const Cart = () => {
                   ))}
                 </div>
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between flex-wrap">
                   <div>
                     <span className="text-lg font-bold text-gray-900">
                       ₹
@@ -455,20 +459,45 @@ const Cart = () => {
                     </span>
                     <span className="text-gray-500 text-sm">/month</span>
                   </div>
-                  <div className="flex gap-2">
-                    <button
-                      className="text-teal-600 hover:text-teal-700 text-sm font-medium"
-                      onClick={() => clickNavi(mess)}
-                    >
-                      View Details
-                    </button>
-                    <button
-                      className="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1 rounded-lg text-sm font-medium transition-colors"
-                      onClick={() => clickBook(mess)}
-                    >
-                      Book Now
-                    </button>
+                  <div>
+                    {mess?.gender && (
+                      <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                        {mess.gender.toLowerCase() === "girls pg" && (
+                          <span className="flex items-center gap-1 bg-pink-100 text-pink-600 px-2 py-1 rounded-full">
+                            <FaFemale />
+                            Girls PG
+                          </span>
+                        )}
+                        {mess.gender.toLowerCase() === "boys pg" && (
+                          <span className="flex items-center gap-1 bg-blue-100 text-blue-600 px-2 py-1 rounded-full">
+                            <FaMale />
+                            Boys PG
+                          </span>
+                        )}
+                        {mess.gender.toLowerCase() === "coed pg" && (
+                          <span className="flex items-center gap-1 bg-green-100 text-green-600 px-2 py-1 rounded-full">
+                            <FaUsers />
+                            Co-ed PG
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
+                </div>
+
+                <div className="flex m-3 justify-between">
+                  <button
+                    className="text-teal-600 hover:text-teal-700 text-sm font-medium"
+                    onClick={() => clickNavi(mess)}
+                  >
+                    View Details
+                  </button>
+                  <button
+                    className="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1 rounded-lg text-sm font-medium transition-colors"
+                    onClick={() => clickBook(mess)}
+                  >
+                    Book Now
+                  </button>
                 </div>
               </div>
             </div>
