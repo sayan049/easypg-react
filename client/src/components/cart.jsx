@@ -457,7 +457,7 @@ const Cart = () => {
                   </div>
                   <div>
                     {mess?.gender && (
-                      <div className="mt-3 flex items-center gap-2 text-sm font-medium text-gray-700">
+                      <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
                         {mess.gender.toLowerCase() === "girls pg" && (
                           <span className="flex items-center gap-1 bg-pink-100 text-pink-600 px-2 py-1 rounded-full">
                             <FaFemale />
