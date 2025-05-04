@@ -488,7 +488,7 @@ exports.resendVerificationEmailOwner = async (req, res) => {
     }
 
     // Call your existing sendmail function
-    await sendmail(user.firstName, email, user._id);
+    await sendmailOwner(user.firstName, email, user._id);
 
     res.status(200).json({
       success: true,
