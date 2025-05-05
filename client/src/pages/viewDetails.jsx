@@ -28,7 +28,11 @@ const ViewDetails = () => {
   const [showModal, setShowModal] = useState(false);
 
   const ratingCounts = [0, 0, 0, 0, 0]; // Index 0 → 1★, Index 4 → 5★
-  owner.feedbacks.forEach((fb) => ratingCounts[fb.rating - 1]++);
+  owner.feedbacks.forEach((fb) => {
+    ratingCounts[fb.rating - 1]++;
+    console.log(fb.rating - 1, " r");
+  });
+
   const total = owner.feedbacks.length;
   const average = (
     owner.feedbacks.reduce((sum, fb) => sum + fb.rating, 0) / total
@@ -65,9 +69,7 @@ const ViewDetails = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  useEffect(()=>{
-    
-  },[total]);
+  useEffect(() => {}, [total]);
 
   return (
     <>
