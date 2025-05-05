@@ -27,6 +27,17 @@ const ViewDetails = () => {
   // State for modal visibility
   const [showModal, setShowModal] = useState(false);
 
+  const ratingCounts = [0, 0, 0, 0, 0]; // Index 0 → 1★, Index 4 → 5★
+  owner.feedbacks.forEach((fb) => {
+    ratingCounts[fb.rating - 1]++;
+    console.log(fb.rating , " r" ,ratingCounts[fb.rating - 1]);
+  });
+
+  const total = owner.feedbacks.length;
+  const average = (
+    owner.feedbacks.reduce((sum, fb) => sum + fb.rating, 0) / total
+  ).toFixed(1);
+
   // Parse location
   const locationArray = owner?.location
     ? owner.location.coordinates
@@ -58,6 +69,7 @@ const ViewDetails = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+  useEffect(() => {}, [total]);
 
   return (
     <>
@@ -192,7 +204,7 @@ const ViewDetails = () => {
           </div>
 
           {/* Ratings Section */}
-          <div className="mb-6 shadow-md shadow-gray-300 p-5 border rounded">
+          {/* <div className="mb-6 shadow-md shadow-gray-300 p-5 border rounded">
             <h2 className="text-lg font-semibold mb-4">Ratings and Reviews</h2>
             <div className="flex items-center space-x-4 mb-4">
               <div className="text-4xl font-bold text-yellow-500">2.7</div>
@@ -250,21 +262,53 @@ const ViewDetails = () => {
                 <span className="text-sm">15%</span>
               </div>
             </div>
+          </div> */}
+          <div className="text-4xl font-bold text-yellow-500">{average}</div>
+          <div className="text-sm text-gray-600">
+            ★ Avg from {total} ratings
           </div>
 
+          {[5, 4, 3, 2, 1].map((star, i) => {
+            const count = ratingCounts[5 - star];
+            const percent = ((count / total) * 100).toFixed(0);
+            return (
+              <div key={star} className="flex items-center space-x-2">
+                <div className="w-24 text-gray-600">{star} ★</div>
+                <div className="bg-gray-200 w-full rounded h-3">
+                  <div
+                    className="bg-green-500 h-3 rounded"
+                    style={{ width: `${percent}%` }}
+                  ></div>
+                </div>
+                <span className="text-sm">{percent}%</span>
+              </div>
+            );
+          })}
+
           {/* Single Review */}
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <h2 className="text-lg font-semibold mb-4">Review</h2>
             <div className="bg-gray-100 p-4 rounded shadow">
               <p className="text-gray-700">
                 <strong>Sunjit Mahanty</strong> - Jul 2023
               </p>
+
               <p>
                 Very special and beautiful place and also the behavior of hotel
                 management is excellent.
               </p>
             </div>
-          </div>
+          </div> */}
+          <h2 className="text-lg font-semibold mb-4">Reviews</h2>
+          {owner.feedbacks.map((fb, idx) => (
+            <div key={idx} className="bg-gray-100 p-4 rounded shadow mb-4">
+              <p className="text-gray-700 font-medium">
+                {fb.username} - {new Date(fb.submittedAt).toLocaleDateString()}
+              </p>
+              <p className="text-yellow-500">{"★".repeat(fb.rating)}</p>
+              <p className="text-gray-800">{fb.comment}</p>
+            </div>
+          ))}
 
           {/* Map Section */}
           <div className="mb-6">
