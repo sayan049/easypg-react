@@ -651,7 +651,7 @@ const ViewDetails = () => {
             {/* Ratings Section */}
             <div
               //className="bg-white rounded-xl shadow-sm p-6"
-              className="bg-white shadow-sm p-6 border border-grey"
+              className="bg-white shadow-sm p-6 border border-grey relative bottom-[31px]"
             >
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
                 Ratings & Reviews
