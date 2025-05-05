@@ -268,7 +268,7 @@ const ViewDetails = () => {
             ★ Avg from {total} ratings
           </div>
 
-          {[5, 4, 3, 2, 1].map((star, i) => {
+          {[1,2,3,4,5].map((star, i) => {
             const count = ratingCounts[5 - star];
             const percent = ((count / total) * 100).toFixed(0);
             return (
