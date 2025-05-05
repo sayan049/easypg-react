@@ -640,7 +640,7 @@ const ViewDetails = () => {
           </div>
 
           {/* Sidebar Column */}
-          {/* <div className="space-y-8"> */}
+          <div className="space-y-8">
             {/* Booking Widget */}
             <div 
            // className="bg-white rounded-xl shadow-sm p-6 sticky "
@@ -736,7 +736,7 @@ const ViewDetails = () => {
                 <p className="text-gray-500 italic">No reviews yet</p>
               )}
             </div>
-          {/* </div> */}
+          </div>
         </div>
       </main>
 
