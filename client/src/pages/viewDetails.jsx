@@ -483,7 +483,7 @@ const ViewDetails = () => {
           {/* Main Content Column */}
           <div className="lg:col-span-2 space-y-8">
             {/* Title and Location */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="bg-white rounded-xl shadow-sm p-3">
               <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                 <div>
                   <h1 className="text-2xl font-bold text-gray-900 mb-2">
@@ -505,9 +505,10 @@ const ViewDetails = () => {
                 </div>
               </div>
             </div>
+            <br />
 
             {/* Safety Notice */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="bg-white rounded-xl shadow-sm p-3">
               <div className="flex items-start gap-4">
                 <div className="bg-yellow-100 p-3 rounded-full">
                   <FaShieldAlt className="text-yellow-600 text-xl" />
