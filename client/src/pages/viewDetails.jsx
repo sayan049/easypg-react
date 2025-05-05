@@ -212,7 +212,7 @@
 //           </div>
 
 //           {/* Ratings Section */}
-          
+
 //           <div className="text-4xl font-bold text-yellow-500">{average}</div>
 //           <div className="text-sm text-gray-600">
 //             ★ Avg from {total} ratings
@@ -236,7 +236,7 @@
 //           })}
 
 //           {/* Single Review */}
-         
+
 //           <h2 className="text-lg font-semibold mb-4">Reviews</h2>
 //           {owner.feedbacks.slice(0, visibleCount).map((fb, idx) => (
 //             <>
@@ -275,13 +275,13 @@
 // };
 
 // export default ViewDetails;
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useLocation } from "react-router-dom"
-import MapDirection from "../components/mapDirection"
-import Footer from "../components/footer"
-import ConfirmBooking from "../components/confirmBooking"
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import MapDirection from "../components/mapDirection";
+import Footer from "../components/footer";
+import ConfirmBooking from "../components/confirmBooking";
 import {
   FaWind,
   FaTv,
@@ -299,95 +299,130 @@ import {
   FaChevronRight,
   FaTimes,
   FaArrowLeft,
-} from "react-icons/fa"
+} from "react-icons/fa";
 
 const ViewDetails = () => {
-  const location = useLocation()
-  const queryParams = new URLSearchParams(location.search)
-  const owner = queryParams.get("owner") ? JSON.parse(queryParams.get("owner")) : null
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const owner = queryParams.get("owner")
+    ? JSON.parse(queryParams.get("owner"))
+    : null;
 
   // State for modal visibility and carousel
-  const [showModal, setShowModal] = useState(false)
-  const [visibleCount, setVisibleCount] = useState(3)
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [showModal, setShowModal] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(3);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Calculate ratings
-  const ratingCounts = [0, 0, 0, 0, 0] // Index 0 → 1★, Index 4 → 5★
+  const ratingCounts = [0, 0, 0, 0, 0]; // Index 0 → 1★, Index 4 → 5★
   owner?.feedbacks?.forEach((fb) => {
-    ratingCounts[fb.rating - 1]++
-  })
+    ratingCounts[fb.rating - 1]++;
+  });
 
-  const total = owner?.feedbacks?.length || 0
-  const average = total > 0 ? (owner.feedbacks.reduce((sum, fb) => sum + fb.rating, 0) / total).toFixed(1) : "0.0"
+  const total = owner?.feedbacks?.length || 0;
+  const average =
+    total > 0
+      ? (
+          owner.feedbacks.reduce((sum, fb) => sum + fb.rating, 0) / total
+        ).toFixed(1)
+      : "0.0";
 
-  const ratingColor = ["bg-red-500", "bg-orange-500", "bg-yellow-500", "bg-green-400", "bg-green-500"]
+  const ratingColor = [
+    "bg-red-500",
+    "bg-orange-500",
+    "bg-yellow-500",
+    "bg-green-400",
+    "bg-green-500",
+  ];
 
   // Parse location
-  const locationArray = owner?.location ? owner.location.coordinates : ["0", "0"]
-  const lat = locationArray[1] || 0
-  const lng = locationArray[0] || 0
-  const coordinates = { lat, lng }
+  const locationArray = owner?.location
+    ? owner.location.coordinates
+    : ["0", "0"];
+  const lat = locationArray[1] || 0;
+  const lng = locationArray[0] || 0;
+  const coordinates = { lat, lng };
 
   const amenities = [
     { id: "ac", label: "A/C", icon: <FaWind className="text-sky-500" /> },
     { id: "tv", label: "TV", icon: <FaTv className="text-sky-500" /> },
-    { id: "power", label: "Power Backup", icon: <FaBatteryFull className="text-sky-500" /> },
+    {
+      id: "power",
+      label: "Power Backup",
+      icon: <FaBatteryFull className="text-sky-500" />,
+    },
     { id: "wifi", label: "WiFi", icon: <FaWifi className="text-sky-500" /> },
-    { id: "kitchen", label: "Kitchen", icon: <FaUtensils className="text-sky-500" /> },
-    { id: "water", label: "Tank Water", icon: <FaTint className="text-sky-500" /> },
-    { id: "bed", label: "Double Bed", icon: <FaBed className="text-sky-500" /> },
-  ]
+    {
+      id: "kitchen",
+      label: "Kitchen",
+      icon: <FaUtensils className="text-sky-500" />,
+    },
+    {
+      id: "water",
+      label: "Tank Water",
+      icon: <FaTint className="text-sky-500" />,
+    },
+    {
+      id: "bed",
+      label: "Double Bed",
+      icon: <FaBed className="text-sky-500" />,
+    },
+  ];
 
   // Handle carousel navigation
   const nextImage = () => {
     if (owner?.messPhoto?.length) {
-      setCurrentImageIndex((prevIndex) => (prevIndex === owner.messPhoto.length - 1 ? 0 : prevIndex + 1))
+      setCurrentImageIndex((prevIndex) =>
+        prevIndex === owner.messPhoto.length - 1 ? 0 : prevIndex + 1
+      );
     }
-  }
+  };
 
   const prevImage = () => {
     if (owner?.messPhoto?.length) {
-      setCurrentImageIndex((prevIndex) => (prevIndex === 0 ? owner.messPhoto.length - 1 : prevIndex - 1))
+      setCurrentImageIndex((prevIndex) =>
+        prevIndex === 0 ? owner.messPhoto.length - 1 : prevIndex - 1
+      );
     }
-  }
+  };
 
   // Scroll to top on load and handle modal body scroll
   useEffect(() => {
     if (showModal) {
-      document.body.style.overflow = "hidden"
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "auto"
+      document.body.style.overflow = "auto";
     }
     return () => {
-      document.body.style.overflow = "auto"
-    }
-  }, [showModal])
+      document.body.style.overflow = "auto";
+    };
+  }, [showModal]);
 
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    window.scrollTo(0, 0);
+  }, []);
 
   // Render stars for ratings
   const renderStars = (rating) => {
-    const stars = []
-    const fullStars = Math.floor(rating)
-    const hasHalfStar = rating % 1 >= 0.5
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
 
     for (let i = 0; i < fullStars; i++) {
-      stars.push(<FaStar key={`star-${i}`} className="text-yellow-400" />)
+      stars.push(<FaStar key={`star-${i}`} className="text-yellow-400" />);
     }
 
     if (hasHalfStar) {
-      stars.push(<FaStarHalf key="half-star" className="text-yellow-400" />)
+      stars.push(<FaStarHalf key="half-star" className="text-yellow-400" />);
     }
 
-    const emptyStars = 5 - stars.length
+    const emptyStars = 5 - stars.length;
     for (let i = 0; i < emptyStars; i++) {
-      stars.push(<FaStar key={`empty-${i}`} className="text-gray-300" />)
+      stars.push(<FaStar key={`empty-${i}`} className="text-gray-300" />);
     }
 
-    return stars
-  }
+    return stars;
+  };
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -395,7 +430,10 @@ const ViewDetails = () => {
       <header className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center">
-            <button onClick={() => window.history.back()} className="mr-4 text-gray-600 hover:text-gray-900">
+            <button
+              onClick={() => window.history.back()}
+              className="mr-4 text-gray-600 hover:text-gray-900"
+            >
               <FaArrowLeft />
             </button>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-sky-500 to-teal-500 bg-clip-text text-transparent">
@@ -418,8 +456,8 @@ const ViewDetails = () => {
                 className="w-[80%] h-full object-cover mx-3"
               /> */}
 
-              {/* Navigation Buttons */}
-              {/* <button
+        {/* Navigation Buttons */}
+        {/* <button
                 onClick={prevImage}
                 className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-70 transition-all"
               >
@@ -433,8 +471,8 @@ const ViewDetails = () => {
                 <FaChevronRight />
               </button> */}
 
-              {/* Photo Count Button */}
-              {/* <button
+        {/* Photo Count Button */}
+        {/* <button
                 onClick={() => setShowModal(true)}
                 className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-4 py-2 rounded-lg shadow-md hover:bg-opacity-90 transition-all flex items-center gap-2"
               >
@@ -442,8 +480,8 @@ const ViewDetails = () => {
                 <span className="bg-white text-black px-2 py-1 rounded-md text-sm">{owner.messPhoto.length}</span>
               </button> */}
 
-              {/* Image Counter */}
-              {/* <div className="absolute bottom-4 left-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-lg">
+        {/* Image Counter */}
+        {/* <div className="absolute bottom-4 left-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-lg">
                 {currentImageIndex + 1} / {owner.messPhoto.length}
               </div>
             </>
@@ -453,39 +491,40 @@ const ViewDetails = () => {
             </div>
           )}
         </div> */}
-               {/* Image Carousel */}
-       <div className="relative h-64 shadow-lg mb-6">
-         <div className="h-full overflow-x-scroll flex space-x-2 overflow-y-hidden">
-           {Array.isArray(owner?.messPhoto) &&
-             owner.messPhoto.map((element, index) => (
-               <img
-                 key={index}
-                 src={element}
-                 alt={`Room ${index + 1}`}
-                 className="w-full h-64 object-cover shadow-md"
-               />
-            ))}
-         </div>
+        {/* Image Carousel */}
+        <div className="relative h-64 shadow-lg mb-6">
+          <div className="h-full overflow-x-scroll flex space-x-2 overflow-y-hidden">
+            {Array.isArray(owner?.messPhoto) &&
+              owner.messPhoto.map((element, index) => (
+                <img
+                  key={index}
+                  src={element}
+                  alt={`Room ${index + 1}`}
+                  className="w-full h-64 object-cover shadow-md"
+                />
+              ))}
+          </div>
 
-         {/* Photo Count Button */}
-         <button
-           onClick={() => setShowModal(true)} // Open modal
-           className="absolute top-2 right-2 bg-black text-white px-3 py-1 text-sm rounded shadow-md"
-         >
-           {Array.isArray(owner?.messPhoto)
-             ? `${owner.messPhoto.length} Photos`
-             : "0 Photos"}
-        </button>
-       </div>
+          {/* Photo Count Button */}
+          <button
+            onClick={() => setShowModal(true)} // Open modal
+            className="absolute top-2 right-2 bg-black text-white px-3 py-1 text-sm rounded shadow-md"
+          >
+            {Array.isArray(owner?.messPhoto)
+              ? `${owner.messPhoto.length} Photos`
+              : "0 Photos"}
+          </button>
+        </div>
 
         {/* Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content Column */}
           <div className="lg:col-span-2 space-y-8">
             {/* Title and Location */}
-            <div 
-            //className="bg-white rounded-xl shadow-sm p-3"
-            className="p-3 border-b-2 border-grey">
+            <div
+              className="bg-white rounded-xl shadow-sm p-6 border border-grey"
+             // className="p-3 border-b-2 border-grey"
+            >
               <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                 <div>
                   <h1 className="text-2xl font-bold text-gray-900 mb-2">
@@ -510,19 +549,22 @@ const ViewDetails = () => {
             <br />
 
             {/* Safety Notice */}
-            <div 
-         //   className="bg-white rounded-xl shadow-sm p-3"
-         className="p-3 border-b-2 border-grey "
+            <div
+              //   className="bg-white rounded-xl shadow-sm p-3"
+             // className="p-3 border-b-2 border-grey "
+              className="bg-white rounded-xl shadow-sm p-6 border border-grey"
             >
               <div className="flex items-start gap-4">
                 <div className="bg-yellow-100 p-3 rounded-full">
                   <FaShieldAlt className="text-yellow-600 text-xl" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900 mb-2">Safety Measures</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 mb-2">
+                    Safety Measures
+                  </h2>
                   <p className="text-gray-700">
-                    Safe and sanitized with daily temperature checks of our staff. We follow all COVID-19 safety
-                    protocols.
+                    Safe and sanitized with daily temperature checks of our
+                    staff. We follow all COVID-19 safety protocols.
                   </p>
                 </div>
               </div>
@@ -530,37 +572,56 @@ const ViewDetails = () => {
 
             {/* Amenities */}
             <div
-            // className="bg-white rounded-xl shadow-sm p-6"
-            className="p-3 border-b-2 border-grey">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Amenities</h2>
+              // className="bg-white rounded-xl shadow-sm p-6"
+             // className="p-3 border-b-2 border-grey"
+              className="bg-white rounded-xl shadow-sm p-6 border border-grey"
+            >
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Amenities
+              </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {owner?.facility?.map((feature, index) => {
-                  const amenity = amenities.find((a) => a.label.toLowerCase() === feature.trim().toLowerCase())
+                  const amenity = amenities.find(
+                    (a) =>
+                      a.label.toLowerCase() === feature.trim().toLowerCase()
+                  );
                   return (
-                    <div key={index} className="flex items-center gap-3 p-3 bg-sky-50 rounded-lg">
+                    <div
+                      key={index}
+                      className="flex items-center gap-3 p-3 bg-sky-50 rounded-lg"
+                    >
                       <div className="bg-white p-2 rounded-full shadow-sm">
                         {amenity?.icon || <FaUsers className="text-sky-500" />}
                       </div>
-                      <span className="font-medium text-gray-800">{feature}</span>
+                      <span className="font-medium text-gray-800">
+                        {feature}
+                      </span>
                     </div>
-                  )
+                  );
                 })}
               </div>
             </div>
 
             {/* About Section */}
-            <div 
-            //className="bg-white rounded-xl shadow-sm p-6"
-            className="p-3 border-b-2 border-grey">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">About this Accommodation</h2>
+            <div
+              //className="bg-white rounded-xl shadow-sm p-6"
+             // className="p-3 border-b-2 border-grey"
+              className="bg-white rounded-xl shadow-sm p-6 border border-grey"
+            >
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                About this Accommodation
+              </h2>
               <p className="text-gray-700 leading-relaxed">
-                {owner?.aboutMess || "No description available for this accommodation."}
+                {owner?.aboutMess ||
+                  "No description available for this accommodation."}
               </p>
             </div>
 
             {/* Map Section */}
             <div className="bg-white rounded-xl shadow-sm p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Location & What's Nearby</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Location & What's Nearby
+              </h2>
               <div className="rounded-lg overflow-hidden h-[300px] shadow-sm">
                 <MapDirection coordinates={coordinates} />
               </div>
@@ -576,34 +637,45 @@ const ViewDetails = () => {
 
             {/* Ratings Section */}
             <div className="bg-white rounded-xl shadow-sm p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Ratings & Reviews</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Ratings & Reviews
+              </h2>
 
               {/* Average Rating */}
               <div className="flex items-center gap-4 mb-6 p-4 bg-sky-50 rounded-lg">
                 <div className="text-5xl font-bold text-sky-600">{average}</div>
                 <div>
-                  <div className="flex mb-1">{renderStars(Number.parseFloat(average))}</div>
-                  <div className="text-sm text-gray-600">Based on {total} ratings</div>
+                  <div className="flex mb-1">
+                    {renderStars(Number.parseFloat(average))}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    Based on {total} ratings
+                  </div>
                 </div>
               </div>
 
               {/* Rating Bars */}
               <div className="space-y-2 mb-6">
                 {[5, 4, 3, 2, 1].map((star, i) => {
-                  const count = ratingCounts[star - 1]
-                  const percent = total > 0 ? ((count / total) * 100).toFixed(0) : "0"
+                  const count = ratingCounts[star - 1];
+                  const percent =
+                    total > 0 ? ((count / total) * 100).toFixed(0) : "0";
                   return (
                     <div key={star} className="flex items-center gap-2">
                       <div className="w-12 text-gray-600 text-sm">{star} ★</div>
                       <div className="bg-gray-200 flex-grow rounded-full h-2">
                         <div
-                          className={`${ratingColor[5 - star]} h-2 rounded-full`}
+                          className={`${
+                            ratingColor[5 - star]
+                          } h-2 rounded-full`}
                           style={{ width: `${percent}%` }}
                         ></div>
                       </div>
-                      <span className="text-sm w-12 text-right">{percent}%</span>
+                      <span className="text-sm w-12 text-right">
+                        {percent}%
+                      </span>
                     </div>
-                  )
+                  );
                 })}
               </div>
 
@@ -618,8 +690,12 @@ const ViewDetails = () => {
                         className="p-4 rounded-lg border border-gray-100 hover:border-sky-100 transition-all"
                       >
                         <div className="flex justify-between items-start mb-2">
-                          <p className="font-medium text-gray-900">{fb.username}</p>
-                          <p className="text-xs text-gray-500">{new Date(fb.submittedAt).toLocaleDateString()}</p>
+                          <p className="font-medium text-gray-900">
+                            {fb.username}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {new Date(fb.submittedAt).toLocaleDateString()}
+                          </p>
                         </div>
                         <div className="flex text-yellow-400 mb-2">
                           {Array.from({ length: fb.rating }).map((_, i) => (
@@ -664,11 +740,16 @@ const ViewDetails = () => {
             </button>
 
             <div className="p-6 border-b">
-              <h2 className="text-xl font-bold">All Photos ({owner?.messPhoto?.length || 0})</h2>
+              <h2 className="text-xl font-bold">
+                All Photos ({owner?.messPhoto?.length || 0})
+              </h2>
             </div>
 
             {/* Modal Content - Make scrollable */}
-            <div className="overflow-y-auto p-6" style={{ maxHeight: "calc(90vh - 80px)" }}>
+            <div
+              className="overflow-y-auto p-6"
+              style={{ maxHeight: "calc(90vh - 80px)" }}
+            >
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {Array.isArray(owner?.messPhoto) &&
                   owner.messPhoto.map((element, index) => (
@@ -687,7 +768,7 @@ const ViewDetails = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ViewDetails
+export default ViewDetails;
