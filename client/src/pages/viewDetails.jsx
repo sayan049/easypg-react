@@ -408,13 +408,14 @@ const ViewDetails = () => {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Image Carousel */}
-        <div className="relative rounded-xl overflow-hidden shadow-lg mb-8 h-[400px] bg-gray-100">
+        <div className="relative rounded-xl overflow w-screen shadow-lg mb-8 h-[400px] bg-gray-100">
           {Array.isArray(owner?.messPhoto) && owner.messPhoto.length > 0 ? (
             <>
               <img
                 src={owner.messPhoto[currentImageIndex] || "/placeholder.svg"}
                 alt={`Room ${currentImageIndex + 1}`}
-                className="w-full h-full object-cover"
+                //className="w-full h-full object-cover"
+                className="w-[80%] h-full object-cover mx-3"
               />
 
               {/* Navigation Buttons */}
