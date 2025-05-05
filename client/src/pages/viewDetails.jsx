@@ -30,7 +30,7 @@ const ViewDetails = () => {
   const ratingCounts = [0, 0, 0, 0, 0]; // Index 0 → 1★, Index 4 → 5★
   owner.feedbacks.forEach((fb) => {
     ratingCounts[fb.rating - 1]++;
-    console.log(fb.rating , " r" ,ratingCounts[fb.rating - 1]++);
+    console.log(fb.rating , " r" ,ratingCounts[fb.rating - 1]);
   });
 
   const total = owner.feedbacks.length;
