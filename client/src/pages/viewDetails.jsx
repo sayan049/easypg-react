@@ -642,7 +642,9 @@ const ViewDetails = () => {
           {/* Sidebar Column */}
           <div className="space-y-8">
             {/* Booking Widget */}
-            <div className="bg-white rounded-xl shadow-sm p-6 sticky ">
+            <div 
+           // className="bg-white rounded-xl shadow-sm p-6 sticky "
+            >
               {!showModal && <ConfirmBooking owner={owner} />}
             </div>
 
