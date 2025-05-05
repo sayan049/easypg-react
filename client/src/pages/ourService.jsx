@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef,useLayoutEffect } from "react";
 import {
   Home,
   Search,
@@ -25,7 +25,20 @@ import Footer from "../components/footer";
 const OurService = () => {
   const observerRefs = useRef([]);
   const navigate = useNavigate();
-
+  // Add this useEffect to scroll to top on component mount
+    // Add these scroll management effects
+    useEffect(() => {
+      // Immediate scroll to top without smooth behavior
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }, []);
+  
+    useLayoutEffect(() => {
+      // Ensure smooth scroll if needed for any anchor links
+      document.documentElement.style.scrollBehavior = 'auto';
+      return () => {
+        document.documentElement.style.scrollBehavior = '';
+      };
+    }, []);
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -389,10 +402,10 @@ const OurService = () => {
           <h2 className="text-2xl md:text-4xl font-bold mb-6">
             Join hundreds of successful PG owners
           </h2>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+          <div className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
             Start managing smarter with MessMate and transform your PG business
             today.
-          </p>
+          </div>
           <button
             className="bg-white text-blue-600 hover:bg-blue-50 font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 flex items-center gap-2 mx-auto"
             onClick={() => navigate("/LoginOwner")}
