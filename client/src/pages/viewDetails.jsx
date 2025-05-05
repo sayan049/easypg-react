@@ -37,6 +37,7 @@ const ViewDetails = () => {
   const average = (
     owner.feedbacks.reduce((sum, fb) => sum + fb.rating, 0) / total
   ).toFixed(1);
+  const ratingColor=["bg-green-500","bg-green-400","bg-yellow-500","bg-orange-400","bg-red-500"];
 
   // Parse location
   const locationArray = owner?.location
@@ -276,7 +277,7 @@ const ViewDetails = () => {
                 <div className="w-24 text-gray-600">{star} ★</div>
                 <div className="bg-gray-200 w-full rounded h-3">
                   <div
-                    className="bg-green-500 h-3 rounded"
+                    className={`${ratingColor[i]} h-3 rounded`}
                     style={{ width: `${percent}%` }}
                   ></div>
                 </div>
