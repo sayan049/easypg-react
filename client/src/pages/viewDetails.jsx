@@ -453,7 +453,7 @@ const ViewDetails = () => {
             </div>
           )}
         </div> */}
-        //       {/* Image Carousel */}
+               {/* Image Carousel */}
        <div className="relative h-64 shadow-lg mb-6">
          <div className="h-full overflow-x-scroll flex space-x-2 overflow-y-hidden">
            {Array.isArray(owner?.messPhoto) &&
@@ -560,7 +560,7 @@ const ViewDetails = () => {
           {/* Sidebar Column */}
           <div className="space-y-8">
             {/* Booking Widget */}
-            <div className="bg-white rounded-xl shadow-sm p-6 sticky top-24">
+            <div className="bg-white rounded-xl shadow-sm p-6 sticky ">
               {!showModal && <ConfirmBooking owner={owner} />}
             </div>
 
