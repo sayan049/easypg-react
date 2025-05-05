@@ -436,9 +436,18 @@ const ViewDetails = () => {
             >
               <FaArrowLeft />
             </button>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-sky-500 to-teal-500 bg-clip-text text-transparent">
+            {/* <h1 className="text-2xl font-bold bg-gradient-to-r from-sky-500 to-teal-500 bg-clip-text text-transparent">
               EasyPg
-            </h1>
+            </h1> */}
+            <img
+              src="./assets/companylogo.png"
+              alt="logo"
+              srcset=""
+              className="mr-[-4px]"
+            />{" "}
+            <div className="text-2xl font-bold text-[#2CA4B5] mt-[20px] ">
+              essMate
+            </div>
           </div>
         </div>
       </header>
@@ -528,13 +537,13 @@ const ViewDetails = () => {
               <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                 <div className="flex justify-between w-full">
                   <div>
-                  <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                    {owner?.messName || "Accommodation Details"}
-                  </h1>
-                  <div className="flex items-center text-gray-600 mb-4">
-                    <FaMapMarkerAlt className="mr-2 text-sky-500" />
-                    <p>{owner?.address || "Address not available"}</p>
-                  </div>
+                    <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                      {owner?.messName || "Accommodation Details"}
+                    </h1>
+                    <div className="flex items-center text-gray-600 mb-4">
+                      <FaMapMarkerAlt className="mr-2 text-sky-500" />
+                      <p>{owner?.address || "Address not available"}</p>
+                    </div>
                   </div>
 
                   {/* Rating Badge */}
@@ -557,7 +566,6 @@ const ViewDetails = () => {
                   "No description available for this accommodation."}
               </p>
             </div>
-           
 
             {/* Amenities */}
             <div
@@ -642,8 +650,8 @@ const ViewDetails = () => {
           {/* Sidebar Column */}
           <div className="space-y-8">
             {/* Booking Widget */}
-            <div 
-           // className="bg-white rounded-xl shadow-sm p-6 sticky "
+            <div
+            // className="bg-white rounded-xl shadow-sm p-6 sticky "
             >
               {!showModal && <ConfirmBooking owner={owner} />}
             </div>
