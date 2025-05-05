@@ -485,7 +485,7 @@ const ViewDetails = () => {
             {/* Title and Location */}
             <div 
             //className="bg-white rounded-xl shadow-sm p-3"
-            className="p-3 border-b-4 border-black">
+            className="p-3 border-b-2 border-grey">
               <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                 <div>
                   <h1 className="text-2xl font-bold text-gray-900 mb-2">
