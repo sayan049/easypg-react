@@ -408,17 +408,18 @@ const ViewDetails = () => {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Image Carousel */}
-        <div className="relative rounded-xl overflow-hidden shadow-lg mb-8 h-[400px] bg-gray-100">
+        {/* <div className="relative rounded-xl overflow w-screen shadow-lg mb-8 h-[400px] bg-gray-100">
           {Array.isArray(owner?.messPhoto) && owner.messPhoto.length > 0 ? (
             <>
               <img
                 src={owner.messPhoto[currentImageIndex] || "/placeholder.svg"}
                 alt={`Room ${currentImageIndex + 1}`}
-                className="w-full h-full object-cover"
-              />
+                //className="w-full h-full object-cover"
+                className="w-[80%] h-full object-cover mx-3"
+              /> */}
 
               {/* Navigation Buttons */}
-              <button
+              {/* <button
                 onClick={prevImage}
                 className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-70 transition-all"
               >
@@ -430,19 +431,19 @@ const ViewDetails = () => {
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-70 transition-all"
               >
                 <FaChevronRight />
-              </button>
+              </button> */}
 
               {/* Photo Count Button */}
-              <button
+              {/* <button
                 onClick={() => setShowModal(true)}
                 className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-4 py-2 rounded-lg shadow-md hover:bg-opacity-90 transition-all flex items-center gap-2"
               >
                 <span className="font-medium">View All</span>
                 <span className="bg-white text-black px-2 py-1 rounded-md text-sm">{owner.messPhoto.length}</span>
-              </button>
+              </button> */}
 
               {/* Image Counter */}
-              <div className="absolute bottom-4 left-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-lg">
+              {/* <div className="absolute bottom-4 left-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-lg">
                 {currentImageIndex + 1} / {owner.messPhoto.length}
               </div>
             </>
@@ -451,14 +452,38 @@ const ViewDetails = () => {
               <p className="text-gray-500">No images available</p>
             </div>
           )}
-        </div>
+        </div> */}
+               {/* Image Carousel */}
+       <div className="relative h-64 shadow-lg mb-6">
+         <div className="h-full overflow-x-scroll flex space-x-2 overflow-y-hidden">
+           {Array.isArray(owner?.messPhoto) &&
+             owner.messPhoto.map((element, index) => (
+               <img
+                 key={index}
+                 src={element}
+                 alt={`Room ${index + 1}`}
+                 className="w-full h-64 object-cover shadow-md"
+               />
+            ))}
+         </div>
+
+         {/* Photo Count Button */}
+         <button
+           onClick={() => setShowModal(true)} // Open modal
+           className="absolute top-2 right-2 bg-black text-white px-3 py-1 text-sm rounded shadow-md"
+         >
+           {Array.isArray(owner?.messPhoto)
+             ? `${owner.messPhoto.length} Photos`
+             : "0 Photos"}
+        </button>
+       </div>
 
         {/* Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content Column */}
           <div className="lg:col-span-2 space-y-8">
             {/* Title and Location */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="bg-white rounded-xl shadow-sm p-3">
               <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                 <div>
                   <h1 className="text-2xl font-bold text-gray-900 mb-2">
@@ -480,9 +505,10 @@ const ViewDetails = () => {
                 </div>
               </div>
             </div>
+            <br />
 
             {/* Safety Notice */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="bg-white rounded-xl shadow-sm p-3">
               <div className="flex items-start gap-4">
                 <div className="bg-yellow-100 p-3 rounded-full">
                   <FaShieldAlt className="text-yellow-600 text-xl" />
@@ -535,7 +561,7 @@ const ViewDetails = () => {
           {/* Sidebar Column */}
           <div className="space-y-8">
             {/* Booking Widget */}
-            <div className="bg-white rounded-xl shadow-sm p-6 sticky top-24">
+            <div className="bg-white rounded-xl shadow-sm p-6 sticky ">
               {!showModal && <ConfirmBooking owner={owner} />}
             </div>
 
