@@ -548,7 +548,7 @@ const ViewDetails = () => {
 
                   {/* Rating Badge */}
                   <div className="flex items-center gap-2">
-                    <div className="bg-sky-50 text-sky-700 px-3 py-1 rounded-lg font-medium flex items-center">
+                    <div className="bg-sky-200 text-sky-700 px-3 py-1 rounded-lg font-medium flex items-center">
                       <span className="text-lg mr-1">{average}</span>
                       <FaStar className="text-yellow-400" />
                     </div>
