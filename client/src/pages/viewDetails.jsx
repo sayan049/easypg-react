@@ -522,7 +522,7 @@ const ViewDetails = () => {
           <div className="lg:col-span-2 space-y-8">
             {/* Title and Location */}
             <div
-              className="bg-white  shadow-sm p-6 border border-grey"
+              className="bg-white  shadow-sm p-3 border border-grey"
               // className="p-3 border-b-2 border-grey"
             >
               <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
@@ -563,7 +563,7 @@ const ViewDetails = () => {
             <div
               // className="bg-white rounded-xl shadow-sm p-6"
               // className="p-3 border-b-2 border-grey"
-              className="bg-white  shadow-sm p-6 border border-grey"
+              className="bg-white  shadow-sm p-3 border border-grey"
             >
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
                 Amenities
