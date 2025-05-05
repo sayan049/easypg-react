@@ -561,13 +561,16 @@ const ViewDetails = () => {
                   </div>
 
                   {/* Rating Badge */}
-                  <div className="flex items-center gap-2 mb-3">
+                  <div className="flex flex-col items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2">
                     <div className="bg-sky-200 text-sky-700 px-3 py-1 rounded-lg font-medium flex items-center">
                       <span className="text-lg mr-1">{average}</span>
                       <FaStar className="text-yellow-400" />
                     </div>
                     <span className="text-gray-500">({total} ratings)</span>
+                    </div>
                     {/* gender */}
+                    <div>
                     {owner?.gender && (
                       <div className="mt-3 flex items-center gap-2 text-sm font-medium text-gray-700">
                         {owner.gender.toLowerCase() === "girls pg" && (
@@ -590,6 +593,7 @@ const ViewDetails = () => {
                         )}
                       </div>
                     )}
+                    </div>
                   </div>
                 </div>
               </div>
