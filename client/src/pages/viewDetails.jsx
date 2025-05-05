@@ -277,7 +277,7 @@
 // export default ViewDetails;
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import MapDirection from "../components/mapDirection";
 import Footer from "../components/footer";
@@ -299,6 +299,8 @@ import {
   FaChevronRight,
   FaTimes,
   FaArrowLeft,
+  FaFemale,
+  FaMale,
 } from "react-icons/fa";
 
 const ViewDetails = () => {
@@ -402,6 +404,18 @@ const ViewDetails = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.2 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
   // Render stars for ratings
   const renderStars = (rating) => {
     const stars = [];
@@ -427,7 +441,7 @@ const ViewDetails = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-10">
+      <header className="bg-white shadow-sm top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center">
             <button
@@ -436,9 +450,18 @@ const ViewDetails = () => {
             >
               <FaArrowLeft />
             </button>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-sky-500 to-teal-500 bg-clip-text text-transparent">
+            {/* <h1 className="text-2xl font-bold bg-gradient-to-r from-sky-500 to-teal-500 bg-clip-text text-transparent">
               EasyPg
-            </h1>
+            </h1> */}
+            <img
+              src="./assets/companylogo.png"
+              alt="logo"
+              srcset=""
+              className="mr-[-4px]"
+            />{" "}
+            <div className="text-2xl font-bold text-[#2CA4B5] mt-[20px] ">
+              essMate
+            </div>
           </div>
         </div>
       </header>
@@ -526,24 +549,51 @@ const ViewDetails = () => {
               // className="p-3 border-b-2 border-grey"
             >
               <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
-                <div className="flex justify-between w-full">
+                <div className="flex justify-between w-full flex-col md:flex-row">
                   <div>
-                  <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                    {owner?.messName || "Accommodation Details"}
-                  </h1>
-                  <div className="flex items-center text-gray-600 mb-4">
-                    <FaMapMarkerAlt className="mr-2 text-sky-500" />
-                    <p>{owner?.address || "Address not available"}</p>
-                  </div>
+                    <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                      {owner?.messName || "Accommodation Details"}
+                    </h1>
+                    <div className="flex items-center text-gray-600 mb-4">
+                      <FaMapMarkerAlt className="mr-2 text-sky-500" />
+                      <p>{owner?.address || "Address not available"}</p>
+                    </div>
                   </div>
 
                   {/* Rating Badge */}
-                  <div className="flex items-center gap-2">
-                    <div className="bg-sky-50 text-sky-700 px-3 py-1 rounded-lg font-medium flex items-center">
+                  <div className="flex flex-col gap-2 mb-3">
+                    <div className="flex items-center gap-2">
+                    <div className="bg-sky-200 text-sky-700 px-3 py-1 rounded-lg font-medium flex items-center">
                       <span className="text-lg mr-1">{average}</span>
                       <FaStar className="text-yellow-400" />
                     </div>
                     <span className="text-gray-500">({total} ratings)</span>
+                    </div>
+                    {/* gender */}
+                    <div>
+                    {owner?.gender && (
+                      <div className="mt-3 flex items-center gap-2 text-sm font-medium text-gray-700">
+                        {owner.gender.toLowerCase() === "girls pg" && (
+                          <span className="flex items-center gap-1 bg-pink-100 text-pink-600 px-2 py-1 rounded-full">
+                            <FaFemale />
+                            Girls PG
+                          </span>
+                        )}
+                        {owner.gender.toLowerCase() === "boys pg" && (
+                          <span className="flex items-center gap-1 bg-blue-100 text-blue-600 px-2 py-1 rounded-full">
+                            <FaMale />
+                            Boys PG
+                          </span>
+                        )}
+                        {owner.gender.toLowerCase() === "coed pg" && (
+                          <span className="flex items-center gap-1 bg-green-100 text-green-600 px-2 py-1 rounded-full">
+                            <FaUsers />
+                            Co-ed PG
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -557,10 +607,9 @@ const ViewDetails = () => {
                   "No description available for this accommodation."}
               </p>
             </div>
-           
 
             {/* Amenities */}
-            <div
+            {/* <div
               // className="bg-white rounded-xl shadow-sm p-6"
               // className="p-3 border-b-2 border-grey"
               className="bg-white p-6 border border-grey"
@@ -586,6 +635,28 @@ const ViewDetails = () => {
                         {feature}
                       </span>
                     </div>
+                  );
+                })}
+              </div>
+            </div> */}
+            <div className="bg-white p-6 border border-grey">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Amenities
+              </h2>
+              <div className="flex flex-wrap gap-4 mb-6">
+                {owner.facility?.map((feature, index) => {
+                  const amenity = amenities.find(
+                    (a) =>
+                      a.label.toLowerCase() === feature.trim().toLowerCase()
+                  );
+                  return (
+                    <span
+                      key={index}
+                      className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-[rgb(44 164 181)] text-xs rounded-full"
+                    >
+                      {amenity?.icon || null}
+                      {feature}
+                    </span>
                   );
                 })}
               </div>
@@ -642,8 +713,8 @@ const ViewDetails = () => {
           {/* Sidebar Column */}
           <div className="space-y-8">
             {/* Booking Widget */}
-            <div 
-           // className="bg-white rounded-xl shadow-sm p-6 sticky "
+            <div
+            // className="bg-white rounded-xl shadow-sm p-6 sticky "
             >
               {!showModal && <ConfirmBooking owner={owner} />}
             </div>
@@ -671,7 +742,7 @@ const ViewDetails = () => {
               </div>
 
               {/* Rating Bars */}
-              <div className="space-y-2 mb-6">
+              {/* <div className="space-y-2 mb-6">
                 {[5, 4, 3, 2, 1].map((star, i) => {
                   const count = ratingCounts[star - 1];
                   const percent =
@@ -685,6 +756,29 @@ const ViewDetails = () => {
                             ratingColor[5 - star]
                           } h-2 rounded-full`}
                           style={{ width: `${percent}%` }}
+                        ></div>
+                      </div>
+                      <span className="text-sm w-12 text-right">
+                        {percent}%
+                      </span>
+                    </div>
+                  );
+                })}
+              </div> */}
+              <div ref={ref} className="space-y-2 mb-6">
+                {[5, 4, 3, 2, 1].map((star) => {
+                  const count = ratingCounts[star - 1];
+                  const percent =
+                    total > 0 ? ((count / total) * 100).toFixed(0) : "0";
+                  return (
+                    <div key={star} className="flex items-center gap-2">
+                      <div className="w-12 text-gray-600 text-sm">{star} ★</div>
+                      <div className="bg-gray-200 flex-grow rounded-full h-2 overflow-hidden">
+                        <div
+                          className={`transition-[width] duration-700 h-2 rounded-full ${
+                            ratingColor[5 - star]
+                          }`}
+                          style={{ width: inView ? `${percent}%` : "0%" }}
                         ></div>
                       </div>
                       <span className="text-sm w-12 text-right">
