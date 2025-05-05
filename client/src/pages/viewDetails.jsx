@@ -269,7 +269,7 @@ const ViewDetails = () => {
           </div>
 
           {[5, 4, 3, 2, 1].map((star, i) => {
-            const count = ratingCounts[5 - star];
+            const count = ratingCounts[ star - 1];
             const percent = ((count / total) * 100).toFixed(0);
             return (
               <div key={star} className="flex items-center space-x-2">
