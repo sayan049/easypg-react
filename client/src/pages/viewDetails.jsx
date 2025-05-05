@@ -598,22 +598,28 @@ const ViewDetails = () => {
                 })}
               </div>
             </div> */}
-                       <div className="flex flex-wrap gap-4 mb-6">
-             {owner.facility?.map((feature, index) => {
-               const amenity = amenities.find(
-                 (a) => a.label.toLowerCase() === feature.trim().toLowerCase()
-               );
-               return (
-                 <span
-                   key={index}
-                   className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-[rgb(44 164 181)] text-xs rounded-full"
-                 >
-                   {amenity?.icon || null}
-                   {feature}
-                 </span>
-               );
-             })}
-           </div>
+            <div className="bg-white p-6 border border-grey">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Amenities
+              </h2>
+              <div className="flex flex-wrap gap-4 mb-6">
+                {owner.facility?.map((feature, index) => {
+                  const amenity = amenities.find(
+                    (a) =>
+                      a.label.toLowerCase() === feature.trim().toLowerCase()
+                  );
+                  return (
+                    <span
+                      key={index}
+                      className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-[rgb(44 164 181)] text-xs rounded-full"
+                    >
+                      {amenity?.icon || null}
+                      {feature}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
 
             {/* About Section */}
             {/* <div
