@@ -299,6 +299,9 @@ import {
   FaChevronRight,
   FaTimes,
   FaArrowLeft,
+  FaFemale,
+  FaMale,
+  FaUsers
 } from "react-icons/fa";
 
 const ViewDetails = () => {
@@ -566,6 +569,31 @@ const ViewDetails = () => {
                     </div>
                     <span className="text-gray-500">({total} ratings)</span>
                   </div>
+
+                  {/* gender */}
+                  {owner?.gender && (
+                                        <div className="mt-3 flex items-center gap-2 text-sm font-medium text-gray-700">
+                                          {owner.gender.toLowerCase() === "girls pg" && (
+                                            <span className="flex items-center gap-1 bg-pink-100 text-pink-600 px-2 py-1 rounded-full">
+                                              <FaFemale />
+                                              Girls PG
+                                            </span>
+                                          )}
+                                          {owner.gender.toLowerCase() === "boys pg" && (
+                                            <span className="flex items-center gap-1 bg-blue-100 text-blue-600 px-2 py-1 rounded-full">
+                                              <FaMale />
+                                              Boys PG
+                                            </span>
+                                          )}
+                                          {owner.gender.toLowerCase() === "coed pg" && (
+                                            <span className="flex items-center gap-1 bg-green-100 text-green-600 px-2 py-1 rounded-full">
+                                              <FaUsers />
+                                              Co-ed PG
+                                            </span>
+                                          )}
+                                        </div>
+                                      )}
+
                 </div>
               </div>
 
