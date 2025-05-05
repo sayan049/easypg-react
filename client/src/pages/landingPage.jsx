@@ -22,7 +22,7 @@ function LandingPage() {
           <p className="text-xl mt-2  text-[#2CA4B5]">Only for you.</p>
         </div>
         <div className="mt-6">
-          <Link to="/LoginOwner">
+          <Link to="/Business">
             <button className="bg-[#2CA4B5] text-white font-bold py-2 px-6 rounded-lg">Join Us Today</button>
           </Link>
         </div>
