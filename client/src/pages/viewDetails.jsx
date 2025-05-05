@@ -523,16 +523,18 @@ const ViewDetails = () => {
             {/* Title and Location */}
             <div
               className="bg-white  shadow-sm p-6 border border-grey"
-             // className="p-3 border-b-2 border-grey"
+              // className="p-3 border-b-2 border-grey"
             >
               <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
-                <div>
+                <div className="flex justify-between">
+                  <div>
                   <h1 className="text-2xl font-bold text-gray-900 mb-2">
                     {owner?.messName || "Accommodation Details"}
                   </h1>
                   <div className="flex items-center text-gray-600 mb-4">
                     <FaMapMarkerAlt className="mr-2 text-sky-500" />
                     <p>{owner?.address || "Address not available"}</p>
+                  </div>
                   </div>
 
                   {/* Rating Badge */}
@@ -545,35 +547,22 @@ const ViewDetails = () => {
                   </div>
                 </div>
               </div>
+
+              {/* abouts */}
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                About this Accommodation
+              </h2>
+              <p className="text-gray-700 leading-relaxed">
+                {owner?.aboutMess ||
+                  "No description available for this accommodation."}
+              </p>
             </div>
             <br />
-
-            {/* Safety Notice */}
-            <div
-              //   className="bg-white rounded-xl shadow-sm p-3"
-             // className="p-3 border-b-2 border-grey "
-              className="bg-white  shadow-sm p-6 border border-grey"
-            >
-              <div className="flex items-start gap-4">
-                <div className="bg-yellow-100 p-3 rounded-full">
-                  <FaShieldAlt className="text-yellow-600 text-xl" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-900 mb-2">
-                    Safety Measures
-                  </h2>
-                  <p className="text-gray-700">
-                    Safe and sanitized with daily temperature checks of our
-                    staff. We follow all COVID-19 safety protocols.
-                  </p>
-                </div>
-              </div>
-            </div>
 
             {/* Amenities */}
             <div
               // className="bg-white rounded-xl shadow-sm p-6"
-             // className="p-3 border-b-2 border-grey"
+              // className="p-3 border-b-2 border-grey"
               className="bg-white  shadow-sm p-6 border border-grey"
             >
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
@@ -603,9 +592,9 @@ const ViewDetails = () => {
             </div>
 
             {/* About Section */}
-            <div
+            {/* <div
               //className="bg-white rounded-xl shadow-sm p-6"
-             // className="p-3 border-b-2 border-grey"
+              // className="p-3 border-b-2 border-grey"
               className="bg-white shadow-sm p-6 border border-grey"
             >
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
@@ -615,6 +604,28 @@ const ViewDetails = () => {
                 {owner?.aboutMess ||
                   "No description available for this accommodation."}
               </p>
+            </div> */}
+
+            {/* Safety Notice */}
+            <div
+              //   className="bg-white rounded-xl shadow-sm p-3"
+              // className="p-3 border-b-2 border-grey "
+              className="bg-white  shadow-sm p-6 border border-grey"
+            >
+              <div className="flex items-start gap-4">
+                <div className="bg-yellow-100 p-3 rounded-full">
+                  <FaShieldAlt className="text-yellow-600 text-xl" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900 mb-2">
+                    Safety Measures
+                  </h2>
+                  <p className="text-gray-700">
+                    Safe and sanitized with daily temperature checks of our
+                    staff. We follow all COVID-19 safety protocols.
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Map Section */}
@@ -636,7 +647,10 @@ const ViewDetails = () => {
             </div>
 
             {/* Ratings Section */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div
+              //className="bg-white rounded-xl shadow-sm p-6"
+              className="bg-white shadow-sm p-6 border border-grey"
+            >
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
                 Ratings & Reviews
               </h2>
