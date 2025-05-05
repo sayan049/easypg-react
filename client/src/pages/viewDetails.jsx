@@ -510,7 +510,10 @@ const ViewDetails = () => {
             <br />
 
             {/* Safety Notice */}
-            <div className="bg-white rounded-xl shadow-sm p-3">
+            <div 
+         //   className="bg-white rounded-xl shadow-sm p-3"
+         className="p-3 border-b-2 border-grey "
+            >
               <div className="flex items-start gap-4">
                 <div className="bg-yellow-100 p-3 rounded-full">
                   <FaShieldAlt className="text-yellow-600 text-xl" />
@@ -526,7 +529,9 @@ const ViewDetails = () => {
             </div>
 
             {/* Amenities */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div
+            // className="bg-white rounded-xl shadow-sm p-6"
+            className="p-3 border-b-2 border-grey">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Amenities</h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {owner?.facility?.map((feature, index) => {
@@ -544,7 +549,9 @@ const ViewDetails = () => {
             </div>
 
             {/* About Section */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div 
+            //className="bg-white rounded-xl shadow-sm p-6"
+            className="p-3 border-b-2 border-grey">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">About this Accommodation</h2>
               <p className="text-gray-700 leading-relaxed">
                 {owner?.aboutMess || "No description available for this accommodation."}
