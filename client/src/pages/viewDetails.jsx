@@ -300,8 +300,7 @@ import {
   FaTimes,
   FaArrowLeft,
   FaFemale,
-  FaMale,
-  FaUsers
+  FaMale
 } from "react-icons/fa";
 
 const ViewDetails = () => {
