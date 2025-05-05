@@ -277,7 +277,7 @@
 // export default ViewDetails;
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import MapDirection from "../components/mapDirection";
 import Footer from "../components/footer";
@@ -402,6 +402,18 @@ const ViewDetails = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.2 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
   // Render stars for ratings
   const renderStars = (rating) => {
     const stars = [];
@@ -427,7 +439,7 @@ const ViewDetails = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-10">
+      <header className="bg-white shadow-sm top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center">
             <button
@@ -701,7 +713,7 @@ const ViewDetails = () => {
               </div>
 
               {/* Rating Bars */}
-              <div className="space-y-2 mb-6">
+              {/* <div className="space-y-2 mb-6">
                 {[5, 4, 3, 2, 1].map((star, i) => {
                   const count = ratingCounts[star - 1];
                   const percent =
@@ -715,6 +727,29 @@ const ViewDetails = () => {
                             ratingColor[5 - star]
                           } h-2 rounded-full`}
                           style={{ width: `${percent}%` }}
+                        ></div>
+                      </div>
+                      <span className="text-sm w-12 text-right">
+                        {percent}%
+                      </span>
+                    </div>
+                  );
+                })}
+              </div> */}
+              <div ref={ref} className="space-y-2 mb-6">
+                {[5, 4, 3, 2, 1].map((star) => {
+                  const count = ratingCounts[star - 1];
+                  const percent =
+                    total > 0 ? ((count / total) * 100).toFixed(0) : "0";
+                  return (
+                    <div key={star} className="flex items-center gap-2">
+                      <div className="w-12 text-gray-600 text-sm">{star} ★</div>
+                      <div className="bg-gray-200 flex-grow rounded-full h-2 overflow-hidden">
+                        <div
+                          className={`transition-[width] duration-700 h-2 rounded-full ${
+                            ratingColor[5 - star]
+                          }`}
+                          style={{ width: inView ? `${percent}%` : "0%" }}
                         ></div>
                       </div>
                       <span className="text-sm w-12 text-right">
