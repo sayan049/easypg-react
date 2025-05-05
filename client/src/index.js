@@ -27,7 +27,8 @@ import MailVerifyOwner from "./pages/mailVerifyOwner";
 import IsAuth from "./pages/isAuth";
 import ViewDetails from "./pages/viewDetails";
 import DashboardOwner from "./pages/DashboardOwner";
-
+import BusinessModel from "./pages/Business";
+import OurService from "./pages/ourService";
 // Create the root once and specify the container
 const root = createRoot(document.getElementById("root")); // Using createRoot directly
 
@@ -42,6 +43,8 @@ root.render(
           {/* <Route path="/newHome" element={<NewHomePage />} /> */}
           <Route path="/ProviderSeeker" element={<ProviderSeeker />} />
           {/* <Route path="/NewDashBoard" element={<NewDashboard />} /> */}
+          <Route path="/Business" element={<BusinessModel />} />
+          <Route path="/OurService" element={<OurService />} />
           <Route
             path="/signupforuser"
             element={
