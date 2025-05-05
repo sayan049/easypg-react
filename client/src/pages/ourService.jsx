@@ -25,7 +25,10 @@ import Footer from "../components/footer";
 const OurService = () => {
   const observerRefs = useRef([]);
   const navigate = useNavigate();
-
+  // Add this useEffect to scroll to top on component mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {

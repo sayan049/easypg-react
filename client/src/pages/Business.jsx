@@ -17,6 +17,9 @@ import {
 import Footer from '../components/footer';
 
 const BusinessModel= () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const [isVisible, setIsVisible] = useState({
     hero: false,
     benefits: false,
