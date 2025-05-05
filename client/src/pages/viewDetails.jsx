@@ -526,7 +526,7 @@ const ViewDetails = () => {
               // className="p-3 border-b-2 border-grey"
             >
               <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
-                <div className="flex justify-between">
+                <div className="flex justify-between w-full">
                   <div>
                   <h1 className="text-2xl font-bold text-gray-900 mb-2">
                     {owner?.messName || "Accommodation Details"}
