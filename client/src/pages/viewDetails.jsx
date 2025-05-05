@@ -576,7 +576,7 @@ const ViewDetails = () => {
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
                 Amenities
               </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {/* <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {owner?.facility?.map((feature, index) => {
                   const amenity = amenities.find(
                     (a) =>
@@ -596,7 +596,21 @@ const ViewDetails = () => {
                     </div>
                   );
                 })}
-              </div>
+              </div> */}
+              {owner.facility?.map((feature, index) => {
+                const amenity = amenities.find(
+                  (a) => a.label.toLowerCase() === feature.trim().toLowerCase()
+                );
+                return (
+                  <span
+                    key={index}
+                    className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-[rgb(44 164 181)] text-xs rounded-full"
+                  >
+                    {amenity?.icon || null}
+                    {feature}
+                  </span>
+                );
+              })}
             </div>
 
             {/* About Section */}
