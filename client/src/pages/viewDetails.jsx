@@ -26,18 +26,25 @@ const ViewDetails = () => {
 
   // State for modal visibility
   const [showModal, setShowModal] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(3);
 
   const ratingCounts = [0, 0, 0, 0, 0]; // Index 0 → 1★, Index 4 → 5★
   owner.feedbacks.forEach((fb) => {
     ratingCounts[fb.rating - 1]++;
-    console.log(fb.rating , " r" ,ratingCounts[fb.rating - 1]);
+    console.log(fb.rating, " r", ratingCounts[fb.rating - 1]);
   });
 
   const total = owner.feedbacks.length;
   const average = (
     owner.feedbacks.reduce((sum, fb) => sum + fb.rating, 0) / total
   ).toFixed(1);
-  const ratingColor=["bg-green-500","bg-green-400","bg-yellow-500","bg-orange-400","bg-red-500"];
+  const ratingColor = [
+    "bg-green-500",
+    "bg-green-400",
+    "bg-yellow-500",
+    "bg-orange-400",
+    "bg-red-500",
+  ];
 
   // Parse location
   const locationArray = owner?.location
@@ -270,7 +277,7 @@ const ViewDetails = () => {
           </div>
 
           {[5, 4, 3, 2, 1].map((star, i) => {
-            const count = ratingCounts[ star - 1];
+            const count = ratingCounts[star - 1];
             const percent = ((count / total) * 100).toFixed(0);
             return (
               <div key={star} className="flex items-center space-x-2">
@@ -301,14 +308,25 @@ const ViewDetails = () => {
             </div>
           </div> */}
           <h2 className="text-lg font-semibold mb-4">Reviews</h2>
-          {owner.feedbacks.map((fb, idx) => (
-            <div key={idx} className="bg-gray-100 p-4 rounded shadow mb-4">
-              <p className="text-gray-700 font-medium">
-                {fb.username} - {new Date(fb.submittedAt).toLocaleDateString()}
-              </p>
-              <p className="text-yellow-500">{"★".repeat(fb.rating)}</p>
-              <p className="text-gray-800">{fb.comment}</p>
-            </div>
+          {owner.feedbacks.slice(0, visibleCount).map((fb, idx) => (
+            <>
+              <div key={idx} className="bg-gray-100 p-4 rounded shadow mb-4">
+                <p className="text-gray-700 font-medium">
+                  {fb.username} -{" "}
+                  {new Date(fb.submittedAt).toLocaleDateString()}
+                </p>
+                <p className="text-yellow-500">{"★".repeat(fb.rating)}</p>
+                <p className="text-gray-800">{fb.comment}</p>
+              </div>
+              {visibleCount < owner.feedbacks.length && (
+                <button
+                  onClick={() => setVisibleCount((prev) => prev + 3)}
+                  className="text-blue-600 underline mt-2"
+                >
+                  Show More
+                </button>
+              )}
+            </>
           ))}
 
           {/* Map Section */}
