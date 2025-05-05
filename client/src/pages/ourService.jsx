@@ -81,7 +81,7 @@ const OurService = () => {
         <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
           Simple Workflow to Get Started
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-4">
+        <div className="flex md:grid md:grid-cols-3 lg:grid-cols-5 overflow-x-auto pb-6 md:overflow-visible md:pb-0 snap-x gap-4 md:gap-6">
           {[
             {
               icon: <Home className="h-10 w-10 text-blue-500" />,
@@ -111,7 +111,7 @@ const OurService = () => {
           ].map((step, index) => (
             <div
               key={index}
-              className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex flex-col items-center text-center relative"
+              className="min-w-[280px] md:min-w-0 bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex flex-col items-center text-center relative snap-start"
               ref={addToRefs}
             >
               <div className="mb-4 bg-gray-50 p-4 rounded-full">
@@ -205,7 +205,7 @@ const OurService = () => {
               alt="MessMate Dashboard"
               className="rounded-xl shadow-lg object-cover w-full h-auto"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent rounded-xl flex flex-col justify-end p-6 md:p-8">
+            <div className="hidden md:flex absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent rounded-xl flex-col justify-end p-6 md:p-8">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-white">
                 <div className="bg-white/10 backdrop-blur-sm p-4 rounded-lg">
                   <h3 className="font-semibold mb-2">Pending Bookings</h3>
@@ -239,7 +239,7 @@ const OurService = () => {
         <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
           What's Coming Soon
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="flex md:grid md:grid-cols-3 overflow-x-auto pb-6 md:overflow-visible md:pb-0 snap-x gap-4 md:gap-6">
           {[
             {
               icon: <Wallet className="h-8 w-8 text-purple-500" />,
@@ -259,7 +259,7 @@ const OurService = () => {
           ].map((feature, index) => (
             <div
               key={index}
-              className="border border-dashed border-gray-300 rounded-xl p-6 flex flex-col items-center text-center"
+              className="min-w-[280px] md:min-w-0 border border-dashed border-gray-300 rounded-xl p-6 flex flex-col items-center text-center snap-start"
               ref={addToRefs}
             >
               <div className="mb-4 bg-gray-50 p-4 rounded-full">
@@ -416,8 +416,6 @@ const OurService = () => {
 
       {/* Footer */}
       <Footer />
-
-
     </div>
   );
 };
