@@ -407,7 +407,7 @@ const OurService = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-12 px-4" style={fadeIn(1400)}>
+      <section className="py-12 px-4" >
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4">Join hundreds of successful PG owners</h2>
           <p className="text-gray-600 mb-8">Start managing your PG with hassle-free tools.</p>
