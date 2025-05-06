@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+:root {
+    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px 0 rgba(44, 164, 181, 0.1);
+    --glass-background: linear-gradient(
+      135deg,
+      rgba(44, 164, 181, 0.1) 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      rgba(78, 205, 196, 0.1) 100%
+    );
+  }
