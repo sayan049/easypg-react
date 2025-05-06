@@ -36,7 +36,7 @@ function LandingPage() {
 
           <div className="mt-6">
             <Link to="/Business">
-              <button className="bg-[#2CA4B5] text-white font-bold py-2 px-6 rounded-lg">
+            <button className="bg-[#2CA4B5] text-white font-bold py-2 px-6 rounded-full shadow-lg transform transition duration-300 ease-in-out hover:scale-105">
                 Join Us Today
               </button>
             </Link>
