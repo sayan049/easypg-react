@@ -19,7 +19,7 @@ const HomePage = () => {
   const [message, setMessage] = useState("");
   const [searchItem, setSearchItem] = useState("");
   // const [IsAuthenticated, setIsAuthenticated] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);  
+  const [showDropdown, setShowDropdown] = useState(false);
   const [logoutStatus, setLogoutStatus] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -98,6 +98,14 @@ const HomePage = () => {
       state: { userLocation: selectedLocation, item: searchItem },
     });
     setSearchItem(""); // Clear the input field after search
+  };
+
+  const handleCityClick = (cityName, coords) => {
+    setSearchItem(cityName);
+    setSelectedLocation(coords);
+    navigate("/MessFind", {
+      state: { userLocation: coords, item: cityName },
+    });
   };
 
   useEffect(() => {
@@ -186,37 +194,6 @@ const HomePage = () => {
             </a>
           </nav>
 
-          {/* {IsAuthenticated || isOwnerAuthenticated ? (
-            <>
-              <div
-                className="imageProfile"
-                onClick={() => setShowDropdown(!showDropdown)}
-              >
-                <UserProfile className="h-12 w-12" />
-
-                <div className="dropdown-content">
-                  <p>
-                    <Link
-                      style={{ fontSize: "16px" }}
-                      to={IsAuthenticated ? "/newDashboard" : "/DashboardOwner"}
-                    >
-                      Profile
-                    </Link>
-                  </p>
-                  <hr className="HR" />
-                  <p className="logoutuser" onClick={handleLogoutClick}>
-                    Log Out
-                  </p>
-                </div>
-              </div>
-            </>
-          ) : (
-            <button className="hidden lg:block rounded-full bg-white text-black px-6 py-2 border border-black hover:bg-gray-100">
-              <Link to="/ProviderSeeker" className="font-semibold text-xs">
-                House Owner / Student
-              </Link>
-            </button>
-          )} */}
           {IsAuthenticated || isOwnerAuthenticated ? (
             <>
               <div className="relative">
@@ -535,6 +512,171 @@ const HomePage = () => {
 
       {/* Popular Cities Section */}
       <section className="py-12">
+        <div className="container mx-auto">
+          <h2 className="text-2xl font-bold text-center mb-8">
+            Explore popular student cities
+          </h2>
+          <div className="grid gap-x-4 gap-y-8 px-8 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 lg:px-24 md:px-24">
+            <div
+              onClick={() =>
+                handleCityClick("Kolkata", { lat: 22.5726, lng: 88.3639 })
+              }
+              className="flex justify-center group cursor-pointer"
+            >
+              <div>
+                <img
+                  src="assets/kolkata.png"
+                  alt="kolkata"
+                  className="max-w-auto h-auto group-hover:scale-105 transition-transform duration-300 ease-in-out"
+                />
+                <p className="text-[#2CA4B5] ">Kolkata</p>
+                <p className="text-black">263 properties</p>
+              </div>
+            </div>
+
+            <div
+              onClick={() =>
+                handleCityClick("Bankura", { lat: 23.2324, lng: 87.0712 })
+              }
+              className="flex justify-center group cursor-pointer"
+            >
+              <div>
+                <img
+                  src="assets/bankura.png"
+                  alt="bankura"
+                  className="max-w-auto h-auto group-hover:scale-105 transition-transform duration-300 ease-in-out"
+                />
+                <p className="text-[#2CA4B5] ">Bankura</p>
+                <p className="text-black">263 properties</p>
+              </div>
+            </div>
+
+            <div
+              onClick={() =>
+                handleCityClick("West Medinipur", {
+                  lat: 22.4211,
+                  lng: 87.3216,
+                })
+              }
+              className="flex justify-center group cursor-pointer"
+            >
+              <div>
+                <img
+                  src="assets/westMed.png"
+                  alt="west mednipur"
+                  className="max-w-auto h-auto group-hover:scale-105 transition-transform duration-300 ease-in-out"
+                />
+                <p className="text-[#2CA4B5] ">West Mednipur</p>
+                <p className="text-black">263 properties</p>
+              </div>
+            </div>
+
+            <div
+              onClick={() =>
+                handleCityClick("Jhargram", { lat: 22.4526, lng: 86.9946 })
+              }
+              className="flex justify-center group cursor-pointer"
+            >
+              <div>
+                <img
+                  src="assets/jhargram.png"
+                  alt="jhargram"
+                  className="max-w-auto h-auto group-hover:scale-105 transition-transform duration-300 ease-in-out"
+                />
+                <p className="text-[#2CA4B5] ">Jhargram</p>
+                <p className="text-black">263 properties</p>
+              </div>
+            </div>
+
+            <div
+              onClick={() =>
+                handleCityClick("Bardhaman", { lat: 23.2333, lng: 87.8667 })
+              }
+              className="flex justify-center group cursor-pointer"
+            >
+              <div>
+                <img
+                  src="assets/bardhaman.png"
+                  alt="bardhaman"
+                  className="max-w-auto h-auto group-hover:scale-105 transition-transform duration-300 ease-in-out"
+                />
+                <p className="text-[#2CA4B5]">Bardhaman</p>
+                <p className="text-black">263 properties</p>
+              </div>
+            </div>
+
+            <div
+              onClick={() =>
+                handleCityClick("Kalyani", { lat: 22.9756, lng: 88.4345 })
+              }
+              className="flex justify-center group cursor-pointer"
+            >
+              <div>
+                <img
+                  src="assets/kalyani.png"
+                  alt="kalyani"
+                  className="max-w-auto h-auto group-hover:scale-105 transition-transform duration-300 ease-in-out"
+                />
+                <p className="text-[#2CA4B5] ">Kalyani</p>
+                <p className="text-black">263 properties</p>
+              </div>
+            </div>
+
+            <div
+              onClick={() =>
+                handleCityClick("Durgapur", { lat: 23.5204, lng: 87.3119 })
+              }
+              className="flex justify-center group cursor-pointer"
+            >
+              <div>
+                <img
+                  src="assets/durgapur.png"
+                  alt="durgapur"
+                  className="max-w-auto h-auto group-hover:scale-105 transition-transform duration-300 ease-in-out"
+                />
+                <p className="text-[#2CA4B5] ">Durgapur</p>
+                <p className="text-black">263 properties</p>
+              </div>
+            </div>
+
+            <div
+              onClick={() =>
+                handleCityClick("Asansole", { lat: 23.6739, lng: 86.9524 })
+              }
+              className="flex justify-center group cursor-pointer"
+            >
+              <div>
+                <img
+                  src="assets/asansole.png"
+                  alt="asansole"
+                  className="max-w-auto h-auto group-hover:scale-105 transition-transform duration-300 ease-in-out"
+                />
+                <p className="text-[#2CA4B5] ">Asansole</p>
+                <p className="text-black">263 properties</p>
+              </div>
+            </div>
+
+            <div
+              onClick={() =>
+                handleCityClick("Bolpur", { lat: 23.6688, lng: 87.6836 })
+              }
+              className="flex justify-center group cursor-pointer"
+            >
+              <div>
+                <img
+                  src="assets/bolpur.png"
+                  alt="bolpur"
+                  className="max-w-auto h-auto group-hover:scale-105 transition-transform duration-300 ease-in-out"
+                />
+                <p className="text-[#2CA4B5] ">Bolpur</p>
+                <p className="text-black">263 properties</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* <section className="py-12">
         <div className="container  mx-auto">
           <h2 className="text-2xl font-bold text-center mb-8">
             Explore popular student cities
@@ -641,7 +783,7 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* About Section */}
       <section className="bg-gray-50 py-12 " id="about">
