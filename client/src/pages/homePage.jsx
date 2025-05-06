@@ -1522,7 +1522,7 @@ const HomePage = () => {
                     </motion.button>
 
                     {/* Suggestions Dropdown */}
-                    {/* {suggestions.length > 0 && (
+                    {suggestions.length > 0 && (
                       <div className="absolute w-full mt-1 bg-white shadow-lg rounded-lg">
                         {suggestions.map((suggestion, index) => (
                           <div
@@ -1534,8 +1534,8 @@ const HomePage = () => {
                           </div>
                         ))}
                       </div>
-                    )} */}
-                    {suggestions.length > 0 && (
+                    )}
+                    {/* {suggestions.length > 0 && (
                       <ul className="absolute z-50 bg-white mt-2 rounded shadow-md max-h-60 overflow-y-auto top-[48px] left-[22px] w-[90%]">
                         {suggestions.map((s, i) => (
                           <li
@@ -1547,7 +1547,7 @@ const HomePage = () => {
                           </li>
                         ))}
                       </ul>
-                    )}
+                    )} */}
                   </div>
                 </div>
                 <div className="mt-4 flex justify-center">
