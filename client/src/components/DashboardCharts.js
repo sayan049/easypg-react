@@ -246,13 +246,10 @@ const DashboardCharts = () => {
       {/* Chart */}
       {activeTab === "bookings" && (
   <div className="relative p-5 rounded-2xl 
-    bg-gradient-to-br from-[#2CA4B5]/10 via-[#ffffff]/5 to-[#4ECDC4]/10 
-    border border-[#2CA4B5]/20 
-    backdrop-blur-lg 
-    shadow-[0_8px_32px_rgba(44,164,181,0.1)]
-    transition-all duration-300
-    hover:shadow-[0_8px_32px_rgba(44,164,181,0.2)]
-    hover:border-[#2CA4B5]/30">
+  bg-[var(--glass-background)]
+  border-[var(--glass-border)]
+  shadow-[var(--glass-shadow)]
+  backdrop-blur-lg">
     
     {/* Geometric pattern background */}
     <div className="absolute inset-0 opacity-10">
