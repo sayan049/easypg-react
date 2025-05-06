@@ -1010,7 +1010,6 @@ const HomePage = () => {
 
   const debounceTimeout = useRef(null);
 
-
   const handleInputChange = async (event) => {
     const query = event.target.value;
     setSearchItem(query);
@@ -1522,8 +1521,9 @@ const HomePage = () => {
                     </motion.button>
 
                     {/* Suggestions Dropdown */}
+                    {/* Suggestions Dropdown */}
                     {suggestions.length > 0 && (
-                      <div className="absolute w-full mt-1 bg-white shadow-lg rounded-lg">
+                      <div className="absolute right-0 w-full mt-1 bg-white shadow-lg rounded-lg max-w-full">
                         {suggestions.map((suggestion, index) => (
                           <div
                             key={index}
@@ -1535,6 +1535,7 @@ const HomePage = () => {
                         ))}
                       </div>
                     )}
+
                     {/* {suggestions.length > 0 && (
                       <ul className="absolute z-50 bg-white mt-2 rounded shadow-md max-h-60 overflow-y-auto top-[48px] left-[22px] w-[90%]">
                         {suggestions.map((s, i) => (
