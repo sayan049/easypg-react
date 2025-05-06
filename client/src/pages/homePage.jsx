@@ -1536,12 +1536,12 @@ const HomePage = () => {
                       </div>
                     )} */}
                     {suggestions.length > 0 && (
-                      <ul className="absolute z-50 bg-white w-full mt-2 rounded shadow-md max-h-60 overflow-y-auto">
+                      <ul className="absolute z-50 bg-white mt-2 rounded shadow-md max-h-60 overflow-y-auto top-[48%] left-[22px] w-[90%]">
                         {suggestions.map((s, i) => (
                           <li
                             key={i}
                             onClick={() => handleSuggestionClick(s)}
-                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b-2 border-grey"
                           >
                             {s.display_name}
                           </li>
