@@ -245,23 +245,43 @@ const DashboardCharts = () => {
 
       {/* Chart */}
       {activeTab === "bookings" && (
-        <div className="bg-gray-50 p-5 rounded-2xl">
-          <div className="flex items-center gap-2 mb-6">
-            <div className="p-2 bg-[#2CA4B5] rounded-lg">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                />
-              </svg>
-            </div>
-            <h3 className="text-lg font-semibold text-gray-800">PG Booking Trends</h3>
-          </div>
+  <div className="relative p-5 rounded-2xl 
+    bg-gradient-to-br from-[#2CA4B5]/10 via-[#ffffff]/5 to-[#4ECDC4]/10 
+    border border-[#2CA4B5]/20 
+    backdrop-blur-lg 
+    shadow-[0_8px_32px_rgba(44,164,181,0.1)]
+    transition-all duration-300
+    hover:shadow-[0_8px_32px_rgba(44,164,181,0.2)]
+    hover:border-[#2CA4B5]/30">
+    
+    {/* Geometric pattern background */}
+    <div className="absolute inset-0 opacity-10">
+      <div className="absolute top-0 left-0 w-32 h-32 bg-[#2CA4B5]/10 rounded-full blur-xl"></div>
+      <div className="absolute bottom-0 right-0 w-48 h-48 bg-[#4ECDC4]/10 rounded-full blur-xl"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent"></div>
+    </div>
 
-          <ResponsiveContainer width="100%" height={320}>
-            <LineChart data={bookingsData} margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
+    {/* Content */}
+    <div className="relative z-10">
+      <div className="flex items-center gap-2 mb-6">
+        <div className="p-2 bg-[#2CA4B5] rounded-lg backdrop-blur-sm border border-white/10">
+          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+            />
+          </svg>
+        </div>
+        <h3 className="text-lg font-semibold text-gray-800">PG Booking Trends</h3>
+      </div>
+
+      <ResponsiveContainer width="100%" height={320}>
+        <LineChart 
+          data={bookingsData} 
+          margin={{ top: 20, right: 20, left: 0, bottom: 5 }}
+        >
               <CartesianGrid horizontal={true} vertical={false} stroke="#e5e7eb" />
               <XAxis
                 dataKey="label"
@@ -345,29 +365,46 @@ const DashboardCharts = () => {
                 }}
                 isAnimationActive={true}
               />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      )}
+           </LineChart>
+      </ResponsiveContainer>
+    </div>
+  </div>
+)}
+      {/* Revenue Card - Enhanced */}
+{activeTab === "revenue" && (
+  <div className="relative h-60 rounded-2xl 
+    bg-gradient-to-br from-[#2CA4B5]/10 via-[#ffffff]/5 to-[#4ECDC4]/10 
+    border border-[#2CA4B5]/20 
+    backdrop-blur-lg 
+    shadow-[0_8px_32px_rgba(44,164,181,0.1)]
+    overflow-hidden">
+    
+    {/* Animated background elements */}
+    <div className="absolute inset-0">
+      <div className="absolute -top-20 -left-20 w-64 h-64 bg-[#2CA4B5]/10 rounded-full blur-2xl animate-pulse"></div>
+      <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-[#4ECDC4]/10 rounded-full blur-2xl animate-pulse"></div>
+    </div>
 
-      {activeTab === "revenue" && (
-        <div className="h-60 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center gap-3">
-          <div className="p-4 bg-white rounded-full shadow-lg">
-            <svg className="w-8 h-8 text-[#2CA4B5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
-          <div className="text-gray-500 font-medium">Revenue Analytics Coming Soon</div>
-          <p className="text-sm text-gray-400 text-center px-8">
-            We're working on bringing you detailed revenue insights with beautiful visualizations.
-          </p>
-        </div>
-      )}
+    <div className="relative z-10 flex flex-col items-center justify-center h-full gap-3">
+      <div className="p-4 bg-white/30 rounded-full shadow-lg backdrop-blur-sm border border-white/20">
+        <svg className="w-8 h-8 text-[#2CA4B5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </div>
+      <div className="text-gray-600 font-medium backdrop-blur-sm px-4 py-2 rounded-lg bg-white/30">
+        Revenue Analytics Coming Soon
+      </div>
+      <p className="text-sm text-gray-500 text-center px-8 backdrop-blur-sm bg-white/30 py-1 rounded">
+        We're working on bringing you detailed revenue insights with beautiful visualizations.
+      </p>
+    </div>
+  </div>
+)}
     </div>
   )
 }
