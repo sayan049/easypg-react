@@ -1,4 +1,4 @@
-import { useEffect, useRef,useLayoutEffect } from "react";
+import { useEffect, useRef, useLayoutEffect } from "react";
 import {
   Home,
   Search,
@@ -26,19 +26,19 @@ const OurService = () => {
   const observerRefs = useRef([]);
   const navigate = useNavigate();
   // Add this useEffect to scroll to top on component mount
-    // Add these scroll management effects
-    useEffect(() => {
-      // Immediate scroll to top without smooth behavior
-      window.scrollTo({ top: 0, behavior: 'auto' });
-    }, []);
-  
-    useLayoutEffect(() => {
-      // Ensure smooth scroll if needed for any anchor links
-      document.documentElement.style.scrollBehavior = 'auto';
-      return () => {
-        document.documentElement.style.scrollBehavior = '';
-      };
-    }, []);
+  // Add these scroll management effects
+  useEffect(() => {
+    // Immediate scroll to top without smooth behavior
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, []);
+
+  useLayoutEffect(() => {
+    // Ensure smooth scroll if needed for any anchor links
+    document.documentElement.style.scrollBehavior = "auto";
+    return () => {
+      document.documentElement.style.scrollBehavior = "";
+    };
+  }, []);
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -69,23 +69,25 @@ const OurService = () => {
   };
 
   return (
-    <div className="min-h-screen font-inter text-gray-800">
+    <div className="min-h-screen font-inter text-gray-800 bg-gray-50">
       {/* Header Section */}
       <header
-        className="container mx-auto px-4 py-16 md:py-24 text-center"
+        className="container  mx-auto px-4 py-16 md:py-24 text-center"
         ref={addToRefs}
       >
         <h1 className="text-3xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          How   <div className="inline-flex items-center text-5xl font-bold space-x-1">
-                  <img
-                    src="./assets/companylogo.png"
-                    alt="logo"
-                    className="mr-[-4px]" // Adjust spacing between the image and text
-                  />
-                  <div className="text-4xl font-bold text-[#2CA4B5] mt-[20px] ml-[-10px]">
-                    essMate
-                  </div>
-                </div> Empowers PG Owners
+          How{" "}
+          <div className="inline-flex items-center text-5xl font-bold space-x-1">
+            <img
+              src="./assets/companylogo.png"
+              alt="logo"
+              className="mr-[-4px]" // Adjust spacing between the image and text
+            />
+            <div className="text-4xl font-bold text-[#2CA4B5] mt-[20px] ml-[-10px]">
+              essMate
+            </div>
+          </div>{" "}
+          Empowers PG Owners
         </h1>
         <h2 className="text-xl md:text-3xl font-semibold mb-4">
           Your all-in-one PG management toolkit
@@ -97,7 +99,7 @@ const OurService = () => {
 
       {/* Step-by-Step Workflow */}
       <section
-        className="container mx-auto px-4 py-12 md:py-16"
+        className="container mx-auto px-4 py-12 md:py-16 "
         ref={addToRefs}
       >
         <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
@@ -133,7 +135,7 @@ const OurService = () => {
           ].map((step, index) => (
             <div
               key={index}
-              className="min-w-[280px] md:min-w-0 bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex flex-col items-center text-center relative snap-start"
+              className="min-w-[280px] md:min-w-0 bg-white p-6 rounded-xl shadow-md border-[1px] border-gray-300 hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center relative snap-start"
               ref={addToRefs}
             >
               <div className="mb-4 bg-gray-50 p-4 rounded-full">
@@ -153,14 +155,14 @@ const OurService = () => {
 
       {/* Feature Highlights Grid */}
       <section
-        className="bg-gradient-to-b from-gray-50 to-white py-12 md:py-16"
+        className="bg-gradient-to-b from-gray-50 to-white py-12 md:py-16 "
         ref={addToRefs}
       >
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
             Feature Highlights
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
             {[
               { icon: <Bed />, title: "Room & bed management" },
               { icon: <ImageIcon />, title: "Upload photos & update info" },
@@ -171,7 +173,7 @@ const OurService = () => {
             ].map((feature, index) => (
               <div
                 key={index}
-                className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex items-start gap-4"
+                className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 flex items-start gap-4 border-[1px] border-gray-300 "
                 ref={addToRefs}
               >
                 <div className="bg-blue-50 p-3 rounded-lg text-blue-600">
@@ -190,7 +192,7 @@ const OurService = () => {
         ref={addToRefs}
       >
         <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-8">
-          <div className="md:w-1/2">
+          <div className="md:w-1/2 border-l-[5px] border-blue-500 pl-4">
             <h2 className="text-2xl md:text-3xl font-bold mb-6">
               Owner Support
             </h2>
@@ -281,7 +283,7 @@ const OurService = () => {
           ].map((feature, index) => (
             <div
               key={index}
-              className="min-w-[280px] md:min-w-0 border border-dashed border-gray-300 rounded-xl p-6 flex flex-col items-center text-center snap-start"
+              className="min-w-[280px] md:min-w-0 border border-dashed border-gray-300 rounded-xl p-6 flex flex-col items-center text-center snap-start hover:shadow-2xl transition-all duration-300"
               ref={addToRefs}
             >
               <div className="mb-4 bg-gray-50 p-4 rounded-full">
@@ -298,16 +300,17 @@ const OurService = () => {
       <section className="py-12 md:py-16 overflow-hidden" ref={addToRefs}>
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
-            PGs on   <div className="inline-flex items-center text-5xl font-bold space-x-1">
-                  <img
-                    src="./assets/companylogo.png"
-                    alt="logo"
-                    className="mr-[-4px]" // Adjust spacing between the image and text
-                  />
-                  <div className="text-3xl font-bold text-[#2CA4B5] mt-[23px] ml-[-10px]">
-                    essMate
-                  </div>
-                </div>
+            PGs on{" "}
+            <div className="inline-flex items-center text-5xl font-bold space-x-1">
+              <img
+                src="./assets/companylogo.png"
+                alt="logo"
+                className="mr-[-4px]" // Adjust spacing between the image and text
+              />
+              <div className="text-3xl font-bold text-[#2CA4B5] mt-[23px] ml-[-10px]">
+                essMate
+              </div>
+            </div>
           </h2>
           <div className="flex gap-4 overflow-x-auto pb-6 snap-x">
             {[
@@ -434,15 +437,17 @@ const OurService = () => {
             <ArrowRight className="h-5 w-5" />
           </button>
           <div className="mt-12 flex flex-wrap justify-center gap-6">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full"
-              >
-                <CheckCircle2 className="h-5 w-5 text-green-300" />
-                <span className="text-sm">Trusted by {100 * i}+ owners</span>
-              </div>
-            ))}
+            {["Trusted by 200+ PG owners", "Trusted by 1000+ happy users"].map(
+              (text, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full"
+                >
+                  <CheckCircle2 className="h-5 w-5 text-green-300" />
+                  <span className="text-sm">{text}</span>
+                </div>
+              )
+            )}
           </div>
         </div>
       </section>

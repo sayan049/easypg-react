@@ -26,6 +26,7 @@ const BusinessModel = () => {
     cta: false,
   });
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
     // Set initial visibility with slight delays for cascade effect
     const timer1 = setTimeout(
@@ -107,16 +108,53 @@ const BusinessModel = () => {
                 </div>
                 <div></div> for Your PG Business?
               </div>
-
               <p className="text-xl text-gray-600 max-w-lg">
                 Join 100+ PG owners who simplified their operations and grew
                 their business with MessMate.
-              </p>
-              <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-full transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-lg">
+              </p>{" "}
+              {/* Trigger Button */}
+              <button
+                onClick={() => setIsOpen(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-full transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-lg"
+              >
                 See How It Works
                 <ArrowRight size={18} />
               </button>
+              {/* Modal */}
+              {isOpen && (
+                <div className="fixed inset-0 z-50 bg-black bg-opacity-80 flex items-center justify-center">
+                  {/* Overlay click to close */}
+                  <div
+                    className="absolute inset-0"
+                    onClick={() => setIsOpen(false)}
+                  ></div>
 
+                  {/* Modal Content */}
+                  <div
+                    className="relative z-10 w-full max-w-3xl rounded-xl overflow-hidden"
+                    onClick={(e) => e.stopPropagation()} // prevent closing when clicking video
+                  >
+                    {/* Close Button */}
+                    <button
+                      onClick={() => setIsOpen(false)}
+                      className="absolute top-3 right-3 z-20 text-white text-2xl bg-black bg-opacity-50 rounded-full w-8 h-8 flex items-center justify-center hover:bg-opacity-70 transition"
+                      aria-label="Close"
+                    >
+                      &times;
+                    </button>
+
+                    {/* Responsive Video */}
+                    <div className="relative pt-[56.25%]">
+                      <video
+                        src="https://res.cloudinary.com/dlfwb6sqd/video/upload/v1746537432/720p_gn4q9l.mp4"
+                        className="absolute top-0 left-0 w-full h-full"
+                        controls
+                        autoPlay
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="flex items-center gap-4 pt-4">
                 <div className="flex -space-x-2">
                   {[1, 2, 3, 4].map((num) => (
@@ -176,17 +214,15 @@ const BusinessModel = () => {
               Trusted by PG owners across
             </p>
             <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
-              {["Delhi", "Mumbai", "Bangalore", "Hyderabad", "Pune"].map(
-                (city) => (
-                  <div
-                    key={city}
-                    className="flex items-center gap-1 text-gray-400"
-                  >
-                    <Building size={18} />
-                    <span className="font-medium">{city}</span>
-                  </div>
-                )
-              )}
+              {["Kolkata", "Nadia", "kalyani"].map((city) => (
+                <div
+                  key={city}
+                  className="flex items-center gap-1 text-gray-400"
+                >
+                  <Building size={18} />
+                  <span className="font-medium">{city}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -195,9 +231,10 @@ const BusinessModel = () => {
       {/* Benefits Section */}
       <section
         id="benefits"
-        className="py-16 md:py-24 px-4 md:px-8 lg:px-16 bg-white"
+        className="py-16 md:py-24 px-4 md:px-8 lg:px-16 bg-gray-50"
       >
         <div className="max-w-7xl mx-auto">
+          {/* Section Header */}
           <div
             className={`text-center mb-16 transition-all duration-700 ease-out transform ${
               isVisible.benefits
@@ -214,24 +251,54 @@ const BusinessModel = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {benefits.map((benefit, index) => (
-              <div
-                key={index}
-                className={`bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-500 ease-out transform ${
-                  isVisible.benefits
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-12 opacity-0"
-                }`}
-                style={{ transitionDelay: `${index * 100}ms` }}
-              >
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl flex items-center justify-center mb-5">
-                  {benefit.icon}
+          {/* Cards Wrapper */}
+          <div
+            className={`transition-all duration-700 ease-out transform ${
+              isVisible.benefits
+                ? "translate-y-0 opacity-100"
+                : "translate-y-12 opacity-0"
+            }`}
+          >
+            <div
+              className="
+          flex md:grid
+          md:grid-cols-2 lg:grid-cols-3
+          gap-4
+          overflow-x-auto md:overflow-visible
+          scroll-smooth
+          no-scrollbar
+          pb-4 pr-4
+        "
+            >
+              {benefits.map((benefit, index) => (
+                <div
+                  key={index}
+                  className={`
+              min-w-[80%] md:min-w-0 max-w-[80%] md:max-w-full w-full
+              flex-shrink-0
+              bg-white p-6 flex flex-col
+              rounded-xl border-[1px] border-gray-300 shadow-lg hover:shadow-2xl
+              transition-shadow duration-300 ease-in-out
+              transform ${
+                isVisible.benefits
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-12 opacity-0"
+              }`}
+                  style={{ transitionDelay: `${index * 100}ms` }}
+                >
+                  <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-blue-300 rounded-xl flex items-center justify-center mb-5 shadow-lg hover:shadow-2xl">
+                    {benefit.icon}
+                  </div>
+
+                  <h3 className="text-xl font-semibold mb-3 break-words">
+                    {benefit.title}
+                  </h3>
+                  <p className="text-gray-600 break-words">
+                    {benefit.description}
+                  </p>
                 </div>
-                <h3 className="text-xl font-semibold mb-3">{benefit.title}</h3>
-                <p className="text-gray-600">{benefit.description}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -239,7 +306,7 @@ const BusinessModel = () => {
       {/* Comparison Section */}
       <section
         id="comparison"
-        className="py-16 md:py-24 px-4 md:px-8 lg:px-16 bg-gray-50"
+        className="py-16 md:py-24 px-4 md:px-8 lg:px-16 bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400"
       >
         <div className="max-w-7xl mx-auto">
           <div
@@ -250,16 +317,17 @@ const BusinessModel = () => {
             }`}
           >
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
-              Before vs After   <div className="inline-flex items-center text-5xl font-bold space-x-1">
-                  <img
-                    src="./assets/companylogo.png"
-                    alt="logo"
-                    className="mr-[-4px]" // Adjust spacing between the image and text
-                  />
-                  <div className="text-3xl font-bold text-[#2CA4B5] mt-[20px] ml-[-10px]">
-                    essMate
-                  </div>
+              Before vs After{" "}
+              <div className="inline-flex items-center text-5xl font-bold space-x-1">
+                <img
+                  src="./assets/companylogo.png"
+                  alt="logo"
+                  className="mr-[-4px]" // Adjust spacing between the image and text
+                />
+                <div className="text-3xl font-bold text-[#2CA4B5] mt-[20px] ml-[-10px]">
+                  essMate
                 </div>
+              </div>
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-lg">
               See how MessMate transforms your PG business operations
@@ -268,7 +336,7 @@ const BusinessModel = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
             <div
-              className={`bg-white p-6 md:p-8 rounded-xl border border-red-100 transition-all duration-700 ease-out transform ${
+              className={`bg-white p-6 md:p-8 rounded-xl border border-red-100 hover:border-red-500 transition-all duration-700 ease-out transform ${
                 isVisible.comparison
                   ? "translate-x-0 opacity-100"
                   : "-translate-x-12 opacity-0"
@@ -305,7 +373,7 @@ const BusinessModel = () => {
             </div>
 
             <div
-              className={`bg-white p-6 md:p-8 rounded-xl border border-green-100 transition-all duration-700 ease-out transform ${
+              className={`bg-white p-6 md:p-8 rounded-xl border border-green-100 hover:border-green-500 transition-all duration-700 ease-out transform ${
                 isVisible.comparison
                   ? "translate-x-0 opacity-100"
                   : "translate-x-12 opacity-0"
@@ -427,7 +495,7 @@ const BusinessModel = () => {
           <div className="mt-12 flex flex-wrap justify-center items-center gap-4 text-sm text-blue-100">
             <span>No credit card required</span>
             <span className="w-1.5 h-1.5 rounded-full bg-blue-100"></span>
-            <span>Free 14-day trial</span>
+            <span>Free 30-day trial</span>
             <span className="w-1.5 h-1.5 rounded-full bg-blue-100"></span>
             <span>Cancel anytime</span>
           </div>

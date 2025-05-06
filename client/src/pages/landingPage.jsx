@@ -36,7 +36,7 @@ function LandingPage() {
 
           <div className="mt-6">
             <Link to="/Business">
-              <button className="bg-[#2CA4B5] text-white font-bold py-2 px-6 rounded-lg">
+            <button className="bg-[#2CA4B5] text-white font-bold py-2 px-6 rounded-full shadow-lg transform transition duration-300 ease-in-out hover:scale-105">
                 Join Us Today
               </button>
             </Link>
@@ -63,7 +63,9 @@ function LandingPage() {
 
           <div className="flex flex-wrap justify-around w-full max-w-screen-lg">
             {/* Card 1 */}
-            <div className="flex flex-col items-center w-full sm:w-1/2 md:w-1/4 p-4 mb-8 shadow-lg transition-shadow duration-300 hover:shadow-2xl bg-white rounded-xl">
+            <div className="flex flex-col items-center w-full sm:w-1/2 md:w-1/4 p-4 mb-8 shadow-lg transition-shadow duration-300 hover:shadow-2xl bg-white rounded-xl m-4 sm:m-0">
+
+
               <img
                 src="./assets/young-handsome-business-man-with-laptop-office 1.png"
                 alt="Sign Up Process"
@@ -76,7 +78,8 @@ function LandingPage() {
             </div>
 
             {/* Card 2 */}
-            <div className="flex flex-col items-center w-full sm:w-1/2 md:w-1/4 p-4 mb-8 shadow-lg transition-shadow duration-300 hover:shadow-2xl bg-white rounded-xl">
+            <div className="flex flex-col items-center w-full sm:w-1/2 md:w-1/4 p-4 mb-8 shadow-lg transition-shadow duration-300 hover:shadow-2xl bg-white rounded-xl m-4 sm:m-0">
+
               <img
                 src="./assets/portrait-young-indian-top-manager-t-shirt-tie-crossed-arms-smiling-white-isolated-wall 1.png"
                 alt="Privacy Policy"
@@ -110,7 +113,7 @@ function LandingPage() {
 
           <div className="flex flex-wrap justify-around w-full max-w-screen-lg">
             {/* Card 1 */}
-            <div className="flex flex-col items-center w-full sm:w-1/2 md:w-1/4 p-4 mb-8 border border-gray-700 rounded-lg shadow-lg transition-shadow duration-500 hover:shadow-[0_0_10px_4px_#2CA4B5]">
+            <div className="flex flex-col items-center w-full sm:w-1/2 md:w-1/4 p-4 mb-8 border border-gray-700 rounded-lg shadow-lg transition-shadow duration-500   m-4 sm:m-0">
               <img
                 src="/assets/businessman-black-suit-makes-thumbs-up 1.png"
                 alt="Sign Up Process"
@@ -124,7 +127,7 @@ function LandingPage() {
             </div>
 
             {/* Card 2 */}
-            <div className="flex flex-col items-center w-full sm:w-1/2 md:w-1/4 p-4 mb-8 border border-gray-700 rounded-lg shadow-lg transition-shadow duration-500 hover:shadow-[0_0_10px_4px_#2CA4B5]">
+            <div className="flex flex-col items-center w-full sm:w-1/2 md:w-1/4 p-4 mb-8 border border-gray-700 rounded-lg shadow-lg transition-shadow duration-500   m-4 sm:m-0">
               <img
                 src="/assets/outdoor-businessman-having-his-arms-crossed (1) 1.png"
                 alt="Privacy Policy"

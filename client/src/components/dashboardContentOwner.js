@@ -96,6 +96,7 @@ import {
   CheckCircleIcon,
   HourglassIcon,
 } from "lucide-react";
+import DashboardCharts from "./DashboardCharts";
 
 const DashboardContentOwner = ({ stats, recentActivity }) => {
   if (!stats) {
@@ -182,6 +183,7 @@ const DashboardContentOwner = ({ stats, recentActivity }) => {
         </div>
       </div>
 
+    <DashboardCharts/>
       {/* Recent Activity */}
       <div className="bg-white rounded-xl shadow p-4">
         <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
