@@ -1387,7 +1387,7 @@ const HomePage = () => {
       </section>
 
       {/* Popular Cities Section */}
-      <section className="py-20 bg-white" id="cities">
+      <section className="py-10 bg-white" id="cities">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -1497,7 +1497,7 @@ const HomePage = () => {
       </section>
 
       {/* About Section */}
-      <section className="py-20 bg-gray-50" id="about">
+      <section className="py-10 bg-gray-50" id="about">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
