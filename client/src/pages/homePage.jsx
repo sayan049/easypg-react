@@ -1091,6 +1091,7 @@ import UserProfile from "../components/UserProfile"
 import "../designs/UserProfile.css"
 import { useAuth } from "../contexts/AuthContext"
 import { LocationIqurl } from "../constant/urls"
+import { createPortal } from "react-dom"
 
 const HomePage = () => {
   const navigate = useNavigate()
@@ -1488,7 +1489,7 @@ const HomePage = () => {
         {/* Hero Section */}
         <section
           id="home"
-          className="relative bg-gradient-to-br from-[#2CA4B5] via-[#4db6c5] to-[#7fd4e1] py-10 lg:py-32 overflow-hidden"
+          className="relative bg-gradient-to-br from-[#2CA4B5] via-[#4db6c5] to-[#7fd4e1] py-10 lg:py-32 overflow-visible"
         >
           {/* Background Pattern */}
           <div className="absolute inset-0 opacity-10">
@@ -1510,7 +1511,7 @@ const HomePage = () => {
                 <p className="text-white text-lg mt-4 opacity-90">
                   The ultimate platform for students to find their ideal accommodation
                 </p>
-                <div className="mt-8 relative w-full max-w-md mx-auto lg:mx-0" ref={searchContainerRef}>
+                <div className="mt-8 relative w-full max-w-md mx-auto lg:mx-0 z-50" ref={searchContainerRef}>
                   <div
                     className={`flex border-3 rounded-full border-white transition-all duration-300 ${
                       isSearchFocused ? "ring-4 ring-white/30" : ""
@@ -1579,51 +1580,63 @@ const HomePage = () => {
 
                   {/* Suggestions Dropdown - Improved for responsiveness */}
                   <AnimatePresence>
-                    {suggestions.length > 0 && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute w-full mt-2 z-[9999] bg-white shadow-xl rounded-lg overflow-hidden max-h-[60vh] overflow-y-auto"
-                      >
-                        {suggestions.map((suggestion, index) => (
-                          <motion.div
-                            key={index}
-                            whileHover={{
-                              backgroundColor: "#2CA4B5",
-                              color: "white",
-                            }}
-                            className="p-3 cursor-pointer hover:bg-[#2CA4B5] hover:text-white transition-colors duration-200 border-b border-gray-100 last:border-b-0"
-                            onClick={() => handleSuggestionClick(suggestion)}
-                          >
-                            <div className="flex items-center">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-4 w-4 mr-2 flex-shrink-0"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                                />
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                                />
-                              </svg>
-                              <span className="truncate text-sm sm:text-base">{suggestion.display_name}</span>
-                            </div>
-                          </motion.div>
-                        ))}
-                      </motion.div>
-                    )}
+                    {suggestions.length > 0 &&
+                      typeof window !== "undefined" &&
+                      createPortal(
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          transition={{ duration: 0.2 }}
+                          className="fixed z-[9999] bg-white shadow-xl rounded-lg overflow-hidden max-h-[60vh] overflow-y-auto"
+                          style={{
+                            width: searchContainerRef.current ? searchContainerRef.current.offsetWidth : "auto",
+                            top: searchContainerRef.current
+                              ? searchContainerRef.current.getBoundingClientRect().bottom + window.scrollY
+                              : 0,
+                            left: searchContainerRef.current
+                              ? searchContainerRef.current.getBoundingClientRect().left
+                              : 0,
+                          }}
+                        >
+                          {suggestions.map((suggestion, index) => (
+                            <motion.div
+                              key={index}
+                              whileHover={{
+                                backgroundColor: "#2CA4B5",
+                                color: "white",
+                              }}
+                              className="p-3 cursor-pointer hover:bg-[#2CA4B5] hover:text-white transition-colors duration-200 border-b border-gray-100 last:border-b-0"
+                              onClick={() => handleSuggestionClick(suggestion)}
+                            >
+                              <div className="flex items-center">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="h-4 w-4 mr-2 flex-shrink-0"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                  />
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                  />
+                                </svg>
+                                <span className="truncate text-sm sm:text-base">{suggestion.display_name}</span>
+                              </div>
+                            </motion.div>
+                          ))}
+                        </motion.div>,
+                        document.body,
+                      )}
                   </AnimatePresence>
                 </div>
                 <div className="mt-4 flex justify-center">
