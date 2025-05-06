@@ -35,9 +35,15 @@ const DashboardCharts = () => {
     fetchChartData();
   }, [timeFrame]);
 
-  const bookingsData = chartData?.[timeFrame]?.bookings || [];
-  const totalStudents = chartData?.[timeFrame]?.totalStudents || 0;
-  const revenue = chartData?.[timeFrame]?.revenue || 0;
+  // Extract data with proper fallbacks
+  const timeframeData = chartData?.[timeFrame] || {};
+  const bookingsData = timeframeData.bookings || [];
+  const metrics = timeframeData.metrics || {};
+  const {
+    totalBookings = 0,
+    totalStudents = 0,
+    totalRevenue = 0
+  } = metrics;
 
   if (loading) return <div className="p-4">Loading...</div>;
   if (error) return <div className="text-red-500 p-4">{error}</div>;
@@ -80,7 +86,7 @@ const DashboardCharts = () => {
       </div>
 
       {/* Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-5 rounded-2xl border border-blue-100">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-blue-100 rounded-xl">
@@ -90,6 +96,20 @@ const DashboardCharts = () => {
             </div>
             <div>
               <div className="text-sm text-gray-500">Total Bookings</div>
+              <div className="text-2xl font-bold text-gray-800">{totalBookings}</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-5 rounded-2xl border border-purple-100">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-purple-100 rounded-xl">
+              <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+            <div>
+              <div className="text-sm text-gray-500">Total Students</div>
               <div className="text-2xl font-bold text-gray-800">{totalStudents}</div>
             </div>
           </div>
@@ -104,7 +124,7 @@ const DashboardCharts = () => {
             </div>
             <div>
               <div className="text-sm text-gray-500">Total Revenue</div>
-              <div className="text-2xl font-bold text-gray-800">₹{revenue}</div>
+              <div className="text-2xl font-bold text-gray-800">₹{totalRevenue.toLocaleString()}</div>
             </div>
           </div>
         </div>
@@ -113,8 +133,9 @@ const DashboardCharts = () => {
       {/* Booking Health Progress */}
       <div className="space-y-4 p-5 bg-gray-50 rounded-2xl">
         <div className="text-md font-semibold text-gray-700">Booking Health</div>
-        {["pending", "confirmed", "rejected"].map((key, idx) => {
+        {["pending", "confirmed", "rejected"].map((key) => {
           const total = bookingsData.reduce((acc, cur) => acc + (cur[key] || 0), 0);
+          const percentage = totalBookings > 0 ? (total / totalBookings) * 100 : 0;
           const colors = {
             pending: { bg: "bg-amber-100", fill: "bg-amber-400" },
             confirmed: { bg: "bg-emerald-100", fill: "bg-emerald-400" },
@@ -125,12 +146,17 @@ const DashboardCharts = () => {
             <div key={key} className="space-y-2">
               <div className="flex justify-between text-sm text-gray-600">
                 <span className="capitalize">{key}</span>
-                <span>{total} <span className="text-gray-400">({Math.round((total / totalStudents) * 100 || 0)}%)</span></span>
+                <span>
+                  {total} 
+                  <span className="text-gray-400 ml-2">
+                    ({Math.round(percentage)}%)
+                  </span>
+                </span>
               </div>
               <div className={`h-3 w-full ${colors[key].bg} rounded-full overflow-hidden`}>
                 <div 
                   className={`${colors[key].fill} h-full rounded-full transition-all duration-500`} 
-                  style={{ width: `${Math.min((total / totalStudents) * 100 || 0, 100)}%` }}
+                  style={{ width: `${Math.min(percentage, 100)}%` }}
                 />
               </div>
             </div>
@@ -189,7 +215,10 @@ const DashboardCharts = () => {
                   borderRadius: '8px',
                   boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                 }}
-                formatter={(value) => [value, key === 'revenue' ? '₹' : '']}
+                formatter={(value, name) => [
+                  name === 'revenue' ? `₹${value}` : value,
+                  name.charAt(0).toUpperCase() + name.slice(1)
+                ]}
               />
               <Legend 
                 wrapperStyle={{ paddingTop: 20 }}
