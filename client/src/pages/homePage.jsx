@@ -1631,167 +1631,6 @@ const HomePage = () => {
         </section>
       </div>
 
-      {/* Features Section */}
-      <section className="py-10 bg-gradient-to-b from-[#e6f7fa] to-white relative">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true, margin: "-100px" }}
-            className="grid gap-10 md:grid-cols-3 text-center"
-          >
-            {[
-              {
-                img: "./assets/online-booking 1.png",
-                title: "Quick and easy bookings",
-                desc: "Secure your room in no time with hassle-free instant booking",
-              },
-              {
-                img: "./assets/choice 1.png",
-                title: "The widest choice",
-                desc: "Browse verified, affordable student rooms close to university",
-              },
-              {
-                img: "./assets/support 1.png",
-                title: "We're here to help",
-                desc: "Reach out to our friendly team of experts who are always on hand",
-              },
-            ].map((feature, index) => (
-              <motion.div
-                key={index}
-                whileHover={{ y: -5 }}
-                className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
-              >
-                <div className="flex justify-center mb-6">
-                  <motion.img
-                    whileHover={{ rotate: 5, scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                    src={feature.img}
-                    alt={feature.title}
-                    className="h-24 w-auto"
-                  />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600">{feature.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Popular Cities Section */}
-      <section className="py-10 bg-white" id="cities">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true, margin: "-100px" }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">
-              Explore popular student cities
-            </h2>
-            <div className="w-20 h-1 bg-[#2CA4B5] mx-auto"></div>
-          </motion.div>
-
-          <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
-            {[
-              {
-                name: "Kolkata",
-                img: "assets/kolkata.png",
-                coords: { lat: 22.5726, lng: 88.3639 },
-                properties: 263,
-              },
-              {
-                name: "Bankura",
-                img: "assets/bankura.png",
-                coords: { lat: 23.2324, lng: 87.0712 },
-                properties: 263,
-              },
-              {
-                name: "West Medinipur",
-                img: "assets/westMed.png",
-                coords: { lat: 22.4211, lng: 87.3216 },
-                properties: 263,
-              },
-              {
-                name: "Jhargram",
-                img: "assets/jhargram.png",
-                coords: { lat: 22.4526, lng: 86.9946 },
-                properties: 263,
-              },
-              {
-                name: "Bardhaman",
-                img: "assets/bardhaman.png",
-                coords: { lat: 23.2333, lng: 87.8667 },
-                properties: 263,
-              },
-              {
-                name: "Kalyani",
-                img: "assets/kalyani.png",
-                coords: { lat: 22.9756, lng: 88.4345 },
-                properties: 263,
-              },
-              {
-                name: "Durgapur",
-                img: "assets/durgapur.png",
-                coords: { lat: 23.5204, lng: 87.3119 },
-                properties: 263,
-              },
-              {
-                name: "Asansole",
-                img: "assets/asansole.png",
-                coords: { lat: 23.6739, lng: 86.9524 },
-                properties: 263,
-              },
-              {
-                name: "Bolpur",
-                img: "assets/bolpur.png",
-                coords: { lat: 23.6688, lng: 87.6836 },
-                properties: 263,
-              },
-            ].map((city, index) => (
-              <motion.div
-                key={index}
-                whileHover={{ y: -10 }}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                viewport={{ once: true, margin: "-50px" }}
-                onClick={() => handleCityClick(city.name, city.coords)}
-                className="group cursor-pointer"
-              >
-                <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
-                  <div className="relative overflow-hidden">
-                    <img
-                      src={city.img || "/placeholder.svg"}
-                      alt={city.name}
-                      className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                      <p className="font-medium">View properties</p>
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold text-[#2CA4B5] group-hover:text-teal-700 transition-colors duration-300">
-                      {city.name}
-                    </h3>
-                    <p className="text-gray-600 text-sm">
-                      {city.properties} properties
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Nearby Recommendations Section */}
       <section className="py-10 bg-gray-50">
         <div className="container mx-auto px-6">
@@ -2012,6 +1851,167 @@ const HomePage = () => {
                 />
               </svg>
             </motion.button>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-10 bg-gradient-to-b from-[#e6f7fa] to-white relative">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true, margin: "-100px" }}
+            className="grid gap-10 md:grid-cols-3 text-center"
+          >
+            {[
+              {
+                img: "./assets/online-booking 1.png",
+                title: "Quick and easy bookings",
+                desc: "Secure your room in no time with hassle-free instant booking",
+              },
+              {
+                img: "./assets/choice 1.png",
+                title: "The widest choice",
+                desc: "Browse verified, affordable student rooms close to university",
+              },
+              {
+                img: "./assets/support 1.png",
+                title: "We're here to help",
+                desc: "Reach out to our friendly team of experts who are always on hand",
+              },
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                whileHover={{ y: -5 }}
+                className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
+              >
+                <div className="flex justify-center mb-6">
+                  <motion.img
+                    whileHover={{ rotate: 5, scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                    src={feature.img}
+                    alt={feature.title}
+                    className="h-24 w-auto"
+                  />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-800 mb-3">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600">{feature.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Popular Cities Section */}
+      <section className="py-10 bg-white" id="cities">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true, margin: "-100px" }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl font-bold text-gray-800 mb-4">
+              Explore popular student cities
+            </h2>
+            <div className="w-20 h-1 bg-[#2CA4B5] mx-auto"></div>
+          </motion.div>
+
+          <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
+            {[
+              {
+                name: "Kolkata",
+                img: "assets/kolkata.png",
+                coords: { lat: 22.5726, lng: 88.3639 },
+                properties: 263,
+              },
+              {
+                name: "Bankura",
+                img: "assets/bankura.png",
+                coords: { lat: 23.2324, lng: 87.0712 },
+                properties: 263,
+              },
+              {
+                name: "West Medinipur",
+                img: "assets/westMed.png",
+                coords: { lat: 22.4211, lng: 87.3216 },
+                properties: 263,
+              },
+              {
+                name: "Jhargram",
+                img: "assets/jhargram.png",
+                coords: { lat: 22.4526, lng: 86.9946 },
+                properties: 263,
+              },
+              {
+                name: "Bardhaman",
+                img: "assets/bardhaman.png",
+                coords: { lat: 23.2333, lng: 87.8667 },
+                properties: 263,
+              },
+              {
+                name: "Kalyani",
+                img: "assets/kalyani.png",
+                coords: { lat: 22.9756, lng: 88.4345 },
+                properties: 263,
+              },
+              {
+                name: "Durgapur",
+                img: "assets/durgapur.png",
+                coords: { lat: 23.5204, lng: 87.3119 },
+                properties: 263,
+              },
+              {
+                name: "Asansole",
+                img: "assets/asansole.png",
+                coords: { lat: 23.6739, lng: 86.9524 },
+                properties: 263,
+              },
+              {
+                name: "Bolpur",
+                img: "assets/bolpur.png",
+                coords: { lat: 23.6688, lng: 87.6836 },
+                properties: 263,
+              },
+            ].map((city, index) => (
+              <motion.div
+                key={index}
+                whileHover={{ y: -10 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                viewport={{ once: true, margin: "-50px" }}
+                onClick={() => handleCityClick(city.name, city.coords)}
+                className="group cursor-pointer"
+              >
+                <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+                  <div className="relative overflow-hidden">
+                    <img
+                      src={city.img || "/placeholder.svg"}
+                      alt={city.name}
+                      className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                      <p className="font-medium">View properties</p>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold text-[#2CA4B5] group-hover:text-teal-700 transition-colors duration-300">
+                      {city.name}
+                    </h3>
+                    <p className="text-gray-600 text-sm">
+                      {city.properties} properties
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
