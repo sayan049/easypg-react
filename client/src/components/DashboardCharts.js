@@ -80,7 +80,7 @@ import { baseurl } from "../constant/urls";
 const DashboardCharts = () => {
   const [activeTab, setActiveTab] = useState("bookings");
   const [timeFrame, setTimeFrame] = useState("weekly");
-  const [chartData, setChartData] = useState(MOCK_DATA);
+  const [chartData, setChartData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
