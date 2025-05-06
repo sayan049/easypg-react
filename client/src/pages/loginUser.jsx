@@ -528,8 +528,17 @@ function LoginUser() {
       {/* Right Section */}
       <div className="hidden lg:flex lg:w-4/12 flex-col justify-center items-center bg-[#2ca4b53b] text-white p-12 relative">
         {/* Mess Mate Text */}
-        <h1 className="text-xl font-bold absolute top-6 right-6">
-          Mess <span className="">Mate</span>
+        <h1 className="text-xl font-bold absolute top-2 right-6">
+        <div className="inline-flex items-center text-5xl font-bold space-x-1">
+                  <img
+                    src="./assets/companylogo.png"
+                    alt="logo"
+                    className="mr-[-4px]" // Adjust spacing between the image and text
+                  />
+                  <div className="text-3xl font-bold text-[#2CA4B5] mt-[20px] ml-[-10px]">
+                    essMate
+                  </div>
+                </div>
         </h1>
         {/* Ellipse Image Below Mess Mate Text */}
         <img

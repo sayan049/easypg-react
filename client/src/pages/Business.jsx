@@ -1,7 +1,5 @@
-
-
-import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Users,
   Settings,
@@ -13,10 +11,10 @@ import {
   XCircle,
   Building,
   Star,
-} from "lucide-react"
-import Footer from '../components/footer';
+} from "lucide-react";
+import Footer from "../components/footer";
 
-const BusinessModel= () => {
+const BusinessModel = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -26,63 +24,93 @@ const BusinessModel= () => {
     comparison: false,
     testimonial: false,
     cta: false,
-  })
-const navigate = useNavigate();
+  });
+  const navigate = useNavigate();
   useEffect(() => {
     // Set initial visibility with slight delays for cascade effect
-    const timer1 = setTimeout(() => setIsVisible((prev) => ({ ...prev, hero: true })), 100)
-    const timer2 = setTimeout(() => setIsVisible((prev) => ({ ...prev, benefits: true })), 300)
-    const timer3 = setTimeout(() => setIsVisible((prev) => ({ ...prev, comparison: true })), 600)
-    const timer4 = setTimeout(() => setIsVisible((prev) => ({ ...prev, testimonial: true })), 900)
-    const timer5 = setTimeout(() => setIsVisible((prev) => ({ ...prev, cta: true })), 1200)
+    const timer1 = setTimeout(
+      () => setIsVisible((prev) => ({ ...prev, hero: true })),
+      100
+    );
+    const timer2 = setTimeout(
+      () => setIsVisible((prev) => ({ ...prev, benefits: true })),
+      300
+    );
+    const timer3 = setTimeout(
+      () => setIsVisible((prev) => ({ ...prev, comparison: true })),
+      600
+    );
+    const timer4 = setTimeout(
+      () => setIsVisible((prev) => ({ ...prev, testimonial: true })),
+      900
+    );
+    const timer5 = setTimeout(
+      () => setIsVisible((prev) => ({ ...prev, cta: true })),
+      1200
+    );
 
     // Set up scroll observer for animations
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const sectionId = entry.target.id
-            setIsVisible((prev) => ({ ...prev, [sectionId]: true }))
+            const sectionId = entry.target.id;
+            setIsVisible((prev) => ({ ...prev, [sectionId]: true }));
           }
-        })
+        });
       },
-      { threshold: 0.1 },
-    )
+      { threshold: 0.1 }
+    );
 
     // Observe all sections
     document.querySelectorAll("section[id]").forEach((section) => {
-      observer.observe(section)
-    })
+      observer.observe(section);
+    });
 
     return () => {
-      clearTimeout(timer1)
-      clearTimeout(timer2)
-      clearTimeout(timer3)
-      clearTimeout(timer4)
-      clearTimeout(timer5)
-      observer.disconnect()
-    }
-  }, [])
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+      clearTimeout(timer4);
+      clearTimeout(timer5);
+      observer.disconnect();
+    };
+  }, []);
 
   return (
-    <div className="font-sans text-gray-800 overflow-x-hidden">
+    <div className=" text-gray-800 overflow-x-hidden">
       {/* Hero Section */}
       <section
         id="hero"
-        className="relative bg-gradient-to-br from-blue-50 to-white py-16 md:py-24 px-4 md:px-8 lg:px-16 overflow-hidden"
+        className="relative bg-custom-gradient py-16 md:py-24 px-4 md:px-8 lg:px-16 overflow-hidden"
       >
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
             <div
               className={`md:w-1/2 space-y-6 transition-all duration-1000 ease-out transform ${
-                isVisible.hero ? "translate-x-0 opacity-100" : "-translate-x-12 opacity-0"
+                isVisible.hero
+                  ? "translate-x-0 opacity-100"
+                  : "-translate-x-12 opacity-0"
               }`}
             >
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-gray-900">
-                Why Choose MessMate for Your PG Business?
-              </h1>
+              <div className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-gray-900">
+                Why Choose{" "}
+                <div className="inline-flex items-center text-5xl font-bold space-x-1">
+                  <img
+                    src="./assets/companylogo.png"
+                    alt="logo"
+                    className="mr-[-4px]" // Adjust spacing between the image and text
+                  />
+                  <div className="text-3xl font-bold text-[#2CA4B5] mt-[20px] ml-[-10px]">
+                    essMate
+                  </div>
+                </div>
+                <div></div> for Your PG Business?
+              </div>
+
               <p className="text-xl text-gray-600 max-w-lg">
-                Join 100+ PG owners who simplified their operations and grew their business with MessMate.
+                Join 100+ PG owners who simplified their operations and grew
+                their business with MessMate.
               </p>
               <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-full transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-lg">
                 See How It Works
@@ -92,22 +120,31 @@ const navigate = useNavigate();
               <div className="flex items-center gap-4 pt-4">
                 <div className="flex -space-x-2">
                   {[1, 2, 3, 4].map((num) => (
-                    <div key={num} className="w-8 h-8 rounded-full border-2 border-white overflow-hidden">
+                    <div
+                      key={num}
+                      className="w-8 h-8 rounded-full border-2 border-white overflow-hidden"
+                    >
                       <img
-                        src={`https://randomuser.me/api/portraits/${num % 2 === 0 ? "women" : "men"}/${num * 10 + 10}.jpg`}
+                        src={`https://randomuser.me/api/portraits/${
+                          num % 2 === 0 ? "women" : "men"
+                        }/${num * 10 + 10}.jpg`}
                         alt="User"
                         className="w-full h-full object-cover"
                       />
                     </div>
                   ))}
                 </div>
-                <p className="text-sm text-gray-600">Trusted by 100+ PG owners</p>
+                <p className="text-sm text-gray-600">
+                  Trusted by 100+ PG owners
+                </p>
               </div>
             </div>
 
             <div
               className={`md:w-1/2 mt-8 md:mt-0 transition-all duration-1000 delay-300 ease-out transform ${
-                isVisible.hero ? "translate-x-0 opacity-100" : "translate-x-12 opacity-0"
+                isVisible.hero
+                  ? "translate-x-0 opacity-100"
+                  : "translate-x-12 opacity-0"
               }`}
             >
               <div className="relative">
@@ -130,35 +167,50 @@ const navigate = useNavigate();
           {/* Trust Logos */}
           <div
             className={`mt-16 transition-all duration-700 ease-out transform ${
-              isVisible.hero ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+              isVisible.hero
+                ? "translate-y-0 opacity-100"
+                : "translate-y-8 opacity-0"
             }`}
           >
             <p className="text-center text-gray-500 mb-4 text-sm uppercase tracking-wider">
               Trusted by PG owners across
             </p>
             <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
-              {["Delhi", "Mumbai", "Bangalore", "Hyderabad", "Pune"].map((city) => (
-                <div key={city} className="flex items-center gap-1 text-gray-400">
-                  <Building size={18} />
-                  <span className="font-medium">{city}</span>
-                </div>
-              ))}
+              {["Delhi", "Mumbai", "Bangalore", "Hyderabad", "Pune"].map(
+                (city) => (
+                  <div
+                    key={city}
+                    className="flex items-center gap-1 text-gray-400"
+                  >
+                    <Building size={18} />
+                    <span className="font-medium">{city}</span>
+                  </div>
+                )
+              )}
             </div>
           </div>
         </div>
       </section>
 
       {/* Benefits Section */}
-      <section id="benefits" className="py-16 md:py-24 px-4 md:px-8 lg:px-16 bg-white">
+      <section
+        id="benefits"
+        className="py-16 md:py-24 px-4 md:px-8 lg:px-16 bg-white"
+      >
         <div className="max-w-7xl mx-auto">
           <div
             className={`text-center mb-16 transition-all duration-700 ease-out transform ${
-              isVisible.benefits ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
+              isVisible.benefits
+                ? "translate-y-0 opacity-100"
+                : "translate-y-12 opacity-0"
             }`}
           >
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">Everything you need to succeed</h2>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
+              Everything you need to succeed
+            </h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-              MessMate provides all the tools you need to manage and grow your PG business efficiently.
+              MessMate provides all the tools you need to manage and grow your
+              PG business efficiently.
             </p>
           </div>
 
@@ -167,7 +219,9 @@ const navigate = useNavigate();
               <div
                 key={index}
                 className={`bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-500 ease-out transform ${
-                  isVisible.benefits ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
+                  isVisible.benefits
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-12 opacity-0"
                 }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
@@ -183,14 +237,30 @@ const navigate = useNavigate();
       </section>
 
       {/* Comparison Section */}
-      <section id="comparison" className="py-16 md:py-24 px-4 md:px-8 lg:px-16 bg-gray-50">
+      <section
+        id="comparison"
+        className="py-16 md:py-24 px-4 md:px-8 lg:px-16 bg-gray-50"
+      >
         <div className="max-w-7xl mx-auto">
           <div
             className={`text-center mb-16 transition-all duration-700 ease-out transform ${
-              isVisible.comparison ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
+              isVisible.comparison
+                ? "translate-y-0 opacity-100"
+                : "translate-y-12 opacity-0"
             }`}
           >
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">Before vs After MessMate</h2>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
+              Before vs After   <div className="inline-flex items-center text-5xl font-bold space-x-1">
+                  <img
+                    src="./assets/companylogo.png"
+                    alt="logo"
+                    className="mr-[-4px]" // Adjust spacing between the image and text
+                  />
+                  <div className="text-3xl font-bold text-[#2CA4B5] mt-[20px] ml-[-10px]">
+                    essMate
+                  </div>
+                </div>
+            </h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-lg">
               See how MessMate transforms your PG business operations
             </p>
@@ -199,14 +269,18 @@ const navigate = useNavigate();
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
             <div
               className={`bg-white p-6 md:p-8 rounded-xl border border-red-100 transition-all duration-700 ease-out transform ${
-                isVisible.comparison ? "translate-x-0 opacity-100" : "-translate-x-12 opacity-0"
+                isVisible.comparison
+                  ? "translate-x-0 opacity-100"
+                  : "-translate-x-12 opacity-0"
               }`}
             >
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
                   <XCircle className="w-6 h-6 text-red-500" />
                 </div>
-                <h3 className="text-xl font-semibold text-red-600">Without MessMate</h3>
+                <h3 className="text-xl font-semibold text-red-600">
+                  Without MessMate
+                </h3>
               </div>
 
               <div className="space-y-4">
@@ -224,20 +298,26 @@ const navigate = useNavigate();
                   alt="Messy paperwork"
                   className="w-full h-auto rounded-lg mb-4"
                 />
-                <p className="text-red-600 text-sm italic text-center">Messy paperwork, missed calls, and confusion</p>
+                <p className="text-red-600 text-sm italic text-center">
+                  Messy paperwork, missed calls, and confusion
+                </p>
               </div>
             </div>
 
             <div
               className={`bg-white p-6 md:p-8 rounded-xl border border-green-100 transition-all duration-700 ease-out transform ${
-                isVisible.comparison ? "translate-x-0 opacity-100" : "translate-x-12 opacity-0"
+                isVisible.comparison
+                  ? "translate-x-0 opacity-100"
+                  : "translate-x-12 opacity-0"
               }`}
             >
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                   <CheckCircle className="w-6 h-6 text-green-500" />
                 </div>
-                <h3 className="text-xl font-semibold text-green-600">With MessMate</h3>
+                <h3 className="text-xl font-semibold text-green-600">
+                  With MessMate
+                </h3>
               </div>
 
               <div className="space-y-4">
@@ -255,7 +335,9 @@ const navigate = useNavigate();
                   alt="Organized dashboard"
                   className="w-full h-auto rounded-lg mb-4"
                 />
-                <p className="text-green-600 text-sm italic text-center">Clean dashboard, organized data, and growth</p>
+                <p className="text-green-600 text-sm italic text-center">
+                  Clean dashboard, organized data, and growth
+                </p>
               </div>
             </div>
           </div>
@@ -263,11 +345,16 @@ const navigate = useNavigate();
       </section>
 
       {/* Testimonial Section */}
-      <section id="testimonial" className="py-16 md:py-24 px-4 md:px-8 lg:px-16 bg-white">
+      <section
+        id="testimonial"
+        className="py-16 md:py-24 px-4 md:px-8 lg:px-16 bg-white"
+      >
         <div className="max-w-5xl mx-auto">
           <div
             className={`bg-gradient-to-br from-blue-50 to-indigo-50 p-8 md:p-12 rounded-2xl shadow-sm transition-all duration-700 ease-out transform ${
-              isVisible.testimonial ? "scale-100 opacity-100" : "scale-95 opacity-0"
+              isVisible.testimonial
+                ? "scale-100 opacity-100"
+                : "scale-95 opacity-0"
             }`}
           >
             <div className="flex flex-col md:flex-row items-center gap-8">
@@ -284,7 +371,10 @@ const navigate = useNavigate();
                   <p className="text-gray-600 text-sm">PG Owner, Bangalore</p>
                   <div className="flex items-center gap-1 mt-2">
                     {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className="w-4 h-4 fill-current text-yellow-400" />
+                      <Star
+                        key={star}
+                        className="w-4 h-4 fill-current text-yellow-400"
+                      />
                     ))}
                   </div>
                 </div>
@@ -293,10 +383,14 @@ const navigate = useNavigate();
               <div className="md:w-2/3">
                 <div className="text-4xl text-blue-400">"</div>
                 <p className="text-lg md:text-xl text-gray-700 mb-4">
-                  MessMate has transformed how I manage my PG. I've reduced my vacant rooms by 40% and saved countless
-                  hours on administration. It's the best investment I've made for my business.
+                  MessMate has transformed how I manage my PG. I've reduced my
+                  vacant rooms by 40% and saved countless hours on
+                  administration. It's the best investment I've made for my
+                  business.
                 </p>
-                <p className="text-gray-600 italic">— Using MessMate for 1.5 years</p>
+                <p className="text-gray-600 italic">
+                  — Using MessMate for 1.5 years
+                </p>
               </div>
             </div>
           </div>
@@ -310,14 +404,22 @@ const navigate = useNavigate();
       >
         <div
           className={`max-w-4xl mx-auto text-center transition-all duration-700 ease-out transform ${
-            isVisible.cta ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
+            isVisible.cta
+              ? "translate-y-0 opacity-100"
+              : "translate-y-12 opacity-0"
           }`}
         >
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6">Ready to grow your PG business?</h2>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6">
+            Ready to grow your PG business?
+          </h2>
           <p className="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">
-            Join the growing community of successful PG owners who are transforming their business with MessMate.
+            Join the growing community of successful PG owners who are
+            transforming their business with MessMate.
           </p>
-          <button className="bg-white text-blue-600 hover:bg-blue-50 font-medium px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2 mx-auto" onClick={() => navigate("/OurService")}>
+          <button
+            className="bg-white text-blue-600 hover:bg-blue-50 font-medium px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2 mx-auto"
+            onClick={() => navigate("/OurService")}
+          >
             Explore Our Services
             <ArrowRight size={18} />
           </button>
@@ -331,44 +433,50 @@ const navigate = useNavigate();
           </div>
         </div>
       </section>
-      <Footer/>
+      <Footer />
     </div>
-  )
-}
+  );
+};
 
 // Benefits data
 const benefits = [
   {
     icon: <Users className="w-6 h-6 text-blue-500" />,
     title: "Reach more students",
-    description: "Get listed where students are searching that increase your visibility and occupancy rates.",
+    description:
+      "Get listed where students are searching that increase your visibility and occupancy rates.",
   },
   {
     icon: <Settings className="w-6 h-6 text-blue-500" />,
     title: "Manage easily",
-    description: "Update room statuses and create bookings all in one intuitive interface.",
+    description:
+      "Update room statuses and create bookings all in one intuitive interface.",
   },
   {
     icon: <DollarSign className="w-6 h-6 text-blue-500" />,
     title: "Earn more, fill faster",
-    description: "Reduce vacancy periods and increase your monthly revenue with smart pricing.",
+    description:
+      "Reduce vacancy periods and increase your monthly revenue with smart pricing.",
   },
   {
     icon: <Bell className="w-6 h-6 text-blue-500" />,
     title: "Get notified instantly",
-    description: "Real-time alerts for all bookings, payments, and inquiries so you never miss out.",
+    description:
+      "Real-time alerts for all bookings, payments, and inquiries so you never miss out.",
   },
   {
     icon: <BarChart2 className="w-6 h-6 text-blue-500" />,
     title: "Insights to grow",
-    description: "Detailed analytics of your rooms and income performance to make data-driven decisions.",
+    description:
+      "Detailed analytics of your rooms and income performance to make data-driven decisions.",
   },
   {
     icon: <Star className="w-6 h-6 text-blue-500" />,
     title: "Build your reputation",
-    description: "Collect and showcase reviews from satisfied tenants to attract more customers.",
+    description:
+      "Collect and showcase reviews from satisfied tenants to attract more customers.",
   },
-]
+];
 
 // Comparison data
 const withoutFeatures = [
@@ -377,7 +485,7 @@ const withoutFeatures = [
   "Time-consuming rent collection process",
   "No visibility into business performance",
   "Difficulty tracking maintenance requests",
-]
+];
 
 const withFeatures = [
   "Automated digital record management",
@@ -385,5 +493,5 @@ const withFeatures = [
   "Streamlined payment collection system",
   "Real-time analytics and reporting",
   "Organized maintenance request tracking",
-]
+];
 export default BusinessModel;

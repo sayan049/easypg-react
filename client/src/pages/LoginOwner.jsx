@@ -528,10 +528,19 @@ function LoginOwner() {
       {/* Right Section */}
       <div className="hidden lg:flex lg:w-4/12 flex-col justify-center items-center bg-login-owner text-white p-12 relative overflow-hidden">
         {/* Mess Mate Text */}
-        <h1 className="text-xl font-bold absolute top-6 right-6">
-          Mess <span className="">Mate</span>
+        <h1 className="text-xl font-bold absolute top-0 right-6">
+        <div className="inline-flex items-center text-5xl font-bold space-x-1">
+                  <img
+                    src="./assets/companylogo.png"
+                    alt="logo"
+                    className="mr-[-4px]" // Adjust spacing between the image and text
+                  />
+                  <div className="text-3xl font-bold text-[#2CA4B5] mt-[20px] ml-[-10px]">
+                    essMate
+                  </div>
+                </div>
         </h1>
-        <h1 className="text-[13px] text-black  absolute top-11 right-[4.6rem]">
+        <h1 className="text-[13px] text-black  absolute top-12 right-[1.6rem]">
           Business
         </h1>
 

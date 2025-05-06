@@ -76,7 +76,16 @@ const OurService = () => {
         ref={addToRefs}
       >
         <h1 className="text-3xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          How MessMate Empowers PG Owners
+          How   <div className="inline-flex items-center text-5xl font-bold space-x-1">
+                  <img
+                    src="./assets/companylogo.png"
+                    alt="logo"
+                    className="mr-[-4px]" // Adjust spacing between the image and text
+                  />
+                  <div className="text-4xl font-bold text-[#2CA4B5] mt-[20px] ml-[-10px]">
+                    essMate
+                  </div>
+                </div> Empowers PG Owners
         </h1>
         <h2 className="text-xl md:text-3xl font-semibold mb-4">
           Your all-in-one PG management toolkit
@@ -289,7 +298,16 @@ const OurService = () => {
       <section className="py-12 md:py-16 overflow-hidden" ref={addToRefs}>
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
-            PGs on MessMate
+            PGs on   <div className="inline-flex items-center text-5xl font-bold space-x-1">
+                  <img
+                    src="./assets/companylogo.png"
+                    alt="logo"
+                    className="mr-[-4px]" // Adjust spacing between the image and text
+                  />
+                  <div className="text-3xl font-bold text-[#2CA4B5] mt-[23px] ml-[-10px]">
+                    essMate
+                  </div>
+                </div>
           </h2>
           <div className="flex gap-4 overflow-x-auto pb-6 snap-x">
             {[
