@@ -168,7 +168,7 @@ const DashboardCharts = () => {
       </div>
 
       {/* Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-5 rounded-2xl border border-blue-100">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-blue-100 rounded-xl">
@@ -246,7 +246,7 @@ const DashboardCharts = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Booking Health Progress */}
       <div className="space-y-4 p-5 bg-gray-50 rounded-2xl">
