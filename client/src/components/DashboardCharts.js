@@ -1,17 +1,9 @@
-import React, { useState, useEffect } from "react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  CartesianGrid,
-  ResponsiveContainer,
-} from "recharts";
+"use client"
 
+import { useState, useEffect } from "react"
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid, ResponsiveContainer } from "recharts"
 
-import { baseurl } from "../constant/urls";
+import { baseurl } from "../constant/urls"
 
 // Mock data for preview
 // const MOCK_DATA = {
@@ -78,11 +70,11 @@ import { baseurl } from "../constant/urls";
 // }
 
 const DashboardCharts = () => {
-  const [activeTab, setActiveTab] = useState("bookings");
-  const [timeFrame, setTimeFrame] = useState("weekly");
-  const [chartData, setChartData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState("bookings")
+  const [timeFrame, setTimeFrame] = useState("weekly")
+  const [chartData, setChartData] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   // In a real implementation, you would fetch data from your API
   // This is commented out to avoid the import error
@@ -90,44 +82,41 @@ const DashboardCharts = () => {
   useEffect(() => {
     const fetchChartData = async () => {
       try {
-        setLoading(true);
-        setError(null);
-        const accessToken = localStorage.getItem("accessToken");
-        if (!accessToken) return setError("Access token not found.");
+        setLoading(true)
+        setError(null)
+        const accessToken = localStorage.getItem("accessToken")
+        if (!accessToken) return setError("Access token not found.")
 
         // Replace with your actual API endpoint
-        
-        const response = await fetch(
-          `${baseurl}/auth/owner/chart-stats?timeFrame=${timeFrame}`,
-          {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          }
-        );
+
+        const response = await fetch(`${baseurl}/auth/owner/chart-stats?timeFrame=${timeFrame}`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        })
 
         if (!response.ok) {
-          throw new Error("Failed to fetch data");
+          throw new Error("Failed to fetch data")
         }
 
-        const data = await response.json();
-        setChartData(data);
+        const data = await response.json()
+        setChartData(data)
       } catch (error) {
-        setError("Error loading chart data.");
+        setError("Error loading chart data.")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchChartData();
-  }, [timeFrame]);
+    fetchChartData()
+  }, [timeFrame])
 
   // Extract data with proper fallbacks
-  const timeframeData = chartData?.[timeFrame] || {};
-  const bookingsData = timeframeData.bookings || [];
-  const metrics = timeframeData.metrics || {};
-  const { totalBookings = 0, totalStudents = 0, totalRevenue = 0 } = metrics;
+  const timeframeData = chartData?.[timeFrame] || {}
+  const bookingsData = timeframeData.bookings || []
+  const metrics = timeframeData.metrics || {}
+  const { totalBookings = 0, totalStudents = 0, totalRevenue = 0 } = metrics
 
-  if (loading) return <div className="p-4">Loading...</div>;
-  if (error) return <div className="text-red-500 p-4">{error}</div>;
+  if (loading) return <div className="p-4">Loading...</div>
+  if (error) return <div className="text-red-500 p-4">{error}</div>
 
   return (
     <div className="p-6 space-y-6 bg-white rounded-2xl shadow-lg border border-gray-100">
@@ -139,9 +128,7 @@ const DashboardCharts = () => {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-6 py-2 rounded-xl text-sm font-medium transition-all ${
-                activeTab === tab
-                  ? "bg-white shadow-sm text-[#2CA4B5]"
-                  : "text-gray-500 hover:bg-gray-50"
+                activeTab === tab ? "bg-white shadow-sm text-[#2CA4B5]" : "text-gray-500 hover:bg-gray-50"
               }`}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -155,9 +142,7 @@ const DashboardCharts = () => {
               key={frame}
               onClick={() => setTimeFrame(frame)}
               className={`px-4 py-2 rounded-lg text-xs font-medium ${
-                timeFrame === frame
-                  ? "bg-[#2CA4B5] text-white"
-                  : "text-gray-500 hover:bg-gray-50"
+                timeFrame === frame ? "bg-[#2CA4B5] text-white" : "text-gray-500 hover:bg-gray-50"
               }`}
             >
               {frame.charAt(0).toUpperCase() + frame.slice(1)}
@@ -171,12 +156,7 @@ const DashboardCharts = () => {
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-5 rounded-2xl border border-blue-100">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-blue-100 rounded-xl">
-              <svg
-                className="w-6 h-6 text-blue-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -187,9 +167,7 @@ const DashboardCharts = () => {
             </div>
             <div>
               <div className="text-sm text-gray-500">Total Bookings</div>
-              <div className="text-2xl font-bold text-gray-800">
-                {totalBookings}
-              </div>
+              <div className="text-2xl font-bold text-gray-800">{totalBookings}</div>
             </div>
           </div>
         </div>
@@ -197,12 +175,7 @@ const DashboardCharts = () => {
         <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-5 rounded-2xl border border-purple-100">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-purple-100 rounded-xl">
-              <svg
-                className="w-6 h-6 text-purple-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -213,9 +186,7 @@ const DashboardCharts = () => {
             </div>
             <div>
               <div className="text-sm text-gray-500">Total Students</div>
-              <div className="text-2xl font-bold text-gray-800">
-                {totalStudents}
-              </div>
+              <div className="text-2xl font-bold text-gray-800">{totalStudents}</div>
             </div>
           </div>
         </div>
@@ -223,12 +194,7 @@ const DashboardCharts = () => {
         <div className="bg-gradient-to-br from-green-50 to-green-100 p-5 rounded-2xl border border-green-100">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-green-100 rounded-xl">
-              <svg
-                className="w-6 h-6 text-green-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -239,9 +205,7 @@ const DashboardCharts = () => {
             </div>
             <div>
               <div className="text-sm text-gray-500">Total Revenue</div>
-              <div className="text-2xl font-bold text-gray-800">
-                ₹{totalRevenue.toLocaleString()}
-              </div>
+              <div className="text-2xl font-bold text-gray-800">₹{totalRevenue.toLocaleString()}</div>
             </div>
           </div>
         </div>
@@ -249,21 +213,15 @@ const DashboardCharts = () => {
 
       {/* Booking Health Progress */}
       <div className="space-y-4 p-5 bg-gray-50 rounded-2xl">
-        <div className="text-md font-semibold text-gray-700">
-          Booking Health
-        </div>
+        <div className="text-md font-semibold text-gray-700">Booking Health</div>
         {["pending", "confirmed", "rejected"].map((key) => {
-          const total = bookingsData.reduce(
-            (acc, cur) => acc + (cur[key] || 0),
-            0
-          );
-          const percentage =
-            totalBookings > 0 ? (total / totalBookings) * 100 : 0;
+          const total = bookingsData.reduce((acc, cur) => acc + (cur[key] || 0), 0)
+          const percentage = totalBookings > 0 ? (total / totalBookings) * 100 : 0
           const colors = {
             pending: { bg: "bg-amber-100", fill: "bg-amber-400" },
             confirmed: { bg: "bg-emerald-100", fill: "bg-emerald-400" },
             rejected: { bg: "bg-rose-100", fill: "bg-rose-400" },
-          };
+          }
 
           return (
             <div key={key} className="space-y-2">
@@ -271,21 +229,17 @@ const DashboardCharts = () => {
                 <span className="capitalize">{key}</span>
                 <span>
                   {total}
-                  <span className="text-gray-400 ml-2">
-                    ({Math.round(percentage)}%)
-                  </span>
+                  <span className="text-gray-400 ml-2">({Math.round(percentage)}%)</span>
                 </span>
               </div>
-              <div
-                className={`h-3 w-full ${colors[key].bg} rounded-full overflow-hidden`}
-              >
+              <div className={`h-3 w-full ${colors[key].bg} rounded-full overflow-hidden`}>
                 <div
                   className={`${colors[key].fill} h-full rounded-full transition-all duration-500`}
                   style={{ width: `${Math.min(percentage, 100)}%` }}
                 />
               </div>
             </div>
-          );
+          )
         })}
       </div>
 
@@ -294,12 +248,7 @@ const DashboardCharts = () => {
         <div className="bg-gray-50 p-5 rounded-2xl">
           <div className="flex items-center gap-2 mb-6">
             <div className="p-2 bg-[#2CA4B5] rounded-lg">
-              <svg
-                className="w-5 h-5 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -308,21 +257,12 @@ const DashboardCharts = () => {
                 />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-gray-800">
-              PG Booking Trends
-            </h3>
+            <h3 className="text-lg font-semibold text-gray-800">PG Booking Trends</h3>
           </div>
 
           <ResponsiveContainer width="100%" height={320}>
-            <LineChart
-              data={bookingsData}
-              margin={{ top: 20, right: 20, left: 0, bottom: 5 }}
-            >
-              <CartesianGrid
-                horizontal={true}
-                vertical={false}
-                stroke="#e5e7eb"
-              />
+            <LineChart data={bookingsData} margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
+              <CartesianGrid horizontal={true} vertical={false} stroke="#e5e7eb" />
               <XAxis
                 dataKey="label"
                 tickLine={false}
@@ -335,8 +275,8 @@ const DashboardCharts = () => {
                 axisLine={false}
                 tick={{ fill: "#6b7280", fontSize: 12 }}
                 width={40}
-                domain={[0, 100]}
-                tickFormatter={(value) => `${value}%`}
+                domain={[0, 10]}
+                tickFormatter={(value) => `${value}`}
               />
               <Tooltip
                 contentStyle={{
@@ -345,18 +285,11 @@ const DashboardCharts = () => {
                   borderRadius: "8px",
                   boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                 }}
-                formatter={(value, name) => [
-                  `${value}%`,
-                  name.charAt(0).toUpperCase() + name.slice(1),
-                ]}
+                formatter={(value, name) => [`${value}`, name.charAt(0).toUpperCase() + name.slice(1)]}
               />
               <Legend
                 wrapperStyle={{ paddingTop: 20 }}
-                formatter={(value) => (
-                  <span className="capitalize text-sm text-gray-600">
-                    {value}
-                  </span>
-                )}
+                formatter={(value) => <span className="capitalize text-sm text-gray-600">{value}</span>}
               />
               {/* Background histogram bars */}
               {bookingsData.map((entry, index) => (
@@ -420,12 +353,7 @@ const DashboardCharts = () => {
       {activeTab === "revenue" && (
         <div className="h-60 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center gap-3">
           <div className="p-4 bg-white rounded-full shadow-lg">
-            <svg
-              className="w-8 h-8 text-[#2CA4B5]"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-8 h-8 text-[#2CA4B5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -434,17 +362,14 @@ const DashboardCharts = () => {
               />
             </svg>
           </div>
-          <div className="text-gray-500 font-medium">
-            Revenue Analytics Coming Soon
-          </div>
+          <div className="text-gray-500 font-medium">Revenue Analytics Coming Soon</div>
           <p className="text-sm text-gray-400 text-center px-8">
-            We're working on bringing you detailed revenue insights with
-            beautiful visualizations.
+            We're working on bringing you detailed revenue insights with beautiful visualizations.
           </p>
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default DashboardCharts;
+export default DashboardCharts
