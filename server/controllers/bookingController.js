@@ -453,6 +453,7 @@
 const Booking = require("../modules/Booking");
 const PgOwner = require("../modules/pgProvider");
 const User = require("../modules/user");
+const moment = require('moment'); // Make sure to install this if not already installed
 const MaintenanceRequest = require("../modules/MaintenanceRequest");
 const rateLimiters = new Map(); // In-memory rate limiter per studentId
 const RATE_LIMIT_DURATION = 60 * 1000; // 1 minute
@@ -1710,5 +1711,93 @@ exports.getOwnerDashboardStats = async (req, res) => {
   } catch (error) {
     console.error("Dashboard stats error:", error);
     res.status(500).json({ message: "Failed to fetch dashboard data" });
+  }
+};
+//chart data for owner dashboard
+
+
+
+// Helper function to aggregate bookings by time frame
+const aggregateBookingsByTimeFrame = (bookings, timeFrame) => {
+  let groupedBookings = [];
+
+  bookings.forEach((booking) => {
+    const label = moment(booking.createdAt).format(timeFrame === 'weekly' ? 'YYYY-WW' : timeFrame === 'monthly' ? 'YYYY-MM' : 'YYYY');
+    
+    // Find existing entry for the specific time frame
+    const existing = groupedBookings.find(item => item.label === label);
+
+    if (existing) {
+      // Update the counts
+      existing.pending += booking.status === 'pending' ? 1 : 0;
+      existing.confirmed += booking.status === 'confirmed' ? 1 : 0;
+      existing.rejected += booking.status === 'rejected' ? 1 : 0;
+    } else {
+      // Add new entry for this label
+      groupedBookings.push({
+        label,
+        pending: booking.status === 'pending' ? 1 : 0,
+        confirmed: booking.status === 'confirmed' ? 1 : 0,
+        rejected: booking.status === 'rejected' ? 1 : 0,
+      });
+    }
+  });
+
+  return groupedBookings;
+};
+
+// Function to get the chart stats for a specific owner
+exports.getChartStats = async (req, res) => {
+  try {
+    const { timeFrame } = req.query; // Get the timeFrame and ownerId from query
+    const ownerId = req.user.id; // Get the ownerId from the authenticated user
+    console.log("Owner ID:", ownerId);
+    console.log("Time Frame:", timeFrame);
+
+    // Validate timeFrame
+    if (!['weekly', 'monthly', 'yearly'].includes(timeFrame)) {
+      return res.status(400).json({ error: 'Invalid timeFrame. Use "weekly", "monthly", or "yearly".' });
+    }
+
+    // Validate ownerId
+    if (!mongoose.Types.ObjectId.isValid(ownerId)) {
+      return res.status(400).json({ error: 'Invalid ownerId.' });
+    }
+
+    // Get the start and end date for the given time frame
+    const now = moment();
+    let startDate;
+    if (timeFrame === 'weekly') {
+      startDate = now.clone().startOf('week');
+    } else if (timeFrame === 'monthly') {
+      startDate = now.clone().startOf('month');
+    } else if (timeFrame === 'yearly') {
+      startDate = now.clone().startOf('year');
+    }
+
+    // Get bookings for the specific owner within the specified time frame
+    const bookings = await Booking.find({
+      pgOwner: ownerId, // Filter by pgOwner (ownerId)
+      status: { $in: ['pending', 'confirmed', 'rejected'] },
+      createdAt: { $gte: startDate.toDate() },
+    });
+
+    // Aggregate data based on time frame
+    const aggregatedData = aggregateBookingsByTimeFrame(bookings, timeFrame);
+
+    // Count the unique students in the specific time frame
+    const uniqueStudents = new Set(bookings.map((booking) => booking.student.toString()));
+    const totalStudentsInTimeFrame = uniqueStudents.size;
+
+    // Return the data
+    return res.json({
+      [timeFrame]: {
+        bookings: aggregatedData,
+        totalStudentsInTimeFrame, // Add the total number of unique students in the time frame
+      },
+    });
+  } catch (error) {
+    console.error('Error in getChartStats:', error);
+    return res.status(500).json({ error: 'Internal server error' });
   }
 };

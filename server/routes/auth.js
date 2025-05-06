@@ -31,7 +31,8 @@ const {
   getMaintenanceHistory,
   cancelBooking,
   submitFeedback,
-  getOwnerDashboardStats
+  getOwnerDashboardStats,
+  getChartStats
 } = require('../controllers/bookingController');
 
 
@@ -265,5 +266,7 @@ router.post('/bookings/:id', cancelBooking);
 router.post('/ratings-feedback', authenticateJWT, submitFeedback);
 // Get dashboard stats for the owner
 router.get('/dashboard/owner-stats', authenticateJWT, getOwnerDashboardStats);
+//dashboard chart stats
+router.get('/owner/chart-stats', authenticateJWT, getChartStats);
 
 module.exports = router;
