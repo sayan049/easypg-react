@@ -1374,7 +1374,7 @@ const HomePage = () => {
         {/* Hero Section */}
         <section
           id="home"
-          className="relative bg-gradient-to-br from-[#2CA4B5] via-[#4db6c5] to-[#7fd4e1] py-20 lg:py-32 overflow-hidden"
+          className="relative bg-gradient-to-br from-[#2CA4B5] via-[#4db6c5] to-[#7fd4e1] py-10 lg:py-32 overflow-hidden"
         >
           {/* Background Pattern */}
           <div className="absolute inset-0 opacity-10">
@@ -1542,7 +1542,7 @@ const HomePage = () => {
       </div>
 
       {/* Features Section */}
-      <section className="py-20 bg-gradient-to-b from-[#e6f7fa] to-white">
+      <section className="py-10 bg-gradient-to-b from-[#e6f7fa] to-white">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -1591,7 +1591,7 @@ const HomePage = () => {
       </section>
 
       {/* Popular Cities Section */}
-      <section className="py-20 bg-white" id="cities">
+      <section className="py-10 bg-white" id="cities">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -1662,7 +1662,7 @@ const HomePage = () => {
       </section>
 
       {/* Nearby Recommendations Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-10 bg-gray-50">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -1873,7 +1873,7 @@ const HomePage = () => {
       </section>
 
       {/* About Section */}
-      <section className="py-20 bg-gray-50" id="about">
+      <section className="py-10 bg-gray-50" id="about">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -1914,7 +1914,7 @@ const HomePage = () => {
       </section>
 
       {/* Services Section */}
-      <section className="py-20 bg-white" id="services">
+      <section className="py-10 bg-white" id="services">
         <div className="container mx-auto px-6">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -1985,7 +1985,7 @@ const HomePage = () => {
       </section>
 
       {/* Contact Us Section */}
-      <section className="py-20 bg-gray-50" id="contactus">
+      <section className="py-10 bg-gray-50" id="contactus">
         <div className="container mx-auto px-6">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
