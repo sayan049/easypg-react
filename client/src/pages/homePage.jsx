@@ -968,7 +968,7 @@
 // export default HomePage;
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Footer from "../components/footer";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -1008,18 +1008,17 @@ const HomePage = () => {
     document.title = "MessMate - Find your nearest paying guest";
   }, []);
 
-  let debounceTimeout;
+  const debounceTimeout = useRef(null);
+
 
   const handleInputChange = async (event) => {
     const query = event.target.value;
     setSearchItem(query);
 
     if (query.length > 3) {
-      clearTimeout(debounceTimeout);
-
-      debounceTimeout = setTimeout(async () => {
+      clearTimeout(debounceTimeout.current);
+      debounceTimeout.current = setTimeout(async () => {
         const fetchUrl = `${LocationIqurl}?input=${encodeURIComponent(query)}`;
-
         try {
           const response = await fetch(fetchUrl);
           const data = await response.json();
@@ -1027,11 +1026,34 @@ const HomePage = () => {
         } catch (error) {
           console.error("Error fetching data from backend:", error);
         }
-      }, 1000); // Reduced debounce delay for better UX
+      }, 1000);
     } else {
       setSuggestions([]);
     }
   };
+
+  // const handleInputChange = async (event) => {
+  //   const query = event.target.value;
+  //   setSearchItem(query);
+
+  //   if (query.length > 3) {
+  //     // clearTimeout(debounceTimeout);
+  //     clearTimeout(debounceTimeout.current);
+  //     debounceTimeout = setTimeout(async () => {
+  //       const fetchUrl = `${LocationIqurl}?input=${encodeURIComponent(query)}`;
+
+  //       try {
+  //         const response = await fetch(fetchUrl);
+  //         const data = await response.json();
+  //         setSuggestions(data || []);
+  //       } catch (error) {
+  //         console.error("Error fetching data from backend:", error);
+  //       }
+  //     }, 1000); // Reduced debounce delay for better UX
+  //   } else {
+  //     setSuggestions([]);
+  //   }
+  // };
 
   const handleSuggestionClick = (suggestion) => {
     setSearchItem(suggestion.display_name);
@@ -1500,7 +1522,7 @@ const HomePage = () => {
                     </motion.button>
 
                     {/* Suggestions Dropdown */}
-                    {suggestions.length > 0 && (
+                    {/* {suggestions.length > 0 && (
                       <div className="absolute w-full mt-1 bg-white shadow-lg rounded-lg">
                         {suggestions.map((suggestion, index) => (
                           <div
@@ -1512,6 +1534,19 @@ const HomePage = () => {
                           </div>
                         ))}
                       </div>
+                    )} */}
+                    {suggestions.length > 0 && (
+                      <ul className="absolute z-50 bg-white w-full mt-2 rounded shadow-md max-h-60 overflow-y-auto">
+                        {suggestions.map((s, i) => (
+                          <li
+                            key={i}
+                            onClick={() => handleSuggestionClick(s)}
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                          >
+                            {s.display_name}
+                          </li>
+                        ))}
+                      </ul>
                     )}
                   </div>
                 </div>
