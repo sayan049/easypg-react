@@ -1523,7 +1523,7 @@ const HomePage = () => {
                     {/* Suggestions Dropdown */}
                     {/* Suggestions Dropdown */}
                     {suggestions.length > 0 && (
-                      <div className="absolute right-0 w-full mt-1 bg-white shadow-lg rounded-lg max-w-full">
+                      <div className="absolute right-0 w-full mt-1 bg-white shadow-lg rounded-lg max-w-full z-50">
                         {suggestions.map((suggestion, index) => (
                           <div
                             key={index}
@@ -1632,7 +1632,7 @@ const HomePage = () => {
       </div>
 
       {/* Features Section */}
-      <section className="py-10 bg-gradient-to-b from-[#e6f7fa] to-white">
+      <section className="py-10 bg-gradient-to-b from-[#e6f7fa] to-white relative">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
