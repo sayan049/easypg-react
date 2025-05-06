@@ -9,7 +9,7 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
-import { useEffect } from "react";
+
 
 import { baseurl } from "../constant/urls";
 
