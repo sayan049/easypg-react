@@ -1,4 +1,3 @@
-
 // "use client";
 
 // import { useState, useEffect, useRef } from "react";
@@ -1077,166 +1076,173 @@
 
 // export default HomePage;
 
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import Footer from "../components/footer"
-import { Link, useNavigate } from "react-router-dom"
-import { useLocation } from "react-router-dom"
-import { motion, AnimatePresence } from "framer-motion"
-import "../designs/style.css"
-import { ToastContainer, toast } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
-import UserProfile from "../components/UserProfile"
-import "../designs/UserProfile.css"
-import { useAuth } from "../contexts/AuthContext"
-import { LocationIqurl } from "../constant/urls"
-import { createPortal } from "react-dom"
+import { useState, useEffect, useRef } from "react";
+import Footer from "../components/footer";
+import { Link, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import "../designs/style.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import UserProfile from "../components/UserProfile";
+import "../designs/UserProfile.css";
+import { useAuth } from "../contexts/AuthContext";
+import { LocationIqurl } from "../constant/urls";
+import { createPortal } from "react-dom";
 
 const HomePage = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const [message, setMessage] = useState("")
-  const [searchItem, setSearchItem] = useState("")
-  const [showDropdown, setShowDropdown] = useState(false)
-  const [logoutStatus, setLogoutStatus] = useState("")
-  const [suggestions, setSuggestions] = useState([])
-  const [selectedLocation, setSelectedLocation] = useState(null)
-  const [isSearchFocused, setIsSearchFocused] = useState(false)
-  const { userName, IsAuthenticated, handleLogout, logoutSuccess, isOwnerAuthenticated, ownerName } = useAuth()
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [nearbyMesses, setNearbyMesses] = useState([])
-  const [isLocating, setIsLocating] = useState(false)
-  const [locationError, setLocationError] = useState(null)
-  const searchContainerRef = useRef(null)
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [message, setMessage] = useState("");
+  const [searchItem, setSearchItem] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [logoutStatus, setLogoutStatus] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const {
+    userName,
+    IsAuthenticated,
+    handleLogout,
+    logoutSuccess,
+    isOwnerAuthenticated,
+    ownerName,
+  } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [nearbyMesses, setNearbyMesses] = useState([]);
+  const [isLocating, setIsLocating] = useState(false);
+  const [locationError, setLocationError] = useState(null);
+  const searchContainerRef = useRef(null);
 
   useEffect(() => {
-    document.title = "MessMate - Find your nearest paying guest"
-  }, [])
+    document.title = "MessMate - Find your nearest paying guest";
+  }, []);
 
-  const debounceTimeout = useRef(null)
+  const debounceTimeout = useRef(null);
 
   const handleInputChange = async (event) => {
-    const query = event.target.value
-    setSearchItem(query)
+    const query = event.target.value;
+    setSearchItem(query);
 
     if (query.length > 3) {
-      clearTimeout(debounceTimeout.current)
+      clearTimeout(debounceTimeout.current);
       debounceTimeout.current = setTimeout(async () => {
-        const fetchUrl = `${LocationIqurl}?input=${encodeURIComponent(query)}`
+        const fetchUrl = `${LocationIqurl}?input=${encodeURIComponent(query)}`;
 
         try {
-          const response = await fetch(fetchUrl)
-          const data = await response.json()
-          setSuggestions(data || [])
+          const response = await fetch(fetchUrl);
+          const data = await response.json();
+          setSuggestions(data || []);
         } catch (error) {
-          console.error("Error fetching data from backend:", error)
+          console.error("Error fetching data from backend:", error);
         }
-      }, 1000)
+      }, 1000);
     } else {
-      setSuggestions([])
+      setSuggestions([]);
     }
-  }
+  };
 
   const handleSuggestionClick = (suggestion) => {
-    setSearchItem(suggestion.display_name)
+    setSearchItem(suggestion.display_name);
     setSelectedLocation({
       lat: suggestion.lat,
       lng: suggestion.lng,
-    })
-    const coords = { lat: suggestion.lat, lng: suggestion.lon }
+    });
+    const coords = { lat: suggestion.lat, lng: suggestion.lon };
 
-    setSuggestions([])
+    setSuggestions([]);
 
     navigate("/MessFind", {
       state: { userLocation: coords, item: suggestion.display_name },
-    })
-  }
+    });
+  };
 
   const performSearch = () => {
     if (!selectedLocation) {
-      toast.error("Please select a location from the suggestions!")
-      return
+      toast.error("Please select a location from the suggestions!");
+      return;
     }
 
     navigate("/MessFind", {
       state: { userLocation: selectedLocation, item: searchItem },
-    })
-    setSearchItem("")
-  }
+    });
+    setSearchItem("");
+  };
 
   const handleCityClick = (cityName, coords) => {
-    setSearchItem(cityName)
-    setSelectedLocation(coords)
+    setSearchItem(cityName);
+    setSelectedLocation(coords);
     navigate("/MessFind", {
       state: { userLocation: coords, item: cityName },
-    })
-  }
+    });
+  };
 
   useEffect(() => {
-    const storedMessage = localStorage.getItem("sId_message")
+    const storedMessage = localStorage.getItem("sId_message");
     if (storedMessage) {
-      setMessage(location.state?.message || "")
-      toast.success(storedMessage)
+      setMessage(location.state?.message || "");
+      toast.success(storedMessage);
     }
 
     const timer = setTimeout(() => {
-      setMessage("")
-      localStorage.removeItem("sId_message")
-    }, 5000)
+      setMessage("");
+      localStorage.removeItem("sId_message");
+    }, 5000);
 
-    return () => clearTimeout(timer)
-  }, [location.state?.message])
+    return () => clearTimeout(timer);
+  }, [location.state?.message]);
 
   useEffect(() => {
     if (IsAuthenticated) {
       try {
-        console.log("user name:", userName)
+        console.log("user name:", userName);
       } catch (error) {
-        console.error("Error decoding or accessing token:", error)
+        console.error("Error decoding or accessing token:", error);
       }
     } else if (isOwnerAuthenticated) {
       try {
-        console.log("owner name:", ownerName)
+        console.log("owner name:", ownerName);
       } catch (error) {
-        console.error("Error decoding or accessing token:", error)
+        console.error("Error decoding or accessing token:", error);
       }
     } else {
-      console.error("Token is not present in cookies")
+      console.error("Token is not present in cookies");
     }
-  }, [IsAuthenticated, userName, isOwnerAuthenticated, ownerName])
+  }, [IsAuthenticated, userName, isOwnerAuthenticated, ownerName]);
 
   useEffect(() => {
-    const storedLogoutStatus = localStorage.getItem("logoutStatus")
+    const storedLogoutStatus = localStorage.getItem("logoutStatus");
     if (storedLogoutStatus) {
-      setLogoutStatus(storedLogoutStatus)
+      setLogoutStatus(storedLogoutStatus);
       setTimeout(() => {
-        localStorage.removeItem("logoutStatus")
-        setLogoutStatus("")
-      }, 5000)
+        localStorage.removeItem("logoutStatus");
+        setLogoutStatus("");
+      }, 5000);
     }
-  }, [])
+  }, []);
 
   const handleLogoutClick = () => {
-    handleLogout()
-  }
+    handleLogout();
+  };
 
   const handleScroll = (event, id) => {
-    event.preventDefault()
-    const targetSection = document.getElementById(id)
+    event.preventDefault();
+    const targetSection = document.getElementById(id);
 
     if (targetSection) {
       targetSection.scrollIntoView({
         behavior: "smooth",
         block: "start",
-      })
+      });
     }
-  }
+  };
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-  }
+  };
 
   const staggerChildren = {
     hidden: { opacity: 0 },
@@ -1246,67 +1252,71 @@ const HomePage = () => {
         staggerChildren: 0.2,
       },
     },
-  }
+  };
 
   const handleFindNearMe = () => {
-    setIsLocating(true)
-    setLocationError(null)
+    setIsLocating(true);
+    setLocationError(null);
 
     if (!navigator.geolocation) {
-      setLocationError("Geolocation is not supported by your browser")
-      setIsLocating(false)
-      toast.error("Geolocation is not supported by your browser")
-      return
+      setLocationError("Geolocation is not supported by your browser");
+      setIsLocating(false);
+      toast.error("Geolocation is not supported by your browser");
+      return;
     }
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        const { latitude, longitude } = position.coords
+        const { latitude, longitude } = position.coords;
 
         setTimeout(() => {
-          setIsLocating(false)
-          toast.success("Found your location! Showing nearby messes.")
-        }, 2000)
+          setIsLocating(false);
+          toast.success("Found your location! Showing nearby messes.");
+        }, 2000);
       },
       (error) => {
-        setIsLocating(false)
-        let errorMessage = "Unknown error occurred while getting your location"
+        setIsLocating(false);
+        let errorMessage = "Unknown error occurred while getting your location";
 
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = "Location permission denied. Please enable location services."
-            break
+            errorMessage =
+              "Location permission denied. Please enable location services.";
+            break;
           case error.POSITION_UNAVAILABLE:
-            errorMessage = "Location information is unavailable"
-            break
+            errorMessage = "Location information is unavailable";
+            break;
           case error.TIMEOUT:
-            errorMessage = "Location request timed out"
-            break
+            errorMessage = "Location request timed out";
+            break;
         }
 
-        setLocationError(errorMessage)
-        toast.error(errorMessage)
+        setLocationError(errorMessage);
+        toast.error(errorMessage);
       },
       {
         enableHighAccuracy: true,
         timeout: 10000,
         maximumAge: 0,
-      },
-    )
-  }
+      }
+    );
+  };
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
-        setSuggestions([])
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target)
+      ) {
+        setSuggestions([]);
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="font-sans bg-white">
@@ -1316,7 +1326,11 @@ const HomePage = () => {
         <header className="sticky top-0 w-full z-50 bg-white shadow-md">
           <div className="container mx-auto px-4 py-3 flex justify-between items-center">
             <div className="flex items-center space-x-1">
-              <img src="./assets/companylogo.png" alt="MessMate Logo" className="h-10" />
+              <img
+                src="./assets/companylogo.png"
+                alt="MessMate Logo"
+                className="h-10"
+              />
               <div className="text-2xl font-bold bg-gradient-to-r from-[#2CA4B5] to-teal-600 bg-clip-text text-transparent">
                 MessMate
               </div>
@@ -1356,7 +1370,11 @@ const HomePage = () => {
                     >
                       <div className="py-1">
                         <Link
-                          to={IsAuthenticated ? "/newDashboard" : "/DashboardOwner"}
+                          to={
+                            IsAuthenticated
+                              ? "/newDashboard"
+                              : "/DashboardOwner"
+                          }
                           className="block px-4 py-3 text-sm text-gray-700 hover:bg-[#2CA4B5] hover:text-white transition-colors duration-200"
                           onClick={() => setShowDropdown(false)}
                         >
@@ -1365,8 +1383,8 @@ const HomePage = () => {
                         <div className="border-t border-gray-200"></div>
                         <button
                           onClick={() => {
-                            handleLogoutClick()
-                            setShowDropdown(false)
+                            handleLogoutClick();
+                            setShowDropdown(false);
                           }}
                           className="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-[#2CA4B5] hover:text-white transition-colors duration-200"
                         >
@@ -1404,7 +1422,11 @@ const HomePage = () => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d={menuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+                    d={
+                      menuOpen
+                        ? "M6 18L18 6M6 6l12 12"
+                        : "M4 6h16M4 12h16M4 18h16"
+                    }
                   />
                 </svg>
               </button>
@@ -1436,26 +1458,41 @@ const HomePage = () => {
                       viewBox="0 0 24 24"
                       stroke="currentColor"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 </div>
                 <nav className="flex-1 px-6 py-4">
-                  <motion.div variants={staggerChildren} initial="hidden" animate="visible" className="space-y-6">
-                    {["Home", "About", "Services", "Contact Us"].map((item, index) => (
-                      <motion.div key={index} variants={fadeInUp}>
-                        <Link
-                          to={`#${item.toLowerCase().replace(/\s+/g, "")}`}
-                          className="block text-lg font-medium text-gray-800 hover:text-[#2CA4B5] transition duration-300"
-                          onClick={(e) => {
-                            handleScroll(e, item.toLowerCase().replace(/\s+/g, ""))
-                            setMenuOpen(false)
-                          }}
-                        >
-                          {item}
-                        </Link>
-                      </motion.div>
-                    ))}
+                  <motion.div
+                    variants={staggerChildren}
+                    initial="hidden"
+                    animate="visible"
+                    className="space-y-6"
+                  >
+                    {["Home", "About", "Services", "Contact Us"].map(
+                      (item, index) => (
+                        <motion.div key={index} variants={fadeInUp}>
+                          <Link
+                            to={`#${item.toLowerCase().replace(/\s+/g, "")}`}
+                            className="block text-lg font-medium text-gray-800 hover:text-[#2CA4B5] transition duration-300"
+                            onClick={(e) => {
+                              handleScroll(
+                                e,
+                                item.toLowerCase().replace(/\s+/g, "")
+                              );
+                              setMenuOpen(false);
+                            }}
+                          >
+                            {item}
+                          </Link>
+                        </motion.div>
+                      )
+                    )}
                     <motion.div variants={fadeInUp}>
                       <Link
                         to="/ProviderSeeker"
@@ -1506,12 +1543,18 @@ const HomePage = () => {
                 className="text-center lg:text-left max-w-lg"
               >
                 <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight">
-                  Find Your Perfect <span className="text-yellow-200">Student Home</span> - Hassle-Free!
+                  Find Your Perfect{" "}
+                  <span className="text-yellow-200">Student Home</span> -
+                  Hassle-Free!
                 </h1>
                 <p className="text-white text-lg mt-4 opacity-90">
-                  The ultimate platform for students to find their ideal accommodation
+                  The ultimate platform for students to find their ideal
+                  accommodation
                 </p>
-                <div className="mt-8 relative w-full max-w-md mx-auto lg:mx-0 z-50" ref={searchContainerRef}>
+                <div
+                  className="mt-8 relative w-full max-w-md mx-auto lg:mx-0 z-[100]"
+                  ref={searchContainerRef}
+                >
                   <div
                     className={`flex border-3 rounded-full border-white transition-all duration-300 ${
                       isSearchFocused ? "ring-4 ring-white/30" : ""
@@ -1554,9 +1597,9 @@ const HomePage = () => {
                       className="absolute top-1/2 transform -translate-y-1/2 right-3 h-8 w-8 sm:h-10 sm:w-10 text-white bg-[#2CA4B5] rounded-full flex items-center justify-center shadow-md"
                       onClick={(e) => {
                         if (suggestions.length > 0) {
-                          handleSuggestionClick(suggestions[0])
+                          handleSuggestionClick(suggestions[0]);
                         } else {
-                          toast.error("Pick a valid location from suggestions")
+                          toast.error("Pick a valid location from suggestions");
                         }
                       }}
                       aria-label="Search"
@@ -1588,16 +1631,20 @@ const HomePage = () => {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: 10 }}
                           transition={{ duration: 0.2 }}
-                          className="fixed z-[9999] bg-white shadow-xl rounded-lg overflow-hidden max-h-[60vh] overflow-y-auto"
                           style={{
-                            width: searchContainerRef.current ? searchContainerRef.current.offsetWidth : "auto",
+                            width: searchContainerRef.current
+                              ? searchContainerRef.current.offsetWidth
+                              : "auto",
                             top: searchContainerRef.current
-                              ? searchContainerRef.current.getBoundingClientRect().bottom + window.scrollY
+                              ? searchContainerRef.current.getBoundingClientRect()
+                                  .bottom + window.scrollY
                               : 0,
                             left: searchContainerRef.current
-                              ? searchContainerRef.current.getBoundingClientRect().left
+                              ? searchContainerRef.current.getBoundingClientRect()
+                                  .left
                               : 0,
                           }}
+                          className="fixed z-[9999] bg-white shadow-xl rounded-lg overflow-hidden max-h-[60vh] overflow-y-auto"
                         >
                           {suggestions.map((suggestion, index) => (
                             <motion.div
@@ -1630,12 +1677,14 @@ const HomePage = () => {
                                     d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                                   />
                                 </svg>
-                                <span className="truncate text-sm sm:text-base">{suggestion.display_name}</span>
+                                <span className="truncate text-sm sm:text-base">
+                                  {suggestion.display_name}
+                                </span>
                               </div>
                             </motion.div>
                           ))}
                         </motion.div>,
-                        document.body,
+                        document.body
                       )}
                   </AnimatePresence>
                 </div>
@@ -1760,7 +1809,9 @@ const HomePage = () => {
                     className="h-24 w-auto"
                   />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-3">{feature.title}</h3>
+                <h3 className="text-xl font-semibold text-gray-800 mb-3">
+                  {feature.title}
+                </h3>
                 <p className="text-gray-600">{feature.desc}</p>
               </motion.div>
             ))}
@@ -1778,7 +1829,9 @@ const HomePage = () => {
             viewport={{ once: true, margin: "-100px" }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">Explore popular student cities</h2>
+            <h2 className="text-3xl font-bold text-gray-800 mb-4">
+              Explore popular student cities
+            </h2>
             <div className="w-20 h-1 bg-[#2CA4B5] mx-auto"></div>
           </motion.div>
 
@@ -1865,7 +1918,9 @@ const HomePage = () => {
                     <h3 className="text-lg font-semibold text-[#2CA4B5] group-hover:text-teal-700 transition-colors duration-300">
                       {city.name}
                     </h3>
-                    <p className="text-gray-600 text-sm">{city.properties} properties</p>
+                    <p className="text-gray-600 text-sm">
+                      {city.properties} properties
+                    </p>
                   </div>
                 </div>
               </motion.div>
@@ -1890,9 +1945,11 @@ const HomePage = () => {
                 Welcome to <span className="text-[#2CA4B5]">MessMate!</span>
               </p>
               <p className="text-gray-700 leading-relaxed mb-6">
-                We are more than just an app—we are a community committed to simplifying the lives of college students.
-                At MessMate, we believe that finding a comfortable and affordable place to live shouldn't be a hassle,
-                especially for students starting a new chapter away from home.
+                We are more than just an app—we are a community committed to
+                simplifying the lives of college students. At MessMate, we
+                believe that finding a comfortable and affordable place to live
+                shouldn't be a hassle, especially for students starting a new
+                chapter away from home.
               </p>
               <motion.button
                 whileHover={{ scale: 1.05, x: 5 }}
@@ -1907,7 +1964,12 @@ const HomePage = () => {
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                  />
                 </svg>
               </motion.button>
             </div>
@@ -1936,14 +1998,20 @@ const HomePage = () => {
               viewport={{ once: true, margin: "-100px" }}
               className="flex-1"
             >
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Why MessMate?</h3>
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">
+                Why MessMate?
+              </h3>
               <p className="text-3xl text-[#2CA4B5] font-semibold mb-6 flex items-baseline">
                 1000+
-                <span className="text-gray-700 text-xl ml-2">students helped!</span>
+                <span className="text-gray-700 text-xl ml-2">
+                  students helped!
+                </span>
               </p>
 
               <div className="bg-gray-50 p-6 rounded-xl shadow-sm">
-                <h4 className="text-xl font-semibold text-gray-800 mb-6">How It Works:</h4>
+                <h4 className="text-xl font-semibold text-gray-800 mb-6">
+                  How It Works:
+                </h4>
                 <ul className="space-y-6">
                   {[
                     { color: "bg-orange-500", text: "Download the app." },
@@ -1964,7 +2032,9 @@ const HomePage = () => {
                       viewport={{ once: true, margin: "-100px" }}
                       className="flex items-center"
                     >
-                      <span className={`h-5 w-5 ${step.color} rounded-full inline-block mr-4 flex-shrink-0`}></span>
+                      <span
+                        className={`h-5 w-5 ${step.color} rounded-full inline-block mr-4 flex-shrink-0`}
+                      ></span>
                       <span className="text-gray-700">{step.text}</span>
                     </motion.li>
                   ))}
@@ -2015,7 +2085,11 @@ const HomePage = () => {
               viewport={{ once: true, margin: "-100px" }}
               className="md:w-1/3 hidden md:block"
             >
-              <img src="assets/kolkata.png" alt="Customer Support" className="w-full h-auto rounded-lg shadow-lg" />
+              <img
+                src="assets/kolkata.png"
+                alt="Customer Support"
+                className="w-full h-auto rounded-lg shadow-lg"
+              />
             </motion.div>
 
             {/* Right Contact Info Section */}
@@ -2028,8 +2102,9 @@ const HomePage = () => {
             >
               <div className="bg-white border-l-4 border-[#2CA4B5] rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <p className="text-gray-700 mb-6 leading-relaxed">
-                  We are here to assist you! Reach out to us for inquiries, feedback, or support. Our team is dedicated
-                  to providing the best possible service.
+                  We are here to assist you! Reach out to us for inquiries,
+                  feedback, or support. Our team is dedicated to providing the
+                  best possible service.
                 </p>
                 <div className="space-y-4">
                   {[
@@ -2057,14 +2132,16 @@ const HomePage = () => {
                               index === 0
                                 ? "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                                 : index === 1
-                                  ? "M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                                  : "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                ? "M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                                : "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                             }
                           />
                         </svg>
                       </div>
                       <div>
-                        <p className="font-semibold text-gray-800">{contact.label}:</p>
+                        <p className="font-semibold text-gray-800">
+                          {contact.label}:
+                        </p>
                         <p className="text-gray-600">{contact.value}</p>
                       </div>
                     </div>
@@ -2093,8 +2170,8 @@ const HomePage = () => {
                             social === "facebook"
                               ? "M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"
                               : social === "twitter"
-                                ? "M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"
-                                : "M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01M7.5 7.5h9m-9 9h9M3 3h18v18H3z"
+                              ? "M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"
+                              : "M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01M7.5 7.5h9m-9 9h9M3 3h18v18H3z"
                           }
                         />
                       </svg>
@@ -2108,7 +2185,7 @@ const HomePage = () => {
       </section>
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;
