@@ -332,13 +332,10 @@ const Cart = () => {
         )}
 
         {/* Empty State */}
-        {
-          loading &&(
-            [1,2,3,4,5].map((i)=>{
-              <Skeleton/>
-            })
-          )
-        }
+        {loading &&
+  [1, 2, 3, 4, 5].map((i) => <Skeleton key={i} />)
+}
+
         {(filteredMesses.length && !loading) === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <Heart className="w-16 h-16 text-gray-300 mb-4" />
