@@ -102,7 +102,7 @@ const Recommendations = () => {
                   </div>
 
                   <div className="mt-4 flex flex-wrap gap-2">
-                    {mess.facility?.map((f, i) => (
+                    {mess.facility.length<3 && mess.facility?.map((f, i) => (
                       <span
                         key={i}
                         className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full"
@@ -110,6 +110,15 @@ const Recommendations = () => {
                         {f}
                       </span>
                     ))}
+                    {mess.facility.length>3 && mess.facility?.slice(0,3).map((f, i) => (
+                      <span
+                        key={i}
+                        className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full"
+                      >
+                        {f}
+                      </span>
+                    ))}
+                    {mess.facility.length>3 && <span>view more</span>}
                   </div>
 
                   <motion.button
