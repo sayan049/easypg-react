@@ -182,7 +182,8 @@ const MessFind = () => {
 
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
-  const { initialItem, userLocation } = useParams();
+  const { initialItem, userLocations } = useParams();
+  const userLocation = userLocations ? JSON.parse(decodeURIComponent(userLocations)) : null;
   const {IsAuthenticated}=useAuth();
   
   console.log(userLocation);

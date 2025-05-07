@@ -83,7 +83,7 @@ const HomePage = () => {
     navigate(
       `/MessFind/${encodeURIComponent(
         suggestion.display_name
-      )}/${encodeURIComponent(coords)}`
+      )}/${encodeURIComponent(JSON.stringify(coords))}`
     );
   };
 
@@ -99,7 +99,7 @@ const HomePage = () => {
     navigate(
       `/MessFind/${encodeURIComponent(
         searchItem
-      )}/${encodeURIComponent(selectedLocation)}`
+      )}/${encodeURIComponent(JSON.stringify(selectedLocation))}`
     );
 
     setSearchItem("");
@@ -114,7 +114,7 @@ const HomePage = () => {
     navigate(
       `/MessFind/${encodeURIComponent(
         cityName
-      )}/${encodeURIComponent(coords)}`
+      )}/${encodeURIComponent(JSON.stringify(coords))}`
     );
 
   };
