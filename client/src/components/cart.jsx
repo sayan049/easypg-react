@@ -76,7 +76,7 @@ const Cart = () => {
       console.error(err);
       toast.error("Failed to fetch mess data.");
     } finally{
-      setLoading(true);
+      setLoading(false);
     }
   };
 
