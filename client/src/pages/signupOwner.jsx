@@ -279,7 +279,7 @@ function SignupOwner() {
 
         const a = "Please verify your email to log in";
         localStorage.setItem("loginMessageOwner", a);
-        navigate("/LoginOwner", { state: { message: a } });
+        navigate("/login/owner", { state: { message: a } });
       } else {
         console.error("Signup failed:", response.data);
       }
