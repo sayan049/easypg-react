@@ -23,6 +23,7 @@ const HomePage = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [isLocationChanged, setIsLocationChanged] = useState(false);
   const {
     userName,
     IsAuthenticated,
@@ -208,6 +209,12 @@ const HomePage = () => {
       (position) => {
         const { latitude, longitude } = position.coords;
 
+        navigate(
+          `/MessFind/${encodeURIComponent(
+            "you"
+          )}/${encodeURIComponent(JSON.stringify(position.coords))}`
+        );
+
         setTimeout(() => {
           setIsLocating(false);
           toast.success("Found your location! Showing nearby messes.");
@@ -240,6 +247,20 @@ const HomePage = () => {
       }
     );
   };
+
+  // const nearMe = () => {
+  //   navigator.geolocation.getCurrentPosition((position) => {
+  //     const { latitude, longitude } = position.coords;
+  //     setPersonalInfo((prev) => ({
+  //       ...prev,
+  //       location: {
+  //         type: "Point",
+  //         coordinates: [longitude, latitude],
+  //       },
+  //     }));
+  //     setIsLocationChanged(true);
+  //   });
+  // };
 
   return (
     <div className="font-sans bg-white">
@@ -834,7 +855,7 @@ const HomePage = () => {
       </section>
 
       {/* Nearby Recommendations Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-10 bg-gray-50">
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -861,7 +882,8 @@ const HomePage = () => {
               onClick={handleFindNearMe}
               disabled={isLocating}
               className="flex items-center justify-center gap-2 bg-[#2CA4B5] text-white px-8 py-4 rounded-full font-medium shadow-md hover:bg-teal-600 transition-colors duration-300 disabled:opacity-70"
-            >
+              
+       >
               {isLocating ? (
                 <>
                   <svg
