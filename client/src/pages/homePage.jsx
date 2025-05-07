@@ -75,10 +75,15 @@ const HomePage = () => {
 
     setSuggestions([]);
 
+    // navigate(
+    //   `/MessFind?userLocation=${encodeURIComponent(
+    //     JSON.stringify(coords)
+    //   )}&item=${encodeURIComponent(suggestion.display_name)}`
+    // );
     navigate(
-      `/MessFind?userLocation=${encodeURIComponent(
-        JSON.stringify(coords)
-      )}&item=${encodeURIComponent(suggestion.display_name)}`
+      `/MessFind/${encodeURIComponent(
+        suggestion.display_name
+      )}/${encodeURIComponent(locationString)}`
     );
   };
 
