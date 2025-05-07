@@ -224,14 +224,14 @@ app.get("/auth/google/callback", (req, res, next) => {
     if (err) {
       console.error("Authentication Error:", err.message);
       return res.redirect(
-        `${ORIGIN}/ProviderSeeker?error=auth_failed&details=${encodeURIComponent(
+        `${ORIGIN}/choose-role?error=auth_failed&details=${encodeURIComponent(
           err.message
         )}`
       );
     }
     if (!user) {
       console.error("No user returned from Google OAuth");
-      return res.redirect(`${ORIGIN}/ProviderSeeker?error=auth_failed`);
+      return res.redirect(`${ORIGIN}/choose-role?error=auth_failed`);
     }
 
     const { accessToken, refreshToken } = user.tokens;

@@ -324,7 +324,7 @@ const HomePage = () => {
                 whileTap={{ scale: 0.95 }}
                 className="hidden lg:block rounded-full bg-white text-gray-800 px-6 py-2 border-2 border-[#2CA4B5] font-semibold text-sm hover:bg-[#2CA4B5] hover:text-white transition-colors duration-300"
               >
-                <Link to="/ProviderSeeker">House Owner / Student</Link>
+                <Link to="/choose-role">House Owner / Student</Link>
               </motion.button>
             )}
 
@@ -418,7 +418,7 @@ const HomePage = () => {
                     )}
                     <motion.div variants={fadeInUp}>
                       <Link
-                        to="/ProviderSeeker"
+                        to="/choose-role"
                         className="block text-lg font-medium text-[#2CA4B5] hover:text-teal-700 transition duration-300"
                         onClick={() => setMenuOpen(false)}
                       >
