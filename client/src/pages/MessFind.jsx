@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate , useParams  } from "react-router-dom";
 import MessBars from "../components/messBars";
 import Dropdown from "../components/dropdown";
 import Toggle from "../components/toggle";
@@ -8,6 +8,7 @@ import { FaSearch } from "react-icons/fa";
 import { LocationIqurl } from "../constant/urls";
 import { FaMale, FaFemale, FaUserFriends } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
+import { useAuth } from "../contexts/AuthContext";
 import "react-toastify/dist/ReactToastify.css";
 import {
   MdOutlineAccessTime,
@@ -181,11 +182,16 @@ const MessFind = () => {
 
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
+  const { initialItem, userLocations } = useParams();
+  const userLocation = userLocations ? JSON.parse(decodeURIComponent(userLocations)) : null;
+  const {IsAuthenticated}=useAuth();
+  
+  console.log(userLocation, "ggg");
 
-  const rawLocation = queryParams.get("userLocation");
-  const userLocation = rawLocation ? JSON.parse(rawLocation) : null;
+  // const rawLocation = queryParams.get("userLocation");
+  // const userLocation = rawLocation ? JSON.parse(rawLocation) : null;
 
-  const initialItem = queryParams.get("item");
+  // const initialItem = queryParams.get("item");
 
   // const userLocation = location.state?.userLocation || null;
   // const item = location.state?.item || null;
@@ -195,7 +201,7 @@ const MessFind = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(
-    userLocation || null
+    
   );
   const [checkFeatures, setCheckFeatures] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
@@ -274,40 +280,36 @@ const MessFind = () => {
     // setSearchQuery("");
   };
 
+  // useEffect(() => {
+  //   const rawLoc = queryParams.get("userLocation");
+  //   const item = queryParams.get("item");
+
+  //   if (rawLoc) {
+  //     try {
+  //       setSelectedLocation(JSON.parse(rawLoc));
+  //     } catch {
+  //       setSelectedLocation(null);
+  //     }
+  //   }
+
+  //   if (item) setItem(item);
+  // }, [location.search]);
   useEffect(() => {
-    const rawLoc = queryParams.get("userLocation");
-    const item = queryParams.get("item");
-
-    if (rawLoc) {
-      try {
-        setSelectedLocation(JSON.parse(rawLoc));
-      } catch {
-        setSelectedLocation(null);
-      }
+    // Parse userLocation from string format "lat,lng" into { lat, lng }
+    if (userLocation) {
+      //const [lat, lng] = userLocation.split(',').map(coord => parseFloat(coord));
+      setSelectedLocation(userLocation);
     }
+  }, [userLocation.search]);
 
-    if (item) setItem(item);
-  }, [location.search]);
+  useEffect(() => {
+    // You can now directly use `initialItem` and `selectedLocation` in your logic
+    if (initialItem) {
+      setItem(initialItem);
+    }
+  }, [initialItem]);
 
-  // useEffect(() => {
-  //   if (queryParams.get("userLocation")) {
-  //     window.scrollTo(0, 0); // optional scroll to top
-  //     setSelectedLocation(queryParams.get("userLocation"));
-  //   }
-  // }, [location.key]); // location.key changes on navigation
 
-  // useEffect(() => {
-  //   if (queryParams.get("userLocation")) {
-  //     setSelectedLocation(queryParams.get("userLocation"));
-  //   }
-  //   if (queryParams.get("userLocation")) {
-  //     setSelectedLocation(queryParams.get("userLocation"));
-  //   }
-  //   if (queryParams.get("item")) {
-  //     setItem(queryParams.get("item"));
-  //   }
-  // }, []);
-  // [userLocation, finalGender, gender, checkFeatures]
 
   const amenities = [
     {

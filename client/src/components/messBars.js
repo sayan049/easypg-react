@@ -6,6 +6,7 @@ import { findMessUrl, likedMessesUrl, getLikedMessUrl } from "../constant/urls";
 import { useInView } from "react-intersection-observer";
 import Skeleton from "./Skeleton";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { useAuth } from "../contexts/AuthContext";
 import {
   FaWind,
   FaTv,
@@ -41,6 +42,7 @@ function MessBars({
   const [liked, setLiked] = useState({});
   const [showAllAmenities, setShowAllAmenities] = useState({});
   const token = localStorage.getItem("accessToken");
+  const {IsAuthenticated}= useAuth();
 
   const [lastCardRef, lastCardInView] = useInView({
     threshold: 0.1,
@@ -64,6 +66,7 @@ function MessBars({
   const toggleLike = async (id) => {
     const newLikedState = !liked[id];
     setLiked((prev) => ({ ...prev, [id]: newLikedState }));
+    if(!IsAuthenticated) return;
     try {
       await axios.post(
         likedMessesUrl,
@@ -135,6 +138,7 @@ function MessBars({
   };
 
   const fetchLikedMesses = async () => {
+    if(!IsAuthenticated) return;
     try {
       const res = await axios.get(getLikedMessUrl, {
         headers: { Authorization: `Bearer ${token}` },
