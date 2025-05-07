@@ -297,8 +297,8 @@ const MessFind = () => {
   useEffect(() => {
     // Parse userLocation from string format "lat,lng" into { lat, lng }
     if (userLocation) {
-      const [lat, lng] = userLocation.split(',').map(coord => parseFloat(coord));
-      setSelectedLocation({ lat, lng });
+      //const [lat, lng] = userLocation.split(',').map(coord => parseFloat(coord));
+      setSelectedLocation(userLocation);
     }
   }, [userLocation]);
 
