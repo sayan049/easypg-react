@@ -182,6 +182,7 @@ const MessFind = () => {
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
   const { initialItem, userLocation } = useParams();
+  console.log(userLocation);
 
   // const rawLocation = queryParams.get("userLocation");
   // const userLocation = rawLocation ? JSON.parse(rawLocation) : null;
