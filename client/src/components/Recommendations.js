@@ -40,21 +40,29 @@ const Recommendations = () => {
 
         <div className="flex gap-4 overflow-x-auto overflow-y-hidden md:overflow-visible md:grid md:grid-cols-2 lg:grid-cols-4">
           {messes.map((mess, index) => {
-            const avgRating = mess.feedbacks?.length
+            const feedbacks = Array.isArray(mess.feedbacks)
+              ? mess.feedbacks
+              : [];
+            const avgRating = feedbacks.length
               ? (
-                  mess.feedbacks.reduce((sum, f) => sum + f.rating, 0) /
-                  mess.feedbacks.length
+                  feedbacks.reduce((sum, f) => sum + (f.rating || 0), 0) /
+                  feedbacks.length
                 ).toFixed(1)
               : "N/A";
 
-            const reviewCount = mess.feedbacks?.length || 0;
+            const reviewCount = feedbacks.length;
 
+            const roomPrices = Array.isArray(mess.roomInfo)
+              ? mess.roomInfo
+                  .map((r) => r.pricePerHead)
+                  .filter((p) => typeof p === "number")
+              : [];
             const price =
-              mess.roomInfo?.length > 0
-                ? Math.min(
-                    ...mess.roomInfo.map((r) => r.pricePerHead)
-                  ).toLocaleString()
+              roomPrices.length > 0
+                ? Math.min(...roomPrices).toLocaleString()
                 : "-";
+            console.log("feedbacks:", mess.feedbacks);
+            console.log("roomInfo:", mess.roomInfo);
 
             return (
               <motion.div
@@ -102,7 +110,7 @@ const Recommendations = () => {
                   </div>
 
                   <div className="mt-4 flex flex-wrap gap-2">
-                    {mess.facility.length<3 && mess.facility?.map((f, i) => (
+                    {mess.facility?.map((f, i) => (
                       <span
                         key={i}
                         className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full"
@@ -110,15 +118,6 @@ const Recommendations = () => {
                         {f}
                       </span>
                     ))}
-                    {mess.facility.length>3 && mess.facility?.slice(0,3).map((f, i) => (
-                      <span
-                        key={i}
-                        className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full"
-                      >
-                        {f}
-                      </span>
-                    ))}
-                    {mess.facility.length>3 && <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full underline">view more</span>}
                   </div>
 
                   <motion.button
