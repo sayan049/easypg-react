@@ -75,9 +75,11 @@ const HomePage = () => {
 
     setSuggestions([]);
 
-    navigate("/MessFind", {
-      state: { userLocation: coords, item: suggestion.display_name },
-    });
+    navigate(
+      `/MessFind?userLocation=${encodeURIComponent(
+        JSON.stringify(coords)
+      )}&item=${encodeURIComponent(suggestion.display_name)}`
+    );
   };
 
   const performSearch = () => {
@@ -86,18 +88,29 @@ const HomePage = () => {
       return;
     }
 
-    navigate("/MessFind", {
-      state: { userLocation: selectedLocation, item: searchItem },
-    });
+    // navigate("/MessFind", {
+    //   state: { userLocation: selectedLocation, item: searchItem },
+    // });
+    navigate(
+      `/MessFind?userLocation=${encodeURIComponent(
+        JSON.stringify(selectedLocation)
+      )}&item=${encodeURIComponent(searchItem)}`
+    );
+
     setSearchItem("");
   };
 
   const handleCityClick = (cityName, coords) => {
     setSearchItem(cityName);
     setSelectedLocation(coords);
-    navigate("/MessFind", {
-      state: { userLocation: coords, item: cityName },
-    });
+    // navigate("/MessFind", {
+    //   state: { userLocation: coords, item: cityName },
+    // });
+    navigate(
+      `/MessFind?userLocation=${encodeURIComponent(
+        JSON.stringify(coords)
+      )}&item=${encodeURIComponent(cityName)}`
+    );
   };
 
   useEffect(() => {
@@ -1075,5 +1088,3 @@ const HomePage = () => {
 };
 
 export default HomePage;
-
-

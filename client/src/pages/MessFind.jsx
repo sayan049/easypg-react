@@ -40,7 +40,7 @@ export const FilterModal = ({
   gender,
   setGender,
   priceFilter,
-  setPriceFilter
+  setPriceFilter,
 }) => {
   if (!isOpen) return null;
   return (
@@ -179,15 +179,23 @@ const MessFind = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const userLocation = location.state?.userLocation || null;
+  const { search } = useLocation();
+  const queryParams = new URLSearchParams(search);
+
+  const rawLocation = queryParams.get("userLocation");
+  const userLocation = rawLocation ? JSON.parse(rawLocation) : null;
+
+  const initialItem = queryParams.get("item");
+
+  // const userLocation = location.state?.userLocation || null;
   // const item = location.state?.item || null;
 
   const [price, setPrice] = useState(1500);
-  const [item, setItem] = useState(location.state?.item || "");
+  const [item, setItem] = useState(initialItem || "");
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(
-    location.state?.userLocation || null
+    userLocation || null
   );
   const [checkFeatures, setCheckFeatures] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
@@ -198,7 +206,6 @@ const MessFind = () => {
   const [gender, setGender] = useState("");
   const [finalGender, setFinalGender] = useState("");
   const [priceFilter, setPriceFilter] = useState({ min: 0, max: 100000 });
-
 
   let debounceTimeout;
 
@@ -268,23 +275,38 @@ const MessFind = () => {
   };
 
   useEffect(() => {
-    if (location.state?.userLocation) {
-      window.scrollTo(0, 0); // optional scroll to top
-      setSelectedLocation(location.state.userLocation);
-    }
-  }, [location.key]); // location.key changes on navigation
+    const rawLoc = queryParams.get("userLocation");
+    const item = queryParams.get("item");
 
-  useEffect(() => {
-    if (userLocation) {
-      setSelectedLocation(userLocation);
+    if (rawLoc) {
+      try {
+        setSelectedLocation(JSON.parse(rawLoc));
+      } catch {
+        setSelectedLocation(null);
+      }
     }
-    if (location.state?.userLocation) {
-      setSelectedLocation(location.state.userLocation);
-    }
-    if (location.state?.item) {
-      setItem(location.state.item);
-    }
-  }, []);
+
+    if (item) setItem(item);
+  }, [location.search]);
+
+  // useEffect(() => {
+  //   if (queryParams.get("userLocation")) {
+  //     window.scrollTo(0, 0); // optional scroll to top
+  //     setSelectedLocation(queryParams.get("userLocation"));
+  //   }
+  // }, [location.key]); // location.key changes on navigation
+
+  // useEffect(() => {
+  //   if (queryParams.get("userLocation")) {
+  //     setSelectedLocation(queryParams.get("userLocation"));
+  //   }
+  //   if (queryParams.get("userLocation")) {
+  //     setSelectedLocation(queryParams.get("userLocation"));
+  //   }
+  //   if (queryParams.get("item")) {
+  //     setItem(queryParams.get("item"));
+  //   }
+  // }, []);
   // [userLocation, finalGender, gender, checkFeatures]
 
   const amenities = [
