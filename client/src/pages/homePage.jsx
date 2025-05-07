@@ -916,7 +916,8 @@ const HomePage = () => {
 
           {/* Recommendations Cards */}
           {/* <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4"> */}
-          <div className="flex gap-4 overflow-auto md:grid md:grid-cols-2 lg:grid-cols-4 w-screen ">
+          {/* <div className="flex gap-4 overflow-x-auto md:overflow-visible md:grid md:grid-cols-2 lg:grid-cols-4"> */}
+          <div className="flex gap-4 overflow-x-auto overflow-y-hidden md:overflow-visible md:grid md:grid-cols-2 lg:grid-cols-4">
             {/* Sample recommendation cards - these would be populated with real data */}
             {[
               {
@@ -970,7 +971,9 @@ const HomePage = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
                 viewport={{ once: true, margin: "-50px" }}
-                className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group w-screen sm:w-auto"
+                // className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group w-screen sm:w-auto"
+                // className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group min-w-[280px] md:min-w-0"
+                className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group min-w-[280px] md:min-w-0 "
               >
                 <div className="relative overflow-hidden">
                   <img
@@ -1066,10 +1069,10 @@ const HomePage = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true, margin: "-100px" }}
-            className="max-w-3xl mx-auto"
+            className=" mx-auto"
           >
             <h2 className="text-3xl font-bold text-gray-800 mb-8">About</h2>
-            <div className="bg-white p-8 rounded-xl shadow-sm">
+            <div className="bg-white p-4 rounded-xl shadow-sm">
               <p className="text-2xl font-bold mb-6 text-gray-800">
                 Welcome to <span className="text-[#2CA4B5]">MessMate!</span>
               </p>
