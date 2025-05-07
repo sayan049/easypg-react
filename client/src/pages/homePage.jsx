@@ -209,7 +209,8 @@ const HomePage = () => {
       (position) => {
         const { latitude, longitude } = position.coords;
 
-        navigate(`/MessFind/${"you"}/${JSON.stringify({ latitude, longitude })}`);
+        navigate(`/MessFind/you/${encodeURIComponent(JSON.stringify({ lat: latitude, lng: longitude }))}`);
+
 
 
         setTimeout(() => {
