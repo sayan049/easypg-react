@@ -815,43 +815,59 @@ exports.getTopRatedMesses = async (req, res) => {
   try {
     const topMesses = await PgOwner.aggregate([
       {
-        $addFields: {
-          averageRating: { $avg: "$feedbacks.rating" },
-          totalFeedbacks: { $size: "$feedbacks" },
-        },
-      },
-      {
         $match: {
-          averageRating: { $ne: null }, // Exclude messes with null averageRating
-          totalFeedbacks: { $gt: 0 }, // Ensure at least one feedback exists
-        },
+          // Ensure feedbacks exists and is an array with at least one rating
+          feedbacks: { $exists: true, $type: "array", $ne: [] },
+          "feedbacks.rating": { $exists: true, $ne: null }
+        }
       },
       {
-        $sort: {
-          averageRating: -1,
-          totalFeedbacks: -1,
-        },
+        $addFields: {
+          // Safely calculate average rating
+          averageRating: { $avg: "$feedbacks.rating" },
+          // Safely get feedback count
+          totalFeedbacks: { 
+            $cond: {
+              if: { $isArray: "$feedbacks" },
+              then: { $size: "$feedbacks" },
+              else: 0
+            }
+          }
+        }
       },
-      {
-        $limit: 4,
-      },
+      // Only include documents with valid ratings
+      { $match: { averageRating: { $ne: null } } },
+      // Sort by highest rating first, then by most feedbacks
+      { $sort: { averageRating: -1, totalFeedbacks: -1 } },
+      // Limit to 4 results
+      { $limit: 4 },
+      // Project only needed fields
       {
         $project: {
-          // Include the fields you want to return
           firstName: 1,
           lastName: 1,
           messName: 1,
           profilePhoto: 1,
           averageRating: 1,
           totalFeedbacks: 1,
-          // Add other relevant fields
-        },
-      },
+          facility: 1,
+          gender: 1,
+          address: 1,
+          // Add any other fields you need
+        }
+      }
     ]);
+
+    if (!topMesses.length) {
+      return res.status(404).json({ message: "No rated messes found." });
+    }
 
     res.status(200).json({ data: topMesses });
   } catch (error) {
-    console.error("Error fetching top rated messes:", error);
-    res.status(500).json({ message: "Server error" });
+    console.error("Error in getTopRatedMesses:", error);
+    res.status(500).json({ 
+      message: "Failed to fetch top-rated messes",
+      error: error.message 
+    });
   }
 };
