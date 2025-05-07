@@ -511,11 +511,15 @@ exports.signupHandlerOwner = async (req, res) => {
     const ownerExists = await PgOwner.findOne({ email });
 
     if (userExists || ownerExists) {
-      return res.status(409).json({ message: "Email already exists", type: "error" });
+      return res
+        .status(409)
+        .json({ message: "Email already exists", type: "error" });
     }
 
     if (!password) {
-      return res.status(400).json({ message: "Password is required", type: "error" });
+      return res
+        .status(400)
+        .json({ message: "Password is required", type: "error" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -529,7 +533,9 @@ exports.signupHandlerOwner = async (req, res) => {
         parsedRoomInfo = JSON.parse(roomInfo);
       } catch (error) {
         console.error("Error parsing roomInfo:", error);
-        return res.status(400).json({ message: "Invalid roomInfo format", type: "error" });
+        return res
+          .status(400)
+          .json({ message: "Invalid roomInfo format", type: "error" });
       }
     }
 
@@ -538,7 +544,9 @@ exports.signupHandlerOwner = async (req, res) => {
       try {
         parsedLocation = JSON.parse(location);
       } catch (error) {
-        return res.status(400).json({ message: "Invalid location format", type: "error" });
+        return res
+          .status(400)
+          .json({ message: "Invalid location format", type: "error" });
       }
     }
 
@@ -549,7 +557,8 @@ exports.signupHandlerOwner = async (req, res) => {
       parsedLocation.coordinates.length !== 2
     ) {
       return res.status(400).json({
-        message: 'Invalid location format. Must be GeoJSON { type: "Point", coordinates: [lng, lat] }',
+        message:
+          'Invalid location format. Must be GeoJSON { type: "Point", coordinates: [lng, lat] }',
         type: "error",
       });
     }
@@ -588,10 +597,11 @@ exports.signupHandlerOwner = async (req, res) => {
     });
   } catch (error) {
     console.error("Error creating PG Owner:", error);
-    return res.status(500).json({ message: "Internal Server Error", type: "error" });
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", type: "error" });
   }
 };
-
 
 exports.checkEmailVerificationOwner = async (req, res) => {
   try {
@@ -807,15 +817,36 @@ exports.getTopRatedMesses = async (req, res) => {
       {
         $addFields: {
           averageRating: { $avg: "$feedbacks.rating" },
-          totalFeedbacks: { $size: "$feedbacks" }
-        }
+          totalFeedbacks: { $size: "$feedbacks" },
+        },
       },
       {
-        $sort: { averageRating: -1, totalFeedbacks: -1 }
+        $match: {
+          averageRating: { $ne: null }, // Exclude messes with null averageRating
+          totalFeedbacks: { $gt: 0 }, // Ensure at least one feedback exists
+        },
       },
       {
-        $limit: 4
-      }
+        $sort: {
+          averageRating: -1,
+          totalFeedbacks: -1,
+        },
+      },
+      {
+        $limit: 4,
+      },
+      {
+        $project: {
+          // Include the fields you want to return
+          firstName: 1,
+          lastName: 1,
+          messName: 1,
+          profilePhoto: 1,
+          averageRating: 1,
+          totalFeedbacks: 1,
+          // Add other relevant fields
+        },
+      },
     ]);
 
     res.status(200).json({ data: topMesses });
