@@ -188,7 +188,7 @@ router.get('/LoginUser/user/reset-password/:resetToken', (req, res) => {
     return res.json({
       message: 'Token is valid',
       // resetUrl: `https://easypg-react-client.onrender.com/LoginUser?resetToken=${resetToken}`,
-      resetUrl: `${frontendUrl}LoginUser?resetToken=${resetToken}`,
+      resetUrl: `${frontendUrl}/login/user?resetToken=${resetToken}`,
     });
   });
 });
