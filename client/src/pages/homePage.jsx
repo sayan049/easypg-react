@@ -916,7 +916,7 @@ const HomePage = () => {
 
           {/* Recommendations Cards */}
           {/* <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4"> */}
-          <div className="flex gap-4 overflow-x-auto md:grid md:grid-cols-2 lg:grid-cols-4 no-scrollbar">
+          <div className="flex gap-4 overflow-auto md:grid md:grid-cols-2 lg:grid-cols-4 w-screen ">
             {/* Sample recommendation cards - these would be populated with real data */}
             {[
               {
