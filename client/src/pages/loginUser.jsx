@@ -323,13 +323,48 @@ function LoginUser() {
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
       <Helmet>
-        <title>Student Login | Messmate</title>
+        <html lang="en-IN" />
+        <title>User Login | Messmate</title>
+
+        {/* Basic Meta */}
         <meta
           name="description"
-          content="Securely access your MessMate student account. Log in to access your Messmate dashboard and manage bookings, profile. Official student portal for MessMate users."
+          content="Securely access your MessMate user account. Log in to access your Messmate dashboard and manage bookings and profile. Official user portal for MessMate users."
         />
         <meta name="robots" content="noindex, nofollow" />
         <link rel="canonical" href="https://www.messmate.in/login/user" />
+
+        {/* Open Graph (for link sharing previews) */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.messmate.in/login/user" />
+        <meta property="og:title" content="User Login | Messmate" />
+        <meta
+          property="og:description"
+          content="Log in to your MessMate account and manage bookings, profile, and more. Secure portal for students and users."
+        />
+        <meta
+          property="og:image"
+          content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629877/og-login.jpg"
+        />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:creator" content="@MessMate" />
+        <meta name="twitter:title" content="User Login | Messmate" />
+        <meta
+          name="twitter:description"
+          content="Securely log in to your MessMate account to manage bookings and your profile."
+        />
+        <meta
+          name="twitter:image"
+          content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629877/og-login.jpg"
+        />
+
+        {/* Performance Hints */}
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
       </Helmet>
 
       <ToastContainer
@@ -342,12 +377,14 @@ function LoginUser() {
         <div className="w-full max-w-lg p-8">
           {/* Header Section */}
           <div className="lg:absolute lg:top-6 lg:left-6 flex flex-col lg:flex-row items-center mb-2rem lg:items-start justify-center lg:space-x-2 space-y-2 lg:space-y-0 lg:items-center">
-            <h1 className="text-3xl sm:text-4xl font-bold text-[#2ca4b5]">
-              MessMate Student Login Portal
-            </h1>
-            <h2 className="text-sm sm:text-lg font-normal text-center lg:text-left">
-              User
-            </h2>
+            <main>
+              <h1 className="text-xl sm:text-4xl font-bold text-[#2ca4b5]">
+                User Login
+              </h1>
+              <h2 className="text-sm sm:text-lg font-normal">
+                Secure Account Access
+              </h2>
+            </main>
           </div>
 
           {/* Create Account Text */}
@@ -372,6 +409,7 @@ function LoginUser() {
               <input
                 type="email"
                 name="email"
+                aria-label="Enter your email address"
                 placeholder="example@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -447,6 +485,7 @@ function LoginUser() {
                   type={isPasswordVisible ? "text" : "password"}
                   name="password"
                   placeholder="Password"
+                  aria-label="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
@@ -456,6 +495,9 @@ function LoginUser() {
                   type="button"
                   onClick={togglePasswordVisibility}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"
+                  aria-label={
+                    isPasswordVisible ? "Hide password" : "Show password"
+                  }
                 >
                   {isPasswordVisible ? <FiEyeOff /> : <FiEye />}
                 </button>
@@ -516,9 +558,10 @@ function LoginUser() {
               className="w-full  flex items-center justify-center  py-2 rounded-full hover:bg-[#0511121a] bg-[#116e7b1a]"
             >
               <img
-                src="/assets/googleIcon.png"
-                alt="Google"
+                src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629849/googleIcon_tu4wye.png"
+                alt="Log in with Google Account - MessMate user login Portal"
                 className="w-6 h-6 mr-2 text-gray-600"
+                loading="lazy"
               />
               <p> Log in with Google</p>
             </button>
@@ -542,9 +585,10 @@ function LoginUser() {
         <h1 className="text-xl font-bold absolute top-2 right-6">
           <div className="inline-flex items-center text-5xl font-bold space-x-1">
             <img
-              src="./assets/companylogo.png"
-              alt="logo"
-              className="mr-[-4px]" // Adjust spacing between the image and text
+              src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629877/companylogo_qz2ufw.png"
+              alt="MessMate - company Logo"
+              className="mr-[-4px]"
+              loading="lazy"
             />
             <div className="text-3xl font-bold text-[#2CA4B5] mt-[20px] ml-[-10px]">
               essMate
@@ -553,10 +597,12 @@ function LoginUser() {
         </h1>
         {/* Ellipse Image Below Mess Mate Text */}
         <img
-          src="/assets/Ellipse.png"
-          alt="Ellipse"
+          src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629895/Ellipse_crriyv.png"
+          alt="MessMate Visual Element"
           className="absolute top-[5rem] right-6 max-w-[50%]"
           style={{ paddingTop: "10px" }}
+          fetchpriority="high"
+          loading="lazy"
         />
 
         {/* Find Your Nearest Mess Text with Gradient */}
