@@ -1069,10 +1069,10 @@ const HomePage = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true, margin: "-100px" }}
-            className="max-w-3xl mx-auto"
+            className=" mx-auto"
           >
             <h2 className="text-3xl font-bold text-gray-800 mb-8">About</h2>
-            <div className="bg-white p-8 rounded-xl shadow-sm">
+            <div className="bg-white p-4 rounded-xl shadow-sm">
               <p className="text-2xl font-bold mb-6 text-gray-800">
                 Welcome to <span className="text-[#2CA4B5]">MessMate!</span>
               </p>
