@@ -97,9 +97,9 @@ const HomePage = () => {
     //   state: { userLocation: selectedLocation, item: searchItem },
     // });
     navigate(
-      `/MessFind?userLocation=${encodeURIComponent(
-        JSON.stringify(selectedLocation)
-      )}&item=${encodeURIComponent(searchItem)}`
+      `/MessFind/${encodeURIComponent(
+        searchItem
+      )}/${encodeURIComponent(selectedLocation)}`
     );
 
     setSearchItem("");
@@ -112,10 +112,11 @@ const HomePage = () => {
     //   state: { userLocation: coords, item: cityName },
     // });
     navigate(
-      `/MessFind?userLocation=${encodeURIComponent(
-        JSON.stringify(coords)
-      )}&item=${encodeURIComponent(cityName)}`
+      `/MessFind/${encodeURIComponent(
+        cityName
+      )}/${encodeURIComponent(coords)}`
     );
+
   };
 
   useEffect(() => {

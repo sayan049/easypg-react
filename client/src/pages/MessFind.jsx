@@ -181,11 +181,12 @@ const MessFind = () => {
 
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
+  const { initialItem, userLocation } = useParams();
 
-  const rawLocation = queryParams.get("userLocation");
-  const userLocation = rawLocation ? JSON.parse(rawLocation) : null;
+  // const rawLocation = queryParams.get("userLocation");
+  // const userLocation = rawLocation ? JSON.parse(rawLocation) : null;
 
-  const initialItem = queryParams.get("item");
+  // const initialItem = queryParams.get("item");
 
   // const userLocation = location.state?.userLocation || null;
   // const item = location.state?.item || null;
@@ -274,40 +275,36 @@ const MessFind = () => {
     // setSearchQuery("");
   };
 
+  // useEffect(() => {
+  //   const rawLoc = queryParams.get("userLocation");
+  //   const item = queryParams.get("item");
+
+  //   if (rawLoc) {
+  //     try {
+  //       setSelectedLocation(JSON.parse(rawLoc));
+  //     } catch {
+  //       setSelectedLocation(null);
+  //     }
+  //   }
+
+  //   if (item) setItem(item);
+  // }, [location.search]);
   useEffect(() => {
-    const rawLoc = queryParams.get("userLocation");
-    const item = queryParams.get("item");
-
-    if (rawLoc) {
-      try {
-        setSelectedLocation(JSON.parse(rawLoc));
-      } catch {
-        setSelectedLocation(null);
-      }
+    // Parse userLocation from string format "lat,lng" into { lat, lng }
+    if (userLocation) {
+      const [lat, lng] = userLocation.split(',').map(coord => parseFloat(coord));
+      setSelectedLocation({ lat, lng });
     }
+  }, [userLocation]);
 
-    if (item) setItem(item);
-  }, [location.search]);
+  useEffect(() => {
+    // You can now directly use `initialItem` and `selectedLocation` in your logic
+    if (initialItem) {
+      setItem(initialItem);
+    }
+  }, [initialItem]);
 
-  // useEffect(() => {
-  //   if (queryParams.get("userLocation")) {
-  //     window.scrollTo(0, 0); // optional scroll to top
-  //     setSelectedLocation(queryParams.get("userLocation"));
-  //   }
-  // }, [location.key]); // location.key changes on navigation
 
-  // useEffect(() => {
-  //   if (queryParams.get("userLocation")) {
-  //     setSelectedLocation(queryParams.get("userLocation"));
-  //   }
-  //   if (queryParams.get("userLocation")) {
-  //     setSelectedLocation(queryParams.get("userLocation"));
-  //   }
-  //   if (queryParams.get("item")) {
-  //     setItem(queryParams.get("item"));
-  //   }
-  // }, []);
-  // [userLocation, finalGender, gender, checkFeatures]
 
   const amenities = [
     {
