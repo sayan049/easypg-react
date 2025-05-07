@@ -46,8 +46,15 @@ const Recommendations = () => {
                   mess.feedbacks.length
                 ).toFixed(1)
               : "N/A";
+
             const reviewCount = mess.feedbacks?.length || 0;
-            const price = mess.roomInfo?.[0]?.pricePerHead || "—";
+
+            const price =
+              mess.roomInfo?.length > 0
+                ? Math.min(
+                    ...mess.roomInfo.map((r) => r.pricePerHead)
+                  ).toLocaleString()
+                : "-";
 
             return (
               <motion.div
