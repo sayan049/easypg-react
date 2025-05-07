@@ -300,7 +300,7 @@ const MessFind = () => {
       //const [lat, lng] = userLocation.split(',').map(coord => parseFloat(coord));
       setSelectedLocation(userLocation);
     }
-  }, [userLocation]);
+  }, [userLocation.search]);
 
   useEffect(() => {
     // You can now directly use `initialItem` and `selectedLocation` in your logic
