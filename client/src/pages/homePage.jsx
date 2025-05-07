@@ -916,8 +916,8 @@ const HomePage = () => {
 
           {/* Recommendations Cards */}
           {/* <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4"> */}
-          <div className="flex gap-4 overflow-x-auto md:overflow-visible md:grid md:grid-cols-2 lg:grid-cols-4">
-
+          {/* <div className="flex gap-4 overflow-x-auto md:overflow-visible md:grid md:grid-cols-2 lg:grid-cols-4"> */}
+          <div className="flex gap-4 overflow-x-auto overflow-y-hidden md:overflow-visible md:grid md:grid-cols-2 lg:grid-cols-4">
             {/* Sample recommendation cards - these would be populated with real data */}
             {[
               {
@@ -972,8 +972,8 @@ const HomePage = () => {
                 transition={{ duration: 0.4, delay: index * 0.1 }}
                 viewport={{ once: true, margin: "-50px" }}
                 // className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group w-screen sm:w-auto"
-                className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group min-w-[280px] md:min-w-0"
-
+                // className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group min-w-[280px] md:min-w-0"
+                className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group min-w-[280px] md:min-w-0 flex-shrink-0"
               >
                 <div className="relative overflow-hidden">
                   <img
