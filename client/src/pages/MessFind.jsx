@@ -186,7 +186,7 @@ const MessFind = () => {
   const userLocation = userLocations ? JSON.parse(decodeURIComponent(userLocations)) : null;
   const {IsAuthenticated}=useAuth();
   
-  console.log(userLocation);
+  console.log(userLocation, "ggg");
 
   // const rawLocation = queryParams.get("userLocation");
   // const userLocation = rawLocation ? JSON.parse(rawLocation) : null;
