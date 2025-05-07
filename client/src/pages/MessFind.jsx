@@ -8,6 +8,7 @@ import { FaSearch } from "react-icons/fa";
 import { LocationIqurl } from "../constant/urls";
 import { FaMale, FaFemale, FaUserFriends } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
+import { useAuth } from "../contexts/AuthContext";
 import "react-toastify/dist/ReactToastify.css";
 import {
   MdOutlineAccessTime,
@@ -182,6 +183,8 @@ const MessFind = () => {
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
   const { initialItem, userLocation } = useParams();
+  const {IsAuthenticated}=useAuth();
+  
   console.log(userLocation);
 
   // const rawLocation = queryParams.get("userLocation");
