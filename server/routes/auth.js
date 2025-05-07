@@ -75,6 +75,7 @@ router.post("/loginOwner", authHandlers.loginHandlerOwner);
 router.post("/likedMess", authenticateJWT, likedMess.likedMess);
 router.get("/getLikedMess", authenticateJWT, getLikedMess);
 router.get("/findMess", authHandlers.findMess);
+router.get("/getRecc", authHandlers.getTopRatedMesses);
 router.get("/getCart",authenticateJWT,likedMess.cartMess);
 
 // router.get("/protected", ensureAuthenticated, (req, res) => {

@@ -511,11 +511,15 @@ exports.signupHandlerOwner = async (req, res) => {
     const ownerExists = await PgOwner.findOne({ email });
 
     if (userExists || ownerExists) {
-      return res.status(409).json({ message: "Email already exists", type: "error" });
+      return res
+        .status(409)
+        .json({ message: "Email already exists", type: "error" });
     }
 
     if (!password) {
-      return res.status(400).json({ message: "Password is required", type: "error" });
+      return res
+        .status(400)
+        .json({ message: "Password is required", type: "error" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -529,7 +533,9 @@ exports.signupHandlerOwner = async (req, res) => {
         parsedRoomInfo = JSON.parse(roomInfo);
       } catch (error) {
         console.error("Error parsing roomInfo:", error);
-        return res.status(400).json({ message: "Invalid roomInfo format", type: "error" });
+        return res
+          .status(400)
+          .json({ message: "Invalid roomInfo format", type: "error" });
       }
     }
 
@@ -538,7 +544,9 @@ exports.signupHandlerOwner = async (req, res) => {
       try {
         parsedLocation = JSON.parse(location);
       } catch (error) {
-        return res.status(400).json({ message: "Invalid location format", type: "error" });
+        return res
+          .status(400)
+          .json({ message: "Invalid location format", type: "error" });
       }
     }
 
@@ -549,7 +557,8 @@ exports.signupHandlerOwner = async (req, res) => {
       parsedLocation.coordinates.length !== 2
     ) {
       return res.status(400).json({
-        message: 'Invalid location format. Must be GeoJSON { type: "Point", coordinates: [lng, lat] }',
+        message:
+          'Invalid location format. Must be GeoJSON { type: "Point", coordinates: [lng, lat] }',
         type: "error",
       });
     }
@@ -588,10 +597,11 @@ exports.signupHandlerOwner = async (req, res) => {
     });
   } catch (error) {
     console.error("Error creating PG Owner:", error);
-    return res.status(500).json({ message: "Internal Server Error", type: "error" });
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", type: "error" });
   }
 };
-
 
 exports.checkEmailVerificationOwner = async (req, res) => {
   try {
@@ -798,5 +808,66 @@ exports.loginHandlerOwner = async (req, res) => {
   } catch (error) {
     console.error("Error logging in owner:", error);
     res.status(500).json({ message: "Server error." });
+  }
+};
+
+exports.getTopRatedMesses = async (req, res) => {
+  try {
+    const topMesses = await PgOwner.aggregate([
+      {
+        $match: {
+          // Ensure feedbacks exists and is an array with at least one rating
+          feedbacks: { $exists: true, $type: "array", $ne: [] },
+          "feedbacks.rating": { $exists: true, $ne: null }
+        }
+      },
+      {
+        $addFields: {
+          // Safely calculate average rating
+          averageRating: { $avg: "$feedbacks.rating" },
+          // Safely get feedback count
+          totalFeedbacks: { 
+            $cond: {
+              if: { $isArray: "$feedbacks" },
+              then: { $size: "$feedbacks" },
+              else: 0
+            }
+          }
+        }
+      },
+      // Only include documents with valid ratings
+      { $match: { averageRating: { $ne: null } } },
+      // Sort by highest rating first, then by most feedbacks
+      { $sort: { averageRating: -1, totalFeedbacks: -1 } },
+      // Limit to 4 results
+      { $limit: 4 },
+      // Project only needed fields
+      {
+        $project: {
+          firstName: 1,
+          lastName: 1,
+          messName: 1,
+          profilePhoto: 1,
+          averageRating: 1,
+          totalFeedbacks: 1,
+          facility: 1,
+          gender: 1,
+          address: 1,
+          // Add any other fields you need
+        }
+      }
+    ]);
+
+    if (!topMesses.length) {
+      return res.status(404).json({ message: "No rated messes found." });
+    }
+
+    res.status(200).json({ data: topMesses });
+  } catch (error) {
+    console.error("Error in getTopRatedMesses:", error);
+    res.status(500).json({ 
+      message: "Failed to fetch top-rated messes",
+      error: error.message 
+    });
   }
 };
