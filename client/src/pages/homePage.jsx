@@ -83,7 +83,7 @@ const HomePage = () => {
     navigate(
       `/MessFind/${encodeURIComponent(
         suggestion.display_name
-      )}/${encodeURIComponent(locationString)}`
+      )}/${encodeURIComponent(coords)}`
     );
   };
 
