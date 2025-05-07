@@ -118,7 +118,7 @@ const Recommendations = () => {
                         {f}
                       </span>
                     ))}
-                    {mess.facility.length>3 && <span>view more</span>}
+                    {mess.facility.length>3 && <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full underline">view more</span>}
                   </div>
 
                   <motion.button
