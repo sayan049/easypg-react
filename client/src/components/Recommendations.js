@@ -44,15 +44,9 @@ const Recommendations = () => {
             const feedbacks = Array.isArray(mess.feedbacks)
               ? mess.feedbacks
               : [];
-            const avgRating = feedbacks.length
-              ? (
-                  feedbacks.reduce((sum, f) => sum + (f.rating || 0), 0) /
-                  feedbacks.length
-                ).toFixed(1)
-              : "N/A";
-
-            const reviewCount = feedbacks.length;
-
+              const avgRating = mess.averageRating ?? "N/A";
+              const reviewCount = mess.totalFeedbacks ?? 0;
+              
             const roomPrices = Array.isArray(mess.roomInfo)
               ? mess.roomInfo
                   .map((r) => r.pricePerHead)

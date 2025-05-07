@@ -853,6 +853,7 @@ exports.getTopRatedMesses = async (req, res) => {
           facility: 1,
           gender: 1,
           address: 1,
+          roomInfo: 1,
           // Add any other fields you need
         }
       }
