@@ -264,7 +264,7 @@ const HomePage = () => {
   // };
 
   return (
-    <div className="font-sans bg-white">
+    <div className=" bg-white">
       {/* Gradient Background with Overlay */}
       <div className="relative">
         {/* Header Section */}

@@ -6,6 +6,7 @@ import { getCartUrl, getLikedMessUrl, likedMessesUrl } from "../constant/urls";
 import { ToastContainer, toast } from "react-toastify";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import Skeleton from "./Skeleton";
 import {
   MdOutlineAcUnit,
   MdTv,
@@ -58,8 +59,11 @@ const Cart = () => {
   const token = localStorage.getItem("accessToken");
   const navigate = useNavigate();
   const [gender, setGender] = useState("");
+  const [loading, setLoading] = useState(true);
+
 
   const fetchMessData = async () => {
+    setLoading(true);
     try {
       const res = await axios.get(getCartUrl, {
         headers: {
@@ -67,9 +71,12 @@ const Cart = () => {
         },
       });
       setMessData(res.data || []);
+      
     } catch (err) {
       console.error(err);
       toast.error("Failed to fetch mess data.");
+    } finally{
+      setLoading(true);
     }
   };
 
@@ -175,6 +182,7 @@ const Cart = () => {
   const getAmenityIcon = (label) =>
     amenities.find((a) => a.label === label)?.icon || null;
 
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <ToastContainer />
@@ -203,63 +211,6 @@ const Cart = () => {
           </div>
         </div>
 
-        {/* Filters */}
-        {/* {showFilters && (
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="font-medium mb-3">Price Range (₹)</h3>
-                <div className="flex items-center gap-4">
-                  <input
-                    type="number"
-                    placeholder="Min"
-                    className="w-full p-2 border rounded-md"
-                    value={priceFilter.min}
-                    onChange={(e) =>
-                      setPriceFilter({
-                        ...priceFilter,
-                        min: Number(e.target.value),
-                      })
-                    }
-                  />
-                  <span>to</span>
-                  <input
-                    type="number"
-                    placeholder="Max"
-                    className="w-full p-2 border rounded-md"
-                    value={priceFilter.max}
-                    onChange={(e) =>
-                      setPriceFilter({
-                        ...priceFilter,
-                        max: Number(e.target.value),
-                      })
-                    }
-                  />
-                </div>
-              </div>
-              <div>
-                <h3 className="font-medium mb-3">Amenities</h3>
-                <div className="flex flex-wrap gap-2">
-                  {amenities.map(({ label, icon }) => (
-                    <button
-                      key={label}
-                      className={`px-3 py-1.5 rounded-full text-sm flex items-center gap-1.5 ${
-                        amenityFilters.includes(label)
-                          ? "bg-teal-100 text-teal-800 border-teal-200"
-                          : "bg-white border border-gray-300 text-gray-700"
-                      }`}
-                      onClick={() => toggleAmenityFilter(label)}
-                    >
-                      {icon}
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-         
-        )} */}
         {showFilters && (
           <div className="h-screen fixed top-[-24px] inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white p-6 rounded shadow-lg w-3/4 max-w-md">
@@ -381,7 +332,14 @@ const Cart = () => {
         )}
 
         {/* Empty State */}
-        {filteredMesses.length === 0 && (
+        {
+          loading &&(
+            [1,2,3,4,5].map((i)=>{
+              <Skeleton/>
+            })
+          )
+        }
+        {(filteredMesses.length && !loading) === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <Heart className="w-16 h-16 text-gray-300 mb-4" />
             <h2 className="text-xl font-semibold text-gray-700 mb-2">
