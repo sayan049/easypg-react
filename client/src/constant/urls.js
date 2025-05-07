@@ -34,4 +34,5 @@ export const bookingApprovalUrl= `${baseUrl}/auth/bookings/:id/status`;
 export const bookingCancelUrl= `${baseUrl}/auth/bookings/:id`;
 export const likedMessesUrl= `${baseUrl}/auth/likedMess`;
 export const getLikedMessUrl= `${baseUrl}/auth/getLikedMess`;
-export const getCartUrl= `${baseUrl}/auth/getCart`
+export const getCartUrl= `${baseUrl}/auth/getCart`;
+export const getRecomendationsUrl=`${baseUrl}/auth/getRecc`;

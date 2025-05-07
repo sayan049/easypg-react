@@ -800,3 +800,27 @@ exports.loginHandlerOwner = async (req, res) => {
     res.status(500).json({ message: "Server error." });
   }
 };
+
+exports.getTopRatedMesses = async (req, res) => {
+  try {
+    const topMesses = await PgOwner.aggregate([
+      {
+        $addFields: {
+          averageRating: { $avg: "$feedbacks.rating" },
+          totalFeedbacks: { $size: "$feedbacks" }
+        }
+      },
+      {
+        $sort: { averageRating: -1, totalFeedbacks: -1 }
+      },
+      {
+        $limit: 4
+      }
+    ]);
+
+    res.status(200).json({ data: topMesses });
+  } catch (error) {
+    console.error("Error fetching top rated messes:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
