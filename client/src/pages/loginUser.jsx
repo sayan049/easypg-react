@@ -17,6 +17,7 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import { Helmet } from "react-helmet";
 
 // import Skeleton from "react-loading-skeleton";
 // import "react-loading-skeleton/dist/skeleton.css";
@@ -302,7 +303,7 @@ function LoginUser() {
       if (response.status === 200) {
         alert("Password successfully reset! Redirecting to login...");
         setResetToken(null);
-        navigate("/LoginUser"); // Redirect to login page
+        navigate("/login/user"); // Redirect to login page
       } else {
         setResetPasswordError("Error resetting password. Please try again....");
         toast.error("Error resetting password. Please try again.");
@@ -321,6 +322,16 @@ function LoginUser() {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-custom-gradient">
+      <Helmet>
+        <title>Student Login | Messmate</title>
+        <meta
+          name="description"
+          content="Securely access your MessMate student account. Log in to access your Messmate dashboard and manage bookings, profile. Official student portal for MessMate users."
+        />
+        <meta name="robots" content="noindex, nofollow" />
+        <link rel="canonical" href="https://www.messmate.in/login/user" />
+      </Helmet>
+
       <ToastContainer
         position="top-center"
         toastClassName="!w-[300px]  mx-auto mt-4 sm:mt-0 "
@@ -332,7 +343,7 @@ function LoginUser() {
           {/* Header Section */}
           <div className="lg:absolute lg:top-6 lg:left-6 flex flex-col lg:flex-row items-center mb-2rem lg:items-start justify-center lg:space-x-2 space-y-2 lg:space-y-0 lg:items-center">
             <h1 className="text-3xl sm:text-4xl font-bold text-[#2ca4b5]">
-              Log in
+              MessMate Student Login Portal
             </h1>
             <h2 className="text-sm sm:text-lg font-normal text-center lg:text-left">
               User
@@ -529,16 +540,16 @@ function LoginUser() {
       <div className="hidden lg:flex lg:w-4/12 flex-col justify-center items-center bg-[#2ca4b53b] text-white p-12 relative">
         {/* Mess Mate Text */}
         <h1 className="text-xl font-bold absolute top-2 right-6">
-        <div className="inline-flex items-center text-5xl font-bold space-x-1">
-                  <img
-                    src="./assets/companylogo.png"
-                    alt="logo"
-                    className="mr-[-4px]" // Adjust spacing between the image and text
-                  />
-                  <div className="text-3xl font-bold text-[#2CA4B5] mt-[20px] ml-[-10px]">
-                    essMate
-                  </div>
-                </div>
+          <div className="inline-flex items-center text-5xl font-bold space-x-1">
+            <img
+              src="./assets/companylogo.png"
+              alt="logo"
+              className="mr-[-4px]" // Adjust spacing between the image and text
+            />
+            <div className="text-3xl font-bold text-[#2CA4B5] mt-[20px] ml-[-10px]">
+              essMate
+            </div>
+          </div>
         </h1>
         {/* Ellipse Image Below Mess Mate Text */}
         <img

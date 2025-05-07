@@ -50,7 +50,7 @@ function SignUpForm() {
       if (response.status === 201) {
         const message = "User registration successful";
         localStorage.setItem("loginMessage", message);
-        navigate("/LoginUser", { state: { message } });
+        navigate("/login/user", { state: { message } });
       } else {
        // setmessage({ text: "Signup failed", type: "error" });
        toast.error("Signup failed. Try again."); 
@@ -255,7 +255,7 @@ function SignUpForm() {
 
           <p className="text-center text-sm text-gray-600 mt-4">
             Do you have an account?{" "}
-            <Link to="/LoginUser" className="text-blue-500 hover:underline">
+            <Link to="/login/user" className="text-blue-500 hover:underline">
               Log in
             </Link>
           </p>
@@ -292,7 +292,7 @@ function SignUpForm() {
 
         {/* Log In Button */}
         <Link
-          to="/LoginUser"
+          to="/login/user"
           className="mt-6 bg-[#2ca4b5] text-white font-bold py-2 px-6 rounded-full hover:bg-[#238b96] transition w-[12rem] text-center"
         >
           Log In

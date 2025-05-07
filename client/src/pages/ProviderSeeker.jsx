@@ -30,20 +30,45 @@ function ProviderSeeker() {
     <div className="bg-gray-100">
       {/* SEO Metadata */}
       <Helmet>
-        <title>Choose Your Role | Messmate</title>
+        {/* Basic SEO */}
+        <title>Choose Your Role | Messmate - Find or List PG/Mess</title>
         <meta
           name="description"
-          content="Select your role to continue with Messmate - whether you're a mess owner or a student seeking PG/Mess services."
+          content="Choose your role to get started with Messmate — India's smart platform for students to find PG/Mess and owners to list accommodations easily."
         />
-        <link rel="canonical" href="https://messmate.com/choose-role" />
-        <meta property="og:title" content="Choose Your Role | Messmate" />
+        <link rel="canonical" href="https://www.messmate.co.in/choose-role" />
+
+        {/* Open Graph (Facebook, LinkedIn, etc.) */}
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Messmate" />
+        <meta
+          property="og:title"
+          content="Choose Your Role | Messmate - Find or List PG/Mess"
+        />
         <meta
           property="og:description"
-          content="Join Messmate and select your role as either a student or a mess owner to proceed."
+          content="Select whether you're a student searching for PG/Mess or an owner listing your accommodation. Messmate makes it seamless."
         />
-        <meta property="og:url" content="https://messmate.com/choose-role" />
-        <meta property="og:image" content="https://messmate.com/assets/image.png" />
+        <meta
+          property="og:url"
+          content="https://www.messmate.co.in/choose-role"
+        />
+        <meta
+          property="og:image"
+          content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746627457/image_uwpgxm.png"
+        />
+
+        {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Choose Your Role | Messmate" />
+        <meta
+          name="twitter:description"
+          content="Start your Messmate journey by selecting your role — student or PG/Mess owner."
+        />
+        <meta
+          name="twitter:image"
+          content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746627457/image_uwpgxm.png"
+        />
       </Helmet>
 
       {/* Main Container */}
@@ -56,7 +81,7 @@ function ProviderSeeker() {
           </h3>
           <div className="flex flex-row items-center space-x-4">
             <Link
-              to="/LoginUser"
+              to="/login/user"
               onClick={() => handleButtonClick("messSeeker")}
               className={`border-[3px] px-6 py-3 rounded-full ${
                 selectedButton === "messSeeker"
@@ -83,7 +108,7 @@ function ProviderSeeker() {
         {/* Right Section */}
         <div className="w-full lg:w-1/2 flex justify-center mt-10 lg:mt-0">
           <img
-            src="/assets/image.png"
+            src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746627457/image_uwpgxm.png"
             alt="Illustration of students choosing between mess and PG roles"
             className="max-w-full h-auto"
           />

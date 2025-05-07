@@ -142,7 +142,7 @@ const MailVerify = () => {
                         cursor: 'pointer',
                         fontSize: '16px'
                     }} 
-                    onClick={() => navigate('/LoginUser')}
+                    onClick={() => navigate('/login/user')} // Use navigate instead
                 >
                     Go to Login
                 </button>

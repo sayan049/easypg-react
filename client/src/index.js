@@ -55,7 +55,7 @@ root.render(
           />
           <Route path="/Secure" element={<SecurityCheck />} />
           <Route
-            path="/LoginUser"
+            path="/login/user"
             element={
               <ProtectedRoute>
                 <LoginUser />
