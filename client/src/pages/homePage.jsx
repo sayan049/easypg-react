@@ -212,7 +212,7 @@ const HomePage = () => {
         navigate(
           `/MessFind/${encodeURIComponent(
             "you"
-          )}/${encodeURIComponent(JSON.stringify(position.coords))}`
+          )}/${encodeURIComponent(JSON.stringify({latitude, longitude}))}`
         );
 
         setTimeout(() => {
