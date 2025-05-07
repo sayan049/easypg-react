@@ -332,11 +332,11 @@ function LoginUser() {
           content="Securely access your MessMate user account. Log in to access your Messmate dashboard and manage bookings and profile. Official user portal for MessMate users."
         />
         <meta name="robots" content="noindex, nofollow" />
-        <link rel="canonical" href="https://www.messmate.in/login/user" />
+        <link rel="canonical" href="https://www.messmate.co.in/login/user" />
 
         {/* Open Graph (for link sharing previews) */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.messmate.in/login/user" />
+        <meta property="og:url" content="https://www.messmate.co.in/login/user" />
         <meta property="og:title" content="User Login | Messmate" />
         <meta
           property="og:description"
@@ -378,7 +378,7 @@ function LoginUser() {
           {/* Header Section */}
           <div className="lg:absolute lg:top-6 lg:left-6 flex flex-col lg:flex-row items-center mb-2rem lg:items-start justify-center lg:space-x-2 space-y-2 lg:space-y-0 lg:items-center">
             <main>
-              <h1 className="text-xl sm:text-4xl font-bold text-[#2ca4b5]">
+              <h1 className="text-xl sm:text-xl font-bold text-[#2ca4b5]">
                 User Login
               </h1>
               <h2 className="text-sm sm:text-lg font-normal">

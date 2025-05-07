@@ -43,8 +43,8 @@ root.render(
           {/* <Route path="/newHome" element={<NewHomePage />} /> */}
           <Route path="/choose-role" element={<ProviderSeeker />} />
           {/* <Route path="/NewDashBoard" element={<NewDashboard />} /> */}
-          <Route path="/Business" element={<BusinessModel />} />
-          <Route path="/OurService" element={<OurService />} />
+          <Route path="/business-model" element={<BusinessModel />} />
+          <Route path="/our-services" element={<OurService />} />
           <Route
             path="/signupforuser"
             element={
@@ -62,9 +62,9 @@ root.render(
               </ProtectedRoute>
             }
           />
-          <Route path="/LandingPage" element={<LandingPage />} />
+          <Route path="/owner/partner" element={<LandingPage />} />
           <Route
-            path="/LoginOwner"
+            path="/login/owner"
             element={
               <ProtectedRoute>
                 <LoginOwner />

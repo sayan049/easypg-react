@@ -30,7 +30,8 @@ function ProviderSeeker() {
     <div className="bg-gray-100">
       {/* SEO Metadata */}
       <Helmet>
-        {/* Basic SEO */}
+        
+        <html lang="en-IN" />
         <title>Choose Your Role | Messmate - Find or List PG/Mess</title>
         <meta
           name="description"
@@ -69,6 +70,9 @@ function ProviderSeeker() {
           name="twitter:image"
           content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746627457/image_uwpgxm.png"
         />
+        {/* Performance Hints */}
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
       </Helmet>
 
       {/* Main Container */}
@@ -92,7 +96,7 @@ function ProviderSeeker() {
               Mess Seeker
             </Link>
             <Link
-              to="/LandingPage"
+              to="/owner/partner"
               onClick={() => handleButtonClick("messOwner")}
               className={`border-[3px] px-6 py-3 rounded-full ${
                 selectedButton === "messOwner"
@@ -111,6 +115,7 @@ function ProviderSeeker() {
             src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746627457/image_uwpgxm.png"
             alt="Illustration of students choosing between mess and PG roles"
             className="max-w-full h-auto"
+            loading="lazy"
           />
         </div>
       </div>

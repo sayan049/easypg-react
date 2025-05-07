@@ -91,7 +91,7 @@ const MailVerifyOwner = () => {
             cursor: "pointer",
             fontSize: "16px",
           }}
-          onClick={() => navigate("/LoginOwner")}
+          onClick={() => navigate("/login/owner")}
         >
           Go to Login
         </button>

@@ -43,7 +43,7 @@ const forgotPasswordUser = async (req, res) => {
     });
 
     // Construct reset URL for the user
-    const resetUrl = `${frontendUrl}/LoginOwner?resetToken=${resetToken}`;
+    const resetUrl = `${frontendUrl}/login/owner?resetToken=${resetToken}`;
 
 
     const mailOptions = {
