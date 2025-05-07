@@ -973,7 +973,7 @@ const HomePage = () => {
                 viewport={{ once: true, margin: "-50px" }}
                 // className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group w-screen sm:w-auto"
                 // className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group min-w-[280px] md:min-w-0"
-                className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group min-w-[280px] md:min-w-0 flex-shrink-0"
+                className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group min-w-[280px] md:min-w-0 "
               >
                 <div className="relative overflow-hidden">
                   <img
