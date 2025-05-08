@@ -81,9 +81,6 @@ const ViewDetails = () => {
     fetchMessDetails();
   }, [messId]);
 
-  useEffect(() => {
-    if (messData) console.log("Updated messData:", messData.feedbacks);
-  }, [messData]);
 
   const amenities = [
     { id: "ac", label: "A/C", icon: <FaWind className="text-sky-500" /> },
@@ -158,19 +155,29 @@ const ViewDetails = () => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setInView(entry.isIntersecting); // Trigger when element comes into view
+        // Only update state if there's a change
+        if (entry.isIntersecting !== inView) {
+          setInView(entry.isIntersecting);
+        }
       },
-      { threshold: 0.2 }
+      {
+        root: null, // relative to viewport
+        rootMargin: "0px",
+        threshold: 0.1, // lower threshold
+      }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current); // Attach observer to the ref element
+    const currentElement = ref.current;
+    if (currentElement) {
+      observer.observe(currentElement);
     }
 
-    return () => observer.disconnect(); // Clean up on unmount
+    return () => {
+      if (currentElement) {
+        observer.unobserve(currentElement);
+      }
+    };
   }, []);
-
-
 
   useEffect(() => {
     console.log(inView);
