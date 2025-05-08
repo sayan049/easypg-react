@@ -73,6 +73,7 @@ const ViewDetails = () => {
     const fetchMessDetails = async () => {
       try {
         const res = await axios.get(`${viewDetailsUrl}/${messId}`);
+        console.log(`${viewDetailsUrl}/${messId}`);
         setMessData(res.data.data);
         console.log(messData[0]);
       } catch (err) {
