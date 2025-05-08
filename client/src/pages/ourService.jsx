@@ -136,7 +136,7 @@ const OurService = () => {
               How{" "}
               <div className="inline-flex items-center text-5xl font-bold space-x-1">
                 <img
-                  src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629877/companylogo_qz2ufw.png"
+                  src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
                   alt="Messmate - Company Logo"
                   className="mr-[-4px]" // Adjust spacing between the image and text
                   loading="lazy"
@@ -368,7 +368,7 @@ const OurService = () => {
                 PGs on{" "}
                 <div className="inline-flex items-center text-5xl font-bold space-x-1">
                   <img
-                    src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629877/companylogo_qz2ufw.png"
+                    src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
                     alt="Messmate - Company Logo"
                     className="mr-[-4px]" // Adjust spacing between the image and text
                     loading="lazy"

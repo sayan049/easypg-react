@@ -47,7 +47,7 @@ function LandingPage() {
         <section className="bg-custom-gradient flex flex-col items-center justify-center h-[65vh] text-center">
           <h1 className="text-5xl font-bold flex items-center space-x-1">
             <img
-              src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629877/companylogo_qz2ufw.png"
+              src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
               alt="MessMate - company Logo"
               className="mr-[-4px]"
               loading="lazy"
@@ -78,7 +78,7 @@ function LandingPage() {
           <h2 className="text-xl flex items-center justify-center font-semibold mb-2">
             Explore the world of
             <img
-              src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629877/companylogo_qz2ufw.png"
+              src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
               alt="MessMate - company Logo"
               className="h-6 mx-1 ml-[10px] mb-[7px]"
               loading="lazy"
@@ -93,7 +93,7 @@ function LandingPage() {
             {/* Card 1 */}
             <div className="flex flex-col items-center w-full sm:w-1/2 md:w-1/4 p-4 mb-8 shadow-lg hover:shadow-2xl bg-white rounded-xl m-4">
               <img
-                src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746632863/young-handsome-business-man-with-laptop-office_1_w7c2a1.png"
+                src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706384/young-handsome-business-man-with-laptop-office-1-681c9fbd0260d_rv7cxv.webp"
                 alt="Businessman signing up with laptop"
                 className="w-full h-48 object-cover mb-4 rounded-md"
                 loading="lazy"
@@ -105,7 +105,7 @@ function LandingPage() {
             {/* Card 2 */}
             <div className="flex flex-col items-center w-full sm:w-1/2 md:w-1/4 p-4 mb-8 shadow-lg hover:shadow-2xl bg-white rounded-xl m-4">
               <img
-                src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746632876/portrait-young-indian-top-manager-t-shirt-tie-crossed-arms-smiling-white-isolated-wall_1_e9omn2.png"
+                src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706432/portrait-young-indian-top-manager-t-shirt-tie-crossed-arms-smiling-white-isolated-wall-1-681c9ff419bab_zdnbmw.webp"
                 alt="Confident PG manager standing"
                 className="w-full h-48 object-cover mb-4 rounded-md"
                 loading="lazy"
@@ -121,7 +121,7 @@ function LandingPage() {
           <h2 className="text-xl font-bold flex items-center justify-center mb-2">
             Why join
             <img
-              src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629877/companylogo_qz2ufw.png"
+              src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
               alt="MessMate - company Logo"
               className="h-6 mx-1 ml-[11px]"
               loading="lazy"
@@ -136,7 +136,7 @@ function LandingPage() {
             {/* Benefit 1 */}
             <div className="flex flex-col items-center w-full sm:w-1/2 md:w-1/4 p-4 mb-8 border border-gray-700 rounded-lg shadow-lg m-4">
               <img
-                src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746633003/businessman-black-suit-makes-thumbs-up_1_ryuivu.png"
+                src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706499/businessman-black-suit-makes-thumbs-up-1-681ca038e7e9b_fqk1nk.webp"
                 alt="Happy PG owner with thumbs up"
                 className="w-full h-48 object-cover mb-4"
               />
@@ -148,7 +148,7 @@ function LandingPage() {
             {/* Benefit 2 */}
             <div className="flex flex-col items-center w-full sm:w-1/2 md:w-1/4 p-4 mb-8 border border-gray-700 rounded-lg shadow-lg m-4">
               <img
-                src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746632887/outdoor-businessman-having-his-arms-crossed_1_1_m2osdl.png"
+                src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706548/outdoor-businessman-having-his-arms-crossed-1-1-681ca05b4e1f8_alcrzo.webp"
                 alt="Confident PG owner with arms crossed"
                 className="w-full h-48 object-cover mb-4"
                 loading="lazy"

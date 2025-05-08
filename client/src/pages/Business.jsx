@@ -11,6 +11,7 @@ import {
   XCircle,
   Building,
   Star,
+  FileCheck2
 } from "lucide-react";
 import Footer from "../components/footer";
 import { Helmet } from "react-helmet";
@@ -172,7 +173,7 @@ const BusinessModel = () => {
                   Why Choose{" "}
                   <div className="inline-flex items-center text-5xl font-bold space-x-1">
                     <img
-                      src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629877/companylogo_qz2ufw.png"
+                      src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
                       alt="Messmate - Company Logo"
                       className="mr-[-4px]" // Adjust spacing between the image and text
                       loading="lazy"
@@ -399,7 +400,7 @@ const BusinessModel = () => {
                 Before vs After{" "}
                 <div className="inline-flex items-center text-5xl font-bold space-x-1">
                   <img
-                    src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629877/companylogo_qz2ufw.png"
+                    src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
                     alt="MessMate - company Logo"
                     loading="lazy"
                     className="mr-[-4px]" // Adjust spacing between the image and text
@@ -600,6 +601,7 @@ const BusinessModel = () => {
 // Benefits data
 const benefits = [
   {
+    icon: <FileCheck2 className="w-6 h-6 text-blue-500" />,
     title: "Automated Student Onboarding",
     description:
       "Streamline admissions with digital forms and document verification",
