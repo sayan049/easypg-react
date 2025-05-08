@@ -83,6 +83,7 @@ const ViewDetails = () => {
   }, [messId]);
 
   useEffect(() => {
+    if(messData)
     console.log("Updated messData:", messData.feedbacks);
   }, [messData]);
 
