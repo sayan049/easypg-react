@@ -1,6 +1,6 @@
 import React from "react";
 import { forwardRef } from 'react'
-const Footer = () => {
+const Footer = forwardRef((props, ref) => {
   return (
     <footer ref={ref} className="bg-gradient-to-b from-black to-gray-900 text-white py-8">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
@@ -64,7 +64,7 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
+});
 Footer.displayName = 'Footer';
 
 export default Footer;
