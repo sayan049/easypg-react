@@ -72,7 +72,6 @@ const ViewDetails = () => {
     const fetchMessDetails = async () => {
       try {
         const res = await axios.get(`${viewDetailsUrl}/${messId}`);
-        console.log(`${viewDetailsUrl}/${messId}`, "xxx");
         setMessData(res.data.data);
       } catch (err) {
         console.error("Failed to fetch mess details:", err);
@@ -83,8 +82,7 @@ const ViewDetails = () => {
   }, [messId]);
 
   useEffect(() => {
-    if(messData)
-    console.log("Updated messData:", messData.feedbacks);
+    if (messData) console.log("Updated messData:", messData.feedbacks);
   }, [messData]);
 
   const amenities = [
@@ -157,6 +155,10 @@ const ViewDetails = () => {
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    console.log(inView);
+  }, [inView]);
 
   // Render stars for ratings
   const renderStars = (rating) => {
