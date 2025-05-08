@@ -7,6 +7,7 @@ import Footer from "../components/footer";
 import ConfirmBooking from "../components/confirmBooking";
 import { viewDetailsUrl } from "../constant/urls";
 import axios from "axios";
+import { useInView } from 'react-intersection-observer';
 import {
   FaWind,
   FaTv,
@@ -81,9 +82,6 @@ const ViewDetails = () => {
     fetchMessDetails();
   }, [messId]);
 
-  useEffect(() => {
-    if (messData) console.log("Updated messData:", messData.feedbacks);
-  }, [messData]);
 
   const amenities = [
     { id: "ac", label: "A/C", icon: <FaWind className="text-sky-500" /> },
@@ -144,8 +142,8 @@ const ViewDetails = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const ref = useRef(null);
-  const [inView, setInView] = useState(false);
+  // const ref = useRef(null);
+  // const [inView, setInView] = useState(false);
 
   // useEffect(() => {
   //   const observer = new IntersectionObserver(
@@ -155,22 +153,10 @@ const ViewDetails = () => {
   //   if (ref.current) observer.observe(ref.current);
   //   return () => observer.disconnect();
   // }, []);
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setInView(entry.isIntersecting); // Trigger when element comes into view
-      },
-      { threshold: 0.2 }
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current); // Attach observer to the ref element
-    }
-
-    return () => observer.disconnect(); // Clean up on unmount
-  }, []);
-
-
+const { ref, inView } = useInView({
+  threshold: 0.1,
+  triggerOnce: false // set to true if you only need to detect once
+});
 
   useEffect(() => {
     console.log(inView);
