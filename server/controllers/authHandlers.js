@@ -875,7 +875,7 @@ exports.getTopRatedMesses = async (req, res) => {
 
 exports.viewDetails = async (req, res) => {
   const { messId } = req.params; // Use params, not body
-  console.log(messId);
+ 
   try {
     const pgOwner = await PgOwner.findOne({ _id: messId });
 
