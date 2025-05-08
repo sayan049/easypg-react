@@ -407,15 +407,16 @@ const ViewDetails = () => {
           {/* Sidebar Column */}
           <div className="space-y-8">
             {/* Booking Widget */}
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, y: 0 }}
               animate={{ opacity: 1, y: 20 }}
               transition={{ duration: 0.7 }}
             >
-              {!showModal && footerInView && (
+             
+            </motion.div> */}
+            <div> {!showModal && footerInView && (
                 <ConfirmBooking messData={messData} isVisible={footerInView} />
-              )}
-            </motion.div>
+              )}</div>
 
             {/* Ratings Section */}
             <div
