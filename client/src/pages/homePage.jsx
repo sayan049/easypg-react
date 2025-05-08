@@ -13,6 +13,7 @@ import "../designs/UserProfile.css";
 import { useAuth } from "../contexts/AuthContext";
 import { LocationIqurl } from "../constant/urls";
 import Recommendations from "../components/Recommendations";
+import { Home, Info, Phone, LogIn, Briefcase, X } from "lucide-react";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -92,6 +93,13 @@ const HomePage = () => {
       )}/${encodeURIComponent(JSON.stringify(coords))}`
     );
   };
+  const menuItems = [
+    { name: "Home", icon: Home, path: "/" },
+    { name: "About", icon: Info, path: "/about" },
+    { name: "Services", icon: Briefcase, path: "/services" },
+    { name: "Contact Us", icon: Phone, path: "/contact" },
+    { name: "Login", icon: LogIn, path: "/login" },
+  ];
 
   const performSearch = () => {
     if (!selectedLocation) {
@@ -385,8 +393,44 @@ const HomePage = () => {
         </header>
 
         {/* Mobile Sidebar */}
-         {/* Mobile Sidebar */}
-         <AnimatePresence>
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "tween", duration: 0.3 }}
+              className="fixed top-0 right-0 w-64 h-full bg-white z-50 shadow-2xl rounded-l-2xl flex flex-col"
+            >
+              <div className="flex justify-end p-4">
+                <button
+                  onClick={() => setMenuOpen(false)}
+                  className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                  aria-label="Close menu"
+                >
+                  <XIcon className="h-6 w-6" />
+                </button>
+              </div>
+
+              <nav className="flex-1 px-4 py-6">
+                <div className="space-y-1">
+                  {menuItems.map(({ name, path, icon: Icon }) => (
+                    <Link
+                      key={name}
+                      to={path}
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-md"
+                    >
+                      <Icon className="h-5 w-5 mr-4 text-[#2CA4B5]" />
+                      {name}
+                    </Link>
+                  ))}
+                </div>
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        {/* <AnimatePresence>
           {menuOpen && (
             <motion.div
               initial={{ x: "100%" }}
@@ -411,34 +455,10 @@ const HomePage = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
-              </div>
+              </div> */}
 
-              {/* User Profile Section */}
-              <div className="flex flex-col items-center px-6 py-4 border-b">
-                <div className="bg-indigo-100 rounded-full p-4 mb-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-8 w-8 text-indigo-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-bold">{userName || "Guest User"}</h3>
-                <p className="text-sm text-gray-500">
-                  {IsAuthenticated ? "User" : isOwnerAuthenticated ? "Property Owner" : "Guest"}
-                </p>
-              </div>
-
-              {/* Navigation Menu */}
-              <nav className="flex-1 px-4 py-6">
+        {/* Navigation Menu */}
+        {/* <nav className="flex-1 px-4 py-6">
                 <div className="space-y-1">
                   <Link
                     to="/"
@@ -461,7 +481,6 @@ const HomePage = () => {
                     </svg>
                     Dashboard
                   </Link>
-
                   <Link
                     to={IsAuthenticated ? "/bookings" : "/choose-role"}
                     className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-md"
@@ -534,10 +553,10 @@ const HomePage = () => {
                     Settings
                   </Link>
                 </div>
-              </nav>
+              </nav> */}
 
-              {/* Logout Button */}
-              <div className="px-4 py-6 border-t">
+        {/* Logout Button */}
+        {/* <div className="px-4 py-6 border-t">
                 <button
                   onClick={() => {
                     handleLogoutClick()
@@ -561,80 +580,6 @@ const HomePage = () => {
                   </svg>
                   Logout
                 </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* <AnimatePresence>
-          {menuOpen && (
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "tween", duration: 0.3 }}
-              className="fixed top-0 right-0 w-64 h-full bg-white z-50 shadow-2xl rounded-l-2xl"
-            >
-              <div className="flex flex-col h-full">
-                <div className="flex justify-end p-4">
-                  <button
-                    onClick={() => setMenuOpen(false)}
-                    className="text-gray-500 hover:text-gray-700 focus:outline-none"
-                    aria-label="Close menu"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </div>
-                <nav className="flex-1 px-6 py-4">
-                  <motion.div
-                    variants={staggerChildren}
-                    initial="hidden"
-                    animate="visible"
-                    className="space-y-6"
-                  >
-                    {["Home", "About", "Services", "Contact Us"].map(
-                      (item, index) => (
-                        <motion.div key={index} variants={fadeInUp}>
-                          <Link
-                            to={`#${item.toLowerCase().replace(/\s+/g, "")}`}
-                            className="block text-lg font-medium text-gray-800 hover:text-[#2CA4B5] transition duration-300"
-                            onClick={(e) => {
-                              handleScroll(
-                                e,
-                                item.toLowerCase().replace(/\s+/g, "")
-                              );
-                              setMenuOpen(false);
-                            }}
-                          >
-                            {item}
-                          </Link>
-                        </motion.div>
-                      )
-                    )}
-                    <motion.div variants={fadeInUp}>
-                      <Link
-                        to="/choose-role"
-                        className="block text-lg font-medium text-[#2CA4B5] hover:text-teal-700 transition duration-300"
-                        onClick={() => setMenuOpen(false)}
-                      >
-                        Login
-                      </Link>
-                    </motion.div>
-                  </motion.div>
-                </nav>
               </div>
             </motion.div>
           )}
