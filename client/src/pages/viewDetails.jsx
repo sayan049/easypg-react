@@ -2,11 +2,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation , useParams } from "react-router-dom";
 import MapDirection from "../components/mapDirection";
 import Footer from "../components/footer";
 import ConfirmBooking from "../components/confirmBooking";
 import { viewDetailsUrl } from "../constant/urls";
+import axios from "axios";
 import {
   FaWind,
   FaTv,
@@ -71,7 +72,7 @@ const ViewDetails = () => {
   useEffect(() => {
     const fetchMessDetails = async () => {
       try {
-        const res = await axios.get(`/api/mess/${messId}`);
+        const res = await axios.get(`${viewDetailsUrl}/${messId}`);
         setMessData(res.data.data);
       } catch (err) {
         console.error("Failed to fetch mess details:", err);
