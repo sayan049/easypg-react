@@ -9,7 +9,7 @@ const IsAuth = ({ children }) => {
 
   useEffect(() => {
     if (!IsAuthenticated && !isOwnerAuthenticated) {
-      navigate('/ProviderSeeker'); // Redirect to login if not authenticated
+      navigate('/choose-role'); // Redirect to login if not authenticated
     }
   }, [IsAuthenticated, isOwnerAuthenticated, navigate]);
 
