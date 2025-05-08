@@ -383,7 +383,7 @@ const MessFind = () => {
         />
       </Helmet>
       {/* Sidebar */}
-      <aside className="w-full md:w-1/4 bg-white p-4 shadow rounded-md hidden md:block h-screen overflow-y-auto border-r-2 border-r-primary-default">
+      <aside className="w-full md:w-1/4 bg-white p-4 shadow rounded-md hidden md:block h-screen overflow-y-auto border-r-2 border-r-primary-default overflow-x-hidden">
         <h2 className="text-lg font-bold">Search Filters</h2>
         {/* <div className="mt-6">
           <h3 className="font-medium">Price</h3>
