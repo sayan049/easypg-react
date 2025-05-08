@@ -445,7 +445,7 @@ const MessFind = () => {
           <div className="flex flex-col gap-4 mt-4">
             <fieldset>
               <legend className="font-medium mb-2">Amenities</legend>
-              <h4 className="font-medium">Amenities</h4>
+              {/* <h4 className="font-medium">Amenities</h4> */}
               {amenities.map((facility) => (
                 <label key={facility.id} className="flex items-center text-sm">
                   <input
@@ -465,7 +465,7 @@ const MessFind = () => {
             <div className="mb-6 mt-2">
               <fieldset>
                 <legend className="font-medium mb-2">Gender Preference</legend>
-                <h4 className="font-medium">Gender</h4>
+                {/* <h4 className="font-medium">Gender</h4> */}
                 <div className="flex flex-col gap-2 mt-2 text-sm">
                   <label className="flex items-center">
                     <input
