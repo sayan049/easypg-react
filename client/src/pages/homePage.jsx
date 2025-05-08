@@ -415,22 +415,23 @@ const HomePage = () => {
               <nav className="flex-1 px-4 py-6">
                 <div className="space-y-1">
                   {menuItems.map(({ name, path, icon: Icon }) => (
-                    <Link
+                    <a
                       key={name}
-                      to={path}
-                      onClick={() => setMenuOpen(false)}
+                      href={`#${name.toLowerCase().replace(/\s+/g, "")}`}
+                      onClick={
+                        name === "Login" ? clickLogin : () => setMenuOpen(false)
+                      }
                       className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-md"
                     >
                       <Icon className="h-5 w-5 mr-4 text-[#2CA4B5]" />
                       {name}
-                    </Link>
+                    </a>
                   ))}
                 </div>
               </nav>
             </motion.div>
           )}
         </AnimatePresence>
-       
 
         <ToastContainer
           position="top-center"
