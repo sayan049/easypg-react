@@ -78,7 +78,7 @@ console.log("viewDetailsUrl:", viewDetailsUrl);
         const res = await axios.get(`${viewDetailsUrl}/${messId}`);
         console.log(`${viewDetailsUrl}/${messId}`,"xxx");
         setMessData(res.data.data);
-        console.log(res.data.data,"yyy");
+        console.log(res.data.data.messName,"yyy");
       } catch (err) {
         console.error("Failed to fetch mess details:", err);
       }
