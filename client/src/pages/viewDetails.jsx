@@ -156,24 +156,20 @@ const ViewDetails = () => {
   //   return () => observer.disconnect();
   // }, []);
   useEffect(() => {
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      console.log('In View:', entry.isIntersecting); // Check if observer triggers
-      setInView(entry.isIntersecting);
-    },
-    { threshold: 0.2 } // Adjust if necessary
-  );
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry.isIntersecting); // Trigger when element comes into view
+      },
+      { threshold: 0.2 }
+    );
 
-  if (ref.current) {
-    observer.observe(ref.current);
-  }
-
-  return () => {
     if (ref.current) {
-      observer.disconnect();
+      observer.observe(ref.current); // Attach observer to the ref element
     }
-  };
-}, []);
+
+    return () => observer.disconnect(); // Clean up on unmount
+  }, []);
+
 
 
   useEffect(() => {
