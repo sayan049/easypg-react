@@ -183,7 +183,6 @@ const MessFind = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-
   const { initialItem } = useParams();
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
@@ -384,7 +383,10 @@ const MessFind = () => {
         />
       </Helmet>
       {/* Sidebar */}
-      <aside className="w-full md:w-1/4 bg-white p-4 shadow rounded-md hidden md:block h-screen overflow-y-auto">
+      <aside
+        className="w-full md:w-1/4 bg-white p-4 shadow rounded-md hidden md:block h-screen overflow-y-auto border-r"
+        style={{ borderColor: "#2ca4b5" }}
+      >
         <h2 className="text-lg font-bold">Search Filters</h2>
         {/* <div className="mt-6">
           <h3 className="font-medium">Price</h3>
@@ -412,7 +414,7 @@ const MessFind = () => {
               id="minPrice"
               type="number"
               placeholder="Min"
-              className="w-full p-2 border rounded-md"
+              className="w-full p-2 border border-primary-light focus:border-primary hover:border-primary-dark rounded-md transition-colors duration-200"
               value={priceFilter.min}
               onChange={(e) =>
                 setPriceFilter((prev) => ({
@@ -421,6 +423,7 @@ const MessFind = () => {
                 }))
               }
             />
+
             <span aria-hidden="true">to</span>
             <label htmlFor="maxPrice" className="sr-only">
               Maximum Price
@@ -429,7 +432,7 @@ const MessFind = () => {
               id="maxPrice"
               type="number"
               placeholder="Max"
-              className="w-full p-2 border rounded-md"
+              className="w-full p-2 border border-primary-light focus:border-primary hover:border-primary-dark rounded-md transition-colors duration-200"
               value={priceFilter.max}
               onChange={(e) =>
                 setPriceFilter((prev) => ({
@@ -442,6 +445,7 @@ const MessFind = () => {
         </fieldset>
         <div className="mt-6">
           <h3 className="font-medium">Select Your Need</h3>
+          <hr className="border-gray-700 w-1/2 my-2" />
           <div className="flex flex-col gap-4 mt-4">
             <fieldset>
               <legend className="font-medium mb-2">Amenities</legend>
