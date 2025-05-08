@@ -1,8 +1,8 @@
 import React from "react";
-
+import { forwardRef } from 'react'
 const Footer = () => {
   return (
-    <footer className="bg-gradient-to-b from-black to-gray-900 text-white py-8">
+    <footer ref={ref} className="bg-gradient-to-b from-black to-gray-900 text-white py-8">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         {/* Responsive Layout: Stack on mobile, grid on desktop */}
         <div className="flex flex-col md:grid md:grid-cols-4 gap-8 text-center md:text-left">
@@ -65,5 +65,6 @@ const Footer = () => {
     </footer>
   );
 };
+Footer.displayName = 'Footer';
 
 export default Footer;
