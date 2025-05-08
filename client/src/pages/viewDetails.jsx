@@ -142,21 +142,16 @@ const ViewDetails = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // const ref = useRef(null);
-  // const [inView, setInView] = useState(false);
 
-  // useEffect(() => {
-  //   const observer = new IntersectionObserver(
-  //     ([entry]) => setInView(entry.isIntersecting),
-  //     { threshold: 0.2 }
-  //   );
-  //   if (ref.current) observer.observe(ref.current);
-  //   return () => observer.disconnect();
-  // }, []);
 const { ref, inView } = useInView({
   threshold: 0.1,
   triggerOnce: false // set to true if you only need to detect once
 });
+
+  const [footerRef, footerInView] = useInView({
+    threshold: 0.1, // Trigger when 10% of footer is visible
+    triggerOnce: false // Keep observing
+  });
 
   useEffect(() => {
     console.log(inView);
@@ -416,7 +411,7 @@ const { ref, inView } = useInView({
             <div
             // className="bg-white rounded-xl shadow-sm p-6 sticky "
             >
-              {!showModal && <ConfirmBooking messData={messData} />}
+              {!showModal && footerInView && <ConfirmBooking messData={messData} />}
             </div>
 
             {/* Ratings Section */}
@@ -538,7 +533,7 @@ const { ref, inView } = useInView({
       </main>
 
       {/* Footer */}
-      <Footer />
+      <Footer ref={footerRef} />
 
       {/* Modal for Viewing All Photos */}
       {showModal && (
