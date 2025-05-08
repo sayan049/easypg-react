@@ -213,7 +213,7 @@ router.get('/LoginOwner/owner/reset-password/:resetToken', (req, res) => {
     // Send the URL to the frontend instead of redirecting
     return res.json({
       message: 'Token is valid',
-      resetUrl: `${frontendUrl}LoginUser?resetToken=${resetToken}`,
+      resetUrl: `${frontendUrl}/login/owner?resetToken=${resetToken}`,
     });
   });
 });

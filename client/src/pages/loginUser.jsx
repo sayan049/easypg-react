@@ -18,6 +18,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Helmet } from "react-helmet";
+import { ShieldCheck } from "lucide-react";
 
 // import Skeleton from "react-loading-skeleton";
 // import "react-loading-skeleton/dist/skeleton.css";
@@ -336,7 +337,10 @@ function LoginUser() {
 
         {/* Open Graph (for link sharing previews) */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.messmate.co.in/login/user" />
+        <meta
+          property="og:url"
+          content="https://www.messmate.co.in/login/user"
+        />
         <meta property="og:title" content="User Login | Messmate" />
         <meta
           property="og:description"
@@ -378,10 +382,12 @@ function LoginUser() {
           {/* Header Section */}
           <div className="lg:absolute lg:top-6 lg:left-6 flex flex-col lg:flex-row items-center mb-2rem lg:items-start justify-center lg:space-x-2 space-y-2 lg:space-y-0 lg:items-center">
             <main>
-              <h1 className="text-xl sm:text-xl font-bold text-[#2ca4b5]">
+              <h1 className="text-3xl font-bold text-[#2ca4b5] text-center sm:text-left">
                 User Login
               </h1>
-              <h2 className="text-sm sm:text-lg font-normal">
+
+              <h2 className="text-sm sm:text-lg font-normal flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-[#2ca4b5]" />
                 Secure Account Access
               </h2>
             </main>
@@ -558,7 +564,7 @@ function LoginUser() {
               className="w-full  flex items-center justify-center  py-2 rounded-full hover:bg-[#0511121a] bg-[#116e7b1a]"
             >
               <img
-                src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629849/googleIcon_tu4wye.png"
+                src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746707078/googleicon-681ca27c6648e_u81c8k.webp"
                 alt="Log in with Google Account - MessMate user login Portal"
                 className="w-6 h-6 mr-2 text-gray-600"
                 loading="lazy"
@@ -585,7 +591,7 @@ function LoginUser() {
         <h1 className="text-xl font-bold absolute top-2 right-6">
           <div className="inline-flex items-center text-5xl font-bold space-x-1">
             <img
-              src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629877/companylogo_qz2ufw.png"
+              src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
               alt="MessMate - company Logo"
               className="mr-[-4px]"
               loading="lazy"
@@ -597,7 +603,7 @@ function LoginUser() {
         </h1>
         {/* Ellipse Image Below Mess Mate Text */}
         <img
-          src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629895/Ellipse_crriyv.png"
+          src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746707192/ellipse-681ca2ee22495_m87gbv.webp"
           alt="MessMate Visual Element"
           className="absolute top-[5rem] right-6 max-w-[50%]"
           style={{ paddingTop: "10px" }}

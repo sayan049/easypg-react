@@ -20,6 +20,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import debounce from "lodash.debounce";
 import { Helmet } from "react-helmet";
+import { ShieldCheck } from "lucide-react";
 
 function LoginOwner() {
   useEffect(() => {
@@ -382,13 +383,17 @@ function LoginOwner() {
           <div className="flex-1 lg:w-8/12 flex items-center justify-center p-6 flex-col">
             <div className="w-full max-w-lg p-8">
               {/* Header Section */}
-              <div className="lg:absolute lg:top-6 lg:left-6 flex flex-col items-center lg:items-start justify-center ">
+              <div className="lg:absolute lg:top-6 lg:left-6 flex flex-col items-center lg:items-start justify-center gap-1">
                 <h1 className="text-3xl sm:text-3xl font-bold text-[#2ca4b5] text-center lg:text-left">
                   Owner Login
                 </h1>
-                <h2 className="text-sm sm:text-lg font-normal text-center lg:text-left">
-                  Secure Account Access
-                </h2>
+
+                <div className="flex items-center gap-2 justify-center lg:justify-start">
+                  <ShieldCheck className="w-5 h-5 text-[#2ca4b5]" />
+                  <h2 className="text-sm sm:text-lg font-normal text-center lg:text-left">
+                    Secure Account Access
+                  </h2>
+                </div>
               </div>
 
               {/* Create Account Text */}
@@ -492,7 +497,7 @@ function LoginOwner() {
                       type={isPasswordVisible ? "text" : "password"}
                       name="password"
                       placeholder="Password"
-                       aria-label="Enter your password"
+                      aria-label="Enter your password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
@@ -565,7 +570,7 @@ function LoginOwner() {
                   className="w-full  flex items-center justify-center  py-2 rounded-full hover:bg-[#0511121a] bg-[#116e7b1a]"
                 >
                   <img
-                    src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629849/googleIcon_tu4wye.png"
+                    src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746707078/googleicon-681ca27c6648e_u81c8k.webp"
                     alt="Log in with Google Account - MessMate owner login Portal"
                     className="w-6 h-6 mr-2 text-gray-600"
                     loading="lazy"
@@ -591,7 +596,7 @@ function LoginOwner() {
             <h1 className="text-xl font-bold absolute top-0 right-6">
               <div className="inline-flex items-center text-5xl font-bold space-x-1">
                 <img
-                  src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629877/companylogo_qz2ufw.png"
+                  src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
                   alt="MessMate - company Logo"
                   className="mr-[-4px]" // Adjust spacing between the image and text
                   loading="lazy"
