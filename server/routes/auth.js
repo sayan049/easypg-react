@@ -76,7 +76,11 @@ router.post("/likedMess", authenticateJWT, likedMess.likedMess);
 router.get("/getLikedMess", authenticateJWT, getLikedMess);
 router.get("/findMess", authHandlers.findMess);
 router.get("/getRecc", authHandlers.getTopRatedMesses);
-router.get("/viewDetails/:messId", authHandlers.viewDetails);
+// router.get("/viewDetails/:messId", authHandlers.viewDetails);
+router.get("/viewDetails/:messId", (req, res, next) => {
+  console.log("Route hit with ID:", req.params.messId);
+  next();
+}, authHandlers.viewDetails)
 router.get("/getCart",authenticateJWT,likedMess.cartMess);
 
 
