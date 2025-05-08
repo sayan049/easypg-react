@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { getRecomendationsUrl } from "../constant/urls";
 
 const Recommendations = () => {
   const [messes, setMesses] = useState([]);
   const [isLocating, setIsLocating] = useState(false);
+  const navigate=useNavigate();
   useEffect(() => {
     const fetchMesses = async () => {
       try {
@@ -19,6 +21,13 @@ const Recommendations = () => {
 
     fetchMesses();
   }, []);
+
+    const clickNavi = (owner) => {
+      const ownerParams = new URLSearchParams();
+      ownerParams.set("owner", JSON.stringify(owner));
+  
+      navigate(`/viewDetails?${ownerParams.toString()}`);
+    };
   return (
     <section className="py-10 bg-gray-50">
       <div className="container mx-auto px-6">
@@ -119,6 +128,7 @@ const Recommendations = () => {
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
                     className="mt-4 w-full bg-white text-[#2CA4B5] border border-[#2CA4B5] py-2 rounded-lg font-medium hover:bg-[#2CA4B5] hover:text-white transition-colors duration-300"
+                    onClick={()=>clickNavi(mess)}
                   >
                     View Details
                   </motion.button>
