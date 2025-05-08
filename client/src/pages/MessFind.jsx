@@ -189,7 +189,7 @@ const MessFind = () => {
   const lng = queryParams.get("lng");
   
   
-  console.log(userLocation, "ggg");
+
 
   // const rawLocation = queryParams.get("userLocation");
   // const userLocation = rawLocation ? JSON.parse(rawLocation) : null;
