@@ -560,7 +560,7 @@ const HomePage = () => {
                   </div>
 
                   {/* Suggestions Dropdown - Moved outside the input container */}
-                  {/* <AnimatePresence>
+                  <AnimatePresence>
                     {suggestions.length > 0 && (
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
@@ -608,7 +608,7 @@ const HomePage = () => {
                         ))}
                       </motion.div>
                     )}
-                  </AnimatePresence> */}
+                  </AnimatePresence>
                 </div>
                 <div className="mt-4 flex justify-center">
                   <motion.button
