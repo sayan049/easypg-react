@@ -39,6 +39,7 @@
     "recharts": "^2.15.3",
     "socket.io-client": "^4.8.1",
     "sonner": "^2.0.3",
+    "tailwind-scrollbar-hide": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
     "universal-cookie": "^7.1.4",
     "web-vitals": "^2.1.4"
