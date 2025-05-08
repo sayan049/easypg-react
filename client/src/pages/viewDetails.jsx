@@ -78,7 +78,7 @@ console.log("viewDetailsUrl:", viewDetailsUrl);
         const res = await axios.get(`${viewDetailsUrl}/${messId}`);
         console.log(`${viewDetailsUrl}/${messId}`,"xxx");
         setMessData(res.data.data);
-        console.log(messData,"yyy");
+        console.log(res.data.data,"yyy");
       } catch (err) {
         console.error("Failed to fetch mess details:", err);
       }
@@ -215,52 +215,6 @@ console.log("viewDetailsUrl:", viewDetailsUrl);
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Image Carousel */}
-        {/* <div className="relative rounded-xl overflow w-screen shadow-lg mb-8 h-[400px] bg-gray-100">
-          {Array.isArray(messData?.messPhoto) && messData.messPhoto.length > 0 ? (
-            <>
-              <img
-                src={messData.messPhoto[currentImageIndex] || "/placeholder.svg"}
-                alt={`Room ${currentImageIndex + 1}`}
-                //className="w-full h-full object-cover"
-                className="w-[80%] h-full object-cover mx-3"
-              /> */}
-
-        {/* Navigation Buttons */}
-        {/* <button
-                onClick={prevImage}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-70 transition-all"
-              >
-                <FaChevronLeft />
-              </button>
-
-              <button
-                onClick={nextImage}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-70 transition-all"
-              >
-                <FaChevronRight />
-              </button> */}
-
-        {/* Photo Count Button */}
-        {/* <button
-                onClick={() => setShowModal(true)}
-                className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-4 py-2 rounded-lg shadow-md hover:bg-opacity-90 transition-all flex items-center gap-2"
-              >
-                <span className="font-medium">View All</span>
-                <span className="bg-white text-black px-2 py-1 rounded-md text-sm">{messData.messPhoto.length}</span>
-              </button> */}
-
-        {/* Image Counter */}
-        {/* <div className="absolute bottom-4 left-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-lg">
-                {currentImageIndex + 1} / {messData.messPhoto.length}
-              </div>
-            </>
-          ) : (
-            <div className="flex items-center justify-center h-full">
-              <p className="text-gray-500">No images available</p>
-            </div>
-          )}
-        </div> */}
         {/* Image Carousel */}
         <div className="relative h-64 shadow-lg mb-6">
           <div className="h-full overflow-x-scroll flex space-x-2 overflow-y-hidden">
