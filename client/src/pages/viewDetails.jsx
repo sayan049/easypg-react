@@ -74,6 +74,7 @@ const ViewDetails = () => {
       try {
         const res = await axios.get(`${viewDetailsUrl}/${messId}`);
         setMessData(res.data.data);
+        console.log(messData[0]);
       } catch (err) {
         console.error("Failed to fetch mess details:", err);
       }
@@ -381,7 +382,7 @@ const ViewDetails = () => {
                 Amenities
               </h2>
               <div className="flex flex-wrap gap-4 mb-6">
-                {messData.facility?.map((feature, index) => {
+                {messData?.facility?.map((feature, index) => {
                   const amenity = amenities.find(
                     (a) =>
                       a.label.toLowerCase() === feature.trim().toLowerCase()
