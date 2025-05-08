@@ -411,7 +411,7 @@ const { ref, inView } = useInView({
             <div
             // className="bg-white rounded-xl shadow-sm p-6 sticky "
             >
-              {!showModal && footerInView && <ConfirmBooking messData={messData} />}
+              {!showModal && footerInView && <ConfirmBooking messData={messData} isVisible={footerInView}  />}
             </div>
 
             {/* Ratings Section */}
