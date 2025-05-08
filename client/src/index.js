@@ -113,7 +113,7 @@ root.render(
             }
           />
 
-          <Route path="/ViewDetails" element={<ViewDetails />} />
+          <Route path="/ViewDetails/:messId" element={<ViewDetails />} />
 
           {/* <Route path="/BookingPage" element={<BookingPage />} /> */}
 

@@ -165,10 +165,7 @@ function MessBars({
   }, []);
 
   const clickNavi = (owner) => {
-    const ownerParams = new URLSearchParams();
-    ownerParams.set("owner", JSON.stringify(owner));
-
-    navigate(`/viewDetails?${ownerParams.toString()}`);
+    navigate(`/ViewDetails/${owner._id}`);
   };
 
   const clickBook = (owner) => {
