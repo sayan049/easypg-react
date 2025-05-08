@@ -78,7 +78,7 @@ console.log("viewDetailsUrl:", viewDetailsUrl);
         const res = await axios.get(`${viewDetailsUrl}/${messId}`);
         console.log(`${viewDetailsUrl}/${messId}`,"xxx");
         setMessData(res.data.data);
-        console.log(res.data.data,"yyy");
+        console.log(messData,"yyy");
       } catch (err) {
         console.error("Failed to fetch mess details:", err);
       }
@@ -86,6 +86,11 @@ console.log("viewDetailsUrl:", viewDetailsUrl);
 
     fetchMessDetails();
   }, [messId]);
+
+  useEffect(() => {
+    console.log("Updated messData:", messData);
+  }, [messData]);
+  
 
   const amenities = [
     { id: "ac", label: "A/C", icon: <FaWind className="text-sky-500" /> },
