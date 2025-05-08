@@ -1,8 +1,7 @@
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useLocation , useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import MapDirection from "../components/mapDirection";
 import Footer from "../components/footer";
 import ConfirmBooking from "../components/confirmBooking";
@@ -70,15 +69,10 @@ const ViewDetails = () => {
   const { messId } = useParams();
 
   useEffect(() => {
-    console.log("messId:", messId);
-console.log("viewDetailsUrl:", viewDetailsUrl);
-
     const fetchMessDetails = async () => {
       try {
         const res = await axios.get(`${viewDetailsUrl}/${messId}`);
-        console.log(`${viewDetailsUrl}/${messId}`,"xxx");
         setMessData(res.data.data);
-        console.log(messData,"yyy");
       } catch (err) {
         console.error("Failed to fetch mess details:", err);
       }
@@ -88,9 +82,8 @@ console.log("viewDetailsUrl:", viewDetailsUrl);
   }, [messId]);
 
   useEffect(() => {
-    console.log("Updated messData:", messData);
+    if (messData) console.log("Updated messData:", messData.feedbacks);
   }, [messData]);
-  
 
   const amenities = [
     { id: "ac", label: "A/C", icon: <FaWind className="text-sky-500" /> },
@@ -154,14 +147,38 @@ console.log("viewDetailsUrl:", viewDetailsUrl);
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
 
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(
+  //     ([entry]) => setInView(entry.isIntersecting),
+  //     { threshold: 0.2 }
+  //   );
+  //   if (ref.current) observer.observe(ref.current);
+  //   return () => observer.disconnect();
+  // }, []);
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => setInView(entry.isIntersecting),
-      { threshold: 0.2 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      console.log('In View:', entry.isIntersecting); // Check if observer triggers
+      setInView(entry.isIntersecting);
+    },
+    { threshold: 0.2 } // Adjust if necessary
+  );
+
+  if (ref.current) {
+    observer.observe(ref.current);
+  }
+
+  return () => {
+    if (ref.current) {
+      observer.disconnect();
+    }
+  };
+}, []);
+
+
+  useEffect(() => {
+    console.log(inView);
+  }, [inView]);
 
   // Render stars for ratings
   const renderStars = (rating) => {
@@ -216,52 +233,6 @@ console.log("viewDetailsUrl:", viewDetailsUrl);
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Image Carousel */}
-        {/* <div className="relative rounded-xl overflow w-screen shadow-lg mb-8 h-[400px] bg-gray-100">
-          {Array.isArray(messData?.messPhoto) && messData.messPhoto.length > 0 ? (
-            <>
-              <img
-                src={messData.messPhoto[currentImageIndex] || "/placeholder.svg"}
-                alt={`Room ${currentImageIndex + 1}`}
-                //className="w-full h-full object-cover"
-                className="w-[80%] h-full object-cover mx-3"
-              /> */}
-
-        {/* Navigation Buttons */}
-        {/* <button
-                onClick={prevImage}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-70 transition-all"
-              >
-                <FaChevronLeft />
-              </button>
-
-              <button
-                onClick={nextImage}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-70 transition-all"
-              >
-                <FaChevronRight />
-              </button> */}
-
-        {/* Photo Count Button */}
-        {/* <button
-                onClick={() => setShowModal(true)}
-                className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-4 py-2 rounded-lg shadow-md hover:bg-opacity-90 transition-all flex items-center gap-2"
-              >
-                <span className="font-medium">View All</span>
-                <span className="bg-white text-black px-2 py-1 rounded-md text-sm">{messData.messPhoto.length}</span>
-              </button> */}
-
-        {/* Image Counter */}
-        {/* <div className="absolute bottom-4 left-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-lg">
-                {currentImageIndex + 1} / {messData.messPhoto.length}
-              </div>
-            </>
-          ) : (
-            <div className="flex items-center justify-center h-full">
-              <p className="text-gray-500">No images available</p>
-            </div>
-          )}
-        </div> */}
-        {/* Image Carousel */}
         <div className="relative h-64 shadow-lg mb-6">
           <div className="h-full overflow-x-scroll flex space-x-2 overflow-y-hidden">
             {Array.isArray(messData?.messPhoto) &&
@@ -310,36 +281,36 @@ console.log("viewDetailsUrl:", viewDetailsUrl);
                   {/* Rating Badge */}
                   <div className="flex flex-col gap-2 mb-3">
                     <div className="flex items-center gap-2">
-                    <div className="bg-sky-200 text-sky-700 px-3 py-1 rounded-lg font-medium flex items-center">
-                      <span className="text-lg mr-1">{average}</span>
-                      <FaStar className="text-yellow-400" />
-                    </div>
-                    <span className="text-gray-500">({total} ratings)</span>
+                      <div className="bg-sky-200 text-sky-700 px-3 py-1 rounded-lg font-medium flex items-center">
+                        <span className="text-lg mr-1">{average}</span>
+                        <FaStar className="text-yellow-400" />
+                      </div>
+                      <span className="text-gray-500">({total} ratings)</span>
                     </div>
                     {/* gender */}
                     <div>
-                    {messData?.gender && (
-                      <div className="mt-3 flex items-center gap-2 text-sm font-medium text-gray-700">
-                        {messData.gender.toLowerCase() === "girls pg" && (
-                          <span className="flex items-center gap-1 bg-pink-100 text-pink-600 px-2 py-1 rounded-full">
-                            <FaFemale />
-                            Girls PG
-                          </span>
-                        )}
-                        {messData.gender.toLowerCase() === "boys pg" && (
-                          <span className="flex items-center gap-1 bg-blue-100 text-blue-600 px-2 py-1 rounded-full">
-                            <FaMale />
-                            Boys PG
-                          </span>
-                        )}
-                        {messData.gender.toLowerCase() === "coed pg" && (
-                          <span className="flex items-center gap-1 bg-green-100 text-green-600 px-2 py-1 rounded-full">
-                            <FaUsers />
-                            Co-ed PG
-                          </span>
-                        )}
-                      </div>
-                    )}
+                      {messData?.gender && (
+                        <div className="mt-3 flex items-center gap-2 text-sm font-medium text-gray-700">
+                          {messData.gender.toLowerCase() === "girls pg" && (
+                            <span className="flex items-center gap-1 bg-pink-100 text-pink-600 px-2 py-1 rounded-full">
+                              <FaFemale />
+                              Girls PG
+                            </span>
+                          )}
+                          {messData.gender.toLowerCase() === "boys pg" && (
+                            <span className="flex items-center gap-1 bg-blue-100 text-blue-600 px-2 py-1 rounded-full">
+                              <FaMale />
+                              Boys PG
+                            </span>
+                          )}
+                          {messData.gender.toLowerCase() === "coed pg" && (
+                            <span className="flex items-center gap-1 bg-green-100 text-green-600 px-2 py-1 rounded-full">
+                              <FaUsers />
+                              Co-ed PG
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -517,6 +488,7 @@ console.log("viewDetailsUrl:", viewDetailsUrl);
                   const count = ratingCounts[star - 1];
                   const percent =
                     total > 0 ? ((count / total) * 100).toFixed(0) : "0";
+                  console.log("percent", percent);
                   return (
                     <div key={star} className="flex items-center gap-2">
                       <div className="w-12 text-gray-600 text-sm">{star} ★</div>
@@ -541,27 +513,29 @@ console.log("viewDetailsUrl:", viewDetailsUrl);
               {messData?.feedbacks?.length > 0 ? (
                 <>
                   <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
-                    {messData.feedbacks.slice(0, visibleCount).map((fb, idx) => (
-                      <div
-                        key={idx}
-                        className="p-4 rounded-lg border border-gray-100 hover:border-sky-100 transition-all"
-                      >
-                        <div className="flex justify-between items-start mb-2">
-                          <p className="font-medium text-gray-900">
-                            {fb.username}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            {new Date(fb.submittedAt).toLocaleDateString()}
-                          </p>
+                    {messData.feedbacks
+                      .slice(0, visibleCount)
+                      .map((fb, idx) => (
+                        <div
+                          key={idx}
+                          className="p-4 rounded-lg border border-gray-100 hover:border-sky-100 transition-all"
+                        >
+                          <div className="flex justify-between items-start mb-2">
+                            <p className="font-medium text-gray-900">
+                              {fb.username}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {new Date(fb.submittedAt).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <div className="flex text-yellow-400 mb-2">
+                            {Array.from({ length: fb.rating }).map((_, i) => (
+                              <FaStar key={i} />
+                            ))}
+                          </div>
+                          <p className="text-gray-700 text-sm">{fb.comment}</p>
                         </div>
-                        <div className="flex text-yellow-400 mb-2">
-                          {Array.from({ length: fb.rating }).map((_, i) => (
-                            <FaStar key={i} />
-                          ))}
-                        </div>
-                        <p className="text-gray-700 text-sm">{fb.comment}</p>
-                      </div>
-                    ))}
+                      ))}
                   </div>
 
                   {visibleCount < messData.feedbacks.length && (
