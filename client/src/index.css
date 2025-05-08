@@ -24,10 +24,13 @@
 }
 
 /* Hide scrollbar but keep scroll functionality */
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
+/* Put this in globals.css or index.css */
 .hide-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
 }
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
