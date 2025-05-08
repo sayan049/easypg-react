@@ -15,9 +15,9 @@ function StickyBookingCard({ messData, isVisible }) {
   };
   return (
     <div
-      className={`fixed bottom-0 left-0 w-full bg-white px-4 py-3 shadow-lg flex items-center justify-between z-50 md:px-8 lg:px-16 xl:px-24 transition-all duration-500 ease-in-out ${
-        isVisible ? "translate-y-0" : "translate-y-full"
-      }`}
+      className={`fixed bottom-0 left-0 w-full bg-white px-4 py-3 shadow-lg flex items-center justify-between z-50 md:px-8 lg:px-16 xl:px-24 transition-all duration-500 ease-in-out 
+        ${isVisible ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"}
+      `}
       // className="fixed bottom-0 left-0 w-full bg-white px-4 py-3 shadow-lg flex items-center justify-between z-50 md:px-8 lg:px-16 xl:px-24"
       style={{
         boxShadow:
