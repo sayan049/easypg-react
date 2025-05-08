@@ -413,7 +413,7 @@ const ViewDetails = () => {
               transition={{ duration: 0.7 }}
             >
               {!showModal && footerInView && (
-                <ConfirmBooking messData={messData}  />
+                <ConfirmBooking messData={messData} isVisible={footerInView} />
               )}
             </motion.div>
 
