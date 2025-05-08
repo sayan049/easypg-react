@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { json, useNavigate } from "react-router-dom";
 
-function StickyBookingCard({ owner }) {
+function StickyBookingCard({ messData }) {
   const Navigate=useNavigate();
   const [duration, setDuration] = useState("1 Month");
 
@@ -10,9 +10,9 @@ function StickyBookingCard({ owner }) {
     setDuration(e.target.value);
   };
   const clickBook=()=>{
-    const ownerParams = new URLSearchParams();
-    ownerParams.set("owner",JSON.stringify(owner));
-    Navigate(`/booking?${ownerParams}`);
+    const messDataParams = new URLSearchParams();
+    messDataParams.set("messData",JSON.stringify(messData));
+    Navigate(`/booking?${messDataParams}`);
   }
   return (
     <div
@@ -25,12 +25,12 @@ function StickyBookingCard({ owner }) {
     >
       {/* Left Section: Information */}
       <div className="flex flex-col">
-        <h3 className="text-base md:text-lg font-semibold">{owner.messName}</h3>
-        <p className="text-sm text-gray-600">{owner.roomInfo.length} Rooms</p>
+        <h3 className="text-base md:text-lg font-semibold">{messData.messName}</h3>
+        <p className="text-sm text-gray-600">{messData.roomInfo.length} Rooms</p>
         <div className="text-blue-600 font-bold text-lg mt-1">
-          {owner.roomInfo?.length > 0
+          {messData.roomInfo?.length > 0
             ? `₹${Math.min(
-                ...owner.roomInfo
+                ...messData.roomInfo
                   .map((room) => Number(room.pricePerHead))
                   .filter(Number)
               )} /month`
