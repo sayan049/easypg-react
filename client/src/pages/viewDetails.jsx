@@ -175,7 +175,7 @@ const ViewDetails = () => {
 
     return stars;
   };
-
+  if (!messData) return <p>Loading...</p>;
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Header */}
