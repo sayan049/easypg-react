@@ -70,6 +70,9 @@ const ViewDetails = () => {
   const { messId } = useParams();
 
   useEffect(() => {
+    console.log("messId:", messId);
+console.log("viewDetailsUrl:", viewDetailsUrl);
+
     const fetchMessDetails = async () => {
       try {
         const res = await axios.get(`${viewDetailsUrl}/${messId}`);
