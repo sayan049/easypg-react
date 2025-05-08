@@ -18,8 +18,8 @@ import { baseurl, fetchDetailsUrl } from "../constant/urls";
 import { toast } from "react-toastify";
 import BookingTable from "../components/BookingTable";
 import Settings from "../components/settings";
-// import DashboardContent from "../components/dashboardContent";
-const DashboardContent = React.lazy(() => import('./components/dashboardContent'));
+ import DashboardContent from "../components/dashboardContent";
+// const DashboardContent = React.lazy(() => import('./components/dashboardContent'));
 
 import Payments from "../components/payment";
 
