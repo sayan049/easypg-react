@@ -384,8 +384,8 @@ const MessFind = () => {
       </Helmet>
       {/* Sidebar */}
       <aside
-         className="w-full md:w-1/4 bg-white p-4 shadow rounded-md hidden md:block h-screen overflow-y-auto border-r"
-        style={{ borderColor: "#2ca4b5" }}
+        className="w-full md:w-1/4 bg-white p-4 shadow rounded-md hidden md:block h-screen overflow-y-auto border-r-2 border-r-primary.DEFAULT"
+
       >
         <h2 className="text-lg font-bold">Search Filters</h2>
         {/* <div className="mt-6">
@@ -534,7 +534,7 @@ const MessFind = () => {
         <section aria-label="Search accommodations">
           <div className="flex flex-row md:flex-row justify-between items-center bg-white p-4  rounded-md relative">
             {/* Search Bar */}
-            <div className="flex items-center gap-4 bg-white p-3 rounded-lg border border-gray-300 shadow-sm hover:border-primary-dark transition-colors w-full relative">
+            <div className="flex items-center gap-4 bg-white p-3 rounded-lg border-2 border-gray-300 shadow-sm hover:border-primary-dark transition-colors w-full relative">
               {/* <input
               type="text"
               placeholder="Search mess by location"
@@ -551,6 +551,7 @@ const MessFind = () => {
                 type="text"
                 placeholder="Search mess by location"
                 className="w-full p-1 text-base outline-none placeholder-gray-400"
+                autoComplete="off"
                 value={searchQuery}
                 onChange={handleInputChange}
                 onKeyDown={(e) => {
