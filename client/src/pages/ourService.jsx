@@ -73,7 +73,7 @@ const OurService = () => {
     <div>
       <Helmet>
         <title>
-          messmate's promises | Complete PG/Mess Management
+          Messmate's promises | Complete PG/Mess Management
           Solution
         </title>
         <meta
