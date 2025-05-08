@@ -408,7 +408,7 @@ const HomePage = () => {
                   className="text-gray-500 hover:text-gray-700 focus:outline-none"
                   aria-label="Close menu"
                 >
-                  <XIcon className="h-6 w-6" />
+                  <X className="h-6 w-6" />
                 </button>
               </div>
 
