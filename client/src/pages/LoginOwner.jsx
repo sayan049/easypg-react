@@ -24,7 +24,7 @@ import { ShieldCheck } from "lucide-react";
 
 function LoginOwner() {
   useEffect(() => {
-    document.title = "Pg owner login";
+    document.title = "POwnerLogin | Messmate";
   }, []);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -542,9 +542,23 @@ function LoginOwner() {
                     onChange={() => setIsChecked(!isChecked)}
                     className="h-4 w-4 border-gray-300 rounded"
                     disabled={!isFormFilled} // Disable checkbox until the form is filled
+                    aria-required="true"
                   />
                   <label htmlFor="terms" className="text-sm text-gray-600">
-                    I accept the Terms and Conditions
+                    I agree to the{" "}
+                    <Link
+                      to="/terms"
+                      className="text-[#2ca4b5] hover:underline"
+                    >
+                      Terms & Conditions
+                    </Link>{" "}
+                    and{" "}
+                    <Link
+                      to="/privacy"
+                      className="text-[#2ca4b5] hover:underline"
+                    >
+                      Privacy Policy
+                    </Link>
                   </label>
                 </div>
 
@@ -580,7 +594,7 @@ function LoginOwner() {
                 <p className="text-center text-sm text-gray-600 mt-4">
                   Don't have an account?{" "}
                   <Link
-                    to="/signupOwner"
+                    to="/signup/owner"
                     className="text-[#2ca4b5] hover:underline"
                   >
                     Sign up
@@ -591,7 +605,7 @@ function LoginOwner() {
           </div>
 
           {/* Right Section */}
-          <div className="hidden lg:flex lg:w-4/12 flex-col justify-center items-center bg-login-owner text-white p-12 relative overflow-hidden">
+          <aside className="hidden lg:flex lg:w-4/12 flex-col justify-center items-center bg-login-owner text-white p-12 relative overflow-hidden">
             {/* Mess Mate Text */}
             <h1 className="text-xl font-bold absolute top-0 right-6">
               <div className="inline-flex items-center text-5xl font-bold space-x-1">
@@ -630,7 +644,7 @@ function LoginOwner() {
 
             <div className="h-[23rem] w-[3.5rem] bg-column-owner absolute transform rotate-[150deg] rounded-full top-[22.5rem] right-[2rem]"></div>
             <div className="h-[25.5rem] w-[3.5rem] bg-column-owner absolute transform rotate-[150deg] rounded-full top-[18rem] right-[0rem]"></div>
-          </div>
+          </aside>
 
           {isForgotPasswordOpen && (
             <div className="fixed top-0 left-0 z-50 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">

@@ -46,7 +46,7 @@ root.render(
           <Route path="/business-model" element={<BusinessModel />} />
           <Route path="/our-services" element={<OurService />} />
           <Route
-            path="/signupforuser"
+            path="/signup/user"
             element={
               <ProtectedRoute>
                 <SignUpUser />
@@ -72,7 +72,7 @@ root.render(
             }
           />
           <Route
-            path="/signupowner"
+            path="/signup/owner"
             element={
               <ProtectedRoute>
                 <SignupOwner />

@@ -25,7 +25,7 @@ import { ShieldCheck } from "lucide-react";
 
 function LoginUser() {
   useEffect(() => {
-    document.title = "Student login";
+    document.title = "User Login | Messmate";
   }, []);
 
   const [email, setEmail] = useState("");
@@ -535,10 +535,18 @@ function LoginUser() {
                 checked={isChecked}
                 onChange={() => setIsChecked(!isChecked)}
                 className="h-4 w-4 border-gray-300 rounded"
-                disabled={!isFormFilled} // Disable checkbox until the form is filled
+                disabled={!isFormFilled}
+                aria-required="true"
               />
               <label htmlFor="terms" className="text-sm text-gray-600">
-                I accept the Terms and Conditions
+                I agree to the{" "}
+                <Link to="/terms" className="text-[#2ca4b5] hover:underline">
+                  Terms & Conditions
+                </Link>{" "}
+                and{" "}
+                <Link to="/privacy" className="text-[#2ca4b5] hover:underline">
+                  Privacy Policy
+                </Link>
               </label>
             </div>
 
@@ -575,10 +583,7 @@ function LoginUser() {
 
           <p className="text-center text-sm text-gray-600 mt-4">
             Don't have an account?{" "}
-            <Link
-              to="/signupforUser"
-              className="text-[#2ca4b5] hover:underline"
-            >
+            <Link to="/signup/user" className="text-[#2ca4b5] hover:underline">
               Sign up
             </Link>
           </p>
@@ -586,7 +591,7 @@ function LoginUser() {
       </div>
 
       {/* Right Section */}
-      <div className="hidden lg:flex lg:w-4/12 flex-col justify-center items-center bg-[#2ca4b53b] text-white p-12 relative">
+      <aside className="hidden lg:flex lg:w-4/12 flex-col justify-center items-center bg-[#2ca4b53b] text-white p-12 relative">
         {/* Mess Mate Text */}
         <h1 className="text-xl font-bold absolute top-2 right-6">
           <div className="inline-flex items-center text-5xl font-bold space-x-1">
@@ -626,7 +631,7 @@ function LoginUser() {
           <p>Nearest</p>
           <p>Mess</p>
         </div>
-      </div>
+      </aside>
       {isForgotPasswordOpen && (
         <div className="fixed top-0 left-0 z-50 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white rounded-lg shadow-xl w-[22rem] p-6">
