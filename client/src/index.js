@@ -81,7 +81,7 @@ root.render(
           />
 
           {/* <Route path="/MessFind" element={<MessFind />} /> */}
-          <Route path="/messfind/:initialItem" element={<MessFind />} />
+          <Route path="/find-mess/:initialItem" element={<MessFind />} />
 
 
           <Route path="/MailVerify" element={<MailVerify />} />

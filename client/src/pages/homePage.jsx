@@ -107,7 +107,7 @@ const HomePage = () => {
       .replace(/^-+|-+$/g, "");
   
     navigate(
-      `/messfind/${slug}?lat=${suggestion.lat}&lng=${suggestion.lon}`
+      `/find-mess/${slug}?lat=${suggestion.lat}&lng=${suggestion.lon}`
     );
   };
   
@@ -129,7 +129,7 @@ const HomePage = () => {
     //   state: { userLocation: selectedLocation, item: searchItem },
     // });
     navigate(
-      `/MessFind/${encodeURIComponent(searchItem)}/${encodeURIComponent(
+      `/find-mess/${encodeURIComponent(searchItem)}/${encodeURIComponent(
         JSON.stringify(selectedLocation)
       )}`
     );
@@ -148,7 +148,7 @@ const HomePage = () => {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
   
-  navigate(`/messfind/${slug}?lat=${coords.lat}&lng=${coords.lng}`);
+  navigate(`/find-mess/${slug}?lat=${coords.lat}&lng=${coords.lng}`);
   
   };
 
@@ -242,7 +242,7 @@ const HomePage = () => {
       (position) => {
         const { latitude, longitude } = position.coords;
 
-        navigate(`/messfind/you?lat=${latitude}&lng=${longitude}`);
+        navigate(`/find-mess/you?lat=${latitude}&lng=${longitude}`);
 
 
         setTimeout(() => {

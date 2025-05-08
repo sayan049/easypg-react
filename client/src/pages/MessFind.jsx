@@ -277,7 +277,7 @@ const MessFind = () => {
       // alert("Please select a valid location from suggestions!");
       return;
     }
-    navigate("/MessFind", {
+    navigate("/find-mess", {
       state: { userLocation: selectedLocation, item: searchQuery },
     });
     // setSearchQuery("");
