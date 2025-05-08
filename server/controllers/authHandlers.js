@@ -818,22 +818,22 @@ exports.getTopRatedMesses = async (req, res) => {
         $match: {
           // Ensure feedbacks exists and is an array with at least one rating
           feedbacks: { $exists: true, $type: "array", $ne: [] },
-          "feedbacks.rating": { $exists: true, $ne: null }
-        }
+          "feedbacks.rating": { $exists: true, $ne: null },
+        },
       },
       {
         $addFields: {
           // Safely calculate average rating
           averageRating: { $avg: "$feedbacks.rating" },
           // Safely get feedback count
-          totalFeedbacks: { 
+          totalFeedbacks: {
             $cond: {
               if: { $isArray: "$feedbacks" },
               then: { $size: "$feedbacks" },
-              else: 0
-            }
-          }
-        }
+              else: 0,
+            },
+          },
+        },
       },
       // Only include documents with valid ratings
       { $match: { averageRating: { $ne: null } } },
@@ -866,9 +866,9 @@ exports.getTopRatedMesses = async (req, res) => {
     res.status(200).json({ data: topMesses });
   } catch (error) {
     console.error("Error in getTopRatedMesses:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: "Failed to fetch top-rated messes",
-      error: error.message 
+      error: error.message,
     });
   }
 };
@@ -877,7 +877,7 @@ exports.viewDetails = async (req, res) => {
   const { messId } = req.params; // Use params, not body
   console.log(messId);
   try {
-    const pgOwner = await PgOwner.findById({_id : messId}); // or use { _id: messId }
+    const pgOwner = await PgOwner.findOne({ _id: messId });
 
     if (!pgOwner) {
       console.log("PG Owner not found");
