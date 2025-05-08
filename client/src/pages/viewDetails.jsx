@@ -7,6 +7,7 @@ import Footer from "../components/footer";
 import ConfirmBooking from "../components/confirmBooking";
 import { viewDetailsUrl } from "../constant/urls";
 import axios from "axios";
+import { useInView } from 'react-intersection-observer';
 import {
   FaWind,
   FaTv,
@@ -141,8 +142,8 @@ const ViewDetails = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const ref = useRef(null);
-  const [inView, setInView] = useState(false);
+  // const ref = useRef(null);
+  // const [inView, setInView] = useState(false);
 
   // useEffect(() => {
   //   const observer = new IntersectionObserver(
@@ -152,32 +153,10 @@ const ViewDetails = () => {
   //   if (ref.current) observer.observe(ref.current);
   //   return () => observer.disconnect();
   // }, []);
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Only update state if there's a change
-        if (entry.isIntersecting !== inView) {
-          setInView(entry.isIntersecting);
-        }
-      },
-      {
-        root: null, // relative to viewport
-        rootMargin: "0px",
-        threshold: 0.1, // lower threshold
-      }
-    );
-
-    const currentElement = ref.current;
-    if (currentElement) {
-      observer.observe(currentElement);
-    }
-
-    return () => {
-      if (currentElement) {
-        observer.unobserve(currentElement);
-      }
-    };
-  }, []);
+const { ref, inView } = useInView({
+  threshold: 0.1,
+  triggerOnce: false // set to true if you only need to detect once
+});
 
   useEffect(() => {
     console.log(inView);
