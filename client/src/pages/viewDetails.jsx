@@ -154,8 +154,8 @@ const { ref, inView } = useInView({
   });
 
   useEffect(() => {
-    console.log(inView);
-  }, [inView]);
+    console.log(footerInView);
+  }, [footerInView]);
 
   // Render stars for ratings
   const renderStars = (rating) => {
