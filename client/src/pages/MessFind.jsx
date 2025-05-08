@@ -180,11 +180,14 @@ const MessFind = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+
+  const { initialItem } = useParams();
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
-  const { initialItem, userLocations } = useParams();
-  const userLocation = userLocations ? JSON.parse(decodeURIComponent(userLocations)) : null;
-  const {IsAuthenticated}=useAuth();
+
+  const lat = queryParams.get("lat");
+  const lng = queryParams.get("lng");
+  
   
   console.log(userLocation, "ggg");
 
@@ -295,12 +298,10 @@ const MessFind = () => {
   //   if (item) setItem(item);
   // }, [location.search]);
   useEffect(() => {
-    // Parse userLocation from string format "lat,lng" into { lat, lng }
-    if (userLocation) {
-      //const [lat, lng] = userLocation.split(',').map(coord => parseFloat(coord));
-      setSelectedLocation(userLocation);
+    if (lat && lng) {
+      setSelectedLocation({ lat: parseFloat(lat), lng: parseFloat(lng) });
     }
-  }, [userLocation.search]);
+  }, [lat, lng]);
 
   useEffect(() => {
     // You can now directly use `initialItem` and `selectedLocation` in your logic

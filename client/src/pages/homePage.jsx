@@ -72,27 +72,45 @@ const HomePage = () => {
     navigate("/choose-role");
   };
 
+  // const handleSuggestionClick = (suggestion) => {
+  //   setSearchItem(suggestion.display_name);
+  //   setSelectedLocation({
+  //     lat: suggestion.lat,
+  //     lng: suggestion.lng,
+  //   });
+  //   const coords = { lat: suggestion.lat, lng: suggestion.lon };
+
+  //   setSuggestions([]);
+
+  //   // navigate(
+  //   //   `/MessFind?userLocation=${encodeURIComponent(
+  //   //     JSON.stringify(coords)
+  //   //   )}&item=${encodeURIComponent(suggestion.display_name)}`
+  //   // );
+  //   navigate(
+  //     `/MessFind/${encodeURIComponent(
+  //       suggestion.display_name
+  //     )}/${encodeURIComponent(JSON.stringify(coords))}`
+  //   );
+  // };
   const handleSuggestionClick = (suggestion) => {
     setSearchItem(suggestion.display_name);
     setSelectedLocation({
       lat: suggestion.lat,
       lng: suggestion.lng,
     });
-    const coords = { lat: suggestion.lat, lng: suggestion.lon };
-
     setSuggestions([]);
-
-    // navigate(
-    //   `/MessFind?userLocation=${encodeURIComponent(
-    //     JSON.stringify(coords)
-    //   )}&item=${encodeURIComponent(suggestion.display_name)}`
-    // );
+  
+    const slug = suggestion.display_name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  
     navigate(
-      `/MessFind/${encodeURIComponent(
-        suggestion.display_name
-      )}/${encodeURIComponent(JSON.stringify(coords))}`
+      `/messfind/${slug}?lat=${suggestion.lat}&lng=${suggestion.lon}`
     );
   };
+  
   const menuItems = [
     { name: "Home", icon: Home, path: "/" },
     { name: "About", icon: Info, path: "/about" },
@@ -125,11 +143,13 @@ const HomePage = () => {
     // navigate("/MessFind", {
     //   state: { userLocation: coords, item: cityName },
     // });
-    navigate(
-      `/MessFind/${encodeURIComponent(cityName)}/${encodeURIComponent(
-        JSON.stringify(coords)
-      )}`
-    );
+    const slug = cityName
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  
+  navigate(`/messfind/${slug}?lat=${coords.lat}&lng=${coords.lng}`);
+  
   };
 
   useEffect(() => {
@@ -222,11 +242,8 @@ const HomePage = () => {
       (position) => {
         const { latitude, longitude } = position.coords;
 
-        navigate(
-          `/MessFind/you/${encodeURIComponent(
-            JSON.stringify({ lat: latitude, lng: longitude })
-          )}`
-        );
+        navigate(`/messfind/you?lat=${latitude}&lng=${longitude}`);
+
 
         setTimeout(() => {
           setIsLocating(false);
