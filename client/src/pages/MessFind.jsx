@@ -383,10 +383,7 @@ const MessFind = () => {
         />
       </Helmet>
       {/* Sidebar */}
-      <aside
-        className="w-full md:w-1/4 bg-white p-4 shadow rounded-md hidden md:block h-screen overflow-y-auto border-r-2 border-r-primary-default"
-
-      >
+      <aside className="w-full md:w-1/4 bg-white p-4 shadow rounded-md hidden md:block h-screen overflow-y-auto border-r-2 border-r-primary-default">
         <h2 className="text-lg font-bold">Search Filters</h2>
         {/* <div className="mt-6">
           <h3 className="font-medium">Price</h3>
@@ -449,21 +446,23 @@ const MessFind = () => {
           <div className="flex flex-col gap-4 mt-4">
             <fieldset>
               <legend className="font-medium mb-2">Amenities</legend>
-              {/* <h4 className="font-medium">Amenities</h4> */}
-              {amenities.map((facility) => (
-                <label key={facility.id} className="flex items-center text-sm">
-                  <input
-                    type="checkbox"
-                    onClick={featureChanges}
-                    value={facility.label}
-                    className="mr-2 accent-blue-500"
-                  />
-                  <span className="text-lg mr-2 accent-blue-500">
-                    {facility.icon}
-                  </span>
-                  {facility.label}
-                </label>
-              ))}
+              <div className="flex flex-col gap-3">
+                {amenities.map((facility) => (
+                  <label
+                    key={facility.id}
+                    className="flex items-center text-sm"
+                  >
+                    <input
+                      type="checkbox"
+                      onClick={featureChanges}
+                      value={facility.label}
+                      className="mr-2 accent-blue-500"
+                    />
+                    <span className="text-lg mr-2">{facility.icon}</span>
+                    {facility.label}
+                  </label>
+                ))}
+              </div>
             </fieldset>
 
             <div className="mb-6 mt-2">
