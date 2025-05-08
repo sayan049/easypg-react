@@ -76,7 +76,7 @@ router.post("/likedMess", authenticateJWT, likedMess.likedMess);
 router.get("/getLikedMess", authenticateJWT, getLikedMess);
 router.get("/findMess", authHandlers.findMess);
 router.get("/getRecc", authHandlers.getTopRatedMesses);
-router.get("/viewDetails", authHandlers.viewDetails);
+router.get("/viewDetails/:messId", authHandlers.viewDetails);
 router.get("/getCart",authenticateJWT,likedMess.cartMess);
 
 
