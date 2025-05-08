@@ -81,7 +81,8 @@ root.render(
           />
 
           {/* <Route path="/MessFind" element={<MessFind />} /> */}
-          <Route path="/MessFind/:initialItem/:userLocations" element={<MessFind />} />
+          <Route path="/find-mess/:initialItem" element={<MessFind />} />
+
 
           <Route path="/MailVerify" element={<MailVerify />} />
           <Route path="/MailVerifyOwner" element={<MailVerifyOwner />} />
@@ -112,7 +113,7 @@ root.render(
             }
           />
 
-          <Route path="/ViewDetails" element={<ViewDetails />} />
+          <Route path="/ViewDetails/:messId" element={<ViewDetails />} />
 
           {/* <Route path="/BookingPage" element={<BookingPage />} /> */}
 

@@ -17,7 +17,7 @@ import {
   MdBed,
 } from "react-icons/md";
 import { MapPin, Filter, Search, Trash2, Heart } from "lucide-react";
-import { FaMale, FaFemale, FaUsers ,FaUserFriends } from "react-icons/fa";
+import { FaMale, FaFemale, FaUsers, FaUserFriends } from "react-icons/fa";
 
 const amenities = [
   {
@@ -61,7 +61,6 @@ const Cart = () => {
   const [gender, setGender] = useState("");
   const [loading, setLoading] = useState(true);
 
-
   const fetchMessData = async () => {
     setLoading(true);
     try {
@@ -71,11 +70,10 @@ const Cart = () => {
         },
       });
       setMessData(res.data || []);
-      
     } catch (err) {
       console.error(err);
       toast.error("Failed to fetch mess data.");
-    } finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -134,10 +132,7 @@ const Cart = () => {
   };
 
   const clickNavi = (owner) => {
-    const ownerParams = new URLSearchParams();
-    ownerParams.set("owner", JSON.stringify(owner));
-
-    navigate(`/viewDetails?${ownerParams.toString()}`);
+    navigate(`/viewDetails/${owner._id}`);
   };
 
   const clickBook = (owner) => {
@@ -172,7 +167,7 @@ const Cart = () => {
       amenityFilters.length === 0 ||
       amenityFilters.every((af) => mess.facility?.includes(af));
 
-      const matchesGender = gender
+    const matchesGender = gender
       ? mess.gender?.toLowerCase() === gender.toLowerCase()
       : true;
 
@@ -181,7 +176,6 @@ const Cart = () => {
 
   const getAmenityIcon = (label) =>
     amenities.find((a) => a.label === label)?.icon || null;
-
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -332,9 +326,7 @@ const Cart = () => {
         )}
 
         {/* Empty State */}
-        {loading &&
-  [1, 2, 3, 4, 5].map((i) => <Skeleton key={i} />)
-}
+        {loading && [1, 2, 3, 4, 5].map((i) => <Skeleton key={i} />)}
 
         {(filteredMesses.length && !loading) === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-center">

@@ -36,3 +36,4 @@ export const likedMessesUrl= `${baseUrl}/auth/likedMess`;
 export const getLikedMessUrl= `${baseUrl}/auth/getLikedMess`;
 export const getCartUrl= `${baseUrl}/auth/getCart`;
 export const getRecomendationsUrl=`${baseUrl}/auth/getRecc`;
+export const viewDetailsUrl= `${baseUrl}/auth/viewDetails`;
