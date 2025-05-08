@@ -7,7 +7,8 @@ import Footer from "../components/footer";
 import ConfirmBooking from "../components/confirmBooking";
 import { viewDetailsUrl } from "../constant/urls";
 import axios from "axios";
-import { useInView } from 'react-intersection-observer';
+import { useInView } from "react-intersection-observer";
+import { motion } from "framer-motion";
 import {
   FaWind,
   FaTv,
@@ -82,7 +83,6 @@ const ViewDetails = () => {
     fetchMessDetails();
   }, [messId]);
 
-
   const amenities = [
     { id: "ac", label: "A/C", icon: <FaWind className="text-sky-500" /> },
     { id: "tv", label: "TV", icon: <FaTv className="text-sky-500" /> },
@@ -142,15 +142,14 @@ const ViewDetails = () => {
     window.scrollTo(0, 0);
   }, []);
 
-
-const { ref, inView } = useInView({
-  threshold: 0.1,
-  triggerOnce: false // set to true if you only need to detect once
-});
+  const { ref, inView } = useInView({
+    threshold: 0.1,
+    triggerOnce: false, // set to true if you only need to detect once
+  });
 
   const [footerRef, footerInView] = useInView({
     threshold: 0.1, // Trigger when 10% of footer is visible
-    triggerOnce: false // Keep observing
+    triggerOnce: false, // Keep observing
   });
 
   useEffect(() => {
@@ -408,11 +407,15 @@ const { ref, inView } = useInView({
           {/* Sidebar Column */}
           <div className="space-y-8">
             {/* Booking Widget */}
-            <div
-            // className="bg-white rounded-xl shadow-sm p-6 sticky "
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
             >
-              {!showModal && footerInView && <ConfirmBooking messData={messData} isVisible={footerInView}  />}
-            </div>
+              {!showModal && footerInView && (
+                <ConfirmBooking messData={messData} isVisible={footerInView} />
+              )}
+            </motion.div>
 
             {/* Ratings Section */}
             <div
