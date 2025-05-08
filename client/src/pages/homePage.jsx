@@ -67,9 +67,9 @@ const HomePage = () => {
     }
   };
 
-  const clickLogin=()=>{
+  const clickLogin = () => {
     navigate("/choose-role");
-  }
+  };
 
   const handleSuggestionClick = (suggestion) => {
     setSearchItem(suggestion.display_name);
@@ -350,7 +350,7 @@ const HomePage = () => {
                 whileTap={{ scale: 0.95 }}
                 className="hidden lg:block rounded-full bg-white text-gray-800 px-6 py-2 border-2 border-[#2CA4B5] font-semibold text-sm hover:bg-[#2CA4B5] hover:text-white transition-colors duration-300"
                 onClick={clickLogin}
-             >
+              >
                 <Link to="/choose-role">Login</Link>
               </motion.button>
             )}
@@ -700,8 +700,60 @@ const HomePage = () => {
       </div>
 
       {/* Features Section */}
+      {/* <section className="py-10 bg-gradient-to-b from-[#e6f7fa] to-white relative">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true, margin: "-100px" }}
+            className="grid gap-10 md:grid-cols-3 text-center"
+          >
+            {[
+              {
+                img: "./assets/online-booking 1.png",
+                title: "Quick and easy bookings",
+                desc: "Secure your room in no time with hassle-free instant booking",
+              },
+              {
+                img: "./assets/choice 1.png",
+                title: "The widest choice",
+                desc: "Browse verified, affordable student rooms close to university",
+              },
+              {
+                img: "./assets/support 1.png",
+                title: "We're here to help",
+                desc: "Reach out to our friendly team of experts who are always on hand",
+              },
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                whileHover={{ y: -5 }}
+                className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
+              >
+                <div className="flex justify-center mb-6">
+                  <motion.img
+                    whileHover={{ rotate: 5, scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                    src={feature.img}
+                    alt={feature.title}
+                    className="h-24 w-auto"
+                  />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-800 mb-3">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600">{feature.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section> */}
       <section className="py-10 bg-gradient-to-b from-[#e6f7fa] to-white relative">
         <div className="container mx-auto px-6">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Why Choose Us
+          </h2>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
