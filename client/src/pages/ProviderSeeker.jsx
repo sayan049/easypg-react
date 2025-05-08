@@ -112,7 +112,7 @@ function ProviderSeeker() {
         {/* Right Section */}
         <div className="w-full lg:w-1/2 flex justify-center mt-10 lg:mt-0">
           <img
-            src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746627457/image_uwpgxm.png"
+            src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746717996/image-681ccd1742ac5_auddid.webp"
             alt="Illustration of students choosing between mess and PG roles"
             className="max-w-full h-auto"
             loading="lazy"
