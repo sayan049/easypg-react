@@ -114,14 +114,14 @@ const Recommendations = () => {
                   </div>
 
                   <div className="mt-4 flex flex-wrap gap-2">
-                    {mess.facility?.map((f, i) => (
+                    {/* {mess.facility?.map((f, i) => (
                       <span
                         key={i}
                         className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full"
                       >
                         {f}
                       </span>
-                    ))}
+                    ))} */}
                   </div>
 
                   <motion.button

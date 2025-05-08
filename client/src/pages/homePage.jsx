@@ -67,6 +67,10 @@ const HomePage = () => {
     }
   };
 
+  const clickLogin=()=>{
+    navigate("/choose-role");
+  }
+
   const handleSuggestionClick = (suggestion) => {
     setSearchItem(suggestion.display_name);
     setSelectedLocation({
@@ -345,8 +349,9 @@ const HomePage = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="hidden lg:block rounded-full bg-white text-gray-800 px-6 py-2 border-2 border-[#2CA4B5] font-semibold text-sm hover:bg-[#2CA4B5] hover:text-white transition-colors duration-300"
-              >
-                <Link to="/choose-role">House Owner / Student</Link>
+                onClick={clickLogin}
+             >
+                <Link to="/choose-role">Login</Link>
               </motion.button>
             )}
 
