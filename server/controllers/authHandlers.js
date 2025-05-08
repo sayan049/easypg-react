@@ -877,7 +877,7 @@ exports.viewDetails = async (req, res) => {
   const { messId } = req.params; // Use params, not body
   console.log(messId);
   try {
-    const pgOwner = await PgOwner.findById(messId); // or use { _id: messId }
+    const pgOwner = await PgOwner.findById({_id : messId}); // or use { _id: messId }
 
     if (!pgOwner) {
       console.log("PG Owner not found");
