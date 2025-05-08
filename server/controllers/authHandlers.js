@@ -842,20 +842,21 @@ exports.getTopRatedMesses = async (req, res) => {
       // Limit to 4 results
       { $limit: 4 },
       // Project only needed fields
-      {
-        $project: {
-          firstName: 1,
-          lastName: 1,
-          messName: 1,
-          profilePhoto: 1,
-          averageRating: 1,
-          totalFeedbacks: 1,
-          facility: 1,
-          gender: 1,
-          address: 1,
-          // Add any other fields you need
-        }
-      }
+      // {
+      //   $project: {
+      //     firstName: 1,
+      //     lastName: 1,
+      //     messName: 1,
+      //     profilePhoto: 1,
+      //     averageRating: 1,
+      //     totalFeedbacks: 1,
+      //     facility: 1,
+      //     gender: 1,
+      //     address: 1,
+      //     roomInfo: 1,
+      //     // Add any other fields you need
+      //   }
+      // }
     ]);
 
     if (!topMesses.length) {

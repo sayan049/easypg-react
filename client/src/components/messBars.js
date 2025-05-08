@@ -340,7 +340,7 @@ function MessBars({
           <div
             key={owner._id}
             ref={index === messData.length - 1 ? lastCardRef : null}
-            className={`relative flip-card mb-4 min-h-[32rem] md:min-h-[16rem]  ${
+            className={`relative flip-card mb-4 min-h-[34rem] md:min-h-[16rem]  ${
               isChecked ? "w-full" : "w-full"
             } ${
               selected === owner._id && isChecked
