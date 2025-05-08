@@ -76,9 +76,10 @@ const uploadTemp = multer({
 // Function to compress images
 const compressImage = async (inputPath, outputPath) => {
     await sharp(inputPath)
-        .toFormat('jpeg', { quality:60 }) // Convert to JPEG with 60% quality
+        .webp({ quality: 75 }) // You can adjust quality between 60-80
         .toFile(outputPath);
 };
+
 
 // Middleware to handle compression and Cloudinary upload
 const uploadToCloudinary = async (req, res, next) => {
@@ -92,7 +93,8 @@ const uploadToCloudinary = async (req, res, next) => {
             cloudinaryResults[field] = [];
 
             for (const file of files) {
-                const compressedPath = `${tempDir}/compressed-${file.filename}`;
+                const compressedPath = `${tempDir}/compressed-${path.parse(file.filename).name}.webp`;
+
                 
                 // Compress the file
                 await compressImage(file.path, compressedPath);
@@ -100,8 +102,11 @@ const uploadToCloudinary = async (req, res, next) => {
                 // Upload compressed file to Cloudinary
                 const result = await cloudinary.uploader.upload(compressedPath, {
                     public_id: path.parse(file.originalname).name,
-                    folder: '' // No folder, upload to root
+                    folder: '',
+                    resource_type: 'image',
+                    format: 'webp' // ensure cloudinary keeps it as webp
                 });
+                
 
                 // Save the Cloudinary URL
                 cloudinaryResults[field].push(result.secure_url);
