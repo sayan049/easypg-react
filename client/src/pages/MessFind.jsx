@@ -367,6 +367,7 @@ const MessFind = () => {
             item?.split(",")[0]
           } PG, affordable mess`}
         />
+        <meta name="robots" content="index, follow" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={window.location.href} />
         <meta property="og:image" content="/assets/og-messfind.jpg" />
