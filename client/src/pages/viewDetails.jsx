@@ -356,20 +356,20 @@ const ViewDetails = () => {
               </div>
             </div>
 
-            {/* About Section */}
-            {/* <div
-              //className="bg-white rounded-xl shadow-sm p-6"
-              // className="p-3 border-b-2 border-grey"
-              className="bg-white shadow-sm p-6 border border-grey"
-            >
+            {/* Rules section */}
+            <div className="bg-white shadow-sm p-6 border border-grey">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                About this Accommodation
+                Rules To Stay
               </h2>
+
+              {messData.rulesToStay.map((r) => {
+                <p className="text-gray-700 leading-relaxed">{r}</p>;
+              })}
               <p className="text-gray-700 leading-relaxed">
-                {messData?.aboutMess ||
-                  "No description available for this accommodation."}
+                {messData?.rulesToStay ||
+                  "No rules available for this accommodation."}
               </p>
-            </div> */}
+            </div>
 
             {/* Safety Notice */}
             <div

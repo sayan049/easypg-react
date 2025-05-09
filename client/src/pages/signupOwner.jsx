@@ -1207,9 +1207,7 @@ function SignupOwner() {
   //   })
   // }
 
-  useEffect(() => {
-    console.log("rules", formData.rulesToStay, rules);
-  }, [formData.rulesToStay]);
+
   const handleRuleChange = (index, value) => {
     let newRules = rules;
 
@@ -1276,7 +1274,6 @@ function SignupOwner() {
 
       // Update rulesToStay in formData before sending
       formData.rulesToStay = rules.filter((rule) => rule.trim() !== "");
-      console.log("new form ",formData.rulesToStay)
 
       for (const key in formData) {
         if (key === "messPhoto") {
@@ -1291,11 +1288,10 @@ function SignupOwner() {
           formDataToSend.append(key, JSON.stringify(formData[key]));
         } else {
           formDataToSend.append(key, formData[key]);
-          console.log(key, formDataToSend.get(key));
+        
 
         }
       }
-      console.log(formDataToSend, "xxx");
       const response = await axios.post(signupownerUrl, formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
