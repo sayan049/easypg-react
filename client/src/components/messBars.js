@@ -7,6 +7,7 @@ import { useInView } from "react-intersection-observer";
 import Skeleton from "./Skeleton";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useAuth } from "../contexts/AuthContext";
+import { Helmet } from "react-helmet";
 import {
   FaWind,
   FaTv,
@@ -333,6 +334,41 @@ function MessBars({
 
   return (
     <>
+     <Helmet>
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "itemListElement": messData.slice(0, 10).map((owner, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "item": {
+              "@type": "LocalBusiness",
+              "@id": `https://www.messmate.co.in/ViewDetails/${owner._id}`,
+              "name": owner.messName,
+              "description": owner.description || "Student accommodation",
+              "image": owner.profilePhoto || "https://www.messmate.co.in/assets/og-messfind.jpg",
+              "priceRange": owner.roomInfo?.[0]?.pricePerHead 
+                ? `₹${Math.min(...owner.roomInfo.map(r => r.pricePerHead))}-₹${Math.max(...owner.roomInfo.map(r => r.pricePerHead))}`
+                : "₹₹",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": owner.address,
+               
+                "postalCode": owner.pincode,
+                "addressCountry": "IN"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": owner.location?.coordinates[1],
+                "longitude": owner.location?.coordinates[0]
+              }
+            }
+          }))
+        })}
+      </script>
+    </Helmet>
+
       <style>{styles}</style>
       <div
         className={`grid gap-4 p-2 sm:p-4 ${isChecked ? "grid-cols-1" : ""}`}
