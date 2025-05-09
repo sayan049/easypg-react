@@ -2257,33 +2257,69 @@ function SignupOwner() {
   }
 
   // Handle rules to stay
+  // const handleRuleChange = (index, value) => {
+  //   const newRules = [...rules]
+  //   newRules[index] = value
+  //   setRules(newRules)
+
+  //   // Update formData with non-empty rules
+  //   setFormData({
+  //     ...formData,
+  //     rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
+  //   })
+  // }
+
+  // const addRule = () => {
+  //   setRules([...rules, ""])
+  // }
+
+  // const removeRule = (index) => {
+  //   const newRules = [...rules]
+  //   newRules.splice(index, 1)
+  //   setRules(newRules)
+
+  //   // Update formData with non-empty rules
+  //   setFormData({
+  //     ...formData,
+  //     rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
+  //   })
+  // }
   const handleRuleChange = (index, value) => {
-    const newRules = [...rules]
-    newRules[index] = value
-    setRules(newRules)
+  let newRules = [...rules];
 
-    // Update formData with non-empty rules
-    setFormData({
-      ...formData,
-      rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
-    })
+  // If first field and has commas, split
+  if (index === 0 && value.includes(",")) {
+    newRules = value
+      .split(",")
+      .map((rule) => rule.trim())
+      .filter((rule, i, arr) => rule && arr.indexOf(rule) === i); // remove empty + duplicates
+  } else {
+    newRules[index] = value;
   }
 
-  const addRule = () => {
-    setRules([...rules, ""])
-  }
+  setRules(newRules);
 
-  const removeRule = (index) => {
-    const newRules = [...rules]
-    newRules.splice(index, 1)
-    setRules(newRules)
+  setFormData({
+    ...formData,
+    rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
+  });
+};
 
-    // Update formData with non-empty rules
-    setFormData({
-      ...formData,
-      rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
-    })
-  }
+const addRule = () => {
+  setRules([...rules, ""]);
+};
+
+const removeRule = (index) => {
+  const newRules = [...rules];
+  newRules.splice(index, 1);
+  setRules(newRules);
+
+  setFormData({
+    ...formData,
+    rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
+  });
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault()
