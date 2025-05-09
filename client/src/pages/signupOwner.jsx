@@ -947,6 +947,29 @@ function SignupOwner() {
     { id: "test7", label: "Double Bed", icon: Bed },
   ]
 
+  const predefinedRules = [
+    "No alcohol consumption on premises",
+    "No smoking inside rooms or common areas",
+    "Return to PG before 10:00 PM",
+    "No opposite gender visitors in rooms",
+    "Maintain silence after 11:00 PM",
+    "No loud music or parties without permission",
+    "Keep rooms and common areas clean",
+    "No cooking in bedrooms",
+    "Conserve electricity and water",
+    "No pets allowed",
+    "No alteration to room structure or furniture",
+    "Guests must be registered at reception",
+    "Monthly rent to be paid before 5th of every month",
+    "Laundry only in designated areas",
+    "No illegal activities on premises",
+    "Garbage must be disposed in designated bins",
+    "Common kitchen to be cleaned after use",
+    "No sticking posters on walls",
+    "Parking only in designated areas",
+    "Respect other residents' privacy",
+  ]
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -1647,14 +1670,39 @@ function SignupOwner() {
                   <ScrollText className="h-4 w-4 inline mr-1" />
                   Rules to Stay
                 </label>
-                <button
-                  type="button"
-                  onClick={addRule}
-                  className="text-teal-600 hover:text-teal-700 flex items-center text-sm"
-                >
-                  <Plus className="h-4 w-4 mr-1" />
-                  Add Rule
-                </button>
+                <div className="flex items-center gap-2">
+                  <select
+                    className="text-sm rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500 px-3 py-1.5"
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        setRules([...rules, e.target.value])
+                        // Reset the select after adding
+                        e.target.value = ""
+
+                        // Update formData with non-empty rules
+                        setFormData({
+                          ...formData,
+                          rulesToStay: [...rules, e.target.value].filter((rule) => rule.trim() !== ""),
+                        })
+                      }
+                    }}
+                  >
+                    <option value="">Add predefined rule</option>
+                    {predefinedRules.map((rule, idx) => (
+                      <option key={idx} value={rule}>
+                        {rule}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={addRule}
+                    className="text-teal-600 hover:text-teal-700 flex items-center text-sm"
+                  >
+                    <Plus className="h-4 w-4 mr-1" />
+                    Add Custom Rule
+                  </button>
+                </div>
               </div>
 
               {rules.map((rule, index) => (
