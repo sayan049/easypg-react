@@ -886,7 +886,6 @@
 
 // export default SignupOwner;
 
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -1208,17 +1207,21 @@ function SignupOwner() {
   //   })
   // }
 
-  useEffect(()=>{
- console.log("rules",rules);
-  },[rules])
+  useEffect(() => {
+    console.log("rules", rules );
+  }, [rules]);
   const handleRuleChange = (index, value) => {
     let newRules = [...rules];
-    // If first field and has commas, split
+     console.log("newrules", newRules );
+    // If first field and has commas, split and replace only that index's value
     if (index === 0 && value.includes(",")) {
-      newRules = value
+      const splitRules = value
         .split(",")
         .map((rule) => rule.trim())
-        .filter((rule, i, arr) => rule && arr.indexOf(rule) === i); // remove empty + duplicates
+        .filter((rule) => rule); // remove empty
+
+      // Replace the current index with first split rule, and append the rest
+      newRules.splice(index, 1, ...splitRules);
     } else {
       newRules[index] = value;
     }
@@ -1230,22 +1233,6 @@ function SignupOwner() {
       rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
     });
   };
-
-  const addRule = () => {
-    setRules([...rules, ""]);
-  };
-
-  const removeRule = (index) => {
-    const newRules = [...rules];
-    newRules.splice(index, 1);
-    setRules(newRules);
-
-    setFormData({
-      ...formData,
-      rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
