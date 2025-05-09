@@ -363,7 +363,7 @@ const ViewDetails = () => {
               </h2>
 
               {messData.rulesToStay.map((r,index) => {
-                <p className="text-gray-700 leading-relaxed" key={index} >{r}</p>;
+                (<p className="text-gray-700 leading-relaxed" key={index} >{r}</p>);
               })}
               <p className="text-gray-700 leading-relaxed">
                 {messData?.rulesToStay ||
