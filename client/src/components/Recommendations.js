@@ -94,7 +94,7 @@ const Recommendations = () => {
                     className="text-gray-600 text-sm mt-1 truncate w-full"
                     title={mess.address}
                   >
-                    near {mess.address?.split(",")[0]}
+                     {mess.address?.split(",")[0]}
                   </p>
 
                   <div className="mt-3 flex items-center">
