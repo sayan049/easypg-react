@@ -1284,8 +1284,7 @@ function SignupOwner() {
           );
         } else if (
           key === "roomInfo" ||
-          key === "location" ||
-          key === "rulesToStay"
+          key === "location"
         ) {
           // Stringify arrays and objects to send them as JSON strings
           formDataToSend.append(key, JSON.stringify(formData[key]));
