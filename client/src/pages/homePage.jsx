@@ -537,106 +537,113 @@ const HomePage = () => {
                     accommodation
                   </p>
                   <div className="mt-8 relative z-50" ref={searchContainerRef}>
-                    <div
-                      className={`flex border-3 rounded-full border-white transition-all duration-300 ${
-                        isSearchFocused ? "ring-4 ring-white/30" : ""
-                      }`}
-                    >
-                      <div className="absolute left-4 top-4 text-gray-800">
-                        <MapPin className="h-6 w-5" />
-                      </div>
-                      <input
-                        type="text"
-                        placeholder="Search city or University"
-                        className="w-full py-4 px-12 rounded-full shadow-lg flex-1 outline-none bg-white text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-teal-500"
-                        value={searchItem}
-                        onChange={handleInputChange}
-                        onFocus={() => setIsSearchFocused(true)}
-                        onBlur={() => setIsSearchFocused(false)}
-                      />
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="absolute top-2 right-3 h-10 w-10 text-white bg-[#2CA4B5] rounded-full flex items-center justify-center shadow-md"
-                        onClick={(e) => {
-                          if (suggestions.length > 0) {
-                            handleSuggestionClick(suggestions[0]);
-                          } else {
-                            toast.error(
-                              "Pick a valid location from suggestions"
-                            );
-                          }
-                        }}
-                        aria-label="Search"
+                    {/* Outer unified card */}
+                    <div className="bg-white shadow-2xl rounded-2xl overflow-hidden w-full">
+                      {/* Search input with search + pin */}
+                      <div
+                        className={`relative flex border-3 transition-all duration-300 ${
+                          isSearchFocused ? "ring-4 ring-white/30" : ""
+                        }`}
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
+                        <div className="absolute left-4 top-4 text-gray-800">
+                          <MapPin className="h-6 w-5" />
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="Search city or University"
+                          className="w-full py-4 px-12 shadow-none outline-none text-gray-800 placeholder-gray-400 bg-white"
+                          value={searchItem}
+                          onChange={handleInputChange}
+                          onFocus={() => setIsSearchFocused(true)}
+                          onBlur={() => setIsSearchFocused(false)}
+                        />
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="absolute top-2 right-3 h-10 w-10 text-white bg-[#2CA4B5] rounded-full flex items-center justify-center shadow-md"
+                          onClick={(e) => {
+                            if (suggestions.length > 0) {
+                              handleSuggestionClick(suggestions[0]);
+                            } else {
+                              toast.error(
+                                "Pick a valid location from suggestions"
+                              );
+                            }
+                          }}
+                          aria-label="Search"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                          />
-                        </svg>
-                      </motion.button>
-                    </div>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                            />
+                          </svg>
+                        </motion.button>
+                      </div>
 
-                    {/* Suggestions Dropdown - Moved outside the input container */}
-                    <AnimatePresence>
-                      {suggestions.length > 0 && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 10 }}
-                          transition={{ duration: 0.2 }}
-                          className="absolute w-full top-full bg-white shadow-xl rounded-t-none rounded-b-2xl overflow-hidden z-50"
-                        >
-                          {suggestions.map((suggestion, index) => (
-                            <motion.div
-                              key={index}
-                              whileHover={{
-                                backgroundColor: "#2CA4B5",
-                                color: "white",
-                              }}
-                              className="p-3 cursor-pointer hover:bg-[#2CA4B5] hover:text-white transition-colors duration-200 border-b border-gray-100 last:border-b-0"
-                              onClick={() => handleSuggestionClick(suggestion)}
-                            >
-                              <div className="flex items-center">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  className="h-4 w-4 mr-2 flex-shrink-0"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                                  />
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                                  />
-                                </svg>
-                                <span className="truncate">
-                                  {suggestion.display_name}
-                                </span>
-                              </div>
-                            </motion.div>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                      {/* Suggestions inside the same card */}
+                      <AnimatePresence>
+                        {suggestions.length > 0 && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            transition={{ duration: 0.2 }}
+                            className="w-full bg-white"
+                          >
+                            {suggestions.map((suggestion, index) => (
+                              <motion.div
+                                key={index}
+                                whileHover={{
+                                  backgroundColor: "#2CA4B5",
+                                  color: "white",
+                                }}
+                                className="p-3 cursor-pointer hover:bg-[#2CA4B5] hover:text-white transition-colors duration-200 border-b border-gray-100 last:border-b-0"
+                                onClick={() =>
+                                  handleSuggestionClick(suggestion)
+                                }
+                              >
+                                <div className="flex items-center">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-4 w-4 mr-2 flex-shrink-0"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                    />
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                    />
+                                  </svg>
+                                  <span className="truncate">
+                                    {suggestion.display_name}
+                                  </span>
+                                </div>
+                              </motion.div>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   </div>
+
                   <div className="mt-4 flex justify-center">
                     <motion.button
                       whileHover={{ scale: 1.05 }}
