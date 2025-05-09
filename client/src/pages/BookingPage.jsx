@@ -778,10 +778,14 @@ export default function BookingPage() {
   const [checkInDate, setCheckInDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
+  // const queryParams = new URLSearchParams(location.search);
+  // const owner = JSON.parse(queryParams.get("owner"))
+  //   ? JSON.parse(queryParams.get("owner"))
+  //   : null;
   const queryParams = new URLSearchParams(location.search);
-  const owner = JSON.parse(queryParams.get("owner"))
-    ? JSON.parse(queryParams.get("owner"))
-    : null;
+const encoded = queryParams.get("owner");
+const owner = encoded ? JSON.parse(decodeURIComponent(atob(encoded))) : null;
+
 
   // Convert bedCount string to number
   const bedCountToNumber = {

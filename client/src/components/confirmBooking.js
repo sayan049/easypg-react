@@ -8,11 +8,16 @@ function StickyBookingCard({ messData, isVisible }) {
   const handleDurationChange = (e) => {
     setDuration(e.target.value);
   };
+  // const clickBook = () => {
+  //   const messDataParams = new URLSearchParams();
+  //   messDataParams.set("owner", JSON.stringify(messData));
+  //   Navigate(`/booking?${messDataParams}`);
+  // };
   const clickBook = () => {
-    const messDataParams = new URLSearchParams();
-    messDataParams.set("owner", JSON.stringify(messData));
-    Navigate(`/booking?${messDataParams}`);
-  };
+  const encoded = btoa(encodeURIComponent(JSON.stringify(messData)));
+  Navigate(`/booking?owner=${encoded}`);
+};
+
   return (
     <div
       className={`fixed bottom-0 left-0 w-full bg-white px-4 py-3 shadow-lg flex items-center justify-between z-50 md:px-8 lg:px-16 xl:px-24 transform transition-all duration-[1500ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
