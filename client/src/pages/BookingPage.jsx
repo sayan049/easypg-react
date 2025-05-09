@@ -425,7 +425,6 @@ import { useAuth } from "../contexts/AuthContext"
 import { toast, ToastContainer } from "react-toastify"
 import { bookingRequestUrl } from "../constant/urls"
 import "react-toastify/dist/ReactToastify.css"
-import { useAuth } from "../contexts/AuthContext"
 import { ArrowLeft, Share, MapPin, Phone, Check, Calendar, Clock, Home, Shield, CreditCard } from "lucide-react"
 
 export default function BookingPage() {
