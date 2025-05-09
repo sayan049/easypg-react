@@ -362,13 +362,17 @@ const ViewDetails = () => {
                 Rules To Stay
               </h2>
 
-              {messData.rulesToStay.map((r,index) => {
-                (<span className="text-gray-700 leading-relaxed flex items-center flex-col" key={index} >{r}</span>);
-              })}
-              <p className="text-gray-700 leading-relaxed">
-                {messData?.rulesToStay ||
-                  "No rules available for this accommodation."}
-              </p>
+              {messData?.rulesToStay?.length > 0 ? (
+                <ul className="list-disc pl-5 space-y-1 text-gray-700">
+                  {messData.rulesToStay.map((r, index) => (
+                    <li key={index}>{r}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-700 leading-relaxed">
+                  No rules available for this accommodation.
+                </p>
+              )}
             </div>
 
             {/* Safety Notice */}
