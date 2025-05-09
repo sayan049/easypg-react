@@ -537,24 +537,23 @@ const HomePage = () => {
                     accommodation
                   </p>
                   <div
-                    className="mt-8 relative z-50 px-4 sm:px-0"
+                    className="mt-8 w-full px-4 sm:px-0"
                     ref={searchContainerRef}
                   >
-                    {/* Outer unified card */}
-                    <div className="bg-white shadow-2xl rounded-2xl overflow-hidden w-full max-w-2xl mx-auto">
-                      {/* Search input with search + pin */}
+                    <div className="bg-white shadow-2xl rounded-2xl w-full max-w-full sm:max-w-2xl mx-auto">
+                      {/* Search input with icon and button */}
                       <div
-                        className={`relative flex items-center border-3 transition-all duration-300 ${
-                          isSearchFocused ? "ring-4 ring-white/30" : ""
+                        className={`relative flex items-center border-2 rounded-2xl transition-all duration-300 ${
+                          isSearchFocused ? "ring-2 ring-[#2CA4B5]" : ""
                         }`}
                       >
-                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-800">
+                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-800">
                           <MapPin className="h-5 w-5" />
                         </div>
                         <input
                           type="text"
                           placeholder="Search city or University"
-                          className="w-full py-3 pl-12 pr-14 text-sm sm:text-base shadow-none outline-none text-gray-800 placeholder-gray-400 bg-white"
+                          className="w-full py-3 pl-12 pr-14 text-sm sm:text-base bg-white text-gray-800 placeholder-gray-400 rounded-2xl"
                           value={searchItem}
                           onChange={handleInputChange}
                           onFocus={() => setIsSearchFocused(true)}
@@ -563,7 +562,7 @@ const HomePage = () => {
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 text-white bg-[#2CA4B5] rounded-full flex items-center justify-center shadow-md"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 h-9 w-9 text-white bg-[#2CA4B5] rounded-full flex items-center justify-center shadow-md"
                           onClick={(e) => {
                             if (suggestions.length > 0) {
                               handleSuggestionClick(suggestions[0]);
@@ -592,7 +591,7 @@ const HomePage = () => {
                         </motion.button>
                       </div>
 
-                      {/* Suggestions inside the same card */}
+                      {/* Suggestions Dropdown */}
                       <AnimatePresence>
                         {suggestions.length > 0 && (
                           <motion.div
@@ -600,7 +599,7 @@ const HomePage = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 10 }}
                             transition={{ duration: 0.2 }}
-                            className="w-full bg-white max-h-64 overflow-y-auto"
+                            className="bg-white w-full rounded-b-2xl max-h-60 overflow-y-auto border-t border-gray-200"
                           >
                             {suggestions.map((suggestion, index) => (
                               <motion.div
