@@ -460,6 +460,7 @@ export default function BookingPage() {
   };
 
   const handleBookingRequest = async () => {
+    console.log("auth" , isAuthenticated);
     if (isOwnerAuthenticated) {
       return toast.error("mess owners can't book messes");
     }
@@ -854,6 +855,9 @@ export default function BookingPage() {
                           <p className="text-xs text-gray-500 mt-1">
                             Includes security deposit and {duration} month
                             {duration !== 1 ? "s" : ""} rent
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                           your security deposit will refund you when u back
                           </p>
                         </div>
                       </div>
