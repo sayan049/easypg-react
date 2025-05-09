@@ -1291,6 +1291,8 @@ function SignupOwner() {
           formDataToSend.append(key, JSON.stringify(formData[key]));
         } else {
           formDataToSend.append(key, formData[key]);
+          console.log(key, formDataToSend.get(key));
+
         }
       }
       console.log(formDataToSend, "xxx");
