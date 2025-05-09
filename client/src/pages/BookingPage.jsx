@@ -425,6 +425,7 @@ import { useAuth } from "../contexts/AuthContext"
 import { toast, ToastContainer } from "react-toastify"
 import { bookingRequestUrl } from "../constant/urls"
 import "react-toastify/dist/ReactToastify.css"
+import { useAuth } from "../contexts/AuthContext"
 import { ArrowLeft, Share, MapPin, Phone, Check, Calendar, Clock, Home, Shield, CreditCard } from "lucide-react"
 
 export default function BookingPage() {
@@ -435,7 +436,7 @@ export default function BookingPage() {
   const [duration, setDuration] = useState(6)
   const [checkInDate, setCheckInDate] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const { user } = useAuth()
+  const { user,isAuthenticated,isOwnerAuthenticated } = useAuth()
 
   const queryParams = new URLSearchParams(location.search)
   const encoded = queryParams.get("owner")
@@ -451,6 +452,10 @@ export default function BookingPage() {
   }
 
   const handleBookingRequest = async () => {
+    if(isOwnerAuthenticated) {
+      return toast.error("mess owners can't book messes");
+    }
+    if(!isAuthenticated) return toast.error("please login to book any mess");
     try {
       setIsLoading(true)
 
