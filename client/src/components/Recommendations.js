@@ -90,7 +90,12 @@ const Recommendations = () => {
                   <h3 className="font-semibold text-lg text-gray-800 group-hover:text-[#2CA4B5] transition-colors duration-300">
                     {mess.messName}
                   </h3>
-                  <p className="text-gray-600 text-sm mt-1">{mess.address}</p>
+                  <p
+                    className="text-gray-600 text-sm mt-1 truncate w-full"
+                    title={mess.address}
+                  >
+                    near {mess.address?.split(",")[0]}
+                  </p>
 
                   <div className="mt-3 flex items-center">
                     <div className="flex items-center">
@@ -140,7 +145,7 @@ const Recommendations = () => {
           <motion.button
             whileHover={{ scale: 1.05, x: 5 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center text-[#2CA4B5] font-medium hover:underline"
+            className="inline-flex items-center text-[#136b75] font-medium hover:underline"
           >
             View More Recommendations
             <svg
