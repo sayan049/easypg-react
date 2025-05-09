@@ -595,7 +595,7 @@ const HomePage = () => {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: 10 }}
                           transition={{ duration: 0.2 }}
-                          className="absolute w-full mt-2 z-[9999] bg-white shadow-xl rounded-lg overflow-hidden"
+                          className="absolute w-full mt-2 z-[9999] bg-white shadow-xl rounded-lg "
                         >
                           {suggestions.map((suggestion, index) => (
                             <motion.div
