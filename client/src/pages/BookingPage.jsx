@@ -593,7 +593,7 @@ export default function BookingPage() {
                       key={room._id}
                       className={`relative rounded-xl overflow-hidden transition-all duration-200 ${
                         !room.roomAvailable
-                          ? "opacity-75"
+                          ? "opacity-75 border border-red-500"
                           : selectedRoom === room._id
                             ? "ring-2 ring-teal-500 shadow-md"
                             : "hover:shadow-md border border-gray-200"
