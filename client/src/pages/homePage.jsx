@@ -537,19 +537,20 @@ const HomePage = () => {
                     accommodation
                   </p>
                   <div className="w-full px-4 sm:px-0" ref={searchContainerRef}>
-                    <div className="w-full max-w-full sm:max-w-2xl mx-auto bg-white rounded-2xl shadow-xl">
+                    <div className="max-w-full sm:max-w-2xl mx-auto rounded-2xl shadow-2xl overflow-hidden bg-white">
+                      {/* Search Box */}
                       <div
-                        className={`relative flex items-center border border-[#2CA4B5] rounded-2xl transition-all duration-300 ${
-                          isSearchFocused ? "ring-2 ring-[#2CA4B5]/40" : ""
+                        className={`relative flex items-center px-3 py-2 border-b transition-all duration-300 ${
+                          isSearchFocused ? "ring-2 ring-[#2CA4B5]/50" : ""
                         }`}
                       >
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-700">
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600">
                           <MapPin className="h-5 w-5" />
                         </div>
                         <input
                           type="text"
                           placeholder="Search city or University"
-                          className="flex-1 py-3 pl-10 pr-12 text-sm sm:text-base text-gray-800 placeholder-gray-400 bg-white rounded-2xl focus:outline-none"
+                          className="w-full py-3 pl-10 pr-12 text-sm sm:text-base bg-white text-gray-800 placeholder-gray-400 focus:outline-none"
                           value={searchItem}
                           onChange={handleInputChange}
                           onFocus={() => setIsSearchFocused(true)}
@@ -558,7 +559,7 @@ const HomePage = () => {
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          onClick={(e) => {
+                          onClick={() => {
                             if (suggestions.length > 0) {
                               handleSuggestionClick(suggestions[0]);
                             } else {
@@ -567,7 +568,7 @@ const HomePage = () => {
                               );
                             }
                           }}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9 flex items-center justify-center bg-[#2CA4B5] text-white rounded-full shadow"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9 bg-[#2CA4B5] text-white rounded-full flex items-center justify-center shadow-md"
                           aria-label="Search"
                         >
                           <svg
@@ -595,7 +596,7 @@ const HomePage = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 8 }}
                             transition={{ duration: 0.2 }}
-                            className="w-full bg-white rounded-b-2xl border border-t-0 border-gray-200 max-h-64 overflow-y-auto"
+                            className="bg-white max-h-60 overflow-y-auto"
                           >
                             {suggestions.map((suggestion, index) => (
                               <motion.div
