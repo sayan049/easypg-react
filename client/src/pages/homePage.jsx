@@ -330,6 +330,48 @@ const HomePage = () => {
         />
         <meta name="twitter:card" content="summary_large_image" />
         <link rel="icon" href="/favicon.ico" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "MessMate",
+            url: "https://www.messmate.co.in/",
+            potentialAction: {
+              "@type": "SearchAction",
+              target: "https://www.messmate.co.in/find-mess/{search_term}",
+              "query-input": "required name=search_term",
+            },
+            description:
+              "Student accommodation platform connecting students with verified PGs and mess facilities",
+            sameAs: [
+              "https://facebook.com/messmate",
+              "https://twitter.com/messmate",
+              "https://instagram.com/messmate",
+            ],
+          })}
+        </script>
+
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "MessMate",
+            url: "https://www.messmate.co.in/",
+            logo: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp",
+            contactPoint: {
+              "@type": "ContactPoint",
+              telephone: "+91-7479170108",
+              contactType: "customer service",
+              email: "messmatecompany@gmail.com.com",
+              areaServed: "India",
+            },
+            sameAs: [
+              "https://facebook.com/messmate",
+              "https://twitter.com/messmate",
+              "https://instagram.com/messmate",
+            ],
+          })}
+        </script>
       </Helmet>
       <div className=" bg-white">
         {/* Gradient Background with Overlay */}
