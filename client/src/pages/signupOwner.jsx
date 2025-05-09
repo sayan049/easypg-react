@@ -1207,10 +1207,12 @@ function SignupOwner() {
   //     rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
   //   })
   // }
+
+  useEffect(()=>{
+ console.log("rules",rules);
+  },[rules])
   const handleRuleChange = (index, value) => {
     let newRules = [...rules];
-    console.log("rules",rules);
-
     // If first field and has commas, split
     if (index === 0 && value.includes(",")) {
       newRules = value
