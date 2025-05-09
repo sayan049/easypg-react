@@ -639,7 +639,7 @@ export default function BookingPage() {
                           disabled={!room.roomAvailable}
                           className={`w-full py-2.5 px-4 rounded-lg font-medium transition-colors ${
                             !room.roomAvailable
-                              ? "bg-gray-100 text-gray-400 cursor-not-allowed border-red-500"
+                              ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-red-500"
                               : selectedRoom === room._id
                                 ? "bg-teal-600 text-white"
                                 : "bg-white text-teal-600 border border-teal-600 hover:bg-teal-50"
