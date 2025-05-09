@@ -494,6 +494,19 @@ exports.signupHandlerOwner = async (req, res) => {
     minimumBookingDuration,
   } = req.body;
 
+  let rules = rulesToStay;
+if (typeof rules === "string") {
+  try {
+    rules = JSON.parse(rules);
+  } catch (e) {
+    rules = rules.split(",").map((item) => item.trim());
+  }
+}
+if (!Array.isArray(rules)) {
+  rules = [rules];
+}
+
+
   console.log(req.body.location);
 
   let facilities = facility;
@@ -590,7 +603,7 @@ exports.signupHandlerOwner = async (req, res) => {
       gender,
       roomInfo: parsedRoomInfo,
       minimumSecurityDeposit,
-      rulesToStay,
+      rulesToStay : rules,
       minimumBookingDuration,
     });
 
