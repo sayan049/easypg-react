@@ -444,7 +444,7 @@ export default function BookingPage() {
   const [duration, setDuration] = useState(6);
   const [checkInDate, setCheckInDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { user, isAuthenticated, isOwnerAuthenticated } = useAuth();
+  const { user, IsAuthenticated, isOwnerAuthenticated } = useAuth();
 
   const queryParams = new URLSearchParams(location.search);
   const encoded = queryParams.get("owner");
@@ -460,11 +460,11 @@ export default function BookingPage() {
   };
 
   const handleBookingRequest = async () => {
-    console.log("auth" , isAuthenticated);
+    console.log("auth" , IsAuthenticated);
     if (isOwnerAuthenticated) {
       return toast.error("mess owners can't book messes");
     }
-    if (!isAuthenticated) return toast.error("please login to book any mess");
+    if (!IsAuthenticated) return toast.error("please login to book any mess");
     if (duration < owner.minimumBookingDuration)
       return toast.error(
         `Minimum booking duration is ${owner.minimumBookingDuration}`
