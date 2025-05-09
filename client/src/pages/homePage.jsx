@@ -548,7 +548,7 @@ const HomePage = () => {
                       <input
                         type="text"
                         placeholder="Search city or University"
-                        className="w-full py-4 px-12 rounded-t-full rounded-b-none shadow-lg flex-1 outline-none bg-white text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-teal-500"
+                        className="w-full py-4 px-12 rounded-full shadow-lg flex-1 outline-none bg-white text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-teal-500"
                         value={searchItem}
                         onChange={handleInputChange}
                         onFocus={() => setIsSearchFocused(true)}
@@ -593,8 +593,8 @@ const HomePage = () => {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: 10 }}
-                          transition={{ duration: 0.1 }}
-                          className="absolute w-full top-full bg-white shadow-xl rounded-b-lg rounded-t-[999px] overflow-hidden z-50"
+                          transition={{ duration: 0.2 }}
+                          className="absolute w-full top-full bg-white shadow-xl rounded-t-none rounded-b-2xl overflow-hidden z-50"
                         >
                           {suggestions.map((suggestion, index) => (
                             <motion.div
