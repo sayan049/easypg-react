@@ -1276,6 +1276,7 @@ function SignupOwner() {
 
       // Update rulesToStay in formData before sending
       formData.rulesToStay = rules.filter((rule) => rule.trim() !== "");
+      console.log("new form ",formData.rulesToStay)
 
       for (const key in formData) {
         if (key === "messPhoto") {
