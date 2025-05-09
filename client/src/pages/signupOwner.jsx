@@ -936,7 +936,7 @@ function SignupOwner() {
   const maxLength = 10;
 
   // New state for the additional fields
-  const [rules, setRules] = useState([""]);
+  const [rules, setRules] = useState([]);
 
   const amenities = [
     { id: "test1", label: "A/C", icon: Snowflake },
@@ -1214,23 +1214,24 @@ function SignupOwner() {
     let newRules = [...rules];
 
     // If first field and has commas, split and replace only that index's value
-    if (index === 0 && value.includes(",")) {
+    if (value.includes(",")) {
       const splitRules = value
         .split(",")
         .map((rule) => rule.trim())
-        .filter((rule) => rule); // remove empty
+        .filter((rule) => rule !== "");
 
-      // Replace the current index with first split rule, and append the rest
+      // Replace current index with first rule and add the rest after it
       newRules.splice(index, 1, ...splitRules);
     } else {
       newRules[index] = value;
     }
 
-    setRules(newRules);
+    const filteredRules = newRules.filter((rule) => rule.trim() !== "");
 
+    setRules(filteredRules);
     setFormData({
       ...formData,
-      rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
+      rulesToStay: filteredRules,
     });
   };
 
@@ -1238,17 +1239,24 @@ function SignupOwner() {
     setRules([...rules, ""]);
   };
 
-  const removeRule = (index) => {
-    const newRules = [...rules];
-    newRules.splice(index, 1);
-    setRules(newRules);
+  // const removeRule = (index) => {
+  //   const newRules = [...rules];
+  //   newRules.splice(index, 1);
+  //   setRules(newRules);
 
+  //   setFormData({
+  //     ...formData,
+  //     rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
+  //   });
+  // };
+  const removeRule = (index) => {
+    const newRules = rules.filter((_, i) => i !== index);
+    setRules(newRules);
     setFormData({
       ...formData,
       rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
     });
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -1818,10 +1826,12 @@ function SignupOwner() {
                         setRules(updatedRules);
                         setFormData({
                           ...formData,
-                          rulesToStay: updatedRules,
+                          rulesToStay: updatedRules.filter(
+                            (rule) => rule.trim() !== ""
+                          ),
                         });
                       }
-                      e.target.value = ""; // move this after state updates
+                      e.target.value = "";
                     }}
                   >
                     <option value="">Add predefined rule</option>
