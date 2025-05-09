@@ -537,8 +537,6 @@ const HomePage = () => {
                     accommodation
                   </p>
                   <div className="w-full px-0 sm:px-4" ref={searchContainerRef}>
-                    {" "}
-                    {/* Changed px-4 to px-0 for mobile */}
                     <div className="max-w-full mx-auto rounded-2xl shadow-2xl overflow-hidden bg-white">
                       {/* Search Box */}
                       <div
@@ -546,13 +544,13 @@ const HomePage = () => {
                           isSearchFocused ? "ring-2 ring-[#2CA4B5]/50" : ""
                         }`}
                       >
-                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600">
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 flex-shrink-0">
                           <MapPin className="h-5 w-5" />
                         </div>
                         <input
                           type="text"
                           placeholder="Search city or University"
-                          className="w-full py-3 pl-10 pr-8 sm:pr-12 text-sm sm:text-base bg-white text-gray-800 placeholder-gray-400 focus:outline-none" // Reduced right padding on mobile
+                          className="w-full py-3 pl-10 pr-8 sm:pr-12 text-sm sm:text-base bg-white text-gray-800 placeholder-gray-400 focus:outline-none min-h-[48px]"
                           value={searchItem}
                           onChange={handleInputChange}
                           onFocus={() => setIsSearchFocused(true)}
@@ -570,7 +568,7 @@ const HomePage = () => {
                               );
                             }
                           }}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9 bg-[#2CA4B5] text-white rounded-full flex items-center justify-center shadow-md"
+                          className="absolute right-2 inset-y-0 my-auto h-9 w-9 bg-[#2CA4B5] text-white rounded-full flex items-center justify-center shadow-md border-2 border-white z-10"
                           aria-label="Search"
                         >
                           <svg
@@ -598,7 +596,7 @@ const HomePage = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 8 }}
                             transition={{ duration: 0.2 }}
-                            className="bg-white max-h-60 overflow-y-auto w-full" // Added w-full
+                            className="bg-white max-h-60 overflow-y-auto w-full"
                           >
                             {suggestions.map((suggestion, index) => (
                               <motion.div
@@ -613,29 +611,29 @@ const HomePage = () => {
                                 }
                               >
                                 <div className="flex items-center">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-4 w-4 mr-2"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth={2}
-                                      d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                                    />
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth={2}
-                                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                                    />
-                                  </svg>
+                                  <div className="flex-shrink-0 mr-2">
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="h-4 w-4 min-w-[16px]"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                      stroke="currentColor"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                      />
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                      />
+                                    </svg>
+                                  </div>
                                   <span className="truncate text-sm sm:text-base break-words whitespace-normal">
-                                    {" "}
-                                    {/* Added text handling */}
                                     {suggestion.display_name}
                                   </span>
                                 </div>
