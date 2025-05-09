@@ -857,7 +857,7 @@ export default function BookingPage() {
                             {duration !== 1 ? "s" : ""} rent
                           </p>
                           <p className="text-xs text-gray-500 mt-1">
-                           your security deposit will refund you when u back
+                           your security deposit will be refunded you when u leave the Mess
                           </p>
                         </div>
                       </div>
