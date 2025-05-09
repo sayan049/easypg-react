@@ -568,7 +568,7 @@ const HomePage = () => {
                               );
                             }
                           }}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9 bg-[#2CA4B5] text-white rounded-full flex items-center justify-center shadow-md border-2 border-white"
+                          className="absolute right-2 inset-y-0 my-auto h-9 w-9 bg-[#2CA4B5] text-white rounded-full flex items-center justify-center shadow-md border-2 border-white z-10"
                           aria-label="Search"
                         >
                           <svg
