@@ -460,7 +460,7 @@ export default function BookingPage() {
   };
 
   const handleBookingRequest = async () => {
-    console.log("auth" , owner.minimumBookingDuration , duration);
+    console.log("auth" , parseInt(owner.minimumBookingDuration.split(" ")[0]) , duration);
     if (isOwnerAuthenticated) {
       return toast.error("mess owners can't book messes");
     }
