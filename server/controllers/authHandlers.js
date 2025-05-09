@@ -489,6 +489,9 @@ exports.signupHandlerOwner = async (req, res) => {
     facility,
     gender,
     roomInfo,
+    minimumSecurityDeposit,
+    rulesToStay,
+    minimumBookingDuration,
   } = req.body;
 
   console.log(req.body.location);
@@ -586,6 +589,9 @@ exports.signupHandlerOwner = async (req, res) => {
       facility: facilities,
       gender,
       roomInfo: parsedRoomInfo,
+      minimumSecurityDeposit,
+      rulesToStay,
+      minimumBookingDuration,
     });
 
     // sendmailOwner(firstName, email, newOwner._id);
@@ -875,7 +881,7 @@ exports.getTopRatedMesses = async (req, res) => {
 
 exports.viewDetails = async (req, res) => {
   const { messId } = req.params; // Use params, not body
- 
+
   try {
     const pgOwner = await PgOwner.findOne({ _id: messId });
 
