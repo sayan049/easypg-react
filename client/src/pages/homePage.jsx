@@ -15,7 +15,7 @@ import { LocationIqurl } from "../constant/urls";
 import Recommendations from "../components/Recommendations";
 import { Home, Info, Phone, LogIn, Briefcase, X } from "lucide-react";
 import { Helmet } from "react-helmet";
-import { Map,MapPin } from "lucide-react";
+import { Map, MapPin } from "lucide-react";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -536,8 +536,7 @@ const HomePage = () => {
                     The ultimate platform for students to find their ideal
                     accommodation
                   </p>
-                 <div className="mt-8 relative z-50" ref={searchContainerRef}>
-
+                  <div className="mt-8 relative z-50" ref={searchContainerRef}>
                     <div
                       className={`flex border-3 rounded-full border-white transition-all duration-300 ${
                         isSearchFocused ? "ring-4 ring-white/30" : ""
@@ -595,7 +594,7 @@ const HomePage = () => {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: 10 }}
                           transition={{ duration: 0.2 }}
-                          className="absolute w-full mt-2  bg-white shadow-xl rounded-lg "
+                          className="absolute w-full mt-0 bg-white shadow-xl rounded-b-lg overflow-hidden"
                         >
                           {suggestions.map((suggestion, index) => (
                             <motion.div
