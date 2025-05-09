@@ -374,7 +374,7 @@
 //         />
 //          <meta name="robots" content="index,follow" />
 //         <link rel="canonical" href="https://yourdomain.com/signup/owner" />
-        
+
 //         {/* Performance Hints */}
 //         <link rel="preconnect" href="https://res.cloudinary.com" />
 //         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
@@ -885,12 +885,6 @@
 // }
 
 // export default SignupOwner;
-
-
-
-
-
-
 
 // "use client"
 
@@ -1966,20 +1960,16 @@
 
 // export default SignupOwner
 
+"use client";
 
-
-
-
-"use client"
-
-import { useState, useEffect } from "react"
-import axios from "axios"
-import { Link } from "react-router-dom"
-import { signupownerUrl } from "../constant/urls"
-import { useNavigate } from "react-router-dom"
-import { toast, ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
-import { Helmet } from "react-helmet"
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { signupownerUrl } from "../constant/urls";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet";
 import {
   MapPin,
   Eye,
@@ -2007,20 +1997,20 @@ import {
   MapPinned,
   Building,
   Info,
-} from "lucide-react"
+} from "lucide-react";
 
 function SignupOwner() {
-  const navigate = useNavigate()
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-  const [termsAccepted, setTermsAccepted] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [image, setImage] = useState(null)
-  const [imgArray, setImgArray] = useState([])
-  const [errorMessage, setErrorMessage] = useState("")
-  const maxLength = 10
+  const navigate = useNavigate();
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [image, setImage] = useState(null);
+  const [imgArray, setImgArray] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const maxLength = 10;
 
   // New state for the additional fields
-  const [rules, setRules] = useState([""])
+  const [rules, setRules] = useState([""]);
 
   const amenities = [
     { id: "test1", label: "A/C", icon: Snowflake },
@@ -2030,7 +2020,7 @@ function SignupOwner() {
     { id: "test5", label: "Kitchen", icon: UtensilsCrossed },
     { id: "test6", label: "Tank Water", icon: Droplets },
     { id: "test7", label: "Double Bed", icon: Bed },
-  ]
+  ];
 
   const predefinedRules = [
     "No alcohol consumption on premises",
@@ -2053,7 +2043,7 @@ function SignupOwner() {
     "No sticking posters on walls",
     "Parking only in designated areas",
     "Respect other residents' privacy",
-  ]
+  ];
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -2085,27 +2075,28 @@ function SignupOwner() {
     minimumSecurityDeposit: 0,
     rulesToStay: [],
     minimumBookingDuration: "1 Month",
-  })
+  });
 
   useEffect(() => {
-    document.title = "PG Owner Signup | Mess Mate"
-  }, [])
+    document.title = "PG Owner Signup | Mess Mate";
+  }, []);
 
   const mapMake = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
-          const { latitude, longitude } = position.coords
-          console.log("Latitude:", latitude, "Longitude:", longitude)
+          const { latitude, longitude } = position.coords;
+          console.log("Latitude:", latitude, "Longitude:", longitude);
 
           // Fetch address from Google Maps API (optional, if you need to display it later)
           try {
             const response = await fetch(
-              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.REACT_APP_MAPS_API_KEY}`,
-            )
-            const data = await response.json()
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.REACT_APP_MAPS_API_KEY}`
+            );
+            const data = await response.json();
 
-            const address = data.results[0]?.formatted_address || `${latitude}, ${longitude}`
+            const address =
+              data.results[0]?.formatted_address || `${latitude}, ${longitude}`;
 
             // Update location with coordinates (longitude, latitude) and optional address
             setFormData((prevData) => ({
@@ -2115,59 +2106,61 @@ function SignupOwner() {
                 coordinates: [longitude, latitude], // Storing the coordinates as [longitude, latitude]
                 // address: address, // Optional: store address if you want to display it later
               },
-            }))
+            }));
 
-            toast.success("Location updated successfully")
+            toast.success("Location updated successfully");
           } catch (error) {
-            console.error("Error fetching location:", error)
-            toast.error("Error fetching location. Please try again.")
+            console.error("Error fetching location:", error);
+            toast.error("Error fetching location. Please try again.");
           }
         },
         (error) => {
-          console.error("Geolocation error:", error)
-          toast.error("Unable to retrieve your location. Please try again.")
-        },
-      )
+          console.error("Geolocation error:", error);
+          toast.error("Unable to retrieve your location. Please try again.");
+        }
+      );
     } else {
-      toast.error("Geolocation is not supported by this browser.")
+      toast.error("Geolocation is not supported by this browser.");
     }
-  }
+  };
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
-  }
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
   const loadfile = (e) => {
-    const file = e.target.files[0]
+    const file = e.target.files[0];
     if (file) {
-      setFormData({ ...formData, profilePhoto: file })
-      setImage(file)
+      setFormData({ ...formData, profilePhoto: file });
+      setImage(file);
     }
-  }
+  };
 
   const handleFacilityChange = (e) => {
-    const { value, checked } = e.target
+    const { value, checked } = e.target;
     setFormData((prevData) => {
       // Make sure we're working with an array (defensive programming)
-      const currentFacilities = Array.isArray(prevData.facility) ? [...prevData.facility] : []
+      const currentFacilities = Array.isArray(prevData.facility)
+        ? [...prevData.facility]
+        : [];
 
       if (checked) {
         // Add the value if it's not already present
         if (!currentFacilities.includes(value)) {
-          currentFacilities.push(value)
+          currentFacilities.push(value);
         }
       } else {
         // Remove the value if it exists
-        const index = currentFacilities.indexOf(value)
+        const index = currentFacilities.indexOf(value);
         if (index !== -1) {
-          currentFacilities.splice(index, 1)
+          currentFacilities.splice(index, 1);
         }
       }
 
-      return { ...prevData, facility: currentFacilities }
-    })
-  }
+      return { ...prevData, facility: currentFacilities };
+    });
+  };
 
   const handleRoomChange = (index, e) => {
     const updatedRooms = formData.roomInfo.map((room, i) => {
@@ -2175,16 +2168,16 @@ function SignupOwner() {
         return {
           ...room,
           [e.target.name]: e.target.value,
-        }
+        };
       }
-      return room
-    })
+      return room;
+    });
 
     setFormData({
       ...formData,
       roomInfo: updatedRooms,
-    })
-  }
+    });
+  };
 
   const addRoom = () => {
     const newRoom = {
@@ -2192,13 +2185,13 @@ function SignupOwner() {
       bedContains: "",
       pricePerHead: "",
       roomAvailable: true,
-    }
+    };
 
     setFormData({
       ...formData,
       roomInfo: [...formData.roomInfo, newRoom],
-    })
-  }
+    });
+  };
 
   const removeRoom = (index) => {
     const updatedRooms = formData.roomInfo
@@ -2206,150 +2199,197 @@ function SignupOwner() {
       .map((room, i) => ({
         ...room,
         room: `RoomNo-${i + 1}`, // Reassign room numbers
-      }))
+      }));
     setFormData({
       ...formData,
       roomInfo: updatedRooms,
-    })
-  }
+    });
+  };
 
   const removeImage = (index) => {
-    setImgArray((prevArray) => prevArray.filter((_, i) => i !== index))
+    setImgArray((prevArray) => prevArray.filter((_, i) => i !== index));
     setFormData((prevFormData) => ({
       ...prevFormData,
       messPhoto: prevFormData.messPhoto.filter((_, i) => i !== index),
-    }))
-    setErrorMessage("")
-  }
+    }));
+    setErrorMessage("");
+  };
 
   const imgUpload = (event) => {
-    const filesArr = Array.from(event.target.files)
-    const newMessPhotos = []
+    const filesArr = Array.from(event.target.files);
+    const newMessPhotos = [];
     if (imgArray.length + filesArr.length > maxLength) {
-      setErrorMessage(`You can only upload up to ${maxLength} images.`)
-      toast.error(`You can only upload up to ${maxLength} images.`)
-      return
+      setErrorMessage(`You can only upload up to ${maxLength} images.`);
+      toast.error(`You can only upload up to ${maxLength} images.`);
+      return;
     }
     filesArr.forEach((file) => {
       if (!file.type.match("image.*")) {
-        setErrorMessage("Only image files are allowed.")
-        toast.error("Only image files are allowed.")
-        return
+        setErrorMessage("Only image files are allowed.");
+        toast.error("Only image files are allowed.");
+        return;
       }
       if (imgArray.length >= maxLength) {
-        setErrorMessage("Maximum number of images reached.")
-        toast.error("Maximum number of images reached.")
-        return
+        setErrorMessage("Maximum number of images reached.");
+        toast.error("Maximum number of images reached.");
+        return;
       }
 
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onload = () => {
-        setImgArray((prevArray) => [...prevArray, { src: reader.result, name: file.name }])
-      }
-      reader.readAsDataURL(file)
-      newMessPhotos.push(file)
-    })
+        setImgArray((prevArray) => [
+          ...prevArray,
+          { src: reader.result, name: file.name },
+        ]);
+      };
+      reader.readAsDataURL(file);
+      newMessPhotos.push(file);
+    });
 
     setFormData((prevFormData) => ({
       ...prevFormData,
       messPhoto: [...prevFormData.messPhoto, ...newMessPhotos],
-    }))
-  }
+    }));
+  };
 
   // Handle rules to stay
-  const handleRuleChange = (index, value) => {
-    const newRules = [...rules]
-    newRules[index] = value
-    setRules(newRules)
+  // const handleRuleChange = (index, value) => {
+  //   const newRules = [...rules]
+  //   newRules[index] = value
+  //   setRules(newRules)
 
-    // Update formData with non-empty rules
+  //   // Update formData with non-empty rules
+  //   setFormData({
+  //     ...formData,
+  //     rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
+  //   })
+  // }
+
+  // const addRule = () => {
+  //   setRules([...rules, ""])
+  // }
+
+  // const removeRule = (index) => {
+  //   const newRules = [...rules]
+  //   newRules.splice(index, 1)
+  //   setRules(newRules)
+
+  //   // Update formData with non-empty rules
+  //   setFormData({
+  //     ...formData,
+  //     rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
+  //   })
+  // }
+  const handleRuleChange = (index, value) => {
+    let newRules = [...rules];
+
+    // If first field and has commas, split
+    if (index === 0 && value.includes(",")) {
+      newRules = value
+        .split(",")
+        .map((rule) => rule.trim())
+        .filter((rule, i, arr) => rule && arr.indexOf(rule) === i); // remove empty + duplicates
+    } else {
+      newRules[index] = value;
+    }
+
+    setRules(newRules);
+
     setFormData({
       ...formData,
       rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
-    })
-  }
+    });
+  };
 
   const addRule = () => {
-    setRules([...rules, ""])
-  }
+    setRules([...rules, ""]);
+  };
 
   const removeRule = (index) => {
-    const newRules = [...rules]
-    newRules.splice(index, 1)
-    setRules(newRules)
+    const newRules = [...rules];
+    newRules.splice(index, 1);
+    setRules(newRules);
 
-    // Update formData with non-empty rules
     setFormData({
       ...formData,
       rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
-    })
-  }
+    });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!isFormComplete()) {
-      toast.error("Please fill all required fields")
-      return
+      toast.error("Please fill all required fields");
+      return;
     }
 
     if (!termsAccepted) {
-      toast.error("Please accept the terms and conditions")
-      return
+      toast.error("Please accept the terms and conditions");
+      return;
     }
 
     try {
-      setIsSubmitting(true) // Set loading state
-      const formDataToSend = new FormData()
+      setIsSubmitting(true); // Set loading state
+      const formDataToSend = new FormData();
 
       // Update rulesToStay in formData before sending
-      formData.rulesToStay = rules.filter((rule) => rule.trim() !== "")
+      formData.rulesToStay = rules.filter((rule) => rule.trim() !== "");
 
       for (const key in formData) {
         if (key === "messPhoto") {
-          formData.messPhoto.forEach((file) => formDataToSend.append(key, file))
-        } else if (key === "roomInfo" || key === "location" || key === "rulesToStay") {
+          formData.messPhoto.forEach((file) =>
+            formDataToSend.append(key, file)
+          );
+        } else if (
+          key === "roomInfo" ||
+          key === "location" ||
+          key === "rulesToStay"
+        ) {
           // Stringify arrays and objects to send them as JSON strings
-          formDataToSend.append(key, JSON.stringify(formData[key]))
+          formDataToSend.append(key, JSON.stringify(formData[key]));
         } else {
-          formDataToSend.append(key, formData[key])
+          formDataToSend.append(key, formData[key]);
         }
       }
-      console.log(formDataToSend,"xxx");
+      console.log(formDataToSend, "xxx");
       const response = await axios.post(signupownerUrl, formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
-      })
+      });
 
       if (response.status === 201) {
-        console.log("Response:", response.data)
+        console.log("Response:", response.data);
 
-        const a = "Please verify your email to log in"
-        localStorage.setItem("loginMessageOwner", a)
-        navigate("/login/owner", { state: { message: a } })
+        const a = "Please verify your email to log in";
+        localStorage.setItem("loginMessageOwner", a);
+        navigate("/login/owner", { state: { message: a } });
       } else {
-        console.error("Signup failed:", response.data)
+        console.error("Signup failed:", response.data);
       }
     } catch (error) {
       if (error.response) {
-        const res = error.response
+        const res = error.response;
         if (res.data.message) {
-          return toast.error(res.data.message)
+          return toast.error(res.data.message);
         } else if (res.data.errors) {
-          return toast.error(res.data.errors.join(", "))
+          return toast.error(res.data.errors.join(", "));
         }
       }
-      toast.error("Error creating user. Please try again.")
-      console.error("Error creating user:", error.response ? error.response.data : error.message)
+      toast.error("Error creating user. Please try again.");
+      console.error(
+        "Error creating user:",
+        error.response ? error.response.data : error.message
+      );
     } finally {
       setTimeout(() => {
-        setIsSubmitting(false)
-      }, 5000)
+        setIsSubmitting(false);
+      }, 5000);
     }
-  }
+  };
 
   const toggleEye = () => {
-    setIsPasswordVisible(!isPasswordVisible)
-  }
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
   const isFormComplete = () => {
     return (
@@ -2368,18 +2408,26 @@ function SignupOwner() {
       Array.isArray(formData.location.coordinates) &&
       formData.location.coordinates.length === 2 &&
       formData.password &&
-      formData.roomInfo.every((room) => room.room && room.bedContains && room.pricePerHead && room.roomAvailable) &&
+      formData.roomInfo.every(
+        (room) =>
+          room.room &&
+          room.bedContains &&
+          room.pricePerHead &&
+          room.roomAvailable
+      ) &&
       formData.gender &&
       // New fields validation
       formData.minimumSecurityDeposit !== undefined &&
       formData.minimumBookingDuration
-    )
-  }
+    );
+  };
 
   return (
     <div className="bg-gray-50 min-h-screen">
       <Helmet>
-        <title>PG/Mess Owner Registration | Mess Mate - List Your PG/Hostel</title>
+        <title>
+          PG/Mess Owner Registration | Mess Mate - List Your PG/Hostel
+        </title>
         <meta
           name="description"
           content="Register your PG or hostel with Mess Mate. Reach thousands of students looking for quality accommodation. List your mess details, facilities, and room information."
@@ -2388,7 +2436,10 @@ function SignupOwner() {
           name="keywords"
           content="PG registration, hostel registration, mess owner signup, student accommodation, list your PG"
         />
-        <meta property="og:title" content="Mess Owner Registration | Mess Mate" />
+        <meta
+          property="og:title"
+          content="Mess Owner Registration | Mess Mate"
+        />
         <meta
           property="og:description"
           content="Join Mess Mate as a partner and manage your PG/hostel listings effectively"
@@ -2425,11 +2476,18 @@ function SignupOwner() {
               <ArrowLeft className="h-5 w-5 text-gray-600" />
             </button>
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-teal-600">Owner Registration</h1>
-              <p className="text-sm sm:text-base text-gray-600">Create your PG/Mess owner account</p>
+              <h1 className="text-xl sm:text-2xl font-bold text-teal-600">
+                Owner Registration
+              </h1>
+              <p className="text-sm sm:text-base text-gray-600">
+                Create your PG/Mess owner account
+              </p>
             </div>
           </div>
-          <Link to="/login/owner" className="text-teal-600 hover:text-teal-700 font-medium">
+          <Link
+            to="/login/owner"
+            className="text-teal-600 hover:text-teal-700 font-medium"
+          >
             Already have an account?
           </Link>
         </header>
@@ -2450,7 +2508,10 @@ function SignupOwner() {
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="firstName"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       First Name
                     </label>
                     <input
@@ -2465,7 +2526,10 @@ function SignupOwner() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="lastName"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Last Name
                     </label>
                     <input
@@ -2484,7 +2548,10 @@ function SignupOwner() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     <Mail className="h-4 w-4 inline mr-1" />
                     Email Address
                   </label>
@@ -2500,7 +2567,10 @@ function SignupOwner() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="mobileNo" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="mobileNo"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     <Phone className="h-4 w-4 inline mr-1" />
                     Mobile Number
                   </label>
@@ -2518,7 +2588,10 @@ function SignupOwner() {
               </div>
 
               <div>
-                <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="address"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   <Home className="h-4 w-4 inline mr-1" />
                   Address
                 </label>
@@ -2536,7 +2609,10 @@ function SignupOwner() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="pincode" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="pincode"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     <MapPin className="h-4 w-4 inline mr-1" />
                     Pincode
                   </label>
@@ -2552,7 +2628,10 @@ function SignupOwner() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     <Lock className="h-4 w-4 inline mr-1" />
                     Password
                   </label>
@@ -2572,14 +2651,21 @@ function SignupOwner() {
                       onClick={toggleEye}
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
                     >
-                      {isPasswordVisible ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      {isPasswordVisible ? (
+                        <EyeOff className="h-5 w-5" />
+                      ) : (
+                        <Eye className="h-5 w-5" />
+                      )}
                     </button>
                   </div>
                 </div>
               </div>
 
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <label htmlFor="location" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="location"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   <MapPinned className="h-4 w-4 inline mr-1" />
                   Location
                 </label>
@@ -2611,7 +2697,9 @@ function SignupOwner() {
 
             {/* Right Column - Profile Photo */}
             <div className="flex flex-col items-center justify-start">
-              <h2 className="text-xl font-semibold mb-4 self-start">Profile Photo</h2>
+              <h2 className="text-xl font-semibold mb-4 self-start">
+                Profile Photo
+              </h2>
               <label htmlFor="file" className="cursor-pointer">
                 <div className="mb-4 text-center">
                   <input
@@ -2637,13 +2725,17 @@ function SignupOwner() {
                     <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-full bg-teal-100 mx-auto flex items-center justify-center border-4 border-dashed border-teal-300 hover:border-teal-500 transition-colors">
                       <div className="text-center">
                         <Upload className="h-8 w-8 sm:h-10 sm:w-10 mx-auto text-teal-500" />
-                        <p className="mt-2 text-xs sm:text-sm text-teal-700">Upload Photo</p>
+                        <p className="mt-2 text-xs sm:text-sm text-teal-700">
+                          Upload Photo
+                        </p>
                       </div>
                     </div>
                   )}
                 </div>
               </label>
-              <p className="text-xs sm:text-sm text-gray-500 text-center mt-2">Upload a clear photo of yourself</p>
+              <p className="text-xs sm:text-sm text-gray-500 text-center mt-2">
+                Upload a clear photo of yourself
+              </p>
             </div>
           </div>
 
@@ -2656,7 +2748,10 @@ function SignupOwner() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="messName" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="messName"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   PG/Mess Name
                 </label>
                 <input
@@ -2671,7 +2766,10 @@ function SignupOwner() {
                 />
               </div>
               <div>
-                <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="gender"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   PG Type
                 </label>
                 <select
@@ -2691,7 +2789,10 @@ function SignupOwner() {
             </div>
 
             <div className="mt-4">
-              <label htmlFor="aboutMess" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="aboutMess"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 <Info className="h-4 w-4 inline mr-1" />
                 About Your PG/Mess
               </label>
@@ -2710,7 +2811,10 @@ function SignupOwner() {
             {/* New Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
               <div>
-                <label htmlFor="minimumSecurityDeposit" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="minimumSecurityDeposit"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   <Shield className="h-4 w-4 inline mr-1" />
                   Minimum Security Deposit
                 </label>
@@ -2728,7 +2832,10 @@ function SignupOwner() {
                 </select>
               </div>
               <div>
-                <label htmlFor="minimumBookingDuration" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="minimumBookingDuration"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   <Calendar className="h-4 w-4 inline mr-1" />
                   Minimum Booking Duration
                 </label>
@@ -2758,18 +2865,30 @@ function SignupOwner() {
                 <div className="flex flex-wrap items-center gap-2">
                   <select
                     className="text-sm rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500 px-3 py-1.5 w-full sm:w-auto"
-                    onChange={(e) => {
-                      if (e.target.value) {
-                        setRules([...rules, e.target.value])
-                        // Reset the select after adding
-                        e.target.value = ""
+                    // onChange={(e) => {
+                    //   if (e.target.value) {
+                    //     setRules([...rules, e.target.value])
+                    //     // Reset the select after adding
+                    //     e.target.value = ""
 
-                        // Update formData with non-empty rules
+                    //     // Update formData with non-empty rules
+                    //     setFormData({
+                    //       ...formData,
+                    //       rulesToStay: [...rules, e.target.value].filter((rule) => rule.trim() !== ""),
+                    //     })
+                    //   }
+                    // }}
+                    onChange={(e) => {
+                      const selected = e.target.value.trim();
+                      if (selected && !rules.includes(selected)) {
+                        const updatedRules = [...rules, selected];
+                        setRules(updatedRules);
                         setFormData({
                           ...formData,
-                          rulesToStay: [...rules, e.target.value].filter((rule) => rule.trim() !== ""),
-                        })
+                          rulesToStay: updatedRules,
+                        });
                       }
+                      e.target.value = ""; // move this after state updates
                     }}
                   >
                     <option value="">Add predefined rule</option>
@@ -2810,7 +2929,9 @@ function SignupOwner() {
                   )}
                 </div>
               ))}
-              <p className="text-xs text-gray-500 mt-1">Add house rules that guests must follow during their stay</p>
+              <p className="text-xs text-gray-500 mt-1">
+                Add house rules that guests must follow during their stay
+              </p>
             </div>
           </div>
 
@@ -2828,7 +2949,10 @@ function SignupOwner() {
                     onChange={handleFacilityChange}
                     className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded"
                   />
-                  <label htmlFor={amenity.id} className="flex items-center text-sm text-gray-700">
+                  <label
+                    htmlFor={amenity.id}
+                    className="flex items-center text-sm text-gray-700"
+                  >
                     <amenity.icon className="h-4 w-4 text-teal-600 mr-1.5" />
                     {amenity.label}
                   </label>
@@ -2853,9 +2977,14 @@ function SignupOwner() {
 
             <div className="space-y-6">
               {formData.roomInfo.map((room, index) => (
-                <div key={index} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <div
+                  key={index}
+                  className="bg-gray-50 rounded-lg p-4 border border-gray-200"
+                >
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-medium text-gray-900">Room #{index + 1}</h3>
+                    <h3 className="font-medium text-gray-900">
+                      Room #{index + 1}
+                    </h3>
                     <button
                       type="button"
                       onClick={() => removeRoom(index)}
@@ -2868,7 +2997,9 @@ function SignupOwner() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Bed Capacity</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Bed Capacity
+                      </label>
                       <select
                         name="bedContains"
                         value={room.bedContains}
@@ -2885,7 +3016,9 @@ function SignupOwner() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Price Per Head (₹)</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Price Per Head (₹)
+                      </label>
                       <input
                         type="number"
                         name="pricePerHead"
@@ -2897,7 +3030,9 @@ function SignupOwner() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Availability</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Availability
+                      </label>
                       <select
                         name="roomAvailable"
                         value={room.roomAvailable}
@@ -2935,8 +3070,12 @@ function SignupOwner() {
                 className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-teal-500 transition-colors"
               >
                 <Upload className="h-10 w-10 mx-auto text-teal-500 mb-2" />
-                <p className="text-gray-700 font-medium">Upload Property Photos</p>
-                <p className="text-sm text-gray-500 mt-1">Click to browse or drag and drop (max {maxLength} images)</p>
+                <p className="text-gray-700 font-medium">
+                  Upload Property Photos
+                </p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Click to browse or drag and drop (max {maxLength} images)
+                </p>
               </div>
             ) : (
               <div className="border border-gray-200 rounded-lg p-4">
@@ -2959,17 +3098,23 @@ function SignupOwner() {
                   ))}
                   {imgArray.length < maxLength && (
                     <div
-                      onClick={() => document.getElementById("fileInput").click()}
+                      onClick={() =>
+                        document.getElementById("fileInput").click()
+                      }
                       className="w-full h-24 sm:h-28 md:h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-teal-500 transition-colors"
                     >
                       <div className="text-center">
                         <Plus className="h-5 w-5 sm:h-6 sm:w-6 mx-auto text-teal-500" />
-                        <p className="text-xs sm:text-sm text-gray-500 mt-1">Add More</p>
+                        <p className="text-xs sm:text-sm text-gray-500 mt-1">
+                          Add More
+                        </p>
                       </div>
                     </div>
                   )}
                 </div>
-                {errorMessage && <p className="text-red-500 text-sm mt-2">{errorMessage}</p>}
+                {errorMessage && (
+                  <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+                )}
               </div>
             )}
           </div>
@@ -2984,13 +3129,19 @@ function SignupOwner() {
                 onChange={() => setTermsAccepted(!termsAccepted)}
                 className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded"
               />
-              <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
+              <label
+                htmlFor="terms"
+                className="ml-2 block text-sm text-gray-700"
+              >
                 I agree to the{" "}
                 <Link to="/terms" className="text-teal-600 hover:text-teal-700">
                   Terms & Conditions
                 </Link>{" "}
                 and{" "}
-                <Link to="/privacy" className="text-teal-600 hover:text-teal-700">
+                <Link
+                  to="/privacy"
+                  className="text-teal-600 hover:text-teal-700"
+                >
                   Privacy Policy
                 </Link>
               </label>
@@ -3039,7 +3190,7 @@ function SignupOwner() {
         </form>
       </div>
     </div>
-  )
+  );
 }
 
-export default SignupOwner
+export default SignupOwner;
