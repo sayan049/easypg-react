@@ -2315,7 +2315,7 @@ function SignupOwner() {
           formDataToSend.append(key, formData[key])
         }
       }
-
+      console.log(formDataToSend,"xxx");
       const response = await axios.post(signupownerUrl, formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       })
