@@ -180,7 +180,7 @@ const HomePage = () => {
         console.error("Error decoding or accessing token:", error);
       }
     } else {
-      console.error("Token is not present in cookies");
+      console.log("Token is not present in cookies");
     }
   }, [IsAuthenticated, userName, isOwnerAuthenticated, ownerName]);
 
@@ -536,8 +536,10 @@ const HomePage = () => {
                     The ultimate platform for students to find their ideal
                     accommodation
                   </p>
-                  <div className="w-full px-4 sm:px-0" ref={searchContainerRef}>
-                    <div className="max-w-full sm:max-w-2xl mx-auto rounded-2xl shadow-2xl overflow-hidden bg-white">
+                  <div className="w-full px-0 sm:px-4" ref={searchContainerRef}>
+                    {" "}
+                    {/* Changed px-4 to px-0 for mobile */}
+                    <div className="max-w-full mx-auto rounded-2xl shadow-2xl overflow-hidden bg-white">
                       {/* Search Box */}
                       <div
                         className={`relative flex items-center px-3 py-2 border-b transition-all duration-300 ${
@@ -550,7 +552,7 @@ const HomePage = () => {
                         <input
                           type="text"
                           placeholder="Search city or University"
-                          className="w-full py-3 pl-10 pr-12 text-sm sm:text-base bg-white text-gray-800 placeholder-gray-400 focus:outline-none"
+                          className="w-full py-3 pl-10 pr-8 sm:pr-12 text-sm sm:text-base bg-white text-gray-800 placeholder-gray-400 focus:outline-none" // Reduced right padding on mobile
                           value={searchItem}
                           onChange={handleInputChange}
                           onFocus={() => setIsSearchFocused(true)}
@@ -596,7 +598,7 @@ const HomePage = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 8 }}
                             transition={{ duration: 0.2 }}
-                            className="bg-white max-h-60 overflow-y-auto"
+                            className="bg-white max-h-60 overflow-y-auto w-full" // Added w-full
                           >
                             {suggestions.map((suggestion, index) => (
                               <motion.div
@@ -631,7 +633,9 @@ const HomePage = () => {
                                       d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                                     />
                                   </svg>
-                                  <span className="truncate">
+                                  <span className="truncate text-sm sm:text-base break-words whitespace-normal">
+                                    {" "}
+                                    {/* Added text handling */}
                                     {suggestion.display_name}
                                   </span>
                                 </div>
