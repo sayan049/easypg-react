@@ -1,4 +1,3 @@
-
 // import React, { useState } from "react";
 // import { useLocation, useNavigate } from "react-router-dom";
 // import axios from "axios";
@@ -24,7 +23,6 @@
 //   const queryParams = new URLSearchParams(location.search);
 // const encoded = queryParams.get("owner");
 // const owner = encoded ? JSON.parse(decodeURIComponent(atob(encoded))) : null;
-
 
 //   // Convert bedCount string to number
 //   const bedCountToNumber = {
@@ -416,30 +414,41 @@
 //   );
 // }
 
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
-import axios from "axios"
-import { useAuth } from "../contexts/AuthContext"
-import { toast, ToastContainer } from "react-toastify"
-import { bookingRequestUrl } from "../constant/urls"
-import "react-toastify/dist/ReactToastify.css"
-import { ArrowLeft, Share, MapPin, Phone, Check, Calendar, Clock, Home, Shield, CreditCard } from "lucide-react"
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../contexts/AuthContext";
+import { toast, ToastContainer } from "react-toastify";
+import { bookingRequestUrl } from "../constant/urls";
+import "react-toastify/dist/ReactToastify.css";
+import {
+  ArrowLeft,
+  Share,
+  MapPin,
+  Phone,
+  Check,
+  Calendar,
+  Clock,
+  Home,
+  Shield,
+  CreditCard,
+} from "lucide-react";
 
 export default function BookingPage() {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const [selectedRoom, setSelectedRoom] = useState(null)
-  const [showAllPhotos, setShowAllPhotos] = useState(false)
-  const [duration, setDuration] = useState(6)
-  const [checkInDate, setCheckInDate] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const { user,isAuthenticated,isOwnerAuthenticated } = useAuth()
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [showAllPhotos, setShowAllPhotos] = useState(false);
+  const [duration, setDuration] = useState(6);
+  const [checkInDate, setCheckInDate] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { user, isAuthenticated, isOwnerAuthenticated } = useAuth();
 
-  const queryParams = new URLSearchParams(location.search)
-  const encoded = queryParams.get("owner")
-  const owner = encoded ? JSON.parse(decodeURIComponent(atob(encoded))) : null
+  const queryParams = new URLSearchParams(location.search);
+  const encoded = queryParams.get("owner");
+  const owner = encoded ? JSON.parse(decodeURIComponent(atob(encoded))) : null;
 
   // Convert bedCount string to number
   const bedCountToNumber = {
@@ -448,29 +457,35 @@ export default function BookingPage() {
     three: 3,
     four: 4,
     five: 5,
-  }
+  };
 
   const handleBookingRequest = async () => {
-    if(isOwnerAuthenticated) {
+    if (isOwnerAuthenticated) {
       return toast.error("mess owners can't book messes");
     }
-    if(!isAuthenticated) return toast.error("please login to book any mess");
+    if (!isAuthenticated) return toast.error("please login to book any mess");
+    if (duration < owner.minimumBookingDuration)
+      return toast.error(
+        `Minimum booking duration is ${owner.minimumBookingDuration}`
+      );
     try {
-      setIsLoading(true)
+      setIsLoading(true);
 
       // Validate inputs
       if (!selectedRoom || !checkInDate) {
-        toast.error("Please select a room and check-in date")
-        setIsLoading(false)
-        return
+        toast.error("Please select a room and check-in date");
+        setIsLoading(false);
+        return;
       }
 
-      const selectedRoomInfo = owner?.roomInfo?.find((r) => r._id === selectedRoom)
+      const selectedRoomInfo = owner?.roomInfo?.find(
+        (r) => r._id === selectedRoom
+      );
 
       if (!selectedRoomInfo) {
-        toast.error("Selected room not found")
-        setIsLoading(false)
-        return
+        toast.error("Selected room not found");
+        setIsLoading(false);
+        return;
       }
 
       // Prepare booking data
@@ -490,42 +505,47 @@ export default function BookingPage() {
           deposit: selectedRoomInfo.pricePerHead,
         },
         status: "pending",
-      }
+      };
 
       // Make booking request
       const { data } = await axios.post(bookingRequestUrl, bookingData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
-      })
+      });
 
       if (data.success) {
-        toast.success(data.message || "Booking request sent successfully!")
+        toast.success(data.message || "Booking request sent successfully!");
         // Optionally navigate after success
         // navigate('/bookings');
       } else {
-        toast.error(data.message || "Booking request failed")
+        toast.error(data.message || "Booking request failed");
       }
     } catch (error) {
-      console.error("Booking error:", error)
+      console.error("Booking error:", error);
 
       // Handle error response from server
       if (error.response) {
-        const serverMessage = error.response.data?.message || error.response.data?.error || "Booking request failed"
-        toast.error(serverMessage)
+        const serverMessage =
+          error.response.data?.message ||
+          error.response.data?.error ||
+          "Booking request failed";
+        toast.error(serverMessage);
       }
       // Handle network errors
       else if (error.request) {
-        toast.error("Network error. Please check your connection and try again.")
+        toast.error(
+          "Network error. Please check your connection and try again."
+        );
       }
       // Handle other errors
       else {
-        toast.error("An unexpected error occurred. Please try again.")
+        toast.error("An unexpected error occurred. Please try again.");
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -554,9 +574,14 @@ export default function BookingPage() {
               >
                 <ArrowLeft className="h-5 w-5 text-gray-600" />
               </button>
-              <h1 className="text-xl font-bold text-gray-900">Book Your Stay</h1>
+              <h1 className="text-xl font-bold text-gray-900">
+                Book Your Stay
+              </h1>
             </div>
-            <button className="p-2 rounded-full hover:bg-gray-100 transition-colors" aria-label="Share">
+            <button
+              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+              aria-label="Share"
+            >
               <Share className="h-5 w-5 text-gray-600" />
             </button>
           </div>
@@ -567,7 +592,9 @@ export default function BookingPage() {
         {/* Property Details */}
         {owner?.messName && (
           <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">{owner?.messName}</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              {owner?.messName}
+            </h2>
             <div className="flex flex-col md:flex-row md:items-center gap-4 text-gray-600">
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-gray-500" />
@@ -599,57 +626,71 @@ export default function BookingPage() {
                         !room.roomAvailable
                           ? "opacity-75 border border-red-500"
                           : selectedRoom === room._id
-                            ? "ring-2 ring-teal-500 shadow-md"
-                            : "hover:shadow-md border border-gray-200"
+                          ? "ring-2 ring-teal-500 shadow-md"
+                          : "hover:shadow-md border border-gray-200"
                       }`}
                     >
                       <div className="p-5">
                         <div className="flex justify-between items-start mb-3">
-                          <h3 className="font-semibold text-lg text-gray-900">{room.room}</h3>
+                          <h3 className="font-semibold text-lg text-gray-900">
+                            {room.room}
+                          </h3>
                           <span
                             className={`text-xs px-2 py-1 rounded-full ${
-                              room.roomAvailable ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                              room.roomAvailable
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
                             }`}
                           >
                             {room.roomAvailable
                               ? `${bedCountToNumber[room.bedContains]} Bed${
-                                  bedCountToNumber[room.bedContains] > 1 ? "s" : ""
+                                  bedCountToNumber[room.bedContains] > 1
+                                    ? "s"
+                                    : ""
                                 } Available`
                               : "Fully Booked"}
                           </span>
                         </div>
 
                         <div className="flex flex-wrap gap-2 mb-3">
-                          {owner.facility?.slice(0, 3).map((facility, index) => (
-                            <span
-                              key={index}
-                              className="inline-flex items-center text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded-full"
-                            >
-                              <Check className="h-3 w-3 mr-1 text-teal-600" />
-                              {facility}
-                            </span>
-                          ))}
+                          {owner.facility
+                            ?.slice(0, 3)
+                            .map((facility, index) => (
+                              <span
+                                key={index}
+                                className="inline-flex items-center text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded-full"
+                              >
+                                <Check className="h-3 w-3 mr-1 text-teal-600" />
+                                {facility}
+                              </span>
+                            ))}
                         </div>
 
                         <div className="flex items-baseline mb-4">
                           <span className="text-2xl font-bold text-teal-600">
                             ₹{room.pricePerHead?.toLocaleString()}
                           </span>
-                          <span className="text-sm text-gray-500 ml-1">/month</span>
+                          <span className="text-sm text-gray-500 ml-1">
+                            /month
+                          </span>
                         </div>
 
                         <button
-                          onClick={() => room.roomAvailable && setSelectedRoom(room._id)}
+                          onClick={() =>
+                            room.roomAvailable && setSelectedRoom(room._id)
+                          }
                           disabled={!room.roomAvailable}
                           className={`w-full py-2.5 px-4 rounded-lg font-medium transition-colors ${
                             !room.roomAvailable
                               ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-red-500"
                               : selectedRoom === room._id
-                                ? "bg-teal-600 text-white"
-                                : "bg-white text-teal-600 border border-teal-600 hover:bg-teal-50"
+                              ? "bg-teal-600 text-white"
+                              : "bg-white text-teal-600 border border-teal-600 hover:bg-teal-50"
                           }`}
                         >
-                          {selectedRoom === room._id ? "Selected" : "Select Room"}
+                          {selectedRoom === room._id
+                            ? "Selected"
+                            : "Select Room"}
                         </button>
                       </div>
                     </div>
@@ -661,10 +702,18 @@ export default function BookingPage() {
             {/* Room Preview */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Room Gallery</h2>
+                <h2 className="text-xl font-bold text-gray-900 mb-4">
+                  Room Gallery
+                </h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {(showAllPhotos ? owner?.messPhoto : owner?.messPhoto?.slice(0, 6))?.map((image, index) => (
-                    <div key={index} className="aspect-square rounded-lg overflow-hidden">
+                  {(showAllPhotos
+                    ? owner?.messPhoto
+                    : owner?.messPhoto?.slice(0, 6)
+                  )?.map((image, index) => (
+                    <div
+                      key={index}
+                      className="aspect-square rounded-lg overflow-hidden"
+                    >
                       <img
                         src={image || "/placeholder.svg"}
                         alt={`Room ${index + 1}`}
@@ -685,10 +734,15 @@ export default function BookingPage() {
 
               {/* Amenities */}
               <div className="px-6 pb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Amenities</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  Amenities
+                </h3>
                 <div className="grid grid-cols-2 gap-2">
                   {owner?.facility?.map((item, index) => (
-                    <div key={index} className="flex items-center gap-2 text-gray-700">
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 text-gray-700"
+                    >
                       <Check className="h-4 w-4 text-teal-600 flex-shrink-0" />
                       <span className="text-sm">{item}</span>
                     </div>
@@ -733,7 +787,7 @@ export default function BookingPage() {
                       value={duration}
                       onChange={(e) => setDuration(Number(e.target.value))}
                     >
-                      {[1, 2, 3, 6, 12].map((num) => (
+                      {[1, 2, 3, 6, 12, 24].map((num) => (
                         <option key={num} value={num}>
                           {num} month{num !== 1 ? "s" : ""}
                         </option>
@@ -747,13 +801,20 @@ export default function BookingPage() {
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-600">Room Type:</span>
                           <span className="font-medium">
-                            {owner?.roomInfo?.find((r) => r._id === selectedRoom)?.room}
+                            {
+                              owner?.roomInfo?.find(
+                                (r) => r._id === selectedRoom
+                              )?.room
+                            }
                           </span>
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-600">Monthly Rent:</span>
                           <span className="font-medium">
-                            ₹{owner?.roomInfo?.find((r) => r._id === selectedRoom)?.pricePerHead?.toLocaleString()}
+                            ₹
+                            {owner?.roomInfo
+                              ?.find((r) => r._id === selectedRoom)
+                              ?.pricePerHead?.toLocaleString()}
                           </span>
                         </div>
                         <div className="flex justify-between text-sm">
@@ -763,24 +824,36 @@ export default function BookingPage() {
                           </span>
                         </div>
                         <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Security Deposit:</span>
+                          <span className="text-gray-600">
+                            Security Deposit:
+                          </span>
                           <span className="font-medium">
-                            ₹{owner?.roomInfo?.find((r) => r._id === selectedRoom)?.pricePerHead?.toLocaleString()}
+                            ₹
+                            {(
+                              owner?.roomInfo?.find(
+                                (r) => r._id === selectedRoom
+                              )?.pricePerHead * owner?.minimumSecurityDeposit
+                            ).toLocaleString()}
                           </span>
                         </div>
                         <div className="pt-3 mt-3 border-t border-gray-200">
                           <div className="flex justify-between items-center">
-                            <span className="font-semibold text-gray-900">Total Amount:</span>
+                            <span className="font-semibold text-gray-900">
+                              Total Amount:
+                            </span>
                             <span className="text-xl font-bold text-teal-600">
                               ₹
                               {(
-                                owner?.roomInfo?.find((r) => r._id === selectedRoom)?.pricePerHead *
-                                (duration + 1)
+                                owner?.roomInfo?.find(
+                                  (r) => r._id === selectedRoom
+                                )?.pricePerHead *
+                                (duration + owner?.minimumSecurityDeposit)
                               )?.toLocaleString()}
                             </span>
                           </div>
                           <p className="text-xs text-gray-500 mt-1">
-                            Includes security deposit and {duration} month{duration !== 1 ? "s" : ""} rent
+                            Includes security deposit and {duration} month
+                            {duration !== 1 ? "s" : ""} rent
                           </p>
                         </div>
                       </div>
@@ -839,5 +912,5 @@ export default function BookingPage() {
         </div>
       </main>
     </div>
-  )
+  );
 }

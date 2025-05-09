@@ -1789,7 +1789,7 @@ function SignupOwner() {
                   <option value="1 Month">1 Month</option>
                   <option value="3 Months">3 Months</option>
                   <option value="6 Months">6 Months</option>
-                  <option value="1 Year">1 Year</option>
+                  <option value="12 months">1 Year</option>
                 </select>
               </div>
             </div>

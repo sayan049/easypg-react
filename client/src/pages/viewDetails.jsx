@@ -377,8 +377,6 @@ const ViewDetails = () => {
 
             {/* Safety Notice */}
             <div
-              //   className="bg-white rounded-xl shadow-sm p-3"
-              // className="p-3 border-b-2 border-grey "
               className="bg-white  shadow-sm p-6 border border-grey"
             >
               <div className="flex items-start gap-4">

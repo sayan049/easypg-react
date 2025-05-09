@@ -128,18 +128,18 @@ const pgOwnerSchema = new mongoose.Schema({
       },
     },
   ],
-  minimumSecurityDeposit: {
-    type: Number,
-    enum: [0, 1, 2],
-    default: 0,
-    required: function () {
-      return !this.googleId;
-    },
-  },
 
   rulesToStay: {
     type: [String],
     default: [],
+    required: function () {
+      return !this.googleId;
+    },
+  },
+  minimumSecurityDeposit: {
+    type: Number,
+    enum: [0, 1, 2],
+    default: 0,
     required: function () {
       return !this.googleId;
     },
