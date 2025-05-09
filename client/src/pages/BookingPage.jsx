@@ -465,7 +465,7 @@ export default function BookingPage() {
       return toast.error("mess owners can't book messes");
     }
     if (!IsAuthenticated) return toast.error("please login to book any mess");
-    if (duration > owner.minimumBookingDuration)
+    if (duration > parseInt(owner.minimumBookingDuration.split(" ")[0]))
       return toast.error(
         `Minimum booking duration is ${owner.minimumBookingDuration}`
       );
