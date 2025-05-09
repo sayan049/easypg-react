@@ -357,13 +357,13 @@ const ViewDetails = () => {
             </div>
 
             {/* Rules section */}
-            <div className="bg-white shadow-sm p-6 border border-grey">
+            <div className="bg-white shadow-sm p-6 border border-grey ">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
                 Rules To Stay
               </h2>
 
               {messData.rulesToStay.map((r,index) => {
-                (<p className="text-gray-700 leading-relaxed" key={index} >{r}</p>);
+                (<span className="text-gray-700 leading-relaxed flex items-center flex-col" key={index} >{r}</span>);
               })}
               <p className="text-gray-700 leading-relaxed">
                 {messData?.rulesToStay ||
