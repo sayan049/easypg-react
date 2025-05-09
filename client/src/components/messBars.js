@@ -42,7 +42,7 @@ function MessBars({
   const [liked, setLiked] = useState({});
   const [showAllAmenities, setShowAllAmenities] = useState({});
   const token = localStorage.getItem("accessToken");
-  const {IsAuthenticated}= useAuth();
+  const { IsAuthenticated } = useAuth();
 
   const [lastCardRef, lastCardInView] = useInView({
     threshold: 0.1,
@@ -66,7 +66,7 @@ function MessBars({
   const toggleLike = async (id) => {
     const newLikedState = !liked[id];
     setLiked((prev) => ({ ...prev, [id]: newLikedState }));
-    if(!IsAuthenticated) return;
+    if (!IsAuthenticated) return;
     try {
       await axios.post(
         likedMessesUrl,
@@ -138,7 +138,7 @@ function MessBars({
   };
 
   const fetchLikedMesses = async () => {
-    if(!IsAuthenticated) return;
+    if (!IsAuthenticated) return;
     try {
       const res = await axios.get(getLikedMessUrl, {
         headers: { Authorization: `Bearer ${token}` },
@@ -168,10 +168,14 @@ function MessBars({
     navigate(`/ViewDetails/${owner._id}`);
   };
 
+  // const clickBook = (owner) => {
+  //   const ownerParams = new URLSearchParams();
+  //   ownerParams.set("owner", JSON.stringify(owner));
+  //   navigate(`/booking?${ownerParams}`);
+  // };
   const clickBook = (owner) => {
-    const ownerParams = new URLSearchParams();
-    ownerParams.set("owner", JSON.stringify(owner));
-    navigate(`/booking?${ownerParams}`);
+    const encoded = btoa(encodeURIComponent(JSON.stringify(owner)));
+    navigate(`/booking?owner=${encoded}`);
   };
 
   const clickCords = (location, id) => {
@@ -291,7 +295,7 @@ function MessBars({
     setPgCount(0);
     setPage(1); // Reset to page 1 immediately
     fetchData();
-  }, [checkFeatures, userLocation, finalGender,finalPrice]);
+  }, [checkFeatures, userLocation, finalGender, finalPrice]);
 
   useEffect(() => {
     fetchData();
