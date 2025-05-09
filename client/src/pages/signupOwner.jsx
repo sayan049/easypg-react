@@ -1208,11 +1208,11 @@ function SignupOwner() {
   // }
 
   useEffect(() => {
-    console.log("rules", rules );
+    console.log("rules", rules);
   }, [rules]);
   const handleRuleChange = (index, value) => {
     let newRules = [...rules];
-     console.log("newrules", newRules );
+
     // If first field and has commas, split and replace only that index's value
     if (index === 0 && value.includes(",")) {
       const splitRules = value
@@ -1233,6 +1233,22 @@ function SignupOwner() {
       rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
     });
   };
+
+  const addRule = () => {
+    setRules([...rules, ""]);
+  };
+
+  const removeRule = (index) => {
+    const newRules = [...rules];
+    newRules.splice(index, 1);
+    setRules(newRules);
+
+    setFormData({
+      ...formData,
+      rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
