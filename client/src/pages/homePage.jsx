@@ -511,7 +511,7 @@ const HomePage = () => {
           {/* Hero Section */}
           <section
             id="home"
-            className="relative bg-gradient-to-br from-[#2CA4B5] via-[#4db6c5] to-[#7fd4e1] py-10 lg:py-32 overflow-hidden"
+            className="relative bg-gradient-to-br from-[#2CA4B5] via-[#4db6c5] to-[#7fd4e1] py-10 lg:py-32 "
           >
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-10">
@@ -595,7 +595,7 @@ const HomePage = () => {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: 10 }}
                           transition={{ duration: 0.2 }}
-                          className="absolute w-full mt-2 z-[9999] bg-white shadow-xl rounded-lg "
+                          className="absolute w-full mt-2  bg-white shadow-xl rounded-lg "
                         >
                           {suggestions.map((suggestion, index) => (
                             <motion.div
