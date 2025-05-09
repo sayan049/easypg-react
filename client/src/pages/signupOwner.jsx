@@ -1208,10 +1208,10 @@ function SignupOwner() {
   // }
 
   useEffect(() => {
-    console.log("rules", rules);
-  }, [rules]);
+    console.log("rules", formData.rulesToStay, rules);
+  }, [formData.rulesToStay]);
   const handleRuleChange = (index, value) => {
-    let newRules = [...rules];
+    let newRules = rules;
 
     // If first field and has commas, split and replace only that index's value
     if (value.includes(",")) {
@@ -1276,6 +1276,7 @@ function SignupOwner() {
 
       // Update rulesToStay in formData before sending
       formData.rulesToStay = rules.filter((rule) => rule.trim() !== "");
+      console.log("new form ",formData.rulesToStay)
 
       for (const key in formData) {
         if (key === "messPhoto") {
@@ -1284,13 +1285,14 @@ function SignupOwner() {
           );
         } else if (
           key === "roomInfo" ||
-          key === "location" ||
-          key === "rulesToStay"
+          key === "location"
         ) {
           // Stringify arrays and objects to send them as JSON strings
           formDataToSend.append(key, JSON.stringify(formData[key]));
         } else {
           formDataToSend.append(key, formData[key]);
+          console.log(key, formDataToSend.get(key));
+
         }
       }
       console.log(formDataToSend, "xxx");
