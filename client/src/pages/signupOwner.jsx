@@ -1208,10 +1208,10 @@ function SignupOwner() {
   // }
 
   useEffect(() => {
-    console.log("rules", rules);
-  }, [rules]);
+    console.log("rules", formData.rulesToStay, rules);
+  }, [formData.rulesToStay]);
   const handleRuleChange = (index, value) => {
-    let newRules = [...rules];
+    let newRules = rules;
 
     // If first field and has commas, split and replace only that index's value
     if (value.includes(",")) {
