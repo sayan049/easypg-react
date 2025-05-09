@@ -389,12 +389,12 @@ const MessFind = () => {
             "@type": "ItemList",
             name: `Student PGs in ${item?.split(",")[0] || "Your Area"}`,
             description: `Find ${
-              messes?.length || "verified"
+              pgCount || "verified"
             } PG accommodations near ${
               item?.split(",")[0] || "your location"
             } with MessMate`,
             url: window.location.href,
-            numberOfItems: messes?.length || 0,
+            numberOfItems: pgCount || 0,
             location: {
               "@type": "Place",
               geo: {
@@ -403,57 +403,8 @@ const MessFind = () => {
                 longitude: selectedLocation?.lng || 0,
               },
             },
-            itemListElement: (messes || []).slice(0, 10).map((mess, index) => ({
-              "@type": "ListItem",
-              position: index + 1,
-              item: {
-                "@type": "LocalBusiness",
-                "@id": `https://www.messmate.co.in/ViewDetails/${mess._id}`,
-                name: mess.messName,
-                description:
-                  mess.description ||
-                  `Student accommodation in ${item?.split(",")[0] || ""}`,
-                image:
-                  mess.profilePhoto ||
-                  "https://www.messmate.co.in/assets/og-messfind.jpg",
-                priceRange: mess.roomInfo?.[0]?.pricePerHead
-                  ? `₹${Math.min(
-                      ...mess.roomInfo.map((r) => r.pricePerHead)
-                    )}-₹${Math.max(
-                      ...mess.roomInfo.map((r) => r.pricePerHead)
-                    )}`
-                  : "₹₹",
-                address: {
-                  "@type": "PostalAddress",
-                  streetAddress: mess.address || "",
-                  addressLocality: mess.city || item?.split(",")[0] || "",
-                  addressRegion: mess.state || "",
-                  postalCode: mess.pincode || "",
-                  addressCountry: "IN",
-                },
-                geo: {
-                  "@type": "GeoCoordinates",
-                  latitude:
-                    mess.location?.coordinates[1] || selectedLocation?.lat,
-                  longitude:
-                    mess.location?.coordinates[0] || selectedLocation?.lng,
-                },
-                amenityFeature: mess.facility?.map((facility) => ({
-                  "@type": "LocationFeatureSpecification",
-                  name: facility,
-                })),
-                telephone: mess.contact || undefined,
-                sameAs: mess.website || undefined,
-                openingHours: "24/7",
-                aggregateRating: mess.rating
-                  ? {
-                      "@type": "AggregateRating",
-                      ratingValue: mess.rating,
-                      ratingCount: mess.reviews?.length || 0,
-                    }
-                  : undefined,
-              },
-            })),
+            // Remove the itemListElement array since we can't access messData here
+            // Consider moving this schema to MessBars component where messData is available
           })}
         </script>
       </Helmet>
