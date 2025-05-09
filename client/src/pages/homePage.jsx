@@ -536,24 +536,20 @@ const HomePage = () => {
                     The ultimate platform for students to find their ideal
                     accommodation
                   </p>
-                  <div
-                    className="mt-8 w-full px-4 sm:px-0"
-                    ref={searchContainerRef}
-                  >
-                    <div className="bg-white shadow-2xl rounded-2xl w-full max-w-full sm:max-w-2xl mx-auto">
-                      {/* Search input with icon and button */}
+                  <div className="w-full px-4 sm:px-0" ref={searchContainerRef}>
+                    <div className="w-full max-w-full sm:max-w-2xl mx-auto bg-white rounded-2xl shadow-xl">
                       <div
-                        className={`relative flex items-center border-2 rounded-2xl transition-all duration-300 ${
-                          isSearchFocused ? "ring-2 ring-[#2CA4B5]" : ""
+                        className={`relative flex items-center border border-[#2CA4B5] rounded-2xl transition-all duration-300 ${
+                          isSearchFocused ? "ring-2 ring-[#2CA4B5]/40" : ""
                         }`}
                       >
-                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-800">
+                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-700">
                           <MapPin className="h-5 w-5" />
                         </div>
                         <input
                           type="text"
                           placeholder="Search city or University"
-                          className="w-full py-3 pl-12 pr-14 text-sm sm:text-base bg-white text-gray-800 placeholder-gray-400 rounded-2xl"
+                          className="flex-1 py-3 pl-10 pr-12 text-sm sm:text-base text-gray-800 placeholder-gray-400 bg-white rounded-2xl focus:outline-none"
                           value={searchItem}
                           onChange={handleInputChange}
                           onFocus={() => setIsSearchFocused(true)}
@@ -562,7 +558,6 @@ const HomePage = () => {
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 h-9 w-9 text-white bg-[#2CA4B5] rounded-full flex items-center justify-center shadow-md"
                           onClick={(e) => {
                             if (suggestions.length > 0) {
                               handleSuggestionClick(suggestions[0]);
@@ -572,6 +567,7 @@ const HomePage = () => {
                               );
                             }
                           }}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9 flex items-center justify-center bg-[#2CA4B5] text-white rounded-full shadow"
                           aria-label="Search"
                         >
                           <svg
@@ -591,15 +587,15 @@ const HomePage = () => {
                         </motion.button>
                       </div>
 
-                      {/* Suggestions Dropdown */}
+                      {/* Suggestions */}
                       <AnimatePresence>
                         {suggestions.length > 0 && (
                           <motion.div
-                            initial={{ opacity: 0, y: 10 }}
+                            initial={{ opacity: 0, y: 8 }}
                             animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 10 }}
+                            exit={{ opacity: 0, y: 8 }}
                             transition={{ duration: 0.2 }}
-                            className="bg-white w-full rounded-b-2xl max-h-60 overflow-y-auto border-t border-gray-200"
+                            className="w-full bg-white rounded-b-2xl border border-t-0 border-gray-200 max-h-64 overflow-y-auto"
                           >
                             {suggestions.map((suggestion, index) => (
                               <motion.div
@@ -616,7 +612,7 @@ const HomePage = () => {
                                 <div className="flex items-center">
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    className="h-4 w-4 mr-2 flex-shrink-0"
+                                    className="h-4 w-4 mr-2"
                                     fill="none"
                                     viewBox="0 0 24 24"
                                     stroke="currentColor"
@@ -625,7 +621,7 @@ const HomePage = () => {
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
                                       strokeWidth={2}
-                                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                      d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
                                     />
                                     <path
                                       strokeLinecap="round"
