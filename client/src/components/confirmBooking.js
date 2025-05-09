@@ -10,7 +10,7 @@ function StickyBookingCard({ messData, isVisible }) {
   };
   const clickBook = () => {
     const messDataParams = new URLSearchParams();
-    messDataParams.set("messData", JSON.stringify(messData));
+    messDataParams.set("owner", JSON.stringify(messData));
     Navigate(`/booking?${messDataParams}`);
   };
   return (

@@ -413,7 +413,7 @@ const ViewDetails = () => {
               transition={{ duration: 0.7 }}
             >
              
-            </motion.div> */}
+            </motion.> */}
             <div>
               <ConfirmBooking
                 messData={messData}
