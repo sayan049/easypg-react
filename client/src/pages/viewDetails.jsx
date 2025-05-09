@@ -414,9 +414,12 @@ const ViewDetails = () => {
             >
              
             </motion.div> */}
-            <div> {!showModal && footerInView && (
-                <ConfirmBooking messData={messData} isVisible={footerInView} />
-              )}</div>
+            <div>
+              <ConfirmBooking
+                messData={messData}
+                isVisible={!showModal && footerInView}
+              />
+            </div>
 
             {/* Ratings Section */}
             <div
