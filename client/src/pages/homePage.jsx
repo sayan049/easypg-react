@@ -549,12 +549,12 @@ const HomePage = () => {
                         }`}
                       >
                         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-800">
-                          <MapPin className="h-6 w-5" />
+                          <MapPin className="h-5 w-5" />
                         </div>
                         <input
                           type="text"
                           placeholder="Search city or University"
-                          className="w-full py-3 pl-12 pr-14 text-base sm:text-lg shadow-none outline-none text-gray-800 placeholder-gray-400 bg-white"
+                          className="w-full py-3 pl-12 pr-14 text-sm sm:text-base shadow-none outline-none text-gray-800 placeholder-gray-400 bg-white"
                           value={searchItem}
                           onChange={handleInputChange}
                           onFocus={() => setIsSearchFocused(true)}
@@ -600,7 +600,7 @@ const HomePage = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 10 }}
                             transition={{ duration: 0.2 }}
-                            className="w-full bg-white"
+                            className="w-full bg-white max-h-64 overflow-y-auto"
                           >
                             {suggestions.map((suggestion, index) => (
                               <motion.div
