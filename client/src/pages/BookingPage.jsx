@@ -1,423 +1,7 @@
-// import React, { useState } from "react";
-// import { useLocation, useNavigate } from "react-router-dom";
-// import axios from "axios";
-// import { useAuth } from "../contexts/AuthContext";
-// import { toast, ToastContainer } from "react-toastify";
-// import { bookingRequestUrl } from "../constant/urls";
-// import "react-toastify/dist/ReactToastify.css";
-
-// export default function BookingPage() {
-//   const navigate = useNavigate();
-//   const location = useLocation();
-//   // const { messData } = location.state || {};
-//   const [selectedRoom, setSelectedRoom] = useState(null);
-//   const [showAllPhotos, setShowAllPhotos] = useState(false);
-//   const [duration, setDuration] = useState(6);
-//   const [checkInDate, setCheckInDate] = useState("");
-//   const [isLoading, setIsLoading] = useState(false);
-//   const { user } = useAuth();
-//   // const queryParams = new URLSearchParams(location.search);
-//   // const messData = JSON.parse(queryParams.get("messData"))
-//   //   ? JSON.parse(queryParams.get("messData"))
-//   //   : null;
-//   const queryParams = new URLSearchParams(location.search);
-// const encoded = queryParams.get("messData");
-// const messData = encoded ? JSON.parse(decodeURIComponent(atob(encoded))) : null;
-
-//   // Convert bedCount string to number
-//   const bedCountToNumber = {
-//     one: 1,
-//     two: 2,
-//     three: 3,
-//     four: 4,
-//     five: 5,
-//   };
-
-//   const handleBookingRequest = async () => {
-//     try {
-//       setIsLoading(true);
-
-//       // Validate inputs
-//       if (!selectedRoom || !checkInDate) {
-//         toast.error("Please select a room and check-in date");
-//         setIsLoading(false);
-//         return;
-//       }
-
-//       const selectedRoomInfo = messData?.roomInfo?.find(
-//         (r) => r._id === selectedRoom
-//       );
-
-//       if (!selectedRoomInfo) {
-//         toast.error("Selected room not found");
-//         setIsLoading(false);
-//         return;
-//       }
-
-//       // Prepare booking data
-//       const bookingData = {
-//         student: user.id,
-//         pgmessData: messData._id,
-//         room: selectedRoomInfo.room,
-//         bedsBooked: 1,
-//         originalBedCount: selectedRoomInfo.bedContains,
-//         pricePerHead: selectedRoomInfo.pricePerHead,
-//         period: {
-//           startDate: checkInDate,
-//           durationMonths: duration,
-//         },
-//         payment: {
-//           totalAmount: selectedRoomInfo.pricePerHead * (duration + 1),
-//           deposit: selectedRoomInfo.pricePerHead,
-//         },
-//         status: "pending",
-//       };
-
-//       // Make booking request
-//       const { data } = await axios.post(bookingRequestUrl, bookingData, {
-//         headers: {
-//           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-//         },
-//       });
-
-//       if (data.success) {
-//         toast.success(data.message || "Booking request sent successfully!");
-//         // Optionally navigate after success
-//         // navigate('/bookings');
-//       } else {
-//         toast.error(data.message || "Booking request failed");
-//       }
-//     } catch (error) {
-//       console.error("Booking error:", error);
-
-//       // Handle error response from server
-//       if (error.response) {
-//         const serverMessage =
-//           error.response.data?.message ||
-//           error.response.data?.error ||
-//           "Booking request failed";
-//         toast.error(serverMessage);
-//       }
-//       // Handle network errors
-//       else if (error.request) {
-//         toast.error(
-//           "Network error. Please check your connection and try again."
-//         );
-//       }
-//       // Handle other errors
-//       else {
-//         toast.error("An unexpected error occurred. Please try again.");
-//       }
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-//   const primaryColor = "#2CA4B5";
-
-//   return (
-//     <div className="p-4 md:p-8 max-w-[100rem] mx-auto space-y-6 font-sans">
-//       <ToastContainer
-//         position="top-center"
-//         autoClose={5000}
-//         hideProgressBar={false}
-//         newestOnTop={false}
-//         closeOnClick
-//         rtl={false}
-//         pauseOnFocusLoss
-//         draggable
-//         pauseOnHover
-//         style={{ zIndex: 9999 }} // Ensure it's above other elements
-//       />
-//       <div className="flex items-center gap-4 mb-6 border-b pb-4 border-gray-300 justify-between">
-//         <div className="flex items-center gap-2">
-//           <img
-//             src="assets/backIcon.png"
-//             className="h-6 cursor-pointer"
-//             alt=""
-//             onClick={() => navigate(-1)}
-//           />
-//           <h1 className="text-xl font-bold">Confirm Your Booking</h1>
-//         </div>
-//         <div className="">
-//           <img src="assets/share.png" className="h-5" alt="" />
-//         </div>
-//       </div>
-
-//       {messData?.messName && (
-//         <div className="flex mb-6 flex-col justify-start">
-//           <h2 className="text-2xl font-bold">{messData?.messName}</h2>
-//           <div className="flex gap-4 flex-col md:flex-row">
-//             <p className="flex items-center text-gray-600 text-base gap-2">
-//               <img src="assets/greyMarker.png" className="h-4" alt="" />
-//               {messData?.address}
-//             </p>
-//             <p className="flex items-center text-gray-600 text-base gap-2">
-//               <img src="assets/phoneIcon.png" className="h-5" alt="" />
-//               {messData?.mobileNo}
-//             </p>
-//           </div>
-//         </div>
-//       )}
-
-//       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-//         {/* Left Side */}
-//         <div className="lg:col-span-2 space-y-6">
-//           <div className="rounded-2xl shadow-md bg-white">
-//             <div className="p-4 space-y-4">
-//               <h2 className="text-xl font-semibold">Select a Room</h2>
-//               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//                 {messData?.roomInfo?.map((room) => (
-//                   <div
-//                     key={room._id}
-//                     className={`border rounded-2xl p-4 space-y-2 ${
-//                       room.roomAvailable
-//                         ? selectedRoom === room._id
-//                           ? "border-blue-500"
-//                           : "border-gray-200"
-//                         : "border-red-500"
-//                     }`}
-//                     style={{
-//                       borderColor: !room.roomAvailable
-//                         ? "red"
-//                         : selectedRoom === room._id
-//                         ? primaryColor
-//                         : undefined,
-//                     }}
-//                   >
-//                     <div className="flex justify-between items-center">
-//                       <h3 className="font-semibold text-lg">{room.room}</h3>
-//                       <span
-//                         className={`text-sm px-2 py-1 rounded-full ${
-//                           room.roomAvailable
-//                             ? "bg-green-100 text-green-700"
-//                             : "bg-red-100 text-red-700"
-//                         }`}
-//                       >
-//                         {room.roomAvailable
-//                           ? `${bedCountToNumber[room.bedContains]} Bed${
-//                               bedCountToNumber[room.bedContains] > 1 ? "s" : ""
-//                             } Available`
-//                           : "Fully Booked"}
-//                       </span>
-//                     </div>
-//                     <div className="flex items-center space-x-2 text-gray-600 text-sm">
-//                       {messData.facility?.slice(0, 3).map((facility, index) => (
-//                         <span key={index}>{facility}</span>
-//                       ))}
-//                     </div>
-//                     <div
-//                       className="text-lg font-bold"
-//                       style={{ color: primaryColor }}
-//                     >
-//                       ₹{room.pricePerHead?.toLocaleString()}
-//                       <span className="text-sm font-medium text-gray-500">
-//                         /mo
-//                       </span>
-//                     </div>
-//                     <button
-//                       onClick={() =>
-//                         room.roomAvailable && setSelectedRoom(room._id)
-//                       }
-//                       disabled={!room.roomAvailable}
-//                       className={`w-full py-2 px-4 rounded-md font-semibold ${
-//                         selectedRoom === room._id ? "text-white" : "border"
-//                       } ${
-//                         !room.roomAvailable
-//                           ? "opacity-50 cursor-not-allowed"
-//                           : ""
-//                       }`}
-//                       style={{
-//                         backgroundColor:
-//                           selectedRoom === room._id && room.roomAvailable
-//                             ? primaryColor
-//                             : "transparent",
-//                         borderColor: !room.roomAvailable ? "red" : primaryColor,
-//                         color:
-//                           selectedRoom === room._id && room.roomAvailable
-//                             ? "white"
-//                             : primaryColor,
-//                       }}
-//                     >
-//                       {selectedRoom === room._id ? "Selected" : "Select"}
-//                     </button>
-//                   </div>
-//                 ))}
-//               </div>
-//             </div>
-//           </div>
-
-//           <div className="rounded-2xl shadow-md bg-white">
-//             <div className="p-4">
-//               <h2 className="text-xl font-semibold mb-4">Room Preview</h2>
-//               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//                 {(showAllPhotos
-//                   ? messData?.messPhoto
-//                   : messData?.messPhoto?.slice(0, 4)
-//                 )?.map((image, index) => (
-//                   <img
-//                     key={index}
-//                     src={image}
-//                     alt={`Room ${index + 1}`}
-//                     className="rounded-2xl w-full h-48 object-cover"
-//                   />
-//                 ))}
-//               </div>
-//               {messData?.messPhoto?.length > 4 && (
-//                 <button
-//                   onClick={() => setShowAllPhotos(!showAllPhotos)}
-//                   className="text-blue-600 underline text-sm mt-2 w-full"
-//                 >
-//                   {showAllPhotos ? "View Less" : "View More"}
-//                 </button>
-//               )}
-//               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-sm text-gray-700">
-//                 <ul className="space-y-1">
-//                   {messData?.facility?.slice(0, 3).map((item, index) => (
-//                     <li key={index}>✅ {item}</li>
-//                   ))}
-//                 </ul>
-//                 <ul className="space-y-1">
-//                   {messData?.facility?.slice(3, 6).map((item, index) => (
-//                     <li key={index}>✅ {item}</li>
-//                   ))}
-//                 </ul>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* Right Side - Booking Summary */}
-//         <div className="space-y-6">
-//           <div className="rounded-2xl shadow-md bg-white">
-//             <div className="p-4 space-y-4">
-//               <h2 className="text-xl font-semibold">Booking Summary</h2>
-
-//               <div>
-//                 <label className="text-sm">Check-in Date</label>
-//                 <input
-//                   type="date"
-//                   className="mt-2 border rounded-md w-full p-2"
-//                   value={checkInDate}
-//                   min={new Date().toISOString().split("T")[0]}
-//                   onChange={(e) => setCheckInDate(e.target.value)}
-//                   required
-//                 />
-//               </div>
-
-//               <div>
-//                 <label className="text-sm">Duration (months)</label>
-//                 <select
-//                   className="mt-2 border rounded-md w-full p-2"
-//                   value={duration}
-//                   onChange={(e) => setDuration(Number(e.target.value))}
-//                 >
-//                   {[1, 2, 3, 6, 12].map((num) => (
-//                     <option key={num} value={num}>
-//                       {num} month{num !== 1 ? "s" : ""}
-//                     </option>
-//                   ))}
-//                 </select>
-//               </div>
-
-//               {selectedRoom && (
-//                 <div className="space-y-2">
-//                   <div className="flex justify-between">
-//                     <span>Room:</span>
-//                     <span>
-//                       {
-//                         messData?.roomInfo?.find((r) => r._id === selectedRoom)
-//                           ?.room
-//                       }
-//                     </span>
-//                   </div>
-//                   <div className="flex justify-between">
-//                     <span>Monthly Rent:</span>
-//                     <span>
-//                       ₹
-//                       {messData?.roomInfo
-//                         ?.find((r) => r._id === selectedRoom)
-//                         ?.pricePerHead?.toLocaleString()}
-//                     </span>
-//                   </div>
-//                   <div className="flex justify-between">
-//                     <span>Duration:</span>
-//                     <span>
-//                       {duration} month{duration !== 1 ? "s" : ""}
-//                     </span>
-//                   </div>
-//                   <div className="flex justify-between">
-//                     <span>Security Deposit:</span>
-//                     <span>
-//                       ₹
-//                       {messData?.roomInfo
-//                         ?.find((r) => r._id === selectedRoom)
-//                         ?.pricePerHead?.toLocaleString()}
-//                     </span>
-//                   </div>
-//                   <div className="border-t pt-2 flex justify-between font-semibold">
-//                     <span>Total Amount:</span>
-//                     <span style={{ color: primaryColor }}>
-//                       ₹
-//                       {(
-//                         messData?.roomInfo?.find((r) => r._id === selectedRoom)
-//                           ?.pricePerHead *
-//                         (duration + 1)
-//                       )?.toLocaleString()}
-//                     </span>
-//                   </div>
-//                 </div>
-//               )}
-//             </div>
-//           </div>
-
-//           <button
-//             className={`w-full mt-4 py-3 px-4 rounded-md text-white font-medium flex items-center justify-center ${
-//               !selectedRoom || !checkInDate || isLoading
-//                 ? "opacity-70 cursor-not-allowed"
-//                 : ""
-//             }`}
-//             style={{ backgroundColor: primaryColor }}
-//             onClick={handleBookingRequest}
-//             disabled={!selectedRoom || !checkInDate || isLoading}
-//           >
-//             {isLoading ? (
-//               <>
-//                 <svg
-//                   className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-//                   xmlns="http://www.w3.org/2000/svg"
-//                   fill="none"
-//                   viewBox="0 0 24 24"
-//                 >
-//                   <circle
-//                     className="opacity-25"
-//                     cx="12"
-//                     cy="12"
-//                     r="10"
-//                     stroke="currentColor"
-//                     strokeWidth="4"
-//                   ></circle>
-//                   <path
-//                     className="opacity-75"
-//                     fill="currentColor"
-//                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-//                   ></path>
-//                 </svg>
-//                 Processing...
-//               </>
-//             ) : (
-//               "Request Booking"
-//             )}
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate ,useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
@@ -437,6 +21,196 @@ import {
   CreditCard,
 } from "lucide-react";
 
+const BookingSkeleton = () => {
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [checkInDate, setCheckInDate] = useState("");
+  const [duration, setDuration] = useState(1);
+
+  const rooms = [
+    {
+      id: 1,
+      name: "RoomNo-1",
+      features: ["AC", "TV"],
+      available: true,
+      price: 65365,
+    },
+    {
+      id: 2,
+      name: "RoomNo-2",
+      features: ["AC", "TV"],
+      available: true,
+      price: 434553,
+    },
+    {
+      id: 3,
+      name: "RoomNo-3",
+      features: ["AC", "TV"],
+      available: true,
+      price: 499,
+      beds: 2,
+    },
+    { id: 4, name: "RoomNo-4", features: ["AC", "TV"], available: false },
+    { id: 5, name: "RoomNo-5", features: ["AC", "TV"], available: false },
+  ];
+
+  const handleBooking = () => {
+    // Booking logic here
+    // alert(`Booking confirmed for ${selectedRoom.name}!`);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Book Your Stay</h1>
+          <div className="mt-2 text-gray-600">
+            <p>Tanmoy magi</p>
+            <p>makaut ℃, 7679766470</p>
+          </div>
+        </div>
+
+        <div className="bg-white shadow rounded-lg overflow-hidden">
+          {/* Room Selection Section */}
+          <div className="p-6 border-b border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              Select Your Room
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {rooms.map((room) => (
+                <div
+                  key={room.id}
+                  className={`border rounded-lg p-4 ${
+                    room.available
+                      ? "hover:border-blue-500 cursor-pointer"
+                      : "opacity-60"
+                  } ${
+                    selectedRoom?.id === room.id
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-gray-200"
+                  }`}
+                  onClick={() => room.available && setSelectedRoom(room)}
+                >
+                  <div className="flex justify-between items-start">
+                    <h3 className="font-medium text-gray-900">
+                      {room.name}
+                      {!room.available && (
+                        <span className="text-red-500 ml-2">
+                          (Fully Booked)
+                        </span>
+                      )}
+                    </h3>
+                    {room.beds && (
+                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
+                        {room.beds} beds Available
+                      </span>
+                    )}
+                  </div>
+
+                  <ul className="mt-2 space-y-1">
+                    {room.features.map((feature, index) => (
+                      <li
+                        key={index}
+                        className="flex items-center text-gray-600"
+                      >
+                        <span className="mr-2">✓</span> {feature}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {room.available && room.price && (
+                    <div className="mt-4 flex justify-between items-center">
+                      <span className="text-lg font-bold">
+                        ¥{room.price.toLocaleString()} / month
+                      </span>
+                      <button
+                        className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedRoom(room);
+                        }}
+                      >
+                        Select Room
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Booking Summary Section */}
+          <div className="p-6 border-b border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              Booking Summary
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Check-in Date
+                </label>
+                <input
+                  type="date"
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  value={checkInDate}
+                  onChange={(e) => setCheckInDate(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Duration (months)
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  value={duration}
+                  onChange={(e) => setDuration(parseInt(e.target.value))}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Security Assurance */}
+          <div className="p-6 border-b border-gray-200 bg-blue-50">
+            <p className="text-blue-800 flex items-center">
+              <svg
+                className="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                />
+              </svg>
+              Secure booking process with 100% data protection
+            </p>
+          </div>
+
+          {/* Confirm Booking Button */}
+          <div className="p-6">
+            <button
+              onClick={handleBooking}
+              disabled={!selectedRoom || !checkInDate}
+              className={`w-full py-3 px-4 rounded-md font-medium text-white ${
+                selectedRoom && checkInDate
+                  ? "bg-blue-600 hover:bg-blue-700"
+                  : "bg-gray-400 cursor-not-allowed"
+              } transition`}
+            >
+              Confirm Booking
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function BookingPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -445,9 +219,8 @@ export default function BookingPage() {
   const [duration, setDuration] = useState(6);
   const [checkInDate, setCheckInDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-    const [messData, setMessData] = useState(null);
+  const [messData, setMessData] = useState(null);
   const { user, IsAuthenticated, isOwnerAuthenticated } = useAuth();
-
 
   const { messId } = useParams();
 
@@ -566,6 +339,7 @@ export default function BookingPage() {
     }
   };
 
+  if (!messData) return <BookingSkeleton />;
   return (
     <div className="min-h-screen bg-gray-50">
       <ToastContainer
