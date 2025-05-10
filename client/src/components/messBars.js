@@ -175,8 +175,7 @@ function MessBars({
   //   navigate(`/booking?${ownerParams}`);
   // };
   const clickBook = (owner) => {
-    const encoded = btoa(encodeURIComponent(JSON.stringify(owner)));
-    navigate(`/booking?owner=${encoded}`);
+   navigate(`/booking/${owner._id}`);
   };
 
   const clickCords = (location, id) => {
