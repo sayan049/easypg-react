@@ -21,192 +21,105 @@ import {
   CreditCard,
 } from "lucide-react";
 
-const BookingSkeleton = () => {
-  const [selectedRoom, setSelectedRoom] = useState(null);
-  const [checkInDate, setCheckInDate] = useState("");
-  const [duration, setDuration] = useState(1);
-
-  const rooms = [
-    {
-      id: 1,
-      name: "RoomNo-1",
-      features: ["AC", "TV"],
-      available: true,
-      price: 65365,
-    },
-    {
-      id: 2,
-      name: "RoomNo-2",
-      features: ["AC", "TV"],
-      available: true,
-      price: 434553,
-    },
-    {
-      id: 3,
-      name: "RoomNo-3",
-      features: ["AC", "TV"],
-      available: true,
-      price: 499,
-      beds: 2,
-    },
-    { id: 4, name: "RoomNo-4", features: ["AC", "TV"], available: false },
-    { id: 5, name: "RoomNo-5", features: ["AC", "TV"], available: false },
-  ];
-
-  const handleBooking = () => {
-    // Booking logic here
-    // alert(`Booking confirmed for ${selectedRoom.name}!`);
-  };
-
+// components/BookingSkeleton.jsx
+export const BookingSkeleton = () => {
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Book Your Stay</h1>
-          <div className="mt-2 text-gray-600">
-            <p>Tanmoy magi</p>
-            <p>makaut ℃, 7679766470</p>
-          </div>
-        </div>
-
-        <div className="bg-white shadow rounded-lg overflow-hidden">
-          {/* Room Selection Section */}
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              Select Your Room
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {rooms.map((room) => (
-                <div
-                  key={room.id}
-                  className={`border rounded-lg p-4 ${
-                    room.available
-                      ? "hover:border-blue-500 cursor-pointer"
-                      : "opacity-60"
-                  } ${
-                    selectedRoom?.id === room.id
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-gray-200"
-                  }`}
-                  onClick={() => room.available && setSelectedRoom(room)}
-                >
-                  <div className="flex justify-between items-start">
-                    <h3 className="font-medium text-gray-900">
-                      {room.name}
-                      {!room.available && (
-                        <span className="text-red-500 ml-2">
-                          (Fully Booked)
-                        </span>
-                      )}
-                    </h3>
-                    {room.beds && (
-                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
-                        {room.beds} beds Available
-                      </span>
-                    )}
-                  </div>
-
-                  <ul className="mt-2 space-y-1">
-                    {room.features.map((feature, index) => (
-                      <li
-                        key={index}
-                        className="flex items-center text-gray-600"
-                      >
-                        <span className="mr-2">✓</span> {feature}
-                      </li>
-                    ))}
-                  </ul>
-
-                  {room.available && room.price && (
-                    <div className="mt-4 flex justify-between items-center">
-                      <span className="text-lg font-bold">
-                        ¥{room.price.toLocaleString()} / month
-                      </span>
-                      <button
-                        className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedRoom(room);
-                        }}
-                      >
-                        Select Room
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
+    <div className="min-h-screen bg-gray-50">
+      {/* Header Skeleton */}
+      <div className="bg-white shadow-sm sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center space-x-3">
+              <div className="h-5 w-5 bg-gray-200 rounded-full"></div>
+              <div className="h-6 w-32 bg-gray-200 rounded"></div>
             </div>
-          </div>
-
-          {/* Booking Summary Section */}
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              Booking Summary
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Check-in Date
-                </label>
-                <input
-                  type="date"
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                  value={checkInDate}
-                  onChange={(e) => setCheckInDate(e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Duration (months)
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                  value={duration}
-                  onChange={(e) => setDuration(parseInt(e.target.value))}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Security Assurance */}
-          <div className="p-6 border-b border-gray-200 bg-blue-50">
-            <p className="text-blue-800 flex items-center">
-              <svg
-                className="w-5 h-5 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                />
-              </svg>
-              Secure booking process with 100% data protection
-            </p>
-          </div>
-
-          {/* Confirm Booking Button */}
-          <div className="p-6">
-            <button
-              onClick={handleBooking}
-              disabled={!selectedRoom || !checkInDate}
-              className={`w-full py-3 px-4 rounded-md font-medium text-white ${
-                selectedRoom && checkInDate
-                  ? "bg-blue-600 hover:bg-blue-700"
-                  : "bg-gray-400 cursor-not-allowed"
-              } transition`}
-            >
-              Confirm Booking
-            </button>
+            <div className="h-5 w-5 bg-gray-200 rounded-full"></div>
           </div>
         </div>
       </div>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Property Details Skeleton */}
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-6 space-y-3">
+          <div className="h-8 w-3/4 bg-gray-200 rounded"></div>
+          <div className="flex gap-4">
+            <div className="h-4 w-1/2 bg-gray-200 rounded"></div>
+            <div className="h-4 w-1/2 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column Skeleton */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Room Selection Skeleton */}
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="h-6 w-1/3 bg-gray-200 rounded mb-6"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[...Array(4)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="border border-gray-200 rounded-xl p-5"
+                  >
+                    <div className="flex justify-between mb-3">
+                      <div className="h-5 w-1/4 bg-gray-200 rounded"></div>
+                      <div className="h-5 w-1/4 bg-gray-200 rounded"></div>
+                    </div>
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {[...Array(3)].map((_, j) => (
+                        <div
+                          key={j}
+                          className="h-4 w-16 bg-gray-200 rounded-full"
+                        ></div>
+                      ))}
+                    </div>
+                    <div className="h-6 w-1/2 bg-gray-200 rounded mb-4"></div>
+                    <div className="h-10 w-full bg-gray-200 rounded-lg"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Photos Skeleton */}
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="h-6 w-1/4 bg-gray-200 rounded mb-4"></div>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {[...Array(6)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="aspect-square bg-gray-200 rounded-lg"
+                  ></div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column Skeleton */}
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="h-6 w-1/3 bg-gray-200 rounded mb-6"></div>
+              <div className="space-y-4">
+                <div>
+                  <div className="h-4 w-1/4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-10 w-full bg-gray-200 rounded-lg"></div>
+                </div>
+                <div>
+                  <div className="h-4 w-1/4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-10 w-full bg-gray-200 rounded-lg"></div>
+                </div>
+                <div className="pt-4 mt-4 border-t border-gray-200 space-y-3">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="flex justify-between">
+                      <div className="h-4 w-1/3 bg-gray-200 rounded"></div>
+                      <div className="h-4 w-1/4 bg-gray-200 rounded"></div>
+                    </div>
+                  ))}
+                </div>
+                <div className="h-12 w-full bg-gray-200 rounded-lg mt-6"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
