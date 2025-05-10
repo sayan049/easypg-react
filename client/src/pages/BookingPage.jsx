@@ -9,7 +9,7 @@
 // export default function BookingPage() {
 //   const navigate = useNavigate();
 //   const location = useLocation();
-//   // const { owner } = location.state || {};
+//   // const { messData } = location.state || {};
 //   const [selectedRoom, setSelectedRoom] = useState(null);
 //   const [showAllPhotos, setShowAllPhotos] = useState(false);
 //   const [duration, setDuration] = useState(6);
@@ -17,12 +17,12 @@
 //   const [isLoading, setIsLoading] = useState(false);
 //   const { user } = useAuth();
 //   // const queryParams = new URLSearchParams(location.search);
-//   // const owner = JSON.parse(queryParams.get("owner"))
-//   //   ? JSON.parse(queryParams.get("owner"))
+//   // const messData = JSON.parse(queryParams.get("messData"))
+//   //   ? JSON.parse(queryParams.get("messData"))
 //   //   : null;
 //   const queryParams = new URLSearchParams(location.search);
-// const encoded = queryParams.get("owner");
-// const owner = encoded ? JSON.parse(decodeURIComponent(atob(encoded))) : null;
+// const encoded = queryParams.get("messData");
+// const messData = encoded ? JSON.parse(decodeURIComponent(atob(encoded))) : null;
 
 //   // Convert bedCount string to number
 //   const bedCountToNumber = {
@@ -44,7 +44,7 @@
 //         return;
 //       }
 
-//       const selectedRoomInfo = owner?.roomInfo?.find(
+//       const selectedRoomInfo = messData?.roomInfo?.find(
 //         (r) => r._id === selectedRoom
 //       );
 
@@ -57,7 +57,7 @@
 //       // Prepare booking data
 //       const bookingData = {
 //         student: user.id,
-//         pgOwner: owner._id,
+//         pgmessData: messData._id,
 //         room: selectedRoomInfo.room,
 //         bedsBooked: 1,
 //         originalBedCount: selectedRoomInfo.bedContains,
@@ -143,17 +143,17 @@
 //         </div>
 //       </div>
 
-//       {owner?.messName && (
+//       {messData?.messName && (
 //         <div className="flex mb-6 flex-col justify-start">
-//           <h2 className="text-2xl font-bold">{owner?.messName}</h2>
+//           <h2 className="text-2xl font-bold">{messData?.messName}</h2>
 //           <div className="flex gap-4 flex-col md:flex-row">
 //             <p className="flex items-center text-gray-600 text-base gap-2">
 //               <img src="assets/greyMarker.png" className="h-4" alt="" />
-//               {owner?.address}
+//               {messData?.address}
 //             </p>
 //             <p className="flex items-center text-gray-600 text-base gap-2">
 //               <img src="assets/phoneIcon.png" className="h-5" alt="" />
-//               {owner?.mobileNo}
+//               {messData?.mobileNo}
 //             </p>
 //           </div>
 //         </div>
@@ -166,7 +166,7 @@
 //             <div className="p-4 space-y-4">
 //               <h2 className="text-xl font-semibold">Select a Room</h2>
 //               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//                 {owner?.roomInfo?.map((room) => (
+//                 {messData?.roomInfo?.map((room) => (
 //                   <div
 //                     key={room._id}
 //                     className={`border rounded-2xl p-4 space-y-2 ${
@@ -201,7 +201,7 @@
 //                       </span>
 //                     </div>
 //                     <div className="flex items-center space-x-2 text-gray-600 text-sm">
-//                       {owner.facility?.slice(0, 3).map((facility, index) => (
+//                       {messData.facility?.slice(0, 3).map((facility, index) => (
 //                         <span key={index}>{facility}</span>
 //                       ))}
 //                     </div>
@@ -251,8 +251,8 @@
 //               <h2 className="text-xl font-semibold mb-4">Room Preview</h2>
 //               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 //                 {(showAllPhotos
-//                   ? owner?.messPhoto
-//                   : owner?.messPhoto?.slice(0, 4)
+//                   ? messData?.messPhoto
+//                   : messData?.messPhoto?.slice(0, 4)
 //                 )?.map((image, index) => (
 //                   <img
 //                     key={index}
@@ -262,7 +262,7 @@
 //                   />
 //                 ))}
 //               </div>
-//               {owner?.messPhoto?.length > 4 && (
+//               {messData?.messPhoto?.length > 4 && (
 //                 <button
 //                   onClick={() => setShowAllPhotos(!showAllPhotos)}
 //                   className="text-blue-600 underline text-sm mt-2 w-full"
@@ -272,12 +272,12 @@
 //               )}
 //               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-sm text-gray-700">
 //                 <ul className="space-y-1">
-//                   {owner?.facility?.slice(0, 3).map((item, index) => (
+//                   {messData?.facility?.slice(0, 3).map((item, index) => (
 //                     <li key={index}>✅ {item}</li>
 //                   ))}
 //                 </ul>
 //                 <ul className="space-y-1">
-//                   {owner?.facility?.slice(3, 6).map((item, index) => (
+//                   {messData?.facility?.slice(3, 6).map((item, index) => (
 //                     <li key={index}>✅ {item}</li>
 //                   ))}
 //                 </ul>
@@ -325,7 +325,7 @@
 //                     <span>Room:</span>
 //                     <span>
 //                       {
-//                         owner?.roomInfo?.find((r) => r._id === selectedRoom)
+//                         messData?.roomInfo?.find((r) => r._id === selectedRoom)
 //                           ?.room
 //                       }
 //                     </span>
@@ -334,7 +334,7 @@
 //                     <span>Monthly Rent:</span>
 //                     <span>
 //                       ₹
-//                       {owner?.roomInfo
+//                       {messData?.roomInfo
 //                         ?.find((r) => r._id === selectedRoom)
 //                         ?.pricePerHead?.toLocaleString()}
 //                     </span>
@@ -349,7 +349,7 @@
 //                     <span>Security Deposit:</span>
 //                     <span>
 //                       ₹
-//                       {owner?.roomInfo
+//                       {messData?.roomInfo
 //                         ?.find((r) => r._id === selectedRoom)
 //                         ?.pricePerHead?.toLocaleString()}
 //                     </span>
@@ -359,7 +359,7 @@
 //                     <span style={{ color: primaryColor }}>
 //                       ₹
 //                       {(
-//                         owner?.roomInfo?.find((r) => r._id === selectedRoom)
+//                         messData?.roomInfo?.find((r) => r._id === selectedRoom)
 //                           ?.pricePerHead *
 //                         (duration + 1)
 //                       )?.toLocaleString()}
@@ -423,6 +423,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import { bookingRequestUrl } from "../constant/urls";
 import "react-toastify/dist/ReactToastify.css";
+import { viewDetailsUrl } from "../constant/urls";
 import {
   ArrowLeft,
   Share,
@@ -444,11 +445,24 @@ export default function BookingPage() {
   const [duration, setDuration] = useState(6);
   const [checkInDate, setCheckInDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+    const [messData, setMessData] = useState(null);
   const { user, IsAuthenticated, isOwnerAuthenticated } = useAuth();
 
-  const queryParams = new URLSearchParams(location.search);
-  const encoded = queryParams.get("owner");
-  const owner = encoded ? JSON.parse(decodeURIComponent(atob(encoded))) : null;
+
+  const { messId } = useParams();
+
+  useEffect(() => {
+    const fetchMessDetails = async () => {
+      try {
+        const res = await axios.get(`${viewDetailsUrl}/${messId}`);
+        setMessData(res.data.data);
+      } catch (err) {
+        console.error("Failed to fetch mess details:", err);
+      }
+    };
+
+    fetchMessDetails();
+  }, [messId]);
 
   // Convert bedCount string to number
   const bedCountToNumber = {
@@ -460,14 +474,18 @@ export default function BookingPage() {
   };
 
   const handleBookingRequest = async () => {
-    console.log("auth" , parseInt(owner.minimumBookingDuration.split(" ")[0]) , duration);
+    console.log(
+      "auth",
+      parseInt(messData.minimumBookingDuration.split(" ")[0]),
+      duration
+    );
     if (isOwnerAuthenticated) {
       return toast.error("mess owners can't book messes");
     }
     if (!IsAuthenticated) return toast.error("please login to book any mess");
-    if (duration > parseInt(owner.minimumBookingDuration.split(" ")[0]))
+    if (duration < parseInt(messData.minimumBookingDuration.split(" ")[0]))
       return toast.error(
-        `Minimum booking duration is ${owner.minimumBookingDuration}`
+        `Minimum booking duration is ${messData.minimumBookingDuration}`
       );
     try {
       setIsLoading(true);
@@ -479,7 +497,7 @@ export default function BookingPage() {
         return;
       }
 
-      const selectedRoomInfo = owner?.roomInfo?.find(
+      const selectedRoomInfo = messData?.roomInfo?.find(
         (r) => r._id === selectedRoom
       );
 
@@ -492,7 +510,7 @@ export default function BookingPage() {
       // Prepare booking data
       const bookingData = {
         student: user.id,
-        pgOwner: owner._id,
+        pgOwner: messData._id,
         room: selectedRoomInfo.room,
         bedsBooked: 1,
         originalBedCount: selectedRoomInfo.bedContains,
@@ -591,19 +609,19 @@ export default function BookingPage() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Property Details */}
-        {owner?.messName && (
+        {messData?.messName && (
           <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              {owner?.messName}
+              {messData?.messName}
             </h2>
             <div className="flex flex-col md:flex-row md:items-center gap-4 text-gray-600">
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-gray-500" />
-                <span>{owner?.address}</span>
+                <span>{messData?.address}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-gray-500" />
-                <span>{owner?.mobileNo}</span>
+                <span>{messData?.mobileNo}</span>
               </div>
             </div>
           </div>
@@ -620,7 +638,7 @@ export default function BookingPage() {
                   Select Your Room
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {owner?.roomInfo?.map((room) => (
+                  {messData?.roomInfo?.map((room) => (
                     <div
                       key={room._id}
                       className={`relative rounded-xl overflow-hidden transition-all duration-200 ${
@@ -654,7 +672,7 @@ export default function BookingPage() {
                         </div>
 
                         <div className="flex flex-wrap gap-2 mb-3">
-                          {owner.facility
+                          {messData.facility
                             ?.slice(0, 3)
                             .map((facility, index) => (
                               <span
@@ -708,8 +726,8 @@ export default function BookingPage() {
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {(showAllPhotos
-                    ? owner?.messPhoto
-                    : owner?.messPhoto?.slice(0, 6)
+                    ? messData?.messPhoto
+                    : messData?.messPhoto?.slice(0, 6)
                   )?.map((image, index) => (
                     <div
                       key={index}
@@ -723,7 +741,7 @@ export default function BookingPage() {
                     </div>
                   ))}
                 </div>
-                {owner?.messPhoto?.length > 6 && (
+                {messData?.messPhoto?.length > 6 && (
                   <button
                     onClick={() => setShowAllPhotos(!showAllPhotos)}
                     className="mt-4 text-teal-600 font-medium hover:text-teal-700 transition-colors flex items-center"
@@ -739,7 +757,7 @@ export default function BookingPage() {
                   Amenities
                 </h3>
                 <div className="grid grid-cols-2 gap-2">
-                  {owner?.facility?.map((item, index) => (
+                  {messData?.facility?.map((item, index) => (
                     <div
                       key={index}
                       className="flex items-center gap-2 text-gray-700"
@@ -803,7 +821,7 @@ export default function BookingPage() {
                           <span className="text-gray-600">Room Type:</span>
                           <span className="font-medium">
                             {
-                              owner?.roomInfo?.find(
+                              messData?.roomInfo?.find(
                                 (r) => r._id === selectedRoom
                               )?.room
                             }
@@ -813,7 +831,7 @@ export default function BookingPage() {
                           <span className="text-gray-600">Monthly Rent:</span>
                           <span className="font-medium">
                             ₹
-                            {owner?.roomInfo
+                            {messData?.roomInfo
                               ?.find((r) => r._id === selectedRoom)
                               ?.pricePerHead?.toLocaleString()}
                           </span>
@@ -831,9 +849,9 @@ export default function BookingPage() {
                           <span className="font-medium">
                             ₹
                             {(
-                              owner?.roomInfo?.find(
+                              messData?.roomInfo?.find(
                                 (r) => r._id === selectedRoom
-                              )?.pricePerHead * owner?.minimumSecurityDeposit
+                              )?.pricePerHead * messData?.minimumSecurityDeposit
                             ).toLocaleString()}
                           </span>
                         </div>
@@ -845,10 +863,10 @@ export default function BookingPage() {
                             <span className="text-xl font-bold text-teal-600">
                               ₹
                               {(
-                                owner?.roomInfo?.find(
+                                messData?.roomInfo?.find(
                                   (r) => r._id === selectedRoom
                                 )?.pricePerHead *
-                                (duration + owner?.minimumSecurityDeposit)
+                                (duration + messData?.minimumSecurityDeposit)
                               )?.toLocaleString()}
                             </span>
                           </div>
@@ -857,7 +875,8 @@ export default function BookingPage() {
                             {duration !== 1 ? "s" : ""} rent
                           </p>
                           <p className="text-xs text-gray-500 mt-1">
-                           your security deposit will be refunded you when u leave the Mess
+                            your security deposit will be refunded you when u
+                            leave the Mess
                           </p>
                         </div>
                       </div>
