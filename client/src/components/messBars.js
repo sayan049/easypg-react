@@ -175,7 +175,7 @@ function MessBars({
   //   navigate(`/booking?${ownerParams}`);
   // };
   const clickBook = (owner) => {
-   navigate(`/booking/${owner._id}`);
+    navigate(`/booking/${owner._id}`);
   };
 
   const clickCords = (location, id) => {
@@ -333,40 +333,46 @@ function MessBars({
 
   return (
     <>
-     <Helmet>
-      <script type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "ItemList",
-          "itemListElement": messData.slice(0, 10).map((owner, index) => ({
-            "@type": "ListItem",
-            "position": index + 1,
-            "item": {
-              "@type": "LocalBusiness",
-              "@id": `https://www.messmate.co.in/ViewDetails/${owner._id}`,
-              "name": owner.messName,
-              "description": owner.description || "Student accommodation",
-              "image": owner.profilePhoto || "https://www.messmate.co.in/assets/og-messfind.jpg",
-              "priceRange": owner.roomInfo?.[0]?.pricePerHead 
-                ? `₹${Math.min(...owner.roomInfo.map(r => r.pricePerHead))}-₹${Math.max(...owner.roomInfo.map(r => r.pricePerHead))}`
-                : "₹₹",
-              "address": {
-                "@type": "PostalAddress",
-                "streetAddress": owner.address,
-               
-                "postalCode": owner.pincode,
-                "addressCountry": "IN"
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            itemListElement: messData.slice(0, 10).map((owner, index) => ({
+              "@type": "ListItem",
+              position: index + 1,
+              item: {
+                "@type": "LocalBusiness",
+                "@id": `https://www.messmate.co.in/ViewDetails/${owner._id}`,
+                name: owner.messName,
+                description: owner.description || "Student accommodation",
+                image:
+                  owner.profilePhoto ||
+                  "https://www.messmate.co.in/assets/og-messfind.jpg",
+                priceRange: owner.roomInfo?.[0]?.pricePerHead
+                  ? `₹${Math.min(
+                      ...owner.roomInfo.map((r) => r.pricePerHead)
+                    )}-₹${Math.max(
+                      ...owner.roomInfo.map((r) => r.pricePerHead)
+                    )}`
+                  : "₹₹",
+                address: {
+                  "@type": "PostalAddress",
+                  streetAddress: owner.address,
+
+                  postalCode: owner.pincode,
+                  addressCountry: "IN",
+                },
+                geo: {
+                  "@type": "GeoCoordinates",
+                  latitude: owner.location?.coordinates[1],
+                  longitude: owner.location?.coordinates[0],
+                },
               },
-              "geo": {
-                "@type": "GeoCoordinates",
-                "latitude": owner.location?.coordinates[1],
-                "longitude": owner.location?.coordinates[0]
-              }
-            }
-          }))
-        })}
-      </script>
-    </Helmet>
+            })),
+          })}
+        </script>
+      </Helmet>
 
       <style>{styles}</style>
       <div
@@ -576,7 +582,7 @@ function MessBars({
                         : "Price: N/A"}
                     </div>
 
-                    <div className="flex gap-2">
+                    {/* <div className="flex gap-2">
                       <button
                         className="px-4 py-2 bg-blue-500 text-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm"
                         onClick={(e) => {
@@ -588,6 +594,26 @@ function MessBars({
                       </button>
                       <button
                         className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          clickBook(owner);
+                        }}
+                      >
+                        Book Now
+                      </button>
+                    </div> */}
+                    <div className="flex gap-3">
+                      <button
+                        className="px-4 py-2 bg-white text-primary-default border border-primary-light rounded-lg hover:bg-primary-light/20 transition-all duration-200 text-sm font-medium shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-default/50 focus:ring-offset-1"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          clickNavi(owner);
+                        }}
+                      >
+                        View Details
+                      </button>
+                      <button
+                        className="px-4 py-2 bg-primary-default text-white rounded-lg hover:bg-primary-dark transition-all duration-200 text-sm font-medium shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-default/50 focus:ring-offset-1"
                         onClick={(e) => {
                           e.stopPropagation();
                           clickBook(owner);
