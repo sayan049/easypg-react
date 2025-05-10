@@ -14,7 +14,7 @@ function StickyBookingCard({ messData, isVisible }) {
   //   Navigate(`/booking?${messDataParams}`);
   // };
   const clickBook = () => {
-  Navigate(`/ViewDetails/${messData._id}`);
+  Navigate(`/booking/${messData._id}`);
 };
 
   return (
