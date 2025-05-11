@@ -5,7 +5,7 @@ import {
   updateDetailsUrl,
   updatePasswordDashboardOwner,
 } from "../constant/urls";
-import { toast,ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const input =
   "border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300 bg-text-bg bg-clip-text text-transparent";
@@ -151,6 +151,12 @@ const SettingsOwner = ({ userDetails }) => {
           ? userDetails.roomInfo
           : [],
         messPhoto: userDetails?.messPhoto || [],
+        rulesToStay: Array.isArray(userDetails?.rulesToStay)
+          ? userDetails.rulesToStay
+          : [],
+        minimumSecurityDeposit: userDetails?.minimumSecurityDeposit || 0,
+        minimumBookingDuration:
+          userDetails?.minimumBookingDuration || "1 Month",
       }));
     }
   }, [userDetails]);
@@ -224,6 +230,10 @@ const SettingsOwner = ({ userDetails }) => {
     formData.append("gender", details.gender);
     formData.append("roomInfo", JSON.stringify(details.roomInfo));
     formData.append("existingPhotoUrls", JSON.stringify(existingUrls)); // this is important
+
+    formData.append("rulesToStay", JSON.stringify(details.rulesToStay));
+    formData.append("minimumSecurityDeposit", details.minimumSecurityDeposit);
+    formData.append("minimumBookingDuration", details.minimumBookingDuration);
 
     // Optional: Append profile photo if changed
     // example: details.profilePhoto (set this if you're letting them update it)
@@ -649,6 +659,85 @@ const SettingsOwner = ({ userDetails }) => {
         ) : (
           <p className="text-gray-500">No room data available.</p>
         )}
+      </div>
+
+      {/* Rules to Stay */}
+      <div className="space-y-4">
+        <h3 className="font-semibold text-lg">Rules to Stay</h3>
+        <div className="space-y-2">
+          {[
+            "No Smoking",
+            "No Alcohol",
+            "No Outside Food",
+            "No Pets",
+            "No Visitors",
+            "No Loud Music",
+          ].map((rule) => (
+            <label key={rule} className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={details.rulesToStay.includes(rule)}
+                onChange={(e) => {
+                  const newRules = e.target.checked
+                    ? [...details.rulesToStay, rule]
+                    : details.rulesToStay.filter((r) => r !== rule);
+                  setDetails({ ...details, rulesToStay: newRules });
+                }}
+              />
+              <span>{rule}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Booking Requirements */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Minimum Security Deposit */}
+        <div className="space-y-2">
+          <h3 className="font-semibold text-lg">Minimum Security Deposit</h3>
+          <div className="flex flex-wrap gap-2">
+            {[0, 1, 2].map((value) => (
+              <label
+                key={value}
+                className={`px-4 py-2 border rounded cursor-pointer ${
+                  details.minimumSecurityDeposit === value
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : "hover:bg-gray-100"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="securityDeposit"
+                  value={value}
+                  checked={details.minimumSecurityDeposit === value}
+                  onChange={() =>
+                    setDetails({ ...details, minimumSecurityDeposit: value })
+                  }
+                  className="hidden"
+                />
+                {value === 0 ? "None" : value === 1 ? "1 Month" : "2 Months"}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Minimum Booking Duration */}
+        <div className="space-y-2">
+          <h3 className="font-semibold text-lg">Minimum Booking Duration</h3>
+          <select
+            className="border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300 text-gray-700 bg-white"
+            value={details.minimumBookingDuration}
+            onChange={(e) =>
+              setDetails({ ...details, minimumBookingDuration: e.target.value })
+            }
+          >
+            {["1 Month", "3 Months", "6 Months", "1 Year"].map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Mess Photos */}
