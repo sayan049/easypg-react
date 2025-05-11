@@ -179,6 +179,13 @@ const app = express();
 
 
 app.set("trust proxy", 1);
+// 🔒 Force HTTPS redirect
+app.use((req, res, next) => {
+  if (req.headers["x-forwarded-proto"] !== "https") {
+    return res.redirect("https://" + req.headers.host + req.url);
+  }
+  next();
+});
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
