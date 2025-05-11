@@ -356,25 +356,27 @@ const ViewDetails = () => {
               </div>
             </div>
 
-            {/* About Section */}
-            {/* <div
-              //className="bg-white rounded-xl shadow-sm p-6"
-              // className="p-3 border-b-2 border-grey"
-              className="bg-white shadow-sm p-6 border border-grey"
-            >
+            {/* Rules section */}
+            <div className="bg-white shadow-sm p-6 border border-grey ">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                About this Accommodation
+                Rules To Stay
               </h2>
-              <p className="text-gray-700 leading-relaxed">
-                {messData?.aboutMess ||
-                  "No description available for this accommodation."}
-              </p>
-            </div> */}
+
+              {messData?.rulesToStay?.length > 0 ? (
+                <ul className="list-disc pl-5 space-y-1 text-gray-700">
+                  {messData.rulesToStay.map((r, index) => (
+                    <li key={index}>{r}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-700 leading-relaxed">
+                  No rules available for this accommodation.
+                </p>
+              )}
+            </div>
 
             {/* Safety Notice */}
             <div
-              //   className="bg-white rounded-xl shadow-sm p-3"
-              // className="p-3 border-b-2 border-grey "
               className="bg-white  shadow-sm p-6 border border-grey"
             >
               <div className="flex items-start gap-4">

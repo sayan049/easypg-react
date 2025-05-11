@@ -86,7 +86,7 @@ root.render(
 
           <Route path="/MailVerify" element={<MailVerify />} />
           <Route path="/MailVerifyOwner" element={<MailVerifyOwner />} />
-          <Route path="/booking" element={<BookingPage />} />
+          <Route path="/booking/:messId" element={<BookingPage />} />
           <Route
             path="/protected"
             element={

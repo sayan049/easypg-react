@@ -136,9 +136,7 @@ const Cart = () => {
   };
 
   const clickBook = (owner) => {
-    const ownerParams = new URLSearchParams();
-    ownerParams.set("owner", JSON.stringify(owner));
-    navigate(`/booking?${ownerParams}`);
+      navigate(`/booking/${owner._id}`);
   };
 
   const toggleAmenityFilter = (label) => {
