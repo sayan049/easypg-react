@@ -261,7 +261,7 @@ const SettingsOwner = ({ userDetails }) => {
     formData.append("roomInfo", JSON.stringify(details.roomInfo));
     formData.append("existingPhotoUrls", JSON.stringify(existingUrls)); // this is important
 
-    formData.append("rulesToStay", JSON.stringify(details.rulesToStay));
+      formData.append("rulesToStay", details.rulesToStay.join(","));
     formData.append("minimumSecurityDeposit", details.minimumSecurityDeposit);
     formData.append("minimumBookingDuration", details.minimumBookingDuration);
 
@@ -294,48 +294,49 @@ const SettingsOwner = ({ userDetails }) => {
   };
 
   // Rules management functions
-  const addPredefinedRule = (e) => {
-    const rule = e.target.value.trim();
-    if (rule && !details.rulesToStay.includes(rule)) {
-      setDetails((prev) => ({
-        ...prev,
-        rulesToStay: [...prev.rulesToStay, rule],
-      }));
-    }
-    e.target.value = "";
-  };
+ const addPredefinedRule = (e) => {
+  const rule = e.target.value.trim();
+  if (rule && !details.rulesToStay.includes(rule)) {
+    setDetails(prev => ({
+      ...prev,
+      rulesToStay: [...prev.rulesToStay, rule],
+    }));
+  }
+  e.target.value = "";
+};
 
-  const addCustomRule = () => {
-    const rule = customRuleInput.trim();
-    if (rule && !details.rulesToStay.includes(rule)) {
-      setDetails((prev) => ({
-        ...prev,
-        rulesToStay: [...prev.rulesToStay, rule],
-      }));
-      setCustomRuleInput("");
-      setShowCustomInput(false);
-    }
-  };
+const addCustomRule = () => {
+  const rule = customRuleInput.trim();
+  if (rule && !details.rulesToStay.includes(rule)) {
+    setDetails(prev => ({
+      ...prev,
+      rulesToStay: [...prev.rulesToStay, rule],
+    }));
+    setCustomRuleInput("");
+    setShowCustomInput(false);
+  }
+};
 
-  const updateRule = (index, newValue) => {
-    const rule = newValue.trim();
-    if (rule) {
-      const updatedRules = [...details.rulesToStay];
-      updatedRules[index] = rule;
-      setDetails((prev) => ({
-        ...prev,
-        rulesToStay: updatedRules,
-      }));
-    }
-  };
-
-  const removeRule = (index) => {
-    const updatedRules = details.rulesToStay.filter((_, i) => i !== index);
-    setDetails((prev) => ({
+const updateRule = (index, newValue) => {
+  const rule = newValue.trim();
+  if (rule) {
+    const updatedRules = [...details.rulesToStay];
+    updatedRules[index] = rule;
+    setDetails(prev => ({
       ...prev,
       rulesToStay: updatedRules,
     }));
-  };
+  }
+};
+
+const removeRule = (index) => {
+  const updatedRules = details.rulesToStay.filter((_, i) => i !== index);
+  setDetails(prev => ({
+    ...prev,
+    rulesToStay: updatedRules,
+  }));
+};
+
   return (
     <div className="p-4 max-w-6xl mx-auto space-y-8">
       <ToastContainer

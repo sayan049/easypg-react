@@ -182,7 +182,6 @@
 //   }
 // };
 
-
 const cloudinary = require("../cloudinary/cloudinaryConfig");
 const User = require("../modules/user");
 const PgOwner = require("../modules/pgProvider");
@@ -192,8 +191,8 @@ dotenv.config();
 
 exports.updateDetails = async (req, res) => {
   const { type, userId, ...updateData } = req.body;
-  const {  messPhoto } = req.files;
-  
+  const { messPhoto } = req.files;
+
   console.log("Uploaded files:", req.files);
   console.log("Cloudinary results:", req.cloudinaryResults);
 
@@ -207,7 +206,13 @@ exports.updateDetails = async (req, res) => {
       }
 
       // Update allowed fields
-      const allowedUpdates = ["address", "pin", "location", "phone", "messType"];
+      const allowedUpdates = [
+        "address",
+        "pin",
+        "location",
+        "phone",
+        "messType",
+      ];
       for (const key in updateData) {
         if (allowedUpdates.includes(key)) {
           if (key === "location") {
@@ -227,7 +232,6 @@ exports.updateDetails = async (req, res) => {
       // if (req.cloudinaryResults?.profilePhoto?.[0]) {
       //   updatedUser.profilePhoto = req.cloudinaryResults.profilePhoto[0];
       // }
-
     } else if (type === "owner") {
       updatedUser = await PgOwner.findById(userId);
       if (!updatedUser) {
@@ -236,34 +240,47 @@ exports.updateDetails = async (req, res) => {
 
       // Update allowed fields
       const allowedUpdates = [
-        "address", "pincode", "mobileNo", "facility", 
-        "messName", "aboutMess", "location", "roomInfo", "gender"
+        "address",
+        "pincode",
+        "mobileNo",
+        "facility",
+        "messName",
+        "aboutMess",
+        "location",
+        "roomInfo",
+        "gender",
+        "rulesToStay",
+        "minimumBookingDuration",
+        "minimumSecurityDeposit",
       ];
-      
+
       for (const key in updateData) {
         if (allowedUpdates.includes(key)) {
           if (key === "location") {
             try {
-              updatedUser[key] = typeof updateData[key] === "string" 
-                ? JSON.parse(updateData[key])
-                : updateData[key];
+              updatedUser[key] =
+                typeof updateData[key] === "string"
+                  ? JSON.parse(updateData[key])
+                  : updateData[key];
             } catch (e) {
               console.error("Error parsing location:", e);
               continue;
             }
-          } else if (key === "facility") {
-            updatedUser[key] = typeof updateData[key] === "string"
-              ? updateData[key].split(",").map(f => f.trim())
-              : updateData[key];
+          } else if (key === "facility" || key=== "rulesToStay") {
+            updatedUser[key] =
+              typeof updateData[key] === "string"
+                ? updateData[key].split(",").map((f) => f.trim())
+                : updateData[key];
           } else if (key === "roomInfo") {
             try {
-              updatedUser[key] = typeof updateData[key] === "string"
-                ? JSON.parse(updateData[key])
-                : updateData[key];
+              updatedUser[key] =
+                typeof updateData[key] === "string"
+                  ? JSON.parse(updateData[key])
+                  : updateData[key];
               // Ensure sequential room numbers
               updatedUser[key] = updatedUser[key].map((room, idx) => ({
                 ...room,
-                room: `RoomNo-${idx + 1}`
+                room: `RoomNo-${idx + 1}`,
               }));
             } catch (e) {
               console.error("Error parsing roomInfo:", e);
@@ -281,30 +298,29 @@ exports.updateDetails = async (req, res) => {
       // }
 
       // Handle mess photos - combine existing and new ones
-      const existingUrls = typeof updateData.existingPhotoUrls === "string"
-        ? JSON.parse(updateData.existingPhotoUrls || "[]")
-        : updateData.existingPhotoUrls || [];
-      
+      const existingUrls =
+        typeof updateData.existingPhotoUrls === "string"
+          ? JSON.parse(updateData.existingPhotoUrls || "[]")
+          : updateData.existingPhotoUrls || [];
+
       const newPhotos = req.cloudinaryResults?.messPhoto || [];
       updatedUser.messPhoto = [...existingUrls, ...newPhotos];
-      
     } else {
       return res.status(400).json({ message: "Invalid user type" });
     }
 
     // Save updated user data
     await updatedUser.save();
-    
+
     res.status(200).json({
       message: "Details updated successfully",
-      data: updatedUser
+      data: updatedUser,
     });
-
   } catch (error) {
     console.error("Error updating details:", error);
     res.status(500).json({
       message: "An error occurred while updating details",
-      details: error.message
+      details: error.message,
     });
   }
 };
@@ -312,15 +328,16 @@ exports.updateDetails = async (req, res) => {
 exports.getDetails = async (req, res) => {
   const { userId, type } = req.query;
   try {
-    let userDetails = type === "student" 
-      ? await User.findById(userId)
-      : type === "owner"
+    let userDetails =
+      type === "student"
+        ? await User.findById(userId)
+        : type === "owner"
         ? await PgOwner.findById(userId)
         : null;
 
     if (!userDetails) {
-      return res.status(type ? 404 : 400).json({ 
-        error: type ? "User not found" : "Invalid user type"
+      return res.status(type ? 404 : 400).json({
+        error: type ? "User not found" : "Invalid user type",
       });
     }
 
@@ -329,7 +346,7 @@ exports.getDetails = async (req, res) => {
     console.error("Error fetching details:", error);
     res.status(500).json({
       error: "Failed to fetch details",
-      details: error.message
+      details: error.message,
     });
   }
 };
