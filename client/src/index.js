@@ -100,7 +100,7 @@ root.render(
             }
           />
           <Route
-            path="/newDashboard"
+            path="/dashboard/user"
             element={
               <IsAuth>
                 <NewDashboard />
@@ -109,7 +109,7 @@ root.render(
           />
 
           <Route
-            path="/DashboardOwner"
+            path="/dashboard/owner"
             element={
               <IsAuth>
                 <DashboardOwner />
