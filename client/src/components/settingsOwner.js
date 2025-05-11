@@ -25,6 +25,9 @@ const SettingsOwner = ({ userDetails }) => {
     roomInfo: [], // not an object
 
     messPhoto: [],
+    rulesToStay: [], // Initialize as empty array
+    minimumSecurityDeposit: 0,
+    minimumBookingDuration: "1 Month",
   });
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
@@ -554,7 +557,7 @@ const SettingsOwner = ({ userDetails }) => {
             <label key={idx} className="flex items-center space-x-2">
               <input
                 type="checkbox"
-                checked={details.facility?.includes(item)}
+                checked={details?.facility?.includes(item)}
                 onChange={(e) => {
                   const newFacilities = e.target.checked
                     ? [...details.facility, item]
@@ -676,7 +679,7 @@ const SettingsOwner = ({ userDetails }) => {
             <label key={rule} className="flex items-center space-x-2">
               <input
                 type="checkbox"
-                checked={details.rulesToStay.includes(rule)}
+                checked={details?.rulesToStay?.includes(rule)}
                 onChange={(e) => {
                   const newRules = e.target.checked
                     ? [...details.rulesToStay, rule]
