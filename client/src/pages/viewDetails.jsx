@@ -69,6 +69,7 @@ const ViewDetails = () => {
   const lng = locationArray[0] || 0;
   const coordinates = { lat, lng };
   const { messId } = useParams();
+  console.log(messId);
 
   useEffect(() => {
     const fetchMessDetails = async () => {

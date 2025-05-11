@@ -19,6 +19,11 @@ import {
   Home,
   Shield,
   CreditCard,
+  Copy,
+  Link,
+  Facebook,
+  Twitter,
+  Mail,
 } from "lucide-react";
 
 // components/BookingSkeleton.jsx
@@ -134,6 +139,8 @@ export default function BookingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [messData, setMessData] = useState(null);
   const { user, IsAuthenticated, isOwnerAuthenticated } = useAuth();
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const { messId } = useParams();
 
@@ -252,6 +259,65 @@ export default function BookingPage() {
     }
   };
 
+  // share section
+  const handleShareClick = () => {
+    setShowShareMenu(!showShareMenu);
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const shareOnSocialMedia = (platform) => {
+    const shareUrl = window.location.href;
+    const title = `Check out ${messData?.messName || "this mess"} on messmate`;
+
+    switch (platform) {
+      case "facebook":
+        window.open(
+          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+            shareUrl
+          )}`,
+          "_blank"
+        );
+        break;
+      case "twitter":
+        window.open(
+          `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+            shareUrl
+          )}&text=${encodeURIComponent(title)}`,
+          "_blank"
+        );
+        break;
+      case "email":
+        window.open(
+          `mailto:?subject=${encodeURIComponent(
+            title
+          )}&body=${encodeURIComponent(`${title}: ${shareUrl}`)}`
+        );
+        break;
+      default:
+        break;
+    }
+
+    setShowShareMenu(false);
+  };
+
+  const handleNativeShare = async () => {
+    try {
+      await navigator.share({
+        title: `Check out ${messData?.messName || "this mess"} on HostelHub`,
+        text: `I found this great mess on HostelHub: ${messData?.messName}`,
+        url: window.location.href,
+      });
+    } catch (err) {
+      console.log("Native share not supported or was cancelled", err);
+    }
+    setShowShareMenu(false);
+  };
+
   if (!messData) return <BookingSkeleton />;
   return (
     <div className="min-h-screen bg-gray-50">
@@ -284,12 +350,72 @@ export default function BookingPage() {
                 Book Your Stay
               </h1>
             </div>
-            <button
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-              aria-label="Share"
-            >
-              <Share className="h-5 w-5 text-gray-600" />
-            </button>
+
+            {/* share */}
+            <div className="relative">
+              <button
+                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                aria-label="Share"
+                onClick={handleShareClick}
+              >
+                <Share className="h-5 w-5 text-gray-600" />
+              </button>
+              {showShareMenu && (
+                <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-20">
+                  <div className="py-1">
+                    {navigator.share ? (
+                      <button
+                        onClick={handleNativeShare}
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                      >
+                        <Share className="h-4 w-4 mr-2" />
+                        Share via...
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          onClick={copyToClipboard}
+                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        >
+                          {copied ? (
+                            <>
+                              <Check className="h-4 w-4 mr-2 text-green-500" />
+                              Copied!
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="h-4 w-4 mr-2" />
+                              Copy link
+                            </>
+                          )}
+                        </button>
+                        <button
+                          onClick={() => shareOnSocialMedia("facebook")}
+                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        >
+                          <Facebook className="h-4 w-4 mr-2 text-blue-600" />
+                          Share on Facebook
+                        </button>
+                        <button
+                          onClick={() => shareOnSocialMedia("twitter")}
+                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        >
+                          <Twitter className="h-4 w-4 mr-2 text-blue-400" />
+                          Share on Twitter
+                        </button>
+                        <button
+                          onClick={() => shareOnSocialMedia("email")}
+                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        >
+                          <Mail className="h-4 w-4 mr-2" />
+                          Share via Email
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>

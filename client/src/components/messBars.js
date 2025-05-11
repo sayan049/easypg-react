@@ -165,15 +165,13 @@ function MessBars({
     fetchLikedMesses();
   }, []);
 
+  // const clickNavi = (owner) => {
+  //   navigate(`/details/Id=${owner._id}`);
+  // };
   const clickNavi = (owner) => {
-    navigate(`/ViewDetails/${owner._id}`);
+    navigate(`/details/${owner._id}`);
   };
 
-  // const clickBook = (owner) => {
-  //   const ownerParams = new URLSearchParams();
-  //   ownerParams.set("owner", JSON.stringify(owner));
-  //   navigate(`/booking?${ownerParams}`);
-  // };
   const clickBook = (owner) => {
     navigate(`/booking/${owner._id}`);
   };
@@ -207,29 +205,7 @@ function MessBars({
         },
       });
       const totalCount = res.data.total || 0;
-      // const filteredData = Array.isArray(res.data.data)
-      //   ? res.data.data.filter((owner) => {
-      //       const facilitiesArray = Array.isArray(owner.facility)
-      //         ? owner.facility.flatMap((f) =>
-      //             f.split(",").map((item) => item.trim().toLowerCase())
-      //           )
-      //         : [];
-      //       const matchesFeatures =
-      //         checkFeatures.length > 0
-      //           ? checkFeatures.some((feature) =>
-      //               facilitiesArray.includes(feature.toLowerCase())
-      //             )
-      //           : true;
-      //       const matchesGender = finalGender
-      //         ? owner.gender?.toLowerCase() === finalGender.toLowerCase()
-      //         : true;
-      //       const matchesPrice = owner?.roomInfo?.some(
-      //         (room) =>
-      //           room.pricePerHead >= finalPrice.min &&
-      //           room.pricePerHead <= finalPrice.max
-      //       );
 
-      //       return matchesFeatures && matchesGender && matchesPrice;
       const filteredData = Array.isArray(res.data.data)
         ? res.data.data.filter((owner) => {
             const matchesPrice = owner?.roomInfo?.some(
@@ -343,7 +319,7 @@ function MessBars({
               position: index + 1,
               item: {
                 "@type": "LocalBusiness",
-                "@id": `https://www.messmate.co.in/ViewDetails/${owner._id}`,
+                "@id": `https://www.messmate.co.in/details/${owner._id}`,
                 name: owner.messName,
                 description: owner.description || "Student accommodation",
                 image:
@@ -493,22 +469,6 @@ function MessBars({
                       </span>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      {/* {owner.facility?.map((feature, index) => {
-                        const amenity = amenities.find(
-                          (a) =>
-                            a.label.toLowerCase() ===
-                            feature.trim().toLowerCase()
-                        );
-                        return (
-                          <span
-                            key={index}
-                            className="flex items-center gap-1 px-2 py-1 bg-blue-50 text-[rgb(44 164 181)] text-xs rounded-full"
-                          >
-                            {amenity?.icon || null}
-                            {feature}
-                          </span>
-                        );
-                      })} */}
                       {(showAllAmenities[owner._id]
                         ? owner.facility
                         : owner.facility?.slice(0, 3)
@@ -582,26 +542,6 @@ function MessBars({
                         : "Price: N/A"}
                     </div>
 
-                    {/* <div className="flex gap-2">
-                      <button
-                        className="px-4 py-2 bg-blue-500 text-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          clickNavi(owner);
-                        }}
-                      >
-                        View Details
-                      </button>
-                      <button
-                        className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          clickBook(owner);
-                        }}
-                      >
-                        Book Now
-                      </button>
-                    </div> */}
                     <div className="flex gap-3">
                       <button
                         className="px-4 py-2 bg-white text-primary-default border border-primary-light rounded-lg hover:bg-primary-light/20 transition-all duration-200 text-sm font-medium shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-default/50 focus:ring-offset-1"

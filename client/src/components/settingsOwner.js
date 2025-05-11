@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import UserProfile from "./UserProfile";
 import { FaMapMarkerAlt } from "react-icons/fa";
+import { Plus, Minus, ScrollText } from "lucide-react";
 import {
   updateDetailsUrl,
   updatePasswordDashboardOwner,
 } from "../constant/urls";
-import { toast,ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const input =
   "border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300 bg-text-bg bg-clip-text text-transparent";
@@ -25,6 +26,9 @@ const SettingsOwner = ({ userDetails }) => {
     roomInfo: [], // not an object
 
     messPhoto: [],
+    rulesToStay: [], // Initialize as empty array
+    minimumSecurityDeposit: 0,
+    minimumBookingDuration: "1 Month",
   });
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
@@ -35,6 +39,32 @@ const SettingsOwner = ({ userDetails }) => {
   const [passwordSuccess, setPasswordSuccess] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
+  const [rules, setRules] = useState([]);
+  const [customRuleInput, setCustomRuleInput] = useState("");
+  const [showCustomInput, setShowCustomInput] = useState(false);
+
+  const predefinedRules = [
+    "No alcohol consumption on premises",
+    "No smoking inside rooms or common areas",
+    "Return to PG before 10:00 PM",
+    "No opposite gender visitors in rooms",
+    "Maintain silence after 11:00 PM",
+    "No loud music or parties without permission",
+    "Keep rooms and common areas clean",
+    "No cooking in bedrooms",
+    "Conserve electricity and water",
+    "No pets allowed",
+    "No alteration to room structure or furniture",
+    "Guests must be registered at reception",
+    "Monthly rent to be paid before 5th of every month",
+    "Laundry only in designated areas",
+    "No illegal activities on premises",
+    "Garbage must be disposed in designated bins",
+    "Common kitchen to be cleaned after use",
+    "No sticking posters on walls",
+    "Parking only in designated areas",
+    "Respect other residents' privacy",
+  ];
 
   // Password strength calculation
   const calculatePasswordStrength = (password) => {
@@ -151,6 +181,12 @@ const SettingsOwner = ({ userDetails }) => {
           ? userDetails.roomInfo
           : [],
         messPhoto: userDetails?.messPhoto || [],
+        rulesToStay: Array.isArray(userDetails?.rulesToStay)
+          ? userDetails.rulesToStay
+          : [],
+        minimumSecurityDeposit: userDetails?.minimumSecurityDeposit || 0,
+        minimumBookingDuration:
+          userDetails?.minimumBookingDuration || "1 Month",
       }));
     }
   }, [userDetails]);
@@ -225,6 +261,10 @@ const SettingsOwner = ({ userDetails }) => {
     formData.append("roomInfo", JSON.stringify(details.roomInfo));
     formData.append("existingPhotoUrls", JSON.stringify(existingUrls)); // this is important
 
+    formData.append("rulesToStay", JSON.stringify(details.rulesToStay));
+    formData.append("minimumSecurityDeposit", details.minimumSecurityDeposit);
+    formData.append("minimumBookingDuration", details.minimumBookingDuration);
+
     // Optional: Append profile photo if changed
     // example: details.profilePhoto (set this if you're letting them update it)
     // formData.append("profilePhoto", details.profilePhoto);
@@ -253,6 +293,49 @@ const SettingsOwner = ({ userDetails }) => {
     }
   };
 
+  // Rules management functions
+  const addPredefinedRule = (e) => {
+    const rule = e.target.value.trim();
+    if (rule && !details.rulesToStay.includes(rule)) {
+      setDetails((prev) => ({
+        ...prev,
+        rulesToStay: [...prev.rulesToStay, rule],
+      }));
+    }
+    e.target.value = "";
+  };
+
+  const addCustomRule = () => {
+    const rule = customRuleInput.trim();
+    if (rule && !details.rulesToStay.includes(rule)) {
+      setDetails((prev) => ({
+        ...prev,
+        rulesToStay: [...prev.rulesToStay, rule],
+      }));
+      setCustomRuleInput("");
+      setShowCustomInput(false);
+    }
+  };
+
+  const updateRule = (index, newValue) => {
+    const rule = newValue.trim();
+    if (rule) {
+      const updatedRules = [...details.rulesToStay];
+      updatedRules[index] = rule;
+      setDetails((prev) => ({
+        ...prev,
+        rulesToStay: updatedRules,
+      }));
+    }
+  };
+
+  const removeRule = (index) => {
+    const updatedRules = details.rulesToStay.filter((_, i) => i !== index);
+    setDetails((prev) => ({
+      ...prev,
+      rulesToStay: updatedRules,
+    }));
+  };
   return (
     <div className="p-4 max-w-6xl mx-auto space-y-8">
       <ToastContainer
@@ -544,7 +627,7 @@ const SettingsOwner = ({ userDetails }) => {
             <label key={idx} className="flex items-center space-x-2">
               <input
                 type="checkbox"
-                checked={details.facility?.includes(item)}
+                checked={details?.facility?.includes(item)}
                 onChange={(e) => {
                   const newFacilities = e.target.checked
                     ? [...details.facility, item]
@@ -649,6 +732,149 @@ const SettingsOwner = ({ userDetails }) => {
         ) : (
           <p className="text-gray-500">No room data available.</p>
         )}
+      </div>
+
+      {/* Rules to Stay Section */}
+      <div className="mt-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2">
+          <label className="block text-sm font-medium text-gray-700">
+            <ScrollText className="h-4 w-4 inline mr-1" />
+            Rules to Stay
+          </label>
+          <div className="flex flex-wrap items-center gap-2">
+            <select
+              className="text-sm rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500 px-3 py-1.5 w-full sm:w-auto"
+              onChange={addPredefinedRule}
+            >
+              <option value="">Add predefined rule</option>
+              {predefinedRules.map((rule, idx) => (
+                <option
+                  key={idx}
+                  value={rule}
+                  disabled={details.rulesToStay.includes(rule)}
+                >
+                  {rule}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={() => setShowCustomInput(true)}
+              className="text-teal-600 hover:text-teal-700 flex items-center text-sm"
+            >
+              <Plus className="h-4 w-4 mr-1" />
+              Add Custom Rule
+            </button>
+          </div>
+        </div>
+
+        {showCustomInput && (
+          <div className="flex items-center gap-2 mb-2">
+            <input
+              type="text"
+              value={customRuleInput}
+              onChange={(e) => setCustomRuleInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && addCustomRule()}
+              className="flex-1 rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              placeholder="Enter custom rule"
+              autoFocus
+            />
+            <button
+              type="button"
+              onClick={addCustomRule}
+              disabled={!customRuleInput.trim()}
+              className="p-2 text-teal-500 hover:text-teal-700 rounded-full hover:bg-teal-50 disabled:opacity-50"
+            >
+              <Plus className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowCustomInput(false)}
+              className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-50"
+            >
+              <Minus className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+
+        {details.rulesToStay.map((rule, index) => (
+          <div key={index} className="flex items-center gap-2 mb-2">
+            <input
+              type="text"
+              value={rule}
+              onChange={(e) => updateRule(index, e.target.value)}
+              className="flex-1 rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              placeholder={`Rule ${index + 1}`}
+            />
+            <button
+              type="button"
+              onClick={() => removeRule(index)}
+              className="p-2 text-red-500 hover:text-red-700 rounded-full hover:bg-red-50"
+            >
+              <Minus className="h-4 w-4" />
+            </button>
+          </div>
+        ))}
+
+        {details.rulesToStay.length === 0 && !showCustomInput && (
+          <p className="text-sm text-gray-500 py-2">
+            No rules added yet. Add rules to specify guest requirements.
+          </p>
+        )}
+
+        <p className="text-xs text-gray-500 mt-1">
+          Add house rules that guests must follow during their stay
+        </p>
+      </div>
+
+      {/* Booking Requirements */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Minimum Security Deposit */}
+        <div className="space-y-2">
+          <h3 className="font-semibold text-lg">Minimum Security Deposit</h3>
+          <div className="flex flex-wrap gap-2">
+            {[0, 1, 2].map((value) => (
+              <label
+                key={value}
+                className={`px-4 py-2 border rounded cursor-pointer ${
+                  details.minimumSecurityDeposit === value
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : "hover:bg-gray-100"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="securityDeposit"
+                  value={value}
+                  checked={details.minimumSecurityDeposit === value}
+                  onChange={() =>
+                    setDetails({ ...details, minimumSecurityDeposit: value })
+                  }
+                  className="hidden"
+                />
+                {value === 0 ? "None" : value === 1 ? "1 Month" : "2 Months"}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Minimum Booking Duration */}
+        <div className="space-y-2">
+          <h3 className="font-semibold text-lg">Minimum Booking Duration</h3>
+          <select
+            className="border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300 text-gray-700 bg-white"
+            value={details.minimumBookingDuration}
+            onChange={(e) =>
+              setDetails({ ...details, minimumBookingDuration: e.target.value })
+            }
+          >
+            {["1 Month", "3 Months", "6 Months", "1 Year"].map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Mess Photos */}
