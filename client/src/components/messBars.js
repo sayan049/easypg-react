@@ -169,7 +169,7 @@ function MessBars({
   //   navigate(`/details/Id=${owner._id}`);
   // };
   const clickNavi = (owner) => {
-    navigate(`/details/Id=${owner._id}`);
+    navigate(`/details/${owner._id}`);
   };
 
   const clickBook = (owner) => {
@@ -319,7 +319,7 @@ function MessBars({
               position: index + 1,
               item: {
                 "@type": "LocalBusiness",
-                "@id": `https://www.messmate.co.in/details/Id=${owner._id}`,
+                "@id": `https://www.messmate.co.in/details/${owner._id}`,
                 name: owner.messName,
                 description: owner.description || "Student accommodation",
                 image:

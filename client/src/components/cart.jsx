@@ -132,7 +132,7 @@ const Cart = () => {
   };
 
   const clickNavi = (owner) => {
-    navigate(`/details/Id=${owner._id}`);
+    navigate(`/details/${owner._id}`);
   };
 
   const clickBook = (owner) => {

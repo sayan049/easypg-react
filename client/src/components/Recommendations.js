@@ -23,7 +23,7 @@ const Recommendations = () => {
   }, []);
 
   const clickNavi = (owner) => {
-    navigate(`/details/Id=${owner._id}`);
+    navigate(`/details/${owner._id}`);
   };
   return (
     <section className="py-10 bg-gray-50">
