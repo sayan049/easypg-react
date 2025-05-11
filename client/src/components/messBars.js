@@ -165,10 +165,12 @@ function MessBars({
     fetchLikedMesses();
   }, []);
 
+  // const clickNavi = (owner) => {
+  //   navigate(`/details/Id=${owner._id}`);
+  // };
   const clickNavi = (owner) => {
     navigate(`/details/Id=${owner._id}`);
   };
-
 
   const clickBook = (owner) => {
     navigate(`/booking/${owner._id}`);
@@ -467,7 +469,6 @@ function MessBars({
                       </span>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
-                     
                       {(showAllAmenities[owner._id]
                         ? owner.facility
                         : owner.facility?.slice(0, 3)
@@ -541,7 +542,6 @@ function MessBars({
                         : "Price: N/A"}
                     </div>
 
-                  
                     <div className="flex gap-3">
                       <button
                         className="px-4 py-2 bg-white text-primary-default border border-primary-light rounded-lg hover:bg-primary-light/20 transition-all duration-200 text-sm font-medium shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-default/50 focus:ring-offset-1"
