@@ -272,7 +272,7 @@ export default function BookingPage() {
 
   const shareOnSocialMedia = (platform) => {
     const shareUrl = window.location.href;
-    const title = `Check out ${messData?.messName || "this mess"} on HostelHub`;
+    const title = `Check out ${messData?.messName || "this mess"} on messmate`;
 
     switch (platform) {
       case "facebook":
