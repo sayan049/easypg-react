@@ -39,6 +39,29 @@ const SettingsOwner = ({ userDetails }) => {
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
+    const predefinedRules = [
+    "No alcohol consumption on premises",
+    "No smoking inside rooms or common areas",
+    "Return to PG before 10:00 PM",
+    "No opposite gender visitors in rooms",
+    "Maintain silence after 11:00 PM",
+    "No loud music or parties without permission",
+    "Keep rooms and common areas clean",
+    "No cooking in bedrooms",
+    "Conserve electricity and water",
+    "No pets allowed",
+    "No alteration to room structure or furniture",
+    "Guests must be registered at reception",
+    "Monthly rent to be paid before 5th of every month",
+    "Laundry only in designated areas",
+    "No illegal activities on premises",
+    "Garbage must be disposed in designated bins",
+    "Common kitchen to be cleaned after use",
+    "No sticking posters on walls",
+    "Parking only in designated areas",
+    "Respect other residents' privacy",
+  ];
+
   // Password strength calculation
   const calculatePasswordStrength = (password) => {
     let strength = 0;
@@ -668,14 +691,7 @@ const SettingsOwner = ({ userDetails }) => {
       <div className="space-y-4">
         <h3 className="font-semibold text-lg">Rules to Stay</h3>
         <div className="space-y-2">
-          {[
-            "No Smoking",
-            "No Alcohol",
-            "No Outside Food",
-            "No Pets",
-            "No Visitors",
-            "No Loud Music",
-          ].map((rule) => (
+          {predefinedRules.map((rule) => (
             <label key={rule} className="flex items-center space-x-2">
               <input
                 type="checkbox"
