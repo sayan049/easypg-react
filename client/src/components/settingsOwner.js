@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import UserProfile from "./UserProfile";
 import { FaMapMarkerAlt } from "react-icons/fa";
+import { Plus, Minus, ScrollText } from "lucide-react";
 import {
   updateDetailsUrl,
   updatePasswordDashboardOwner,
@@ -38,8 +39,11 @@ const SettingsOwner = ({ userDetails }) => {
   const [passwordSuccess, setPasswordSuccess] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
+  const [rules, setRules] = useState([]);
+  const [customRuleInput, setCustomRuleInput] = useState("");
+  const [showCustomInput, setShowCustomInput] = useState(false);
 
-    const predefinedRules = [
+  const predefinedRules = [
     "No alcohol consumption on premises",
     "No smoking inside rooms or common areas",
     "Return to PG before 10:00 PM",
@@ -289,6 +293,49 @@ const SettingsOwner = ({ userDetails }) => {
     }
   };
 
+  // Rules management functions
+  const addPredefinedRule = (e) => {
+    const rule = e.target.value.trim();
+    if (rule && !details.rulesToStay.includes(rule)) {
+      setDetails((prev) => ({
+        ...prev,
+        rulesToStay: [...prev.rulesToStay, rule],
+      }));
+    }
+    e.target.value = "";
+  };
+
+  const addCustomRule = () => {
+    const rule = customRuleInput.trim();
+    if (rule && !details.rulesToStay.includes(rule)) {
+      setDetails((prev) => ({
+        ...prev,
+        rulesToStay: [...prev.rulesToStay, rule],
+      }));
+      setCustomRuleInput("");
+      setShowCustomInput(false);
+    }
+  };
+
+  const updateRule = (index, newValue) => {
+    const rule = newValue.trim();
+    if (rule) {
+      const updatedRules = [...details.rulesToStay];
+      updatedRules[index] = rule;
+      setDetails((prev) => ({
+        ...prev,
+        rulesToStay: updatedRules,
+      }));
+    }
+  };
+
+  const removeRule = (index) => {
+    const updatedRules = details.rulesToStay.filter((_, i) => i !== index);
+    setDetails((prev) => ({
+      ...prev,
+      rulesToStay: updatedRules,
+    }));
+  };
   return (
     <div className="p-4 max-w-6xl mx-auto space-y-8">
       <ToastContainer
@@ -687,26 +734,97 @@ const SettingsOwner = ({ userDetails }) => {
         )}
       </div>
 
-      {/* Rules to Stay */}
-      <div className="space-y-4">
-        <h3 className="font-semibold text-lg">Rules to Stay</h3>
-        <div className="space-y-2">
-          {predefinedRules.map((rule) => (
-            <label key={rule} className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={details?.rulesToStay?.includes(rule)}
-                onChange={(e) => {
-                  const newRules = e.target.checked
-                    ? [...details.rulesToStay, rule]
-                    : details.rulesToStay.filter((r) => r !== rule);
-                  setDetails({ ...details, rulesToStay: newRules });
-                }}
-              />
-              <span>{rule}</span>
-            </label>
-          ))}
+      {/* Rules to Stay Section */}
+      <div className="mt-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2">
+          <label className="block text-sm font-medium text-gray-700">
+            <ScrollText className="h-4 w-4 inline mr-1" />
+            Rules to Stay
+          </label>
+          <div className="flex flex-wrap items-center gap-2">
+            <select
+              className="text-sm rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500 px-3 py-1.5 w-full sm:w-auto"
+              onChange={addPredefinedRule}
+            >
+              <option value="">Add predefined rule</option>
+              {predefinedRules.map((rule, idx) => (
+                <option
+                  key={idx}
+                  value={rule}
+                  disabled={details.rulesToStay.includes(rule)}
+                >
+                  {rule}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={() => setShowCustomInput(true)}
+              className="text-teal-600 hover:text-teal-700 flex items-center text-sm"
+            >
+              <Plus className="h-4 w-4 mr-1" />
+              Add Custom Rule
+            </button>
+          </div>
         </div>
+
+        {showCustomInput && (
+          <div className="flex items-center gap-2 mb-2">
+            <input
+              type="text"
+              value={customRuleInput}
+              onChange={(e) => setCustomRuleInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && addCustomRule()}
+              className="flex-1 rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              placeholder="Enter custom rule"
+              autoFocus
+            />
+            <button
+              type="button"
+              onClick={addCustomRule}
+              disabled={!customRuleInput.trim()}
+              className="p-2 text-teal-500 hover:text-teal-700 rounded-full hover:bg-teal-50 disabled:opacity-50"
+            >
+              <Plus className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowCustomInput(false)}
+              className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-50"
+            >
+              <Minus className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+
+        {details.rulesToStay.map((rule, index) => (
+          <div key={index} className="flex items-center gap-2 mb-2">
+            <input
+              type="text"
+              value={rule}
+              onChange={(e) => updateRule(index, e.target.value)}
+              className="flex-1 rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              placeholder={`Rule ${index + 1}`}
+            />
+            <button
+              type="button"
+              onClick={() => removeRule(index)}
+              className="p-2 text-red-500 hover:text-red-700 rounded-full hover:bg-red-50"
+            >
+              <Minus className="h-4 w-4" />
+            </button>
+          </div>
+        ))}
+
+        {details.rulesToStay.length === 0 && !showCustomInput && (
+          <p className="text-sm text-gray-500 py-2">
+            No rules added yet. Add rules to specify guest requirements.
+          </p>
+        )}
+
+        <p className="text-xs text-gray-500 mt-1">
+          Add house rules that guests must follow during their stay
+        </p>
       </div>
 
       {/* Booking Requirements */}
