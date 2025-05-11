@@ -96,9 +96,10 @@ function Dropdown() {
       >
         <span>Sort By</span>
         <img
-          src="./assets/down-arrow.png" // Use your dropdown icon here
-          alt="Dropdown"
+          src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746981535/down-arrow-6820d25bd41ad_z3rdln.webp" 
+          alt="Messmate - Dropdown illustration"
           className="w-4 h-4 ml-2"
+          loading='lazy'
         />
       </button>
 

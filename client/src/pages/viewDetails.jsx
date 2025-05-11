@@ -195,8 +195,9 @@ const ViewDetails = () => {
               EasyPg
             </h1> */}
             <img
-              src="./assets/companylogo.png"
-              alt="logo"
+              src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
+              alt="mESSMATE - Company Logo"
+              loading="lazy"
               srcset=""
               className="mr-[-4px]"
             />{" "}
