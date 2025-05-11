@@ -744,6 +744,7 @@ const HomePage = () => {
                     alt="Messmate - House illustration"
                     className="relative z-10 rounded-lg transform hover:scale-105 transition-transform duration-500"
                     loading="lazy"
+                    fetchPriority="high"
                   />
                 </motion.div>
               </div>
