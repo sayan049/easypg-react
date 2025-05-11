@@ -430,8 +430,8 @@ const HomePage = () => {
                           <Link
                             to={
                               IsAuthenticated
-                                ? "/newDashboard"
-                                : "/DashboardOwner"
+                                ? "/dashboard/user"
+                                : "/dashboard/owner"
                             }
                             className="block px-4 py-3 text-sm text-gray-700 hover:bg-[#2CA4B5] hover:text-white transition-colors duration-200"
                             onClick={() => setShowDropdown(false)}
