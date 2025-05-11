@@ -20,9 +20,10 @@ const Payments = () => {
 
       {/* Illustration */}
       <img
-        src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746379420/hhg9bcto5gzo9nq3kd4n.png"
+        src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746981860/img-6820d3ce192cd_m6duqp.webp"
         alt="Secure Wallet Illustration"
         className="w-60 md:w-72 h-auto my-6"
+        loading="lazy"
       />
 
       {/* Payment Options */}
