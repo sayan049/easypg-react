@@ -395,7 +395,7 @@ const HomePage = () => {
               </div>
 
               <nav className="hidden lg:flex space-x-8">
-                {["Home", "About", "Service", "Contact us"].map((item) => (
+                {["Home", "About", "Services", "Contact us"].map((item) => (
                   <a
                     key={item}
                     href={`#${item.toLowerCase().replace(/\s+/g, "")}`}
@@ -997,6 +997,7 @@ const HomePage = () => {
                   whileHover={{ scale: 1.05, x: 5 }}
                   whileTap={{ scale: 0.95 }}
                   className="rounded-full bg-white text-gray-800 px-6 py-3 border-2 border-[#2CA4B5] hover:bg-[#2CA4B5] hover:text-white font-semibold text-sm transition-all duration-300 flex items-center"
+                  onClick={() => navigate("/about")}
                 >
                   See More
                   <svg
@@ -1056,10 +1057,10 @@ const HomePage = () => {
                   </h4>
                   <ul className="space-y-6">
                     {[
-                      { color: "bg-orange-500", text: "Download the app." },
+                      { color: "bg-orange-500", text: "Login to messmate." },
                       {
                         color: "bg-yellow-500",
-                        text: "Search for accommodation or services.",
+                        text: "Search for any location or university.",
                       },
                       {
                         color: "bg-green-500",
@@ -1152,12 +1153,12 @@ const HomePage = () => {
                   </p>
                   <div className="space-y-4">
                     {[
-                      { label: "Email", value: "info@messmate.com" },
-                      { label: "Phone", value: "+91-XXXXXXXXXX" },
+                      { label: "Email", value: "messmatecompany@gmail.com" },
+                      { label: "Phone", value: "+91-7479170108" },
                       {
                         label: "Address",
                         value:
-                          "MessMate Pvt. Ltd., Chaitali Ray, khabar kolkata",
+                          "Messmate, Haringhata, Kalyani, West Bengal, India",
                       },
                     ].map((contact, index) => (
                       <div key={index} className="flex items-start">
