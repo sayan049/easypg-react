@@ -29,6 +29,7 @@ import ViewDetails from "./pages/viewDetails";
 import DashboardOwner from "./pages/DashboardOwner";
 import BusinessModel from "./pages/Business";
 import OurService from "./pages/ourService";
+import About from "./pages/about";
 // Create the root once and specify the container
 const root = createRoot(document.getElementById("root")); // Using createRoot directly
 
@@ -41,6 +42,9 @@ root.render(
         <Routes>
           <Route path="/" element={<App />} />
           {/* <Route path="/newHome" element={<NewHomePage />} /> */}
+          <Route path="/about" element={<About />} />
+          {/* <Route path="/newHome" element={<NewHomePage />} /> */}
+          {/* Public Pages */}
           <Route path="/choose-role" element={<ProviderSeeker />} />
           {/* <Route path="/NewDashBoard" element={<NewDashboard />} /> */}
           <Route path="/business-model" element={<BusinessModel />} />
