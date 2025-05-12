@@ -27,10 +27,57 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-   <url>
+  <url>
     <loc>https://www.messmate.co.in/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+
+  <!-- Popular Find-Mess Routes -->
+  <url>
+    <loc>https://www.messmate.co.in/find-mess/kolkata?lat=22.5726&amp;lng=88.3639</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.messmate.co.in/find-mess/bankura?lat=23.2324&amp;lng=87.0712</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.messmate.co.in/find-mess/west-medinipur?lat=22.4211&amp;lng=87.3216</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.messmate.co.in/find-mess/jhargram?lat=22.4526&amp;lng=86.9946</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.messmate.co.in/find-mess/bardhaman?lat=23.2333&amp;lng=87.8667</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.messmate.co.in/find-mess/kalyani?lat=22.9756&amp;lng=88.4345</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.messmate.co.in/find-mess/durgapur?lat=23.5204&amp;lng=87.3119</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.messmate.co.in/find-mess/asansole?lat=23.6739&amp;lng=86.9524</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.messmate.co.in/find-mess/bolpur?lat=23.6688&amp;lng=87.6836</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
   </url>
 
 </urlset>
