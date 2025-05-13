@@ -98,6 +98,10 @@ const BusinessModel = () => {
           rel="canonical"
           href="https://www.messmate.co.in/business-model"
         />
+        <meta name="prerender" content="true"/>
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="MessMate" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         {/* Open Graph */}
         <meta property="og:title" content="PG Management Solution | MessMate" />
