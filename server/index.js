@@ -152,13 +152,16 @@ const authRoutes = require("./routes/auth");
 const mailRoute = require("./routes/mailVerifierRoute");
 const mailVerifyOwner = require("./routes/mailVerifyOwner");
 const connectDB = require("./config/mongoDB");
+const prerender = require('prerender-node');
 // const http = require('http');
 // const SocketManager = require('./sockets/bookingSocket'); // Update with correct path
 //  const ORIGIN =  process.env.CLIENT_URL || "https://messmate-client.onrender.com"; // Default to localhost if not set
 //  const ORIGIN =  "https://messmate-client.onrender.com";
 const ORIGIN = process.env.CLIENT_URL ; // Default to localhost if not set
 const PORT = process.env.PORT || 8080;
+const PRERENDER_TOKEN = process.env.PRERENDER_TOKEN;
 console.log(ORIGIN, "origin");
+console.log(PRERENDER_TOKEN, "prerender");
 // Enhanced CORS configuration
 const corsOptions = {
   origin: ORIGIN,
@@ -179,20 +182,24 @@ const app = express();
 
 
 app.set("trust proxy", 1);
-// 🔒 Force HTTPS redirect
-// app.use((req, res, next) => {
-//   if (req.headers["x-forwarded-proto"] !== "https") {
-//     return res.redirect("https://" + req.headers.host + req.url);
-//   }
-//   next();
-// });
+
+// Force HTTPS redirect
+app.use((req, res, next) => {
+  if (req.headers["x-forwarded-proto"] !== "https") {
+    return res.redirect("https://" + req.headers.host + req.url);
+  }
+  next();
+});
+// Prerender.io middleware - for serving bots clean HTML
+
+
+
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-// const io = SocketManager.init(server);
-// // Make SocketManager accessible in routes
-// app.set('socketManager', SocketManager);
+prerender.set('prerenderToken', PRERENDER_TOKEN);
+app.use(prerender);
 
 app.use(passport.initialize());
 app.use((req, res, next) => {
@@ -201,14 +208,16 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes
-app.use("/mail", mailRoute);
-app.use("/mailOwner", mailVerifyOwner);
+
 
 // Database connection
 connectDB();
+// Routes
+app.use("/mail", mailRoute);
+app.use("/mailOwner", mailVerifyOwner);
+app.use("/auth", authRoutes);
 
-// Google OAuth routes (unchanged)
+// Google OAuth routes
 app.get("/auth/google", (req, res, next) => {
   const state = req.query.state;
   passport.authenticate("google", {
@@ -251,7 +260,7 @@ app.get("/auth/google/callback", (req, res, next) => {
   })(req, res, next);
 });
 
-app.use("/auth", authRoutes);
+
 
 app.get("/", (req, res) => {
   res.send("Server is running");
