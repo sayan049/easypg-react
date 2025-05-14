@@ -211,6 +211,7 @@ const MessFind = () => {
   const [gender, setGender] = useState("");
   const [finalGender, setFinalGender] = useState("");
   const [priceFilter, setPriceFilter] = useState({ min: 0, max: 100000 });
+  const [sortBy,setSortBy]= useState("");
 
   let debounceTimeout;
 
@@ -348,6 +349,9 @@ const MessFind = () => {
     setFinalGender(gender);
     setFilterModalOpen(false);
   };
+  useEffect(()=>{
+    console.log("sort ",sortBy);
+  },[sortBy])
 
   return (
     <div className="flex flex-col md:flex-row p-4 bg-gray-50 min-h-screen overflow-hidden h-screen">
@@ -631,7 +635,7 @@ const MessFind = () => {
                 className="hidden md:block"
               />
               <span className="hidden md:block w-[6rem]">Map View</span>
-              <Dropdown className="hidden md:block" />
+              <Dropdown className="hidden md:block" setSortBy={setSortBy} />
             </div>
           </div>
         </section>
