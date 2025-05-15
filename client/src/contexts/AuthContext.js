@@ -107,21 +107,22 @@ export const AuthProvider = ({ children }) => {
             // headers: { "Content-Type": "application/json", "X-Device-Info": deviceInfo, },
             headers: { "X-Device-Info": deviceInfo },
             credentials: "include", // ✅ Important for cookies
-            body: JSON.stringify({ refreshToken }),
+            // body: JSON.stringify({ refreshToken }),
           });
 
           if (refreshResponse.ok) {
             const { accessToken: newAccessToken } =
               await refreshResponse.json();
-            localStorage.setItem("accessToken", newAccessToken);
+           // localStorage.setItem("accessToken", newAccessToken);
 
             // Retry the check-session call with the new access token
             response = await fetch(`${baseurl}/auth/check-session`, {
               method: "GET",
               headers: {
-                Authorization: `Bearer ${newAccessToken}`,
+              //  Authorization: `Bearer ${newAccessToken}`,
                 "Content-Type": "application/json",
               },
+               credentials: "include",
             });
           } else {
             // If refresh token is invalid, reset the state and return
@@ -166,12 +167,7 @@ export const AuthProvider = ({ children }) => {
     setCurrentAccessToken(null);
   };
 
-  const getCookie = (name) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(";").shift();
-    return null;
-  };
+
 
   // Helper function to update state based on authentication data
   const handleAuthState = (data) => {
