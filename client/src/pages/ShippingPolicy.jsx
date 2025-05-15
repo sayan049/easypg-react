@@ -14,7 +14,7 @@ const ShippingPolicy = () => {
         Upon successful booking confirmation, the user is notified instantly via the website interface, email, or other communication methods. Users are responsible for reporting any discrepancies within 24 hours.
       </p>
       <p>
-        If you have any questions regarding our policies, feel free to reach out to us at <a href="mailto:support@messmate.co.in" className="text-blue-600 underline">support@messmate.co.in</a>.
+        If you have any questions regarding our policies, feel free to reach out to us at <a href="mailto:messmatecompany@gmail.com" className="text-blue-600 underline">messmatecompany@gmail.com</a>.
       </p>
     </div>
   );
