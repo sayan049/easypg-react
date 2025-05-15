@@ -58,8 +58,13 @@ function LoginUser() {
   const [isSendingVerification, setIsSendingVerification] = useState(false);
   const [verificationCompleted, setVerificationCompleted] = useState(false);
   const [awaitingVerification, setAwaitingVerification] = useState(false);
+  const [accessToken, setAccessToken] = useState(null);
 
   const messageLoc = location.state?.message;
+
+  useEffect(() => {
+    console.log("acc ", accessToken);
+  }, [accessToken]);
 
   useEffect(() => {
     toast.success(messageLoc);
@@ -216,10 +221,6 @@ function LoginUser() {
     if (email) {
       checkEmailVerification(email);
     }
-
-    useEffect(()=>{
-      console.log("acc ",accessToken);
-    },[accessToken]);
 
     return () => {
       window.removeEventListener("storage", handleStorageChange);
