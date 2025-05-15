@@ -373,12 +373,12 @@ const HomePage = () => {
           })}
         </script>
       </Helmet>
-      <div className=" bg-white">
+      <div className="bg-white overflow-x-hidden">
         {/* Gradient Background with Overlay */}
-        <div className="relative">
+        <div className="relative ">
           {/* Header Section */}
           <header className="sticky top-0 w-full z-50 bg-white shadow-md">
-            <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div className="container mx-auto px-4 py-3 flex justify-between items-center max-w-[100vw]">
               <div className="flex items-center space-x-1">
                 <img
                   src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
@@ -501,7 +501,7 @@ const HomePage = () => {
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ type: "tween", duration: 0.3 }}
-                className="fixed top-0 right-0 w-64 h-full bg-white z-50 shadow-2xl rounded-l-2xl flex flex-col"
+                className="fixed top-0 right-0 w-full h-full bg-white z-50 shadow-2xl rounded-l-2xl flex flex-col md:w-64"
               >
                 <div className="flex justify-end p-4">
                   <button
@@ -547,7 +547,7 @@ const HomePage = () => {
             draggable
             pauseOnHover
             theme="light"
-            toastClassName="!w-[300px] mx-auto mt-4 sm:mt-0"
+            toastClassName="!max-w-[90vw] mx-auto mt-4 sm:mt-0"
           />
 
           {/* Hero Section */}
@@ -736,13 +736,13 @@ const HomePage = () => {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.6, delay: 0.3 }}
-                  className="max-w-sm lg:max-w-md relative"
+                  className="relative mx-auto w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-lg"
                 >
-                  <div className="absolute -inset-4 bg-white/20 rounded-full blur-xl"></div>
+                  <div className="absolute -inset-3 sm:-inset-4 bg-white/20 rounded-full blur-xl"></div>
                   <img
-                    src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746794843/vecteezy-home-png-with-ai-generated-33504402-1-681df94f5880f_z1qqpu.webp"
+                    src="https://s2.svgbox.net/illlustrations.svg?ic=sweet-home"
                     alt="Messmate - House illustration"
-                    className="relative z-10 rounded-lg transform hover:scale-105 transition-transform duration-500"
+                    className="relative z-10 rounded-lg transform hover:scale-105 hover:rotate-1 transition-all duration-500 w-full h-auto"
                     loading="lazy"
                     fetchPriority="high"
                   />
@@ -946,6 +946,7 @@ const HomePage = () => {
                         alt={city.name}
                         className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
                         loading="lazy"
+                        style={{ maxWidth: "100%" }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
@@ -1095,9 +1096,9 @@ const HomePage = () => {
                 <div className="relative">
                   <div className="absolute -inset-4 bg-[#2CA4B5]/10 rounded-full blur-xl"></div>
                   <img
-                    src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746795591/gettyimages-1029403636-2048x2048-1-681dfc3be3d66_ixc2np.webp"
-                    alt="Business Meeting"
-                    className="relative rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 max-w-full"
+                    src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1747245161/4167280_18775_vwpk8u.webp"
+                    alt="Messmate - Business Meeting illustration"
+                    className="relative  duration-300 max-w-full"
                     loading="lazy"
                   />
                 </div>
