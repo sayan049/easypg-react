@@ -5,7 +5,9 @@ const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
-exports.refreshTokenHandler = async (req, res) => {
+const refreshToken ={
+
+refreshTokenHandler :async (req, res) => {
   // const { refreshToken } = req.body;
   const refreshToken = req.cookies?.refreshToken;
   console.log("ref", refreshToken);
@@ -66,9 +68,9 @@ exports.refreshTokenHandler = async (req, res) => {
     console.error("Refresh token error:", error);
     res.status(403).json({ message: "Invalid or expired refresh token" });
   }
-};
+},
 
-exports.getRefreshToken = async (req, res) => {
+getRefreshToken : async (req, res) => {
   try {
     // Get refresh token from HTTP-only cookie
     const refreshToken = req.cookies.refreshToken;
@@ -91,4 +93,8 @@ exports.getRefreshToken = async (req, res) => {
       hasRefreshToken: false,
     });
   }
+}
+
 };
+
+module.exports = refreshToken;

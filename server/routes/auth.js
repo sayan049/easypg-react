@@ -4,7 +4,8 @@ const User = require('../modules/user');
 const PgOwner = require('../modules/pgProvider');
 const authHandlers = require("../controllers/authHandlers");
 const { uploadTemp, uploadToCloudinary } = require("../middleware/upload");
-const { refreshTokenHandler } = require("../controllers/refreshTokenHandler");
+// const { refreshTokenHandler } = require("../controllers/refreshTokenHandler");
+const refreshToken = require("../controllers/refreshTokenHandler")
 const updateDetailshandler =require("../controllers/updateDetails")
 const forgotPasswordUser = require("../controllers/forgotPasswordUser")
 const resetPasswordUser = require("../controllers/resetPasswordUser")
@@ -84,8 +85,8 @@ router.get("/getCart",authenticateJWT,likedMess.cartMess);
 //   res.json({ message: "This is a protected route", user: req.session.user });
 // });
 
-router.post("/refresh-token",refreshTokenHandler.refreshTokenHandler);
-router.post("/getRefreshToken",refreshTokenHandler.getRefreshToken);
+router.post("/refresh-token",refreshToken.refreshTokenHandler);
+router.post("/getRefreshToken",refreshToken.getRefreshToken);
 
 router.get("/check-session", (req, res) => {
   const accessToken = req.headers['authorization']?.split(' ')[1]; // Get token from Authorization header
