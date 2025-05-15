@@ -44,7 +44,8 @@ export const AuthProvider = ({ children }) => {
         setLoading(true);
   
         const accessToken = localStorage.getItem("accessToken");
-        const refreshToken = localStorage.getItem("refreshToken");
+        // const refreshToken = localStorage.getItem("refreshToken");
+        document.cookie = `refreshToken=${data.refreshToken}; path=/; max-age=${10 * 24 * 60 * 60}; secure; samesite=strict`;
         const deviceInfo = navigator.userAgent || "Unknown Device";
 
   
@@ -68,7 +69,9 @@ export const AuthProvider = ({ children }) => {
         if (response.status === 401) {
           const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
             method: 'POST',
-            headers: { "Content-Type": "application/json", "X-Device-Info": deviceInfo, },
+            // headers: { "Content-Type": "application/json", "X-Device-Info": deviceInfo, },
+            headers: { "X-Device-Info": deviceInfo },
+            credentials: 'include', // ✅ Important for cookies
             body: JSON.stringify({ refreshToken }),
           });
   
