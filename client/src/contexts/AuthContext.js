@@ -95,11 +95,12 @@ export const AuthProvider = ({ children }) => {
         let response = await fetch(`${baseurl}/auth/check-session`, {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+           // Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
+          credentials: "include", // ✅ Important for cookies
         });
-
+         console.log("res",response);
         // If the access token is expired, try refreshing it
         if (response.status === 401) {
           const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
