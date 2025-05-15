@@ -230,9 +230,9 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
-      if (!accessToken) {
-        console.log("Access token not found. Trying to refresh...");
-      }
+      // if (!accessToken) {
+      //   console.log("Access token not found. Trying to refresh...");
+      // }
 
       // Check session using the access token
       const sessionResponse = await fetch(`${baseurl}/auth/check-session`, {
@@ -244,7 +244,8 @@ export const AuthProvider = ({ children }) => {
          credentials: "include",
       });
 
-      if (sessionResponse.status === 401 || !accessToken) {
+     // if (sessionResponse.status === 401 || !accessToken) {
+         if (sessionResponse.status === 401 ) {
         console.log("Access token expired. Refreshing...");
         // Refresh the access token if it's expired
         const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
