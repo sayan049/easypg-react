@@ -14,7 +14,7 @@ import LoginOwner from "./pages/LoginOwner";
 import SignupOwner from "./pages/signupOwner";
 import NewDashboard from "./pages/newDashBoard";
 import GoogleCallbackPage from "./pages/GoogleCallbackPage";
-import BookingPage from "./pages/BookingPage"; 
+import BookingPage from "./pages/BookingPage";
 // import Test from "./pages/test";
 
 import MessFind from "./pages/MessFind";
@@ -30,6 +30,10 @@ import DashboardOwner from "./pages/DashboardOwner";
 import BusinessModel from "./pages/Business";
 import OurService from "./pages/ourService";
 import About from "./pages/about";
+import TermsAndConditions from "./pages/TermsAndConditions";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import CancellationRefunds from "./pages/CancellationRefunds";
+import ShippingPolicy from "./pages/ShippingPolicy";
 // Create the root once and specify the container
 const root = createRoot(document.getElementById("root")); // Using createRoot directly
 
@@ -37,7 +41,7 @@ const root = createRoot(document.getElementById("root")); // Using createRoot di
 root.render(
   <React.StrictMode>
     <AuthProvider>
-    {/* <SocketProvider>  */}
+      {/* <SocketProvider>  */}
       <Router>
         <Routes>
           <Route path="/" element={<App />} />
@@ -49,6 +53,10 @@ root.render(
           {/* <Route path="/NewDashBoard" element={<NewDashboard />} /> */}
           <Route path="/business-model" element={<BusinessModel />} />
           <Route path="/our-services" element={<OurService />} />
+          <Route path="/terms" element={<TermsAndConditions />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/refund" element={<CancellationRefunds />} />
+          <Route path="/shipping" element={<ShippingPolicy />} />
           <Route
             path="/signup/user"
             element={
@@ -87,7 +95,6 @@ root.render(
           {/* <Route path="/MessFind" element={<MessFind />} /> */}
           <Route path="/find-mess/:initialItem" element={<MessFind />} />
 
-
           <Route path="/MailVerify" element={<MailVerify />} />
           <Route path="/MailVerifyOwner" element={<MailVerifyOwner />} />
           <Route path="/booking/:messId" element={<BookingPage />} />
@@ -119,7 +126,6 @@ root.render(
 
           {/* <Route path="/details/Id=:messId" element={<ViewDetails />} /> */}
           <Route path="/details/:messId" element={<ViewDetails />} />
-
 
           {/* <Route path="/BookingPage" element={<BookingPage />} /> */}
 
@@ -237,4 +243,3 @@ reportWebVitals();
 // );
 
 // reportWebVitals();
-
