@@ -135,6 +135,13 @@ export const AuthProvider = ({ children }) => {
     setType(null);
   };
 
+  const getCookie = (name) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+};
+
   // Helper function to update state based on authentication data
   const handleAuthState = (data) => {
     if (data.isAuthenticated && data.loginMethod === "google") {
