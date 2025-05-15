@@ -58,6 +58,7 @@ function LoginUser() {
   const [isSendingVerification, setIsSendingVerification] = useState(false);
   const [verificationCompleted, setVerificationCompleted] = useState(false);
   const [awaitingVerification, setAwaitingVerification] = useState(false);
+  const [accessToken,setAccessToken]= useState(null);
 
   const messageLoc = location.state?.message;
 
