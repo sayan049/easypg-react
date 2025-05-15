@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Error checking refresh token:", error);
       setHasRefreshToken(null);
-      return ;
+      return;
     }
   };
   useEffect(() => {
@@ -85,22 +85,26 @@ export const AuthProvider = ({ children }) => {
         const deviceInfo = navigator.userAgent || "Unknown Device";
 
         // If tokens are not available, reset the state and return
-        if (!accessToken || !refreshToken) {
-          resetState();
-          setLoading(false);
-          return;
-        }
+        // if (!accessToken || !refreshToken) {
+        //   resetState();
+        //   setLoading(false);
+        //   return;
+        // }
 
         // Call the check-session endpoint with the access token
         let response = await fetch(`${baseurl}/auth/check-session`, {
           method: "GET",
           headers: {
-           // Authorization: `Bearer ${accessToken}`,
+            // Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
           credentials: "include", // ✅ Important for cookies
         });
-         console.log("res",response);
+        console.log(
+          "Initial check-session response:",
+          response.status,
+          await response.clone().json()
+        );
         // If the access token is expired, try refreshing it
         if (response.status === 401) {
           const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
@@ -114,18 +118,18 @@ export const AuthProvider = ({ children }) => {
           if (refreshResponse.ok) {
             // const { accessToken: newAccessToken } =
             //   await refreshResponse.json();
-           // localStorage.setItem("accessToken", newAccessToken);
+            // localStorage.setItem("accessToken", newAccessToken);
 
             // Retry the check-session call with the new access token
             response = await fetch(`${baseurl}/auth/check-session`, {
               method: "GET",
               headers: {
-              //  Authorization: `Bearer ${newAccessToken}`,
+                //  Authorization: `Bearer ${newAccessToken}`,
                 "Content-Type": "application/json",
               },
-               credentials: "include",
+              credentials: "include",
             });
-            console.log("res",response);
+            console.log("res", response);
           } else {
             // If refresh token is invalid, reset the state and return
             resetState();
@@ -168,8 +172,6 @@ export const AuthProvider = ({ children }) => {
     setType(null);
     setCurrentAccessToken(null);
   };
-
-
 
   // Helper function to update state based on authentication data
   const handleAuthState = (data) => {
