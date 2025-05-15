@@ -98,7 +98,7 @@ router.get("/getRefreshToken", refreshToken.getRefreshToken);
 router.get("/check-session", authenticateJWT, (req, res) => {
   // const accessToken = req.headers['authorization']?.split(' ')[1]; // Get token from Authorization header
   const accessToken = req.cookies?.accessToken;
-
+  const decoded = req.user;
   // Verify the access token
   // jwt.verify(accessToken, JWT_SECRET, (err, decoded) => {
   //   if (err) {
