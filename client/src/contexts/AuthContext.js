@@ -111,8 +111,8 @@ export const AuthProvider = ({ children }) => {
           });
 
           if (refreshResponse.ok) {
-            const { accessToken: newAccessToken } =
-              await refreshResponse.json();
+            // const { accessToken: newAccessToken } =
+            //   await refreshResponse.json();
            // localStorage.setItem("accessToken", newAccessToken);
 
             // Retry the check-session call with the new access token
@@ -124,6 +124,7 @@ export const AuthProvider = ({ children }) => {
               },
                credentials: "include",
             });
+            console.log("res",response);
           } else {
             // If refresh token is invalid, reset the state and return
             resetState();
@@ -131,7 +132,7 @@ export const AuthProvider = ({ children }) => {
             return;
           }
         }
-        console.log("res",response)
+
         if (!response.ok) throw new Error("Network response was not ok");
 
         const data = await response.json();
