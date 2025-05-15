@@ -51,6 +51,7 @@ export const AuthProvider = ({ children }) => {
         const accessToken = localStorage.getItem("accessToken");
         // const refreshToken = localStorage.getItem("refreshToken");
         const refreshToken = getCookie("refreshToken");
+        console.log(accessToken,refreshToken);
 
         const deviceInfo = navigator.userAgent || "Unknown Device";
 
