@@ -86,7 +86,7 @@ router.get("/getCart",authenticateJWT,likedMess.cartMess);
 // });
 
 router.post("/refresh-token",refreshToken.refreshTokenHandler);
-router.post("/getRefreshToken",refreshToken.getRefreshToken);
+router.get("/getRefreshToken",refreshToken.getRefreshToken);
 
 router.get("/check-session", (req, res) => {
   const accessToken = req.headers['authorization']?.split(' ')[1]; // Get token from Authorization header
