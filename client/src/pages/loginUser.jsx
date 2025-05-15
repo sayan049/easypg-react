@@ -59,7 +59,7 @@ function LoginUser() {
   const [isSendingVerification, setIsSendingVerification] = useState(false);
   const [verificationCompleted, setVerificationCompleted] = useState(false);
   const [awaitingVerification, setAwaitingVerification] = useState(false);
-  const {setCurrentAccessToken}=useAuth
+  const {axy}=useAuth
 
   const messageLoc = location.state?.message;
 
@@ -130,7 +130,7 @@ function LoginUser() {
         // localStorage.setItem("accessToken", accessToken);
         // localStorage.setItem("refreshToken", refreshToken);
         // ✅ Store accessToken in memory (state)
-        setCurrentAccessToken(accessToken); // e.g., using React state, Redux, etc.
+        axy(accessToken); // e.g., using React state, Redux, etc.
 
         // Optionally store user info in state or localStorage if needed
 
