@@ -42,13 +42,14 @@ export const AuthProvider = ({ children }) => {
   const [owner, setOwner] = useState(null);
   const [loginMethod, setLoginMethod] = useState(null);
   const [type, setType] = useState(null);
-
+  const [accessToken,setAccessToken]= useState(null);
+  
   useEffect(() => {
     const checkSession = async () => {
       try {
         setLoading(true);
 
-        const accessToken = localStorage.getItem("accessToken");
+       // const accessToken = localStorage.getItem("accessToken");
         // const refreshToken = localStorage.getItem("refreshToken");
         const refreshToken = getCookie("refreshToken");
         console.log(accessToken,refreshToken);
@@ -296,6 +297,7 @@ export const AuthProvider = ({ children }) => {
         setIsOwnerAuthenticated,
         setIsAuthenticated,
         handleLogout,
+        setAccessToken
       }}
     >
       {!loading ? children : <LoadingSpinner />}

@@ -19,6 +19,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Helmet } from "react-helmet";
 import { ShieldCheck } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
 
 // import Skeleton from "react-loading-skeleton";
 // import "react-loading-skeleton/dist/skeleton.css";
@@ -58,7 +59,7 @@ function LoginUser() {
   const [isSendingVerification, setIsSendingVerification] = useState(false);
   const [verificationCompleted, setVerificationCompleted] = useState(false);
   const [awaitingVerification, setAwaitingVerification] = useState(false);
-  const [accessToken, setAccessToken] = useState(null);
+  const {setAccessToken}=useAuth
 
   const messageLoc = location.state?.message;
 
