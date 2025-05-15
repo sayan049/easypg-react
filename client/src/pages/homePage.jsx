@@ -296,11 +296,11 @@ const HomePage = () => {
         <title>Messmate | Book PGs and Mess Easily Near You</title>
         <meta
           name="description"
-          content="Messmate helps students easily find PGs and mess facilities by searching through cities or universities. PG and mess owners can also list their properties on Messmate and rapidly grow their business with increased visibility and bookings."
+          content="Messmate helps students easily find PGs and mess facilities by searching through cities or universities. PG and mess owners can also list their PGs on Messmate and rapidly grow their business with increased visibility and bookings."
         />
         <meta
           name="keywords"
-          content="Messmate, PG booking, mess finder, hostel, student stay, paying guest, List PG, List mess, student accommodation, university mess, student housing"
+          content="Messmate, PG booking, mess finder, hostel, student stay, paying guest, List PG, List mess, student accommodation, university mess"
         />
         <meta name="author" content="Messmate Team" />
         <meta name="robots" content="index, follow" />
@@ -878,55 +878,55 @@ const HomePage = () => {
                   name: "Kolkata",
                   img: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746795199/kolkata-681dfa8eb8a88_imgdzm.webp",
                   coords: { lat: 22.5726, lng: 88.3639 },
-                  properties: 263,
+                  PGs: 263,
                 },
                 {
                   name: "Bankura",
                   img: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746795204/bankura-681dfa8b39d3a_blnheh.webp",
                   coords: { lat: 23.2324, lng: 87.0712 },
-                  properties: 263,
+                  PGs: 263,
                 },
                 {
                   name: "West Medinipur",
                   img: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746795213/westmed-681dfa8fb838a_j3rh3j.webp",
                   coords: { lat: 22.4211, lng: 87.3216 },
-                  properties: 263,
+                  PGs: 263,
                 },
                 {
                   name: "Jhargram",
                   img: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746795210/jhargram-681dfa8d9979f_pxchzm.webp",
                   coords: { lat: 22.4526, lng: 86.9946 },
-                  properties: 263,
+                  PGs: 263,
                 },
                 {
                   name: "Bardhaman",
                   img: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746795208/bardhaman-681dfa8c4e1cf_xyxupb.webp",
                   coords: { lat: 23.2333, lng: 87.8667 },
-                  properties: 263,
+                  PGs: 263,
                 },
                 {
                   name: "Kalyani",
                   img: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746795215/kalyani-681dfa8e9781a_tzrkxz.webp",
                   coords: { lat: 22.9756, lng: 88.4345 },
-                  properties: 263,
+                  PGs: 263,
                 },
                 {
                   name: "Durgapur",
                   img: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746795211/durgapur-681dfa8d77fbd_teigra.webp",
                   coords: { lat: 23.5204, lng: 87.3119 },
-                  properties: 263,
+                  PGs: 263,
                 },
                 {
                   name: "Asansole",
                   img: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746795201/asansole-681dfa8b2b977_gyoktg.webp",
                   coords: { lat: 23.6739, lng: 86.9524 },
-                  properties: 263,
+                  PGs: 263,
                 },
                 {
                   name: "Bolpur",
                   img: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746795207/bolpur-681dfa8c63300_hcgghe.webp",
                   coords: { lat: 23.6688, lng: 87.6836 },
-                  properties: 263,
+                  PGs: 263,
                 },
               ].map((city, index) => (
                 <motion.div
@@ -951,7 +951,7 @@ const HomePage = () => {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                         <p className="font-medium text-white">
-                          View properties
+                          View PGs
                         </p>
                       </div>
                     </div>
@@ -960,7 +960,7 @@ const HomePage = () => {
                         {city.name}
                       </h3>
                       <p className="text-gray-600 text-sm">
-                        {city.properties} properties
+                        {city.PGs} PGs
                       </p>
                     </div>
                   </div>
