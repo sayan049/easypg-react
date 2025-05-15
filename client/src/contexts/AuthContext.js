@@ -43,137 +43,113 @@ export const AuthProvider = ({ children }) => {
   const [loginMethod, setLoginMethod] = useState(null);
   const [type, setType] = useState(null);
   const [currentaccessToken, setCurrentAccessToken] = useState(null);
+  const [hasRefreshToken, setHasRefreshToken] = useState(false);
 
-  useEffect(()=>{
-      console.log("axy",currentaccessToken);
-  },[currentaccessToken]);
-
-  // useEffect(() => {
-  //   const checkSession = async () => {
-  //     try {
-  //       setLoading(true);
-
-  //       // const accessToken = localStorage.getItem("accessToken");
-  //       // const refreshToken = localStorage.getItem("refreshToken");
-  //       // No access token in memory initially
-  //       const accessToken =currentaccessToken ;
-  //       const refreshToken = getCookie("refreshToken");
-  //       console.log(accessToken,refreshToken);
-
-  //       const deviceInfo = navigator.userAgent || "Unknown Device";
-
-  //       // If tokens are not available, reset the state and return
-  //       if (!accessToken || !refreshToken) {
-  //         resetState();
-  //         setLoading(false);
-  //         return;
-  //       }
-
-  //       // Call the check-session endpoint with the access token
-  //       let response = await fetch(`${baseurl}/auth/check-session`, {
-  //         method: "GET",
-  //         headers: {
-  //           Authorization: `Bearer ${accessToken}`,
-  //           "Content-Type": "application/json",
-  //         },
-  //       });
-
-  //       // If the access token is expired, try refreshing it
-  //       if (response.status === 401) {
-  //         const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
-  //           method: "POST",
-  //           // headers: { "Content-Type": "application/json", "X-Device-Info": deviceInfo, },
-  //           headers: { "X-Device-Info": deviceInfo },
-  //           credentials: "include", // ✅ Important for cookies
-  //           body: JSON.stringify({ refreshToken }),
-  //         });
-
-  //         if (refreshResponse.ok) {
-  //           const { accessToken: newAccessToken } =
-  //             await refreshResponse.json();
-  //           localStorage.setItem("accessToken", newAccessToken);
-
-  //           // Retry the check-session call with the new access token
-  //           response = await fetch(`${baseurl}/auth/check-session`, {
-  //             method: "GET",
-  //             headers: {
-  //               Authorization: `Bearer ${newAccessToken}`,
-  //               "Content-Type": "application/json",
-  //             },
-  //           });
-  //         } else {
-  //           // If refresh token is invalid, reset the state and return
-  //           resetState();
-  //           setLoading(false);
-  //           return;
-  //         }
-  //       }
-
-  //       if (!response.ok) throw new Error("Network response was not ok");
-
-  //       const data = await response.json();
-
-  //       // Update state based on authentication status and login method
-  //       handleAuthState(data);
-  //     } catch (error) {
-  //       console.error(
-  //         "There has been a problem with your fetch operation:",
-  //         error
-  //       );
-  //       resetState();
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   checkSession();
-  // }, []);
   useEffect(() => {
-  const initializeAuth = async () => {
-    setLoading(true);
-    const deviceInfo = navigator.userAgent || "Unknown Device";
+    console.log("axy", hasRefreshToken);
+  }, [hasRefreshToken]);
 
+  const checkRefreshToken = async () => {
     try {
-      // Attempt to refresh access token from HttpOnly cookie
-      const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
-        method: "POST",
-        headers: { "X-Device-Info": deviceInfo },
-        credentials: "include", // Important for cookies
+      const response = await fetch(`${baseurl}/auth/getRefreshToken`, {
+        method: "GET",
+        credentials: "include", // Required for cookies
       });
 
-      if (refreshResponse.ok) {
-        const { accessToken: newAccessToken } = await refreshResponse.json();
-        setCurrentAccessToken(newAccessToken);
+      const data = await response.json();
+      setHasRefreshToken(data.hasRefreshToken);
+      console.log("Refresh token exists:", data.hasRefreshToken);
+      return data.hasRefreshToken;
+    } catch (error) {
+      console.error("Error checking refresh token:", error);
+      setHasRefreshToken(false);
+      return false;
+    }
+  };
+  useEffect(() => {
+  checkRefreshToken();
+}, []);
 
-        // Now check session with new accessToken
-        const sessionResponse = await fetch(`${baseurl}/auth/check-session`, {
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        setLoading(true);
+
+        // const accessToken = localStorage.getItem("accessToken");
+        // const refreshToken = localStorage.getItem("refreshToken");
+        // No access token in memory initially
+        const accessToken = currentaccessToken;
+        const refreshToken = hasRefreshToken;
+        console.log(accessToken, refreshToken);
+
+        const deviceInfo = navigator.userAgent || "Unknown Device";
+
+        // If tokens are not available, reset the state and return
+        if (!accessToken || !refreshToken) {
+          resetState();
+          setLoading(false);
+          return;
+        }
+
+        // Call the check-session endpoint with the access token
+        let response = await fetch(`${baseurl}/auth/check-session`, {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${newAccessToken}`,
+            Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
         });
 
-        if (sessionResponse.ok) {
-          const data = await sessionResponse.json();
-          handleAuthState(data);
-        } else {
-          resetState();
+        // If the access token is expired, try refreshing it
+        if (response.status === 401) {
+          const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
+            method: "POST",
+            // headers: { "Content-Type": "application/json", "X-Device-Info": deviceInfo, },
+            headers: { "X-Device-Info": deviceInfo },
+            credentials: "include", // ✅ Important for cookies
+            body: JSON.stringify({ refreshToken }),
+          });
+
+          if (refreshResponse.ok) {
+            const { accessToken: newAccessToken } =
+              await refreshResponse.json();
+            localStorage.setItem("accessToken", newAccessToken);
+
+            // Retry the check-session call with the new access token
+            response = await fetch(`${baseurl}/auth/check-session`, {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${newAccessToken}`,
+                "Content-Type": "application/json",
+              },
+            });
+          } else {
+            // If refresh token is invalid, reset the state and return
+            resetState();
+            setLoading(false);
+            return;
+          }
         }
-      } else {
+
+        if (!response.ok) throw new Error("Network response was not ok");
+
+        const data = await response.json();
+
+        // Update state based on authentication status and login method
+        handleAuthState(data);
+      } catch (error) {
+        console.error(
+          "There has been a problem with your fetch operation:",
+          error
+        );
         resetState();
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Auth initialization error:", error);
-      resetState();
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  initializeAuth();
-}, []);
-
+    checkSession();
+  }, []);
 
   // Helper function to reset the state
   const resetState = () => {
@@ -191,11 +167,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const getCookie = (name) => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
-  return null;
-};
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  };
 
   // Helper function to update state based on authentication data
   const handleAuthState = (data) => {
@@ -351,7 +327,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated,
         handleLogout,
         setCurrentAccessToken,
-        currentaccessToken
+        currentaccessToken,
       }}
     >
       {!loading ? children : <LoadingSpinner />}

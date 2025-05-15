@@ -132,10 +132,7 @@ function LoginUser() {
         console.log(accessToken);
         setCurrentAccessToken(accessToken); // e.g., using React state, Redux, etc.
 
-        // Optionally store user info in state or localStorage if needed
-
-        // const message = Welcome ${userData.name}!;
-        // Navigate to homepage or another page after successful login
+        
         localStorage.setItem("sId_message", "Successfully logged in");
         // navigate("/");
         navigate("/", { state: { message: "succesfully logged in" } });
