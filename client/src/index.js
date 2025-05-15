@@ -56,7 +56,7 @@ root.render(
           <Route path="/terms" element={<TermsAndConditions />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/refund" element={<CancellationRefunds />} />
-          <Route path="/shipping" element={<ShippingPolicy />} />
+          <Route path="/s&d" element={<ShippingPolicy />} />
           <Route
             path="/signup/user"
             element={
