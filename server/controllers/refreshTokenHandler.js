@@ -8,6 +8,7 @@ const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 exports.refreshTokenHandler = async (req, res) => {
   // const { refreshToken } = req.body;
   const refreshToken = req.cookies?.refreshToken;
+  console.log("ref",refreshToken);
 
   if (!refreshToken) {
     return res.status(400).json({ message: "Refresh token is required" });
@@ -30,7 +31,7 @@ exports.refreshTokenHandler = async (req, res) => {
     }
 
     // Check if the refresh token exists in the user's stored tokens
-    const tokenEntry = user.refreshTokens.find(rt => rt.token === refreshToken && rt.device === req.headers['x-device-info'] || req.headers['user-agent'] || 'Unknown Device' );
+    const tokenEntry = user.refreshTokens.find(rt => rt.token === refreshToken && (rt.device === req.headers['x-device-info'] || req.headers['user-agent'] || 'Unknown Device') );
 
     if (!tokenEntry) {
       return res.status(403).json({ message: "Invalid refresh token" });
