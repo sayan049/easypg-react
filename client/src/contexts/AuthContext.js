@@ -78,9 +78,9 @@ export const AuthProvider = ({ children }) => {
         // const accessToken = localStorage.getItem("accessToken");
         // const refreshToken = localStorage.getItem("refreshToken");
         // No access token in memory initially
-        const accessToken = currentaccessToken;
+        const accessToken = "xxx";
         const refreshToken = hasRefreshToken;
-        console.log(accessToken, refreshToken);
+        // console.log(accessToken, refreshToken);
 
         const deviceInfo = navigator.userAgent || "Unknown Device";
 
