@@ -63,9 +63,6 @@ function LoginUser() {
 
   const messageLoc = location.state?.message;
 
-  useEffect(() => {
-    console.log("acc ", accessToken);
-  }, [accessToken]);
 
   useEffect(() => {
     toast.success(messageLoc);
