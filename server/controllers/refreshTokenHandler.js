@@ -6,7 +6,8 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
 exports.refreshTokenHandler = async (req, res) => {
-  const { refreshToken } = req.body;
+  // const { refreshToken } = req.body;
+  const refreshToken = req.cookies?.refreshToken;
 
   if (!refreshToken) {
     return res.status(400).json({ message: "Refresh token is required" });

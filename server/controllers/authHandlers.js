@@ -242,10 +242,18 @@ exports.loginHandler = async (req, res) => {
 
     await user.save();
 
+     // ✅ Set refresh token in HttpOnly cookie
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // true in production (HTTPS)
+      sameSite: 'lax',
+      maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
+    });
+
     res.status(200).json({
       message: "Login successful.",
       accessToken,
-      refreshToken,
+      // refreshToken,
     });
 
     console.log("Successfully logged in");

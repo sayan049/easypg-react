@@ -116,6 +116,7 @@ function LoginUser() {
           "Content-Type": "application/json",
           "X-Device-Info": deviceInfo,
         },
+        withCredentials: true, // ✅ Important: send cookies!
       });
 
       if (response.status === 200) {
@@ -123,8 +124,10 @@ function LoginUser() {
         const { accessToken, refreshToken } = response.data;
 
         // Store tokens in localStorage
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
+        // localStorage.setItem("accessToken", accessToken);
+        // localStorage.setItem("refreshToken", refreshToken);
+        // ✅ Store accessToken in memory (state)
+        setAccessToken(accessToken); // e.g., using React state, Redux, etc.
 
         // Optionally store user info in state or localStorage if needed
 
@@ -213,6 +216,10 @@ function LoginUser() {
     if (email) {
       checkEmailVerification(email);
     }
+
+    useEffect(()=>{
+      console.log("acc ",accessToken);
+    },[accessToken]);
 
     return () => {
       window.removeEventListener("storage", handleStorageChange);
