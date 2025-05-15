@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
         // const accessToken = localStorage.getItem("accessToken");
         // const refreshToken = localStorage.getItem("refreshToken");
         // No access token in memory initially
-        const accessToken =currentAccessToken ;
+        const accessToken =currentaccessToken ;
         const refreshToken = getCookie("refreshToken");
         console.log(accessToken,refreshToken);
 
