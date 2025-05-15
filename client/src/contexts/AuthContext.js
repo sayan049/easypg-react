@@ -85,11 +85,11 @@ export const AuthProvider = ({ children }) => {
         const deviceInfo = navigator.userAgent || "Unknown Device";
 
         // If tokens are not available, reset the state and return
-        // if (!accessToken || !refreshToken) {
-        //   resetState();
-        //   setLoading(false);
-        //   return;
-        // }
+        if (!refreshToken) {
+          resetState();
+          setLoading(false);
+          return;
+        }
 
         // Call the check-session endpoint with the access token
         let response = await fetch(`${baseurl}/auth/check-session`, {
@@ -220,11 +220,11 @@ export const AuthProvider = ({ children }) => {
     setLoading(true); // Start the loading indicator
 
     try {
-      let accessToken = localStorage.getItem("accessToken");
-      const refreshToken = localStorage.getItem("refreshToken");
+      // let accessToken = localStorage.getItem("accessToken");
+      // const refreshToken = localStorage.getItem("refreshToken");
       const deviceInfo = navigator.userAgent || "Unknown Device";
 
-      if (!refreshToken) {
+      if (!hasRefreshToken) {
         alert("No refresh token found. Please log in again.");
         setLoading(false);
         return;
@@ -238,9 +238,10 @@ export const AuthProvider = ({ children }) => {
       const sessionResponse = await fetch(`${baseurl}/auth/check-session`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+        //  Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
+         credentials: "include",
       });
 
       if (sessionResponse.status === 401 || !accessToken) {
@@ -259,9 +260,9 @@ export const AuthProvider = ({ children }) => {
         });
 
         if (refreshResponse.ok) {
-          const { accessToken: newAccessToken } = await refreshResponse.json();
-          localStorage.setItem("accessToken", newAccessToken);
-          accessToken = newAccessToken; // Use the new access token for logout
+          //const { accessToken: newAccessToken } = await refreshResponse.json();
+          //localStorage.setItem("accessToken", newAccessToken);
+          //accessToken = newAccessToken; // Use the new access token for logout
           console.log("Access token refreshed successfully.");
         } else {
           console.error("Failed to refresh access token.");
@@ -275,19 +276,20 @@ export const AuthProvider = ({ children }) => {
       const logoutResponse = await fetch(`${baseurl}/auth/logout`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${accessToken}`, // Use the updated or refreshed token
+        //  Authorization: `Bearer ${accessToken}`, // Use the updated or refreshed token
           "Content-Type": "application/json",
           "X-Device-Info": deviceInfo,
         },
-        body: JSON.stringify({ refreshToken }),
+       // body: JSON.stringify({ refreshToken }),
+        credentials: "include",
       });
 
       const logoutData = await logoutResponse.json();
 
       if (logoutResponse.ok) {
         // Clear tokens and reset state on successful logout
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
+        // localStorage.removeItem("accessToken");
+        // localStorage.removeItem("refreshToken");
 
         setIsAuthenticated(false);
         setUser(null);
