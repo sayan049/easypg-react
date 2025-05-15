@@ -12,7 +12,7 @@ const Recommendations = () => {
     const fetchMesses = async () => {
       try {
         const res = await axios.get(getRecomendationsUrl);
-        console.log("First mess item:", res.data.data?.[0]);
+       
         setMesses(res.data.data); // Adjust if API response structure differs
       } catch (error) {
         console.error("Failed to fetch recommendations:", error);
@@ -62,8 +62,7 @@ const Recommendations = () => {
               roomPrices.length > 0
                 ? Math.min(...roomPrices).toLocaleString()
                 : "-";
-            console.log("feedbacks:", mess.feedbacks);
-            console.log("roomInfo:", mess.roomInfo);
+
 
             return (
               <motion.div
