@@ -47,9 +47,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(()=>{
       console.log("axy",currentaccessToken);
   },[currentaccessToken]);
-  const axy=(e)=>{
-    setCurrentAccessToken(e);
-  }
+
   useEffect(() => {
     const checkSession = async () => {
       try {
@@ -306,7 +304,7 @@ export const AuthProvider = ({ children }) => {
         setIsOwnerAuthenticated,
         setIsAuthenticated,
         handleLogout,
-        axy,
+        setCurrentAccessToken,
         currentaccessToken
       }}
     >
