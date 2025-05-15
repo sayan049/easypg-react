@@ -247,12 +247,15 @@ export const AuthProvider = ({ children }) => {
         console.log("Access token expired. Refreshing...");
         // Refresh the access token if it's expired
         const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
+          // method: "POST",
+          // headers: {
+          //   "Content-Type": "application/json",
+          //   "X-Device-Info": deviceInfo,
+          // },
+          // body: JSON.stringify({ refreshToken }),
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Device-Info": deviceInfo,
-          },
-          body: JSON.stringify({ refreshToken }),
+          headers: { "X-Device-Info": deviceInfo },
+          credentials: "include",
         });
 
         if (refreshResponse.ok) {
