@@ -129,6 +129,7 @@ function LoginUser() {
         // localStorage.setItem("accessToken", accessToken);
         // localStorage.setItem("refreshToken", refreshToken);
         // ✅ Store accessToken in memory (state)
+        console.log(accessToken);
         setCurrentAccessToken(accessToken); // e.g., using React state, Redux, etc.
 
         // Optionally store user info in state or localStorage if needed
