@@ -84,7 +84,8 @@ router.get("/getCart",authenticateJWT,likedMess.cartMess);
 //   res.json({ message: "This is a protected route", user: req.session.user });
 // });
 
-router.post("/refresh-token",refreshTokenHandler)
+router.post("/refresh-token",refreshTokenHandler.refreshTokenHandler);
+router.post("/getRefreshToken",refreshTokenHandler.getRefreshToken);
 
 router.get("/check-session", (req, res) => {
   const accessToken = req.headers['authorization']?.split(' ')[1]; // Get token from Authorization header
