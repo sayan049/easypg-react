@@ -131,7 +131,7 @@ export const AuthProvider = ({ children }) => {
             return;
           }
         }
-
+        console.log("res",response)
         if (!response.ok) throw new Error("Network response was not ok");
 
         const data = await response.json();
