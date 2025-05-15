@@ -246,7 +246,7 @@ exports.loginHandler = async (req, res) => {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // true in production (HTTPS)
-      sameSite: 'lax',
+      sameSite: 'none',
       maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
     });
 

@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
   };
   useEffect(() => {
     checkRefreshToken();
-  }, []);
+  }, [hasRefreshToken]);
 
   useEffect(() => {
     const checkSession = async () => {
