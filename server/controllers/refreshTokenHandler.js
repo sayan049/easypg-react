@@ -78,19 +78,19 @@ getRefreshToken : async (req, res) => {
     if (!refreshToken) {
       return res.status(401).json({
         message: "No refresh token found",
-        hasRefreshToken: false,
+        hasRefreshToken: null,
       });
     }
 
     // Just confirm existence - don't return the actual token
     return res.status(200).json({
       message: "Refresh token exists",
-      hasRefreshToken: true,
+      hasRefreshToken: refreshToken,
     });
   } catch (error) {
     return res.status(500).json({
       message: "Error checking refresh token",
-      hasRefreshToken: false,
+      hasRefreshToken: null,
     });
   }
 }

@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
   const [loginMethod, setLoginMethod] = useState(null);
   const [type, setType] = useState(null);
   const [currentaccessToken, setCurrentAccessToken] = useState(null);
-  const [hasRefreshToken, setHasRefreshToken] = useState(false);
+  const [hasRefreshToken, setHasRefreshToken] = useState(null);
 
   useEffect(() => {
     console.log("axy", hasRefreshToken);
@@ -62,8 +62,8 @@ export const AuthProvider = ({ children }) => {
       return data.hasRefreshToken;
     } catch (error) {
       console.error("Error checking refresh token:", error);
-      setHasRefreshToken(false);
-      return false;
+      setHasRefreshToken(null);
+      return ;
     }
   };
   useEffect(() => {
