@@ -3,18 +3,29 @@ import React from "react";
 const ShippingPolicy = () => {
   return (
     <div className="p-6 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Shipping Policy</h1>
+      <h1 className="text-2xl font-bold mb-4">Shipping & Delivery </h1>
       <p className="mb-4">
-        <strong>Note:</strong> Messmate is a digital service platform and does not deal with the shipping or delivery of physical goods.
+        Messmate is a digital platform facilitating online bookings for student accommodations and does not handle physical shipping or delivery of goods.
       </p>
       <p className="mb-4">
-        All services provided by Messmate are rendered electronically through our website and/or mobile applications. As such, there is no shipping involved.
+        For domestic and international services, all bookings and confirmations are processed electronically via our website and mobile applications.
       </p>
       <p className="mb-4">
-        Upon successful booking confirmation, the user is notified instantly via the website interface, email, or other communication methods. Users are responsible for reporting any discrepancies within 24 hours.
+        Upon successful booking confirmation, users receive notifications through email and/or the website interface.  
+        Please ensure your contact details are accurate to avoid any delays.
       </p>
+      <p className="mb-4">
+        Messmate is not liable for any delay or failure in service delivery caused by third parties, including property owners or communication services.
+      </p>
+      <p className="mb-4">
+        For any issues or questions regarding your booking or our services, please contact our support team:
+      </p>
+      <ul className="list-disc list-inside mb-4">
+        <li>Email: <a href="mailto:messmatecompany@gmail.com" className="text-blue-600 underline">messmatecompany@gmail.com</a></li>
+        <li>Phone: <a href="tel:+917047299455" className="text-blue-600 underline">+91 70472 99455</a></li>
+      </ul>
       <p>
-        If you have any questions regarding our policies, feel free to reach out to us at <a href="mailto:messmatecompany@gmail.com" className="text-blue-600 underline">messmatecompany@gmail.com</a>.
+        Last updated on May 15, 2025.
       </p>
     </div>
   );
