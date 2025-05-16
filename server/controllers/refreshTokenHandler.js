@@ -93,7 +93,33 @@ getRefreshToken : async (req, res) => {
       hasRefreshToken: false,
     });
   }
+},
+
+getAccessToken : async (req, res) => {
+  try {
+    // Get refresh token from HTTP-only cookie
+    const accessToken = req.cookies.accessToken;
+
+    if (!accessToken) {
+      return res.status(401).json({
+        message: "No refresh token found",
+        hasAccessToken: false,
+      });
+    }
+
+    // Just confirm existence - don't return the actual token
+    return res.status(200).json({
+      message: "Refresh token exists",
+      hasAccessToken: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error checking refresh token",
+      hasAccessToken: false,
+    });
+  }
 }
+
 
 };
 

@@ -44,6 +44,7 @@ export const AuthProvider = ({ children }) => {
   const [type, setType] = useState(null);
   const [currentaccessToken, setCurrentAccessToken] = useState(null);
   const [hasRefreshToken, setHasRefreshToken] = useState(null);
+  const [hasAccessToken, setHasAccessToken] = useState(null);
 
   useEffect(() => {
     console.log("axy", hasRefreshToken);
@@ -66,9 +67,29 @@ export const AuthProvider = ({ children }) => {
       return;
     }
   };
+  const checkAccessToken = async () => {
+    try {
+      const response = await fetch(`${baseurl}/auth/getAccessToken`, {
+        method: "GET",
+        credentials: "include", // Required for cookies
+      });
+
+      const data = await response.json();
+      setHasAccessToken(data.hasAccessToken);
+      console.log("access token exists:", data.hasAccessToken);
+      return data.hasRefreshToken;
+    } catch (error) {
+      console.error("Error checking access token:", error);
+      setHasAccessToken(null);
+      return;
+    }
+  };
   useEffect(() => {
     checkRefreshToken();
   }, [hasRefreshToken]);
+  useEffect(() => {
+    checkAccessToken();
+  }, [hasAccessToken]);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -85,7 +106,7 @@ export const AuthProvider = ({ children }) => {
         const deviceInfo = navigator.userAgent || "Unknown Device";
 
         // If tokens are not available, reset the state and return
-        if (!refreshToken) {
+        if (!refreshToken || !hasAccessToken) {
           resetState();
           setLoading(false);
           return;
@@ -230,22 +251,22 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
-      // if (!accessToken) {
-      //   console.log("Access token not found. Trying to refresh...");
-      // }
+      if (!hasAccessToken) {
+        console.log("Access token not found. Trying to refresh...");
+      }
 
       // Check session using the access token
       const sessionResponse = await fetch(`${baseurl}/auth/check-session`, {
         method: "GET",
         headers: {
-        //  Authorization: `Bearer ${accessToken}`,
+          //  Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
-         credentials: "include",
+        credentials: "include",
       });
 
-     // if (sessionResponse.status === 401 || !accessToken) {
-         if (sessionResponse.status === 401 ) {
+      // if (sessionResponse.status === 401 || !accessToken) {
+      if (sessionResponse.status === 401 || !hasAccessToken) {
         console.log("Access token expired. Refreshing...");
         // Refresh the access token if it's expired
         const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
@@ -277,11 +298,11 @@ export const AuthProvider = ({ children }) => {
       const logoutResponse = await fetch(`${baseurl}/auth/logout`, {
         method: "POST",
         headers: {
-        //  Authorization: `Bearer ${accessToken}`, // Use the updated or refreshed token
+          //  Authorization: `Bearer ${accessToken}`, // Use the updated or refreshed token
           "Content-Type": "application/json",
           "X-Device-Info": deviceInfo,
         },
-       // body: JSON.stringify({ refreshToken }),
+        // body: JSON.stringify({ refreshToken }),
         credentials: "include",
       });
 

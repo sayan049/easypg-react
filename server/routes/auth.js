@@ -94,6 +94,7 @@ router.get("/getCart", authenticateJWT, likedMess.cartMess);
 
 router.post("/refresh-token", refreshToken.refreshTokenHandler);
 router.get("/getRefreshToken", refreshToken.getRefreshToken);
+router.get("/getAccessToken", refreshToken.getAccessToken);
 
 router.get("/check-session", authenticateJWT, (req, res) => {
   // const accessToken = req.headers['authorization']?.split(' ')[1]; // Get token from Authorization header
