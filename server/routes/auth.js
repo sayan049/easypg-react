@@ -201,15 +201,15 @@ router.post("/logout", authenticateJWT, async (req, res) => {
 
     res.clearCookie("accessToken", {
       httpOnly: true,
-      sameSite: "none",
+      sameSite: "None",
       secure: true,
-       
+      domain: '.messmate.co.in',
     });
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      sameSite: "none",
+      sameSite: "None",
       secure: true,
-     
+      domain: '.messmate.co.in',
     });
 
     return res.status(200).json({ message: "Logged out successfully." });
