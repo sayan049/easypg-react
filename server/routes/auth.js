@@ -161,7 +161,9 @@ router.post("/logout", authenticateJWT, async (req, res) => {
     }
 
     // Remove the refresh token based on the user type and device
-    const refreshToken = req.body.refreshToken; // Assumes the refresh token is sent in the body
+    //const refreshToken = req.body.refreshToken; // Assumes the refresh token is sent in the body
+    const refreshToken = req.cookies?.refreshToken;
+    console.log("logout" , refreshToken);
 
     if (!refreshToken) {
       return res
@@ -196,6 +198,17 @@ router.post("/logout", authenticateJWT, async (req, res) => {
     } else {
       return res.status(400).json({ message: "Invalid user type." });
     }
+
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      sameSite: "none",
+      secure: process.env.NODE_ENV === "production",
+    });
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      sameSite: "none",
+      secure: process.env.NODE_ENV === "production",
+    });
 
     return res.status(200).json({ message: "Logged out successfully." });
   } catch (error) {

@@ -253,7 +253,7 @@ exports.loginHandler = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // true in production (HTTPS)
       sameSite: 'none',
-      maxAge: 1 * 24 * 60 * 60 * 1000, // 10 days
+      maxAge: 24 * 60 * 60 * 1000, // 1 hour
     });
 
     res.status(200).json({

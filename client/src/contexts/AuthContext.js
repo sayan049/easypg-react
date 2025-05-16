@@ -245,15 +245,15 @@ export const AuthProvider = ({ children }) => {
       // const refreshToken = localStorage.getItem("refreshToken");
       const deviceInfo = navigator.userAgent || "Unknown Device";
 
-      if (!hasRefreshToken) {
-        alert("No refresh token found. Please log in again.");
-        setLoading(false);
-        return;
-      }
+      // if (!hasRefreshToken) {
+      //   alert("No refresh token found. Please log in again.");
+      //   setLoading(false);
+      //   return;
+      // }
 
-      if (!hasAccessToken) {
-        console.log("Access token not found. Trying to refresh...");
-      }
+      // if (!hasAccessToken) {
+      //   console.log("Access token not found. Trying to refresh...");
+      // }
 
       // Check session using the access token
       const sessionResponse = await fetch(`${baseurl}/auth/check-session`, {
@@ -266,7 +266,7 @@ export const AuthProvider = ({ children }) => {
       });
 
       // if (sessionResponse.status === 401 || !accessToken) {
-      if (sessionResponse.status === 401 || !hasAccessToken) {
+      if (sessionResponse.status === 401 ) {
         console.log("Access token expired. Refreshing...");
         // Refresh the access token if it's expired
         const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
