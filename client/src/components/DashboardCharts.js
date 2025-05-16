@@ -93,15 +93,15 @@ const DashboardCharts = () => {
       try {
         setLoading(true);
         setError(null);
-        const accessToken = localStorage.getItem("accessToken");
-        if (!accessToken) return setError("Access token not found.");
+        // const accessToken = localStorage.getItem("accessToken");
+        // if (!accessToken) return setError("Access token not found.");
 
         // Replace with your actual API endpoint
 
         const response = await fetch(
           `${baseurl}/auth/owner/chart-stats?timeFrame=${timeFrame}`,
           {
-            withCredentials: true, // Automatically send cookies
+           credentials: 'include', // Automatically send cookies
             headers: {
               "Content-Type": "application/json",
             },
