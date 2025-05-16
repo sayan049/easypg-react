@@ -60,7 +60,7 @@ export default function DashboardOwner() {
       try {
         const token = localStorage.getItem("accessToken");
         const response = await fetch(`${baseurl}/auth/dashboard/owner-stats`, {
-          withCredentials: true, // Automatically send cookies
+          credentials: "include", // Automatically send cookies
           headers: {
             "Content-Type": "application/json",
           },

@@ -66,9 +66,9 @@ const Cart = () => {
     try {
       const res = await axios.get(getCartUrl, {
         headers: {
-         // Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          // Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
-        withCredentials:true,
+        withCredentials: true,
       });
       setMessData(res.data || []);
     } catch (err) {
@@ -86,8 +86,8 @@ const Cart = () => {
   const fetchLikedMesses = async () => {
     try {
       const res = await axios.get(getLikedMessUrl, {
-      //  headers: { Authorization: `Bearer ${token}` },
-      withCredentials: true,
+        //  headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
       });
 
       const likedData = res.data || [];
@@ -121,8 +121,9 @@ const Cart = () => {
           liked: newLikedState,
         },
         {
+          withCredentials: true, // Automatically send cookies
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            "Content-Type": "application/json",
           },
         }
       );
@@ -138,7 +139,7 @@ const Cart = () => {
   };
 
   const clickBook = (owner) => {
-      navigate(`/booking/${owner._id}`);
+    navigate(`/booking/${owner._id}`);
   };
 
   const toggleAmenityFilter = (label) => {
