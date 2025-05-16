@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import Cart from "../components/cart";
 import { useAuth } from "../contexts/AuthContext";
@@ -18,7 +17,7 @@ import { baseurl, fetchDetailsUrl } from "../constant/urls";
 import { toast } from "react-toastify";
 import BookingTable from "../components/BookingTable";
 import Settings from "../components/settings";
- import DashboardContent from "../components/dashboardContent";
+import DashboardContent from "../components/dashboardContent";
 // const DashboardContent = React.lazy(() => import('./components/dashboardContent'));
 
 import Payments from "../components/payment";
@@ -29,7 +28,12 @@ function NewDashboard() {
   const [userDetails, setUserDetails] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [stats, setStats] = useState({ upcoming: 0, active: 0, past: 0, pending: 0 });
+  const [stats, setStats] = useState({
+    upcoming: 0,
+    active: 0,
+    past: 0,
+    pending: 0,
+  });
   const [currentStay, setCurrentStay] = useState(null);
   const [upcomingStay, setUpcomingStay] = useState(null);
   const [pastStay, setPastStay] = useState(null);
@@ -57,13 +61,18 @@ function NewDashboard() {
       if (type === "student") {
         const token = localStorage.getItem("accessToken");
         const response = await axios.get(`${baseurl}/auth/bookings/user`, {
-          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true, // Automatically send cookies
+          headers: {
+            "Content-Type": "application/json",
+          },
         });
         if (response.data && response.data.success) {
           const bookingsData = response.data.bookings || [];
           const bookingsWithDates = bookingsData.map((booking) => {
             const endDate = new Date(booking.period.startDate);
-            endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
+            endDate.setMonth(
+              endDate.getMonth() + booking.period.durationMonths
+            );
             return { ...booking, period: { ...booking.period, endDate } };
           });
 
@@ -85,7 +94,10 @@ function NewDashboard() {
         const maintenanceResponse = await axios.get(
           `${baseurl}/auth/maintenance/history`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            withCredentials: true, // Automatically send cookies
+            headers: {
+              "Content-Type": "application/json",
+            },
             params: { userId, type },
           }
         );
@@ -136,13 +148,20 @@ function NewDashboard() {
           />
         );
       case "bookings":
-        return <BookingTable bookings={bookings} stats={stats} currentStay={currentStay} loading={loading} />;
+        return (
+          <BookingTable
+            bookings={bookings}
+            stats={stats}
+            currentStay={currentStay}
+            loading={loading}
+          />
+        );
       case "payments":
-        return <Payments/>;
+        return <Payments />;
       case "settings":
         return <Settings user={userDetails} />;
       case "Cart":
-         return <Cart/>;
+        return <Cart />;
       default:
         return <DashboardContent />;
     }
@@ -161,7 +180,9 @@ function NewDashboard() {
       <aside
         className={`top-0 left-0 w-64 h-screen bg-white border-r p-4 z-40 transition-transform duration-300 transform shadow-md
           md:sticky md:translate-x-0 ${
-            sidebarOpen ? "fixed mt-14 translate-x-0" : "fixed -translate-x-full"
+            sidebarOpen
+              ? "fixed mt-14 translate-x-0"
+              : "fixed -translate-x-full"
           }`}
       >
         <div className="md:hidden flex justify-end mb-4">
@@ -172,13 +193,41 @@ function NewDashboard() {
 
         <ProfileHeader userName={userName} />
         <nav className="flex flex-col gap-4 mt-8">
-          <SidebarButton icon={<Home />} label="Dashboard" active={activeTab === "dashboard"} onClick={() => handleTabChange("dashboard")} />
-          <SidebarButton icon={<CalendarCheck />} label="My Bookings" active={activeTab === "bookings"} onClick={() => handleTabChange("bookings")} />
-          <SidebarButton icon={<CreditCard />} label="My Payments" active={activeTab === "payments"} onClick={() => handleTabChange("payments")} />
-          <SidebarButton icon={<Gear />} label="Settings" active={activeTab === "settings"} onClick={() => handleTabChange("settings")} />
-          <SidebarButton icon={<HeartOff/>} label="saved Pg" active={activeTab === "Cart"} onClick={() => handleTabChange("Cart")} />
+          <SidebarButton
+            icon={<Home />}
+            label="Dashboard"
+            active={activeTab === "dashboard"}
+            onClick={() => handleTabChange("dashboard")}
+          />
+          <SidebarButton
+            icon={<CalendarCheck />}
+            label="My Bookings"
+            active={activeTab === "bookings"}
+            onClick={() => handleTabChange("bookings")}
+          />
+          <SidebarButton
+            icon={<CreditCard />}
+            label="My Payments"
+            active={activeTab === "payments"}
+            onClick={() => handleTabChange("payments")}
+          />
+          <SidebarButton
+            icon={<Gear />}
+            label="Settings"
+            active={activeTab === "settings"}
+            onClick={() => handleTabChange("settings")}
+          />
+          <SidebarButton
+            icon={<HeartOff />}
+            label="saved Pg"
+            active={activeTab === "Cart"}
+            onClick={() => handleTabChange("Cart")}
+          />
         </nav>
-        <button onClick={handleLogout} className="absolute bottom-28 md:bottom-14 flex items-center gap-3 px-4 py-2 rounded-md mt-10 text-red-600 hover:bg-red-100 transition">
+        <button
+          onClick={handleLogout}
+          className="absolute bottom-28 md:bottom-14 flex items-center gap-3 px-4 py-2 rounded-md mt-10 text-red-600 hover:bg-red-100 transition"
+        >
           <LogOutIcon className="w-4 h-4" /> Logout
         </button>
       </aside>
@@ -195,7 +244,9 @@ function SidebarButton({ icon, label, active, onClick }) {
     <button
       onClick={onClick}
       className={`flex items-center gap-3 px-4 py-2 rounded-md transition ${
-        active ? "bg-blue-100 text-blue-600 font-semibold" : "text-gray-700 hover:bg-gray-100"
+        active
+          ? "bg-blue-100 text-blue-600 font-semibold"
+          : "text-gray-700 hover:bg-gray-100"
       }`}
     >
       {icon}

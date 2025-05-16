@@ -67,8 +67,8 @@ const Cart = () => {
       const res = await axios.get(getCartUrl, {
         headers: {
          // Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-         withCredential: true,
         },
+        withCredentials:true,
       });
       setMessData(res.data || []);
     } catch (err) {

@@ -364,7 +364,6 @@ const BookingSkeletonCard = () => (
   </div>
 );
 
-
 const StatSkeletonCard = () => (
   <div className="bg-white rounded-xl shadow p-4 flex items-center justify-between animate-pulse">
     <div className="space-y-2">
@@ -374,7 +373,6 @@ const StatSkeletonCard = () => (
     <div className="w-6 h-6 bg-gray-300 rounded-full" />
   </div>
 );
-
 
 const BookingStatus = ({ owner }) => {
   const [tab, setTab] = useState("pending");
@@ -411,8 +409,9 @@ const BookingStatus = ({ owner }) => {
           params: {
             bookingIds: bookingIds.join(","),
           },
+          withCredentials: true, // Automatically send cookies
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            "Content-Type": "application/json",
           },
         }
       );
@@ -438,8 +437,9 @@ const BookingStatus = ({ owner }) => {
         `${baseurl}/auth/maintenance/${requestId}/update-status`,
         { status, message },
         {
+          withCredentials: true, // Automatically send cookies
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            "Content-Type": "application/json",
           },
         }
       );
@@ -475,8 +475,9 @@ const BookingStatus = ({ owner }) => {
         params: {
           limit,
         },
+        withCredentials: true, // Automatically send cookies
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          "Content-Type": "application/json",
         },
       });
 
@@ -586,8 +587,9 @@ const BookingStatus = ({ owner }) => {
           ...(reason && { rejectionReason: reason }),
         },
         {
+          withCredentials: true, // Automatically send cookies
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            "Content-Type": "application/json",
           },
         }
       );
@@ -705,7 +707,7 @@ const BookingStatus = ({ owner }) => {
             <StatSkeletonCard key={i} />
           ))}
         </div>
-  
+
         {/* Skeleton for booking cards */}
         <div className="flex flex-col md:flex-row md:flex-wrap gap-4">
           {[...Array(4)].map((_, i) => (
@@ -715,7 +717,6 @@ const BookingStatus = ({ owner }) => {
       </div>
     );
   }
-  
 
   if (
     !loading.list &&

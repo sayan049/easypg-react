@@ -101,7 +101,10 @@ const DashboardCharts = () => {
         const response = await fetch(
           `${baseurl}/auth/owner/chart-stats?timeFrame=${timeFrame}`,
           {
-            headers: { Authorization: `Bearer ${accessToken}` },
+            withCredentials: true, // Automatically send cookies
+            headers: {
+              "Content-Type": "application/json",
+            },
           }
         );
 

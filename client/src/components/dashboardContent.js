@@ -37,9 +37,7 @@ import {
   MdOutlineHome,
   MdPersonOutline,
   MdEmail,
-MdPhone,  
-
-
+  MdPhone,
 } from "react-icons/md";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 const DashboardContent = ({
@@ -69,7 +67,10 @@ const DashboardContent = ({
         `${baseurl}/auth/bookings/${bookingId}/cancel`,
         { reason: cancelReason },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true, // Automatically send cookies
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -130,8 +131,9 @@ const DashboardContent = ({
         `${baseurl}/auth/maintenance-request`,
         requestBody,
         {
+          withCredentials: true, // Automatically send cookies
           headers: {
-            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         }
       );

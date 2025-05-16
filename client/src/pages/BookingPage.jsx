@@ -221,8 +221,9 @@ export default function BookingPage() {
 
       // Make booking request
       const { data } = await axios.post(bookingRequestUrl, bookingData, {
+        withCredentials: true, // Automatically send cookies
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          "Content-Type": "application/json",
         },
       });
 

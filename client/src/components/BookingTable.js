@@ -1040,7 +1040,6 @@ import {
   MdOutlineHome,
   MdOutlineHistory,
   MdOutlineWifi,
- 
   MdOutlinePower,
   MdTv,
   MdOutlineAcUnit,
@@ -1086,8 +1085,9 @@ const BookingTable = ({
         `${baseurl}/auth/ratings-feedback`,
         { stayId, rating, comment },
         {
+          withCredentials: true, // Automatically send cookies
           headers: {
-            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         }
       );
@@ -1116,7 +1116,10 @@ const BookingTable = ({
       const response = await axios.get(
         `${baseurl}/auth/bookings/${bookingId}/invoice`,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true, // Automatically send cookies
+          headers: {
+            "Content-Type": "application/json",
+          },
           responseType: "blob",
         }
       );

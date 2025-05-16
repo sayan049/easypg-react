@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import {
   Home,
@@ -33,9 +32,8 @@ export default function DashboardOwner() {
   });
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-  const { ownerName, isOwnerAuthenticated, owner, type,handleLogout } = useAuth();
-
-
+  const { ownerName, isOwnerAuthenticated, owner, type, handleLogout } =
+    useAuth();
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -62,8 +60,9 @@ export default function DashboardOwner() {
       try {
         const token = localStorage.getItem("accessToken");
         const response = await fetch(`${baseurl}/auth/dashboard/owner-stats`, {
+          withCredentials: true, // Automatically send cookies
           headers: {
-            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         });
         if (!response.ok) throw new Error("Failed to fetch dashboard data");
@@ -114,7 +113,10 @@ export default function DashboardOwner() {
       {/* Desktop Sidebar */}
       <div className="hidden md:flex md:flex-col w-64 bg-white shadow p-4 items-center sticky top-0 h-screen">
         <div className="flex flex-col items-center mb-6">
-          <svg className="w-10 h-10 rounded-full mb-2 bg-gray-200" viewBox="0 0 100 100">
+          <svg
+            className="w-10 h-10 rounded-full mb-2 bg-gray-200"
+            viewBox="0 0 100 100"
+          >
             <circle cx="50" cy="40" r="20" fill="#4F46E5" />
             <circle cx="50" cy="80" r="25" fill="#4F46E5" />
           </svg>
@@ -130,7 +132,8 @@ export default function DashboardOwner() {
               key={item.key}
               className={cn(
                 "flex items-center gap-2 p-2 rounded hover:bg-gray-100 w-full transition-colors",
-                activeTab === item.key && "bg-blue-100 text-blue-600 font-medium"
+                activeTab === item.key &&
+                  "bg-blue-100 text-blue-600 font-medium"
               )}
               onClick={() => setActiveTab(item.key)}
             >
@@ -167,7 +170,10 @@ export default function DashboardOwner() {
             </div>
 
             <div className="flex flex-col items-center mb-6">
-              <svg className="w-10 h-10 rounded-full mb-2 bg-gray-200" viewBox="0 0 100 100">
+              <svg
+                className="w-10 h-10 rounded-full mb-2 bg-gray-200"
+                viewBox="0 0 100 100"
+              >
                 <circle cx="50" cy="40" r="20" fill="#4F46E5" />
                 <circle cx="50" cy="80" r="25" fill="#4F46E5" />
               </svg>
@@ -183,7 +189,8 @@ export default function DashboardOwner() {
                   key={item.key}
                   className={cn(
                     "flex items-center gap-2 p-2 rounded hover:bg-gray-100 text-left transition-colors",
-                    activeTab === item.key && "bg-blue-100 text-blue-600 font-medium"
+                    activeTab === item.key &&
+                      "bg-blue-100 text-blue-600 font-medium"
                   )}
                   onClick={() => {
                     setActiveTab(item.key);
