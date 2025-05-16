@@ -224,7 +224,7 @@ exports.loginHandler = async (req, res) => {
     const accessToken = jwt.sign(
       { id: user._id, name, email: user.email, type: "student", loginMethod },
       JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "5m" }
     );
 
     const refreshToken = jwt.sign(
@@ -253,7 +253,8 @@ exports.loginHandler = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // true in production (HTTPS)
       sameSite: 'none',
-      maxAge: 24 * 60 * 60 * 1000, // 1 hour
+     // maxAge: 24 * 60 * 60 * 1000, // 1 hour
+     maxAge: 5 * 60 * 1000, // 5 minutes
     });
 
     res.status(200).json({
