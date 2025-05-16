@@ -86,10 +86,10 @@ export const AuthProvider = ({ children }) => {
   };
   useEffect(() => {
     checkRefreshToken();
-  }, [hasRefreshToken]);
+  }, []);
   useEffect(() => {
     checkAccessToken();
-  }, [hasAccessToken]);
+  }, []);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -106,11 +106,11 @@ export const AuthProvider = ({ children }) => {
         const deviceInfo = navigator.userAgent || "Unknown Device";
 
         // If tokens are not available, reset the state and return
-        if (!refreshToken || !hasAccessToken) {
-          resetState();
-          setLoading(false);
-          return;
-        }
+        // if (!refreshToken || !hasAccessToken) {
+        //   resetState();
+        //   setLoading(false);
+        //   return;
+        // }
 
         // Call the check-session endpoint with the access token
         let response = await fetch(`${baseurl}/auth/check-session`, {
