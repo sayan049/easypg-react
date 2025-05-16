@@ -53,7 +53,7 @@ passport.use(
               loginMethod,
             }, // Added image to the payload
             JWT_SECRET,
-            { expiresIn: "1h" }
+            { expiresIn: "5m" }
           );
 
           // Refresh token without image
@@ -67,15 +67,29 @@ passport.use(
               loginMethod,
             }, // Refresh token only contains basic info
             JWT_REFRESH_SECRET,
-            { expiresIn: "7d" }
+            { expiresIn: "10d" }
           );
           user.refreshTokens.push({
             token: refreshToken,
             device,
             createdAt: new Date(),
           });
+
           user.save();
-          return { accessToken, refreshToken };
+          res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production", // true in production (HTTPS)
+            sameSite: "none",
+            maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
+          });
+          res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production", // true in production (HTTPS)
+            sameSite: "none",
+            // maxAge: 24 * 60 * 60 * 1000, // 1 hour
+            maxAge: 5 * 60 * 1000, // 5 minutes
+          });
+        //  return { accessToken, refreshToken };
         };
 
         if (userType === "student") {
