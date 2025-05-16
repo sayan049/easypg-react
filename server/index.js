@@ -249,14 +249,7 @@ app.get("/auth/google/callback", (req, res, next) => {
     }
 
     const { accessToken, refreshToken } = user.tokens;
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: true, // true in production (HTTPS)
-      sameSite: "None",
-       partitioned: true,
-      maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
-    });
-    res.cookie("accessToken", accessToken, {
+     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true, // true in production (HTTPS)
       sameSite: "None",
@@ -264,6 +257,14 @@ app.get("/auth/google/callback", (req, res, next) => {
       // maxAge: 24 * 60 * 60 * 1000, // 1 hour
       maxAge: 30 * 60 * 1000, // 30 minutes
     });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true, // true in production (HTTPS)
+      sameSite: "None",
+       partitioned: true,
+      maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
+    });
+   
     const { device } = state;
     return res.redirect(
       `${ORIGIN}/googleCallback/?accessToken=${accessToken}&refreshToken=${refreshToken}&device=${encodeURIComponent(
