@@ -77,8 +77,9 @@ function MessBars({
         },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+           // Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
+          withCredentials:true,
         }
       );
     } catch (err) {

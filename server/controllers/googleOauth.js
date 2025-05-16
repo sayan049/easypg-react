@@ -53,7 +53,7 @@ passport.use(
               loginMethod,
             }, // Added image to the payload
             JWT_SECRET,
-            { expiresIn: "5m" }
+            { expiresIn: "30m" }
           );
 
           // Refresh token without image
