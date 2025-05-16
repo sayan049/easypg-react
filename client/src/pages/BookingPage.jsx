@@ -224,6 +224,7 @@ export default function BookingPage() {
         withCredentials: true, // Automatically send cookies
         headers: {
           "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
         },
       });
 

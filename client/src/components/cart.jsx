@@ -66,7 +66,8 @@ const Cart = () => {
     try {
       const res = await axios.get(getCartUrl, {
         headers: {
-          // Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
         },
         withCredentials: true,
       });
@@ -87,6 +88,10 @@ const Cart = () => {
     try {
       const res = await axios.get(getLikedMessUrl, {
         //  headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
+        },
         withCredentials: true,
       });
 
@@ -124,6 +129,7 @@ const Cart = () => {
           withCredentials: true, // Automatically send cookies
           headers: {
             "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
           },
         }
       );

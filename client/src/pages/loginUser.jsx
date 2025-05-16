@@ -117,6 +117,7 @@ function LoginUser() {
         headers: {
           "Content-Type": "application/json",
           "X-Device-Info": deviceInfo,
+          "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
         },
         withCredentials: true, // ✅ Important: send cookies!
       });

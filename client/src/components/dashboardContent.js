@@ -69,8 +69,9 @@ const DashboardContent = ({
         {
           withCredentials: true, // Automatically send cookies
           headers: {
-            "Content-Type": "application/json",
-          },
+    "Content-Type": "application/json",
+    "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
+  }
         }
       );
 
@@ -134,6 +135,7 @@ const DashboardContent = ({
           withCredentials: true, // Automatically send cookies
           headers: {
             "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
           },
         }
       );

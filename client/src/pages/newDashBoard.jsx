@@ -64,6 +64,7 @@ function NewDashboard() {
           withCredentials: true, // Automatically send cookies
           headers: {
             "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
           },
         });
         if (response.data && response.data.success) {
@@ -97,6 +98,7 @@ function NewDashboard() {
             withCredentials: true, // Automatically send cookies
             headers: {
               "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
             },
             params: { userId, type },
           }

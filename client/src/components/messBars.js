@@ -77,9 +77,9 @@ function MessBars({
         },
         {
           headers: {
-           // Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            // Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
-          withCredentials:true,
+          withCredentials: true,
         }
       );
     } catch (err) {
@@ -143,8 +143,12 @@ function MessBars({
     if (!IsAuthenticated) return;
     try {
       const res = await axios.get(getLikedMessUrl, {
-       // headers: { Authorization: `Bearer ${token}` },
-       withCredentials: true,
+        // headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
+        },
+        withCredentials: true,
       });
 
       const likedData = res.data || [];

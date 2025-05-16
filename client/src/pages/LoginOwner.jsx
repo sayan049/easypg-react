@@ -129,8 +129,8 @@ function LoginOwner() {
         headers: {
           "Content-Type": "application/json",
           "X-Device-Info": deviceInfo,
+          "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
         },
-         withCredentials: true,
       });
       if (response.status === 200) {
         const { accessToken, refreshToken } = response.data;

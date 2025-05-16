@@ -101,9 +101,10 @@ const DashboardCharts = () => {
         const response = await fetch(
           `${baseurl}/auth/owner/chart-stats?timeFrame=${timeFrame}`,
           {
-           credentials: 'include', // Automatically send cookies
+            credentials: "include", // Automatically send cookies
             headers: {
               "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
             },
           }
         );
