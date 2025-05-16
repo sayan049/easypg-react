@@ -46,6 +46,7 @@
     "pdfkit": "^0.17.0",
     "prerender-node": "^3.8.0",
     "sharp": "^0.33.5",
-    "socket.io": "^4.8.1"
+    "socket.io": "^4.8.1",
+    "ua-parser-js": "^2.0.3"
   }
 }

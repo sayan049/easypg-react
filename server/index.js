@@ -152,6 +152,7 @@ const mailRoute = require("./routes/mailVerifierRoute");
 const mailVerifyOwner = require("./routes/mailVerifyOwner");
 const connectDB = require("./config/mongoDB");
 const prerender = require("prerender-node");
+const UAParser = require("ua-parser-js");
 // const http = require('http');
 // const SocketManager = require('./sockets/bookingSocket'); // Update with correct path
 //  const ORIGIN =  process.env.CLIENT_URL || "https://messmate-client.onrender.com"; // Default to localhost if not set
@@ -193,7 +194,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use((req, res, next) => {
-   res.header("Access-Control-Allow-Origin", req.headers.origin || ORIGIN);
+  res.header("Access-Control-Allow-Origin", req.headers.origin || ORIGIN);
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.header("Access-Control-Expose-Headers", "Set-Cookie");
@@ -246,26 +247,47 @@ app.get("/auth/google/callback", (req, res, next) => {
     }
 
     const { accessToken, refreshToken } = user.tokens;
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: true, // true in production (HTTPS)
-      sameSite: "None",
-    
-      // maxAge: 24 * 60 * 60 * 1000, // 1 hour
-      maxAge: 30 * 60 * 1000, // 30 minutes
-    });
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: true, // true in production (HTTPS)
-      sameSite: "None",
-    
-      maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
-    });
 
-    const { device } = state;
+    // Parse userAgent string sent in state.device
+    const userAgentString = state.device || "";
+    const parser = new UAParser(userAgentString);
+    const os = parser.getOS(); // e.g. { name: 'iOS', version: '15.3' }
+    const browser = parser.getBrowser(); // e.g. { name: 'Safari', version: '15.1' }
+
+    // Check for Apple device + Safari browser
+    const isAppleDevice = os.name === "iOS" || os.name === "Mac OS";
+    const isSafariBrowser = browser.name === "Safari";
+
+    const isAppleSafari = isAppleDevice && isSafariBrowser;
+
+    const accessTokenCookieOptions = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      maxAge: 30 * 60 * 1000,
+    };
+
+    const refreshTokenCookieOptions = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      maxAge: 10 * 24 * 60 * 60 * 1000,
+    };
+
+    if (isAppleSafari) {
+      accessTokenCookieOptions.partitioned = true;
+      refreshTokenCookieOptions.partitioned = true;
+      console.log("Setting partitioned cookies for Apple Safari (iOS/macOS)");
+    } else {
+      console.log("Setting normal cookies for other browsers");
+    }
+
+    res.cookie("accessToken", accessToken, accessTokenCookieOptions);
+    res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
+
     return res.redirect(
       `${ORIGIN}/googleCallback?authSuccess=true&device=${encodeURIComponent(
-        device
+        userAgentString
       )}`
     );
   })(req, res, next);
