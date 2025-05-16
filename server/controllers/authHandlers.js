@@ -245,14 +245,16 @@ exports.loginHandler = async (req, res) => {
      // ✅ Set refresh token in HttpOnly cookie
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // true in production (HTTPS)
-      sameSite: 'none',
+      secure:true, // true in production (HTTPS)
+      sameSite: 'None',
+       partitioned: true,
       maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
     });
       res.cookie('accessToken', accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // true in production (HTTPS)
-      sameSite: 'none',
+      secure: true, // true in production (HTTPS)
+      sameSite: 'None',
+       partitioned: true,
      // maxAge: 24 * 60 * 60 * 1000, // 1 hour
      maxAge: 30 * 60 * 1000, // 5 minutes
     });
@@ -834,14 +836,16 @@ exports.loginHandlerOwner = async (req, res) => {
 
       res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // true in production (HTTPS)
-      sameSite: 'none',
+      secure: true, // true in production (HTTPS)
+      sameSite: 'None',
+       partitioned: true,
       maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
     });
       res.cookie('accessToken', accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // true in production (HTTPS)
-      sameSite: 'none',
+      secure: true, // true in production (HTTPS)
+      sameSite: 'None',
+       partitioned: true,
      // maxAge: 24 * 60 * 60 * 1000, // 1 hour
      maxAge: 30 * 60 * 1000, // 5 minutes
     });

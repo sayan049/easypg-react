@@ -171,13 +171,13 @@ const corsOptions = {
     "Authorization",
     "X-Requested-With",
     "x-device-info",
+     "Access-Control-Allow-Credentials"
   ],
+    exposedHeaders: ["Set-Cookie"]
 };
 
 const app = express();
-// const server = http.createServer(app);
 
-// Initialize SocketManager with HTTP server
 
 app.set("trust proxy", 1);
 
@@ -190,19 +190,23 @@ app.use((req, res, next) => {
 });
 // Prerender.io middleware - for serving bots clean HTML
 
-app.use(cors(corsOptions));
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use((req, res, next) => {
+   res.header("Access-Control-Allow-Origin", corsOptions.origin);
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.header("Access-Control-Expose-Headers", "Set-Cookie");
+  next();
+});
+app.use(cors(corsOptions));
 prerender.set("prerenderToken", PRERENDER_TOKEN);
 app.use(prerender);
 
 app.use(passport.initialize());
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", corsOptions.origin);
-  res.header("Access-Control-Allow-Credentials", "true");
-  next();
-});
+
 
 // Database connection
 connectDB();
@@ -247,14 +251,16 @@ app.get("/auth/google/callback", (req, res, next) => {
     const { accessToken, refreshToken } = user.tokens;
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // true in production (HTTPS)
-      sameSite: "none",
+      secure: true, // true in production (HTTPS)
+      sameSite: "None",
+       partitioned: true,
       maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
     });
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // true in production (HTTPS)
-      sameSite: "none",
+      secure: true, // true in production (HTTPS)
+      sameSite: "None",
+       partitioned: true,
       // maxAge: 24 * 60 * 60 * 1000, // 1 hour
       maxAge: 30 * 60 * 1000, // 30 minutes
     });
