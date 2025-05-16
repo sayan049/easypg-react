@@ -203,13 +203,13 @@ router.post("/logout", authenticateJWT, async (req, res) => {
       httpOnly: true,
       sameSite: "none",
       secure: true,
-       partitioned: true,
+       
     });
     res.clearCookie("refreshToken", {
       httpOnly: true,
       sameSite: "none",
       secure: true,
-      partitioned: true,
+     
     });
 
     return res.status(200).json({ message: "Logged out successfully." });

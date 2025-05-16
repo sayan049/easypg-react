@@ -247,7 +247,7 @@ exports.loginHandler = async (req, res) => {
       httpOnly: true,
       secure: true, // true in production (HTTPS)
       sameSite: 'None',
-       partitioned: true,
+    
      // maxAge: 24 * 60 * 60 * 1000, // 1 hour
      maxAge: 30 * 60 * 1000, // 5 minutes
     });
@@ -255,7 +255,7 @@ exports.loginHandler = async (req, res) => {
       httpOnly: true,
       secure:true, // true in production (HTTPS)
       sameSite: 'None',
-       partitioned: true,
+      
       maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
     });
   
@@ -621,14 +621,14 @@ exports.loginHandlerOwner = async (req, res) => {
       httpOnly: true,
       secure: true, // true in production (HTTPS)
       sameSite: 'None',
-       partitioned: true,
+       
       maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
     });
       res.cookie('accessToken', accessToken, {
       httpOnly: true,
       secure: true, // true in production (HTTPS)
       sameSite: 'None',
-       partitioned: true,
+      
      // maxAge: 24 * 60 * 60 * 1000, // 1 hour
      maxAge: 30 * 60 * 1000, // 5 minutes
     });
