@@ -256,7 +256,7 @@ app.get("/auth/google/callback", (req, res, next) => {
       secure: process.env.NODE_ENV === "production", // true in production (HTTPS)
       sameSite: "none",
       // maxAge: 24 * 60 * 60 * 1000, // 1 hour
-      maxAge: 5 * 60 * 1000, // 5 minutes
+      maxAge: 30 * 60 * 1000, // 30 minutes
     });
     const { device } = state;
     return res.redirect(

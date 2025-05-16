@@ -224,7 +224,7 @@ exports.loginHandler = async (req, res) => {
     const accessToken = jwt.sign(
       { id: user._id, name, email: user.email, type: "student", loginMethod },
       JWT_SECRET,
-      { expiresIn: "5m" }
+      { expiresIn: "30m" }
     );
 
     const refreshToken = jwt.sign(
@@ -254,7 +254,7 @@ exports.loginHandler = async (req, res) => {
       secure: process.env.NODE_ENV === 'production', // true in production (HTTPS)
       sameSite: 'none',
      // maxAge: 24 * 60 * 60 * 1000, // 1 hour
-     maxAge: 5 * 60 * 1000, // 5 minutes
+     maxAge: 30 * 60 * 1000, // 5 minutes
     });
 
     res.status(200).json({
@@ -808,7 +808,7 @@ exports.loginHandlerOwner = async (req, res) => {
         loginMethod,
       },
       JWT_SECRET,
-      { expiresIn: "5m" }
+      { expiresIn: "30m" }
     );
 
     const refreshToken = jwt.sign(
@@ -843,7 +843,7 @@ exports.loginHandlerOwner = async (req, res) => {
       secure: process.env.NODE_ENV === 'production', // true in production (HTTPS)
       sameSite: 'none',
      // maxAge: 24 * 60 * 60 * 1000, // 1 hour
-     maxAge: 5 * 60 * 1000, // 5 minutes
+     maxAge: 30 * 60 * 1000, // 5 minutes
     });
 
     res.status(200).json({

@@ -17,17 +17,17 @@ function GoogleCallbackPage() {
         if (!accessToken || !refreshToken) {
           throw new Error("Authentication failed: Missing tokens.");
         }
-
+        setTokensSet(true);
         // Safely store tokens in localStorage
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
+        // localStorage.setItem("accessToken", accessToken);
+        // localStorage.setItem("refreshToken", refreshToken);
 
         // Confirm tokens are stored before triggering re-render
         if (
           localStorage.getItem("accessToken") === accessToken &&
           localStorage.getItem("refreshToken") === refreshToken
         ) {
-          setTokensSet(true); // Set state to signal that tokens are set
+          // setTokensSet(true); // Set state to signal that tokens are set
         } else {
           throw new Error("Failed to store authentication tokens.");
         }
