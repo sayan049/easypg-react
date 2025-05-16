@@ -1012,7 +1012,6 @@ function SignupOwner() {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
-          console.log("Latitude:", latitude, "Longitude:", longitude);
 
           // Fetch address from Google Maps API (optional, if you need to display it later)
           try {
@@ -1297,7 +1296,7 @@ function SignupOwner() {
       });
 
       if (response.status === 201) {
-        console.log("Response:", response.data);
+        // console.log("Response:", response.data);
 
         const a = "Please verify your email to log in";
         localStorage.setItem("loginMessageOwner", a);

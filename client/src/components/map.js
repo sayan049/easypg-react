@@ -27,7 +27,7 @@ function MapComponent({ isChecked, coordinates }) {
     // Ensure coordinates are numbers
     const { lat, lng } = coordinates;
     const centerCoordinates = fromLonLat([lng, lat]);
-    console.log("fuck"+coordinates+" "+lng+" "+lat+" "+centerCoordinates);
+
 
     // Create a marker feature
     const marker = new Feature({

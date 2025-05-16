@@ -101,10 +101,10 @@ const Cart = () => {
       // Assuming likedData is an array of mess objects, not just IDs
       likedData.forEach((mess) => {
         likedMap[mess._id] = true; // Storing the mess ID in the map
-        console.log("Liked Mess ID:", mess._id); // Log the actual mess ID
+       // console.log("Liked Mess ID:", mess._id); // Log the actual mess ID
       });
 
-      console.log("Liked Messes:", likedMap); // Log the full map of liked messes
+     // console.log("Liked Messes:", likedMap); // Log the full map of liked messes
       setLiked(likedMap); // Update state with the liked messes map
     } catch (err) {
       console.error("Failed to fetch liked messes", err);

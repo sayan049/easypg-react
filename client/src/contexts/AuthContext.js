@@ -46,9 +46,7 @@ export const AuthProvider = ({ children }) => {
   const [hasRefreshToken, setHasRefreshToken] = useState(null);
   const [hasAccessToken, setHasAccessToken] = useState(null);
 
-  useEffect(() => {
-    console.log("axy", hasRefreshToken);
-  }, [hasRefreshToken]);
+
 
   const checkRefreshToken = async () => {
     try {
@@ -121,11 +119,6 @@ export const AuthProvider = ({ children }) => {
           },
           credentials: "include", // ✅ Important for cookies
         });
-        console.log(
-          "Initial check-session response:",
-          response.status,
-          await response.clone().json()
-        );
         // If the access token is expired, try refreshing it
         if (response.status === 401) {
           const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
@@ -150,7 +143,7 @@ export const AuthProvider = ({ children }) => {
               },
               credentials: "include",
             });
-            console.log("res", response);
+        //    console.log("res", response);
           } else {
             // If refresh token is invalid, reset the state and return
             resetState();
@@ -324,7 +317,7 @@ export const AuthProvider = ({ children }) => {
         setOwnerImage(null);
         setIsOwnerAuthenticated(false);
 
-        console.log(logoutData.message); // Optional: Log the server response
+     //   console.log(logoutData.message); // Optional: Log the server response
       } else {
         console.error("Logout error:", logoutData.message);
         alert("Your session has expired or is invalid. Please log in again.");
