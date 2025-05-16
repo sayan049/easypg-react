@@ -143,7 +143,8 @@ function MessBars({
     if (!IsAuthenticated) return;
     try {
       const res = await axios.get(getLikedMessUrl, {
-        headers: { Authorization: `Bearer ${token}` },
+       // headers: { Authorization: `Bearer ${token}` },
+       withCredentials: true,
       });
 
       const likedData = res.data || [];

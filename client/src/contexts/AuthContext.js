@@ -84,12 +84,12 @@ export const AuthProvider = ({ children }) => {
       return;
     }
   };
-  useEffect(() => {
-    checkRefreshToken();
-  }, []);
-  useEffect(() => {
-    checkAccessToken();
-  }, []);
+  // useEffect(() => {
+  //   checkRefreshToken();
+  // }, []);
+  // useEffect(() => {
+  //   checkAccessToken();
+  // }, []);
 
   useEffect(() => {
     const checkSession = async () => {
