@@ -190,7 +190,7 @@ const SettingsOwner = ({ userDetails }) => {
       }));
     }
   }, [userDetails]);
-  console.log(details);
+ // console.log(details);
   // Inside your component
   const renumberRooms = (rooms) => {
     return rooms.map((room, index) => ({
@@ -281,7 +281,7 @@ const SettingsOwner = ({ userDetails }) => {
       if (res.ok) {
         toast.success("Updated successfully!");
         //alert("Updated successfully!");
-        console.log(result.data);
+      //  console.log(result.data);
       } else {
         toast.error(result.error || "Update failed.");
         // alert(result.error || "Update failed.");

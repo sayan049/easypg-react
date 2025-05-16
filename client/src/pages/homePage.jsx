@@ -180,7 +180,7 @@ const HomePage = () => {
         console.error("Error decoding or accessing token:", error);
       }
     } else {
-      console.log("Token is not present in cookies");
+     // console.log("Token is not present in cookies");
     }
   }, [IsAuthenticated, userName, isOwnerAuthenticated, ownerName]);
 

@@ -83,7 +83,7 @@ function SignUpForm() {
 
     try {
       const res = await axios.get(url);
-      console.log(res.data, url, accessKey);
+    //  console.log(res.data, url, accessKey);
       return true;
     } catch (err) {
       console.error("Error validating email:", err);

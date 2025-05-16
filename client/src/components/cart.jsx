@@ -66,7 +66,8 @@ const Cart = () => {
     try {
       const res = await axios.get(getCartUrl, {
         headers: {
-          // Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
         },
         withCredentials: true,
       });
@@ -87,6 +88,10 @@ const Cart = () => {
     try {
       const res = await axios.get(getLikedMessUrl, {
         //  headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
+        },
         withCredentials: true,
       });
 
@@ -96,10 +101,10 @@ const Cart = () => {
       // Assuming likedData is an array of mess objects, not just IDs
       likedData.forEach((mess) => {
         likedMap[mess._id] = true; // Storing the mess ID in the map
-        console.log("Liked Mess ID:", mess._id); // Log the actual mess ID
+       // console.log("Liked Mess ID:", mess._id); // Log the actual mess ID
       });
 
-      console.log("Liked Messes:", likedMap); // Log the full map of liked messes
+     // console.log("Liked Messes:", likedMap); // Log the full map of liked messes
       setLiked(likedMap); // Update state with the liked messes map
     } catch (err) {
       console.error("Failed to fetch liked messes", err);
@@ -124,6 +129,7 @@ const Cart = () => {
           withCredentials: true, // Automatically send cookies
           headers: {
             "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
           },
         }
       );

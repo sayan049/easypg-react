@@ -117,6 +117,7 @@ function LoginUser() {
         headers: {
           "Content-Type": "application/json",
           "X-Device-Info": deviceInfo,
+          "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
         },
         withCredentials: true, // ✅ Important: send cookies!
       });
@@ -129,7 +130,7 @@ function LoginUser() {
         // localStorage.setItem("accessToken", accessToken);
         // localStorage.setItem("refreshToken", refreshToken);
         // ✅ Store accessToken in memory (state)
-        console.log(accessToken);
+      //  console.log(accessToken);
         //setCurrentAccessToken(accessToken); // e.g., using React state, Redux, etc.
 
         

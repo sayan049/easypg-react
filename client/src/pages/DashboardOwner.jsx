@@ -63,6 +63,7 @@ export default function DashboardOwner() {
           credentials: "include", // Automatically send cookies
           headers: {
             "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
           },
         });
         if (!response.ok) throw new Error("Failed to fetch dashboard data");

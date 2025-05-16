@@ -61,7 +61,7 @@ const DashboardContent = ({
   const [cancelReason, setCancelReason] = useState("");
   const handleCancelBooking = async (bookingId) => {
     try {
-      console.log("Cancel Booking ID:", bookingId);
+     // console.log("Cancel Booking ID:", bookingId);
       const token = localStorage.getItem("accessToken");
       const res = await axios.post(
         `${baseurl}/auth/bookings/${bookingId}/cancel`,
@@ -69,8 +69,9 @@ const DashboardContent = ({
         {
           withCredentials: true, // Automatically send cookies
           headers: {
-            "Content-Type": "application/json",
-          },
+    "Content-Type": "application/json",
+    "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
+  }
         }
       );
 
@@ -97,9 +98,9 @@ const DashboardContent = ({
       setIsSubmitting(false); // Stop loading
       return;
     }
-    console.log("Selected Stay:", selectedStay);
-    console.log("User ID:", user._id);
-    console.log("Selected Stay Student ID:", selectedStay.student._id);
+    // console.log("Selected Stay:", selectedStay);
+    // console.log("User ID:", user._id);
+    // console.log("Selected Stay Student ID:", selectedStay.student._id);
     // Now student is an object, so we check selectedStay.student._id
     if (selectedStay.student?._id?.toString() !== user._id.toString()) {
       alert("You can only submit a maintenance request for your own stay.");
@@ -134,11 +135,13 @@ const DashboardContent = ({
           withCredentials: true, // Automatically send cookies
           headers: {
             "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
           },
         }
       );
-      alert("Maintenance request submitted successfully!");
-      console.log("Response:", response.data);
+      toast.success("Maintenance request submitted successfully!")
+    //  alert("Maintenance request submitted successfully!");
+     // console.log("Response:", response.data);
       // Optionally, reset form fields
       setTitle("");
       setDescription("");

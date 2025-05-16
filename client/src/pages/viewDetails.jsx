@@ -69,7 +69,6 @@ const ViewDetails = () => {
   const lng = locationArray[0] || 0;
   const coordinates = { lat, lng };
   const { messId } = useParams();
-  console.log(messId);
 
   useEffect(() => {
     const fetchMessDetails = async () => {
@@ -153,9 +152,7 @@ const ViewDetails = () => {
     triggerOnce: false, // Keep observing
   });
 
-  useEffect(() => {
-    console.log(footerInView);
-  }, [footerInView]);
+
 
   // Render stars for ratings
   const renderStars = (rating) => {
@@ -476,7 +473,6 @@ const ViewDetails = () => {
                   const count = ratingCounts[star - 1];
                   const percent =
                     total > 0 ? ((count / total) * 100).toFixed(0) : "0";
-                  console.log("percent", percent);
                   return (
                     <div key={star} className="flex items-center gap-2">
                       <div className="w-12 text-gray-600 text-sm">{star} ★</div>

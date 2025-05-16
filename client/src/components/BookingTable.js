@@ -1088,6 +1088,7 @@ const BookingTable = ({
           withCredentials: true, // Automatically send cookies
           headers: {
             "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
           },
         }
       );
@@ -1119,6 +1120,7 @@ const BookingTable = ({
           withCredentials: true, // Automatically send cookies
           headers: {
             "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
           },
           responseType: "blob",
         }
