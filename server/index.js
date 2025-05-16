@@ -194,7 +194,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", req.headers.origin || ORIGIN);
+   res.header("Access-Control-Allow-Origin", req.headers.origin || ORIGIN);
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.header("Access-Control-Expose-Headers", "Set-Cookie");
@@ -231,9 +231,7 @@ app.get("/auth/google-owner", (req, res, next) => {
 });
 
 app.get("/auth/google/callback", (req, res, next) => {
-  // Parse state parameter (contains device info)
   const state = req.query.state ? JSON.parse(req.query.state) : {};
-
   passport.authenticate("google", (err, user, info) => {
     if (err) {
       console.error("Authentication Error:", err.message);
@@ -249,50 +247,26 @@ app.get("/auth/google/callback", (req, res, next) => {
     }
 
     const { accessToken, refreshToken } = user.tokens;
-
-    // Parse user-agent string sent in state.device
-    const userAgentString = state.device || "";
-    const parser = new UAParser(userAgentString);
-    const os = parser.getOS(); // e.g. { name: 'iOS', version: '15.3' }
-    const browser = parser.getBrowser(); // e.g. { name: 'Safari', version: '15.1' }
-
-    // Detect Apple device and Safari browser
-    const isAppleDevice = os.name === "iOS" || os.name === "Mac OS";
-    const isSafariBrowser = browser.name === "Safari";
-    const isAppleSafari = isAppleDevice && isSafariBrowser;
-
-    // Cookie options
-    const accessTokenCookieOptions = {
+    res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: true,
+      secure: true, // true in production (HTTPS)
       sameSite: "None",
+    
+      // maxAge: 24 * 60 * 60 * 1000, // 1 hour
       maxAge: 30 * 60 * 1000, // 30 minutes
-    };
-
-    const refreshTokenCookieOptions = {
+    });
+    res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true,
+      secure: true, // true in production (HTTPS)
       sameSite: "None",
+    
       maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
-    };
+    });
 
-    if (isAppleSafari) {
-      // Safari on iOS/macOS requires partitioned cookies
-      accessTokenCookieOptions.partitioned = true;
-      refreshTokenCookieOptions.partitioned = true;
-      console.log("Setting partitioned cookies for Apple Safari (iOS/macOS)");
-    } else {
-      console.log("Setting normal cookies for other browsers");
-    }
-
-    // Set cookies
-    res.cookie("accessToken", accessToken, accessTokenCookieOptions);
-    res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
-
-    // Redirect to frontend with success and device info
+    const { device } = state;
     return res.redirect(
       `${ORIGIN}/googleCallback?authSuccess=true&device=${encodeURIComponent(
-        userAgentString
+        device
       )}`
     );
   })(req, res, next);
