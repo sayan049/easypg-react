@@ -251,7 +251,7 @@ app.get("/auth/google/callback", (req, res, next) => {
       httpOnly: true,
       secure: true, // true in production (HTTPS)
       sameSite: "None",
-    
+      domain: '.messmate.co.in',
       // maxAge: 24 * 60 * 60 * 1000, // 1 hour
       maxAge: 30 * 60 * 1000, // 30 minutes
     });
@@ -259,7 +259,7 @@ app.get("/auth/google/callback", (req, res, next) => {
       httpOnly: true,
       secure: true, // true in production (HTTPS)
       sameSite: "None",
-    
+      domain: '.messmate.co.in',
       maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
     });
 
