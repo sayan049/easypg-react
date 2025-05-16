@@ -254,13 +254,12 @@ function LoginOwner() {
       setIsSendingVerification(false);
     }
   };
-const loginwithgoogleOwner = () => {
-  const deviceInfo = navigator.userAgent; // Capture device info (user agent string)
-  const state = JSON.stringify({ type: "owner", device: deviceInfo }); // Include device info in state
-  window.location.href =
-    `${baseurl}/auth/google-owner?state=` + encodeURIComponent(state); // Redirect with encoded state
-};
-
+  const loginwithgoogleOwner = () => {
+    const deviceInfo = navigator.userAgent; // Capture device info (e.g., user agent)
+    const state = JSON.stringify({ type: "owner", device: deviceInfo }); // Add device info in the state
+    window.location.href =
+      `${baseurl}/auth/google-owner?state=` + encodeURIComponent(state); // Send the state with device info
+  };
 
   const openForgotPassword = () => {
     setIsForgotPasswordOpen(true);
