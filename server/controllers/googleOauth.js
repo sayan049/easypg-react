@@ -76,20 +76,8 @@ passport.use(
           });
 
           user.save();
-          res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production", // true in production (HTTPS)
-            sameSite: "none",
-            maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
-          });
-          res.cookie("accessToken", accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production", // true in production (HTTPS)
-            sameSite: "none",
-            // maxAge: 24 * 60 * 60 * 1000, // 1 hour
-            maxAge: 5 * 60 * 1000, // 5 minutes
-          });
-        //  return { accessToken, refreshToken };
+        
+          return { accessToken, refreshToken };
         };
 
         if (userType === "student") {

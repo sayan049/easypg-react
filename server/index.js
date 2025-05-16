@@ -1,4 +1,3 @@
-
 // const express = require("express");
 // const cors = require("cors");
 // const bodyParser = require("body-parser");
@@ -152,12 +151,12 @@ const authRoutes = require("./routes/auth");
 const mailRoute = require("./routes/mailVerifierRoute");
 const mailVerifyOwner = require("./routes/mailVerifyOwner");
 const connectDB = require("./config/mongoDB");
-const prerender = require('prerender-node');
+const prerender = require("prerender-node");
 // const http = require('http');
 // const SocketManager = require('./sockets/bookingSocket'); // Update with correct path
 //  const ORIGIN =  process.env.CLIENT_URL || "https://messmate-client.onrender.com"; // Default to localhost if not set
 //  const ORIGIN =  "https://messmate-client.onrender.com";
-const ORIGIN = process.env.CLIENT_URL ; // Default to localhost if not set
+const ORIGIN = process.env.CLIENT_URL; // Default to localhost if not set
 const PORT = process.env.PORT || 8080;
 const PRERENDER_TOKEN = process.env.PRERENDER_TOKEN;
 console.log(ORIGIN, "origin");
@@ -180,7 +179,6 @@ const app = express();
 
 // Initialize SocketManager with HTTP server
 
-
 app.set("trust proxy", 1);
 
 // Force HTTPS redirect
@@ -192,23 +190,19 @@ app.use((req, res, next) => {
 });
 // Prerender.io middleware - for serving bots clean HTML
 
-
-
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-prerender.set('prerenderToken', PRERENDER_TOKEN);
+prerender.set("prerenderToken", PRERENDER_TOKEN);
 app.use(prerender);
 
 app.use(passport.initialize());
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', corsOptions.origin);
-  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header("Access-Control-Allow-Origin", corsOptions.origin);
+  res.header("Access-Control-Allow-Credentials", "true");
   next();
 });
-
-
 
 // Database connection
 connectDB();
@@ -251,6 +245,19 @@ app.get("/auth/google/callback", (req, res, next) => {
     }
 
     const { accessToken, refreshToken } = user.tokens;
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // true in production (HTTPS)
+      sameSite: "none",
+      maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
+    });
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // true in production (HTTPS)
+      sameSite: "none",
+      // maxAge: 24 * 60 * 60 * 1000, // 1 hour
+      maxAge: 5 * 60 * 1000, // 5 minutes
+    });
     const { device } = state;
     return res.redirect(
       `${ORIGIN}/googleCallback/?accessToken=${accessToken}&refreshToken=${refreshToken}&device=${encodeURIComponent(
@@ -259,8 +266,6 @@ app.get("/auth/google/callback", (req, res, next) => {
     );
   })(req, res, next);
 });
-
-
 
 app.get("/", (req, res) => {
   res.send("Server is running");
