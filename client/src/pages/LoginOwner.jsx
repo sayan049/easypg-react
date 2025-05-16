@@ -130,13 +130,15 @@ function LoginOwner() {
           "Content-Type": "application/json",
           "X-Device-Info": deviceInfo,
         },
+         withCredentials: true,
       });
       if (response.status === 200) {
         const { accessToken, refreshToken } = response.data;
 
         // Store tokens in localStorage
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
+        // localStorage.setItem("accessToken", accessToken);
+        // localStorage.setItem("refreshToken", refreshToken);
+
 
         // const message = `Welcome ${userData.name}!`;
         // localStorage.setItem("sId_message", message);
