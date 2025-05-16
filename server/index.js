@@ -231,7 +231,9 @@ app.get("/auth/google-owner", (req, res, next) => {
 });
 
 app.get("/auth/google/callback", (req, res, next) => {
+  // Parse state parameter (contains device info)
   const state = req.query.state ? JSON.parse(req.query.state) : {};
+
   passport.authenticate("google", (err, user, info) => {
     if (err) {
       console.error("Authentication Error:", err.message);
@@ -248,33 +250,34 @@ app.get("/auth/google/callback", (req, res, next) => {
 
     const { accessToken, refreshToken } = user.tokens;
 
-    // Parse userAgent string sent in state.device
+    // Parse user-agent string sent in state.device
     const userAgentString = state.device || "";
     const parser = new UAParser(userAgentString);
     const os = parser.getOS(); // e.g. { name: 'iOS', version: '15.3' }
     const browser = parser.getBrowser(); // e.g. { name: 'Safari', version: '15.1' }
 
-    // Check for Apple device + Safari browser
+    // Detect Apple device and Safari browser
     const isAppleDevice = os.name === "iOS" || os.name === "Mac OS";
     const isSafariBrowser = browser.name === "Safari";
-
     const isAppleSafari = isAppleDevice && isSafariBrowser;
 
+    // Cookie options
     const accessTokenCookieOptions = {
       httpOnly: true,
       secure: true,
       sameSite: "None",
-      maxAge: 30 * 60 * 1000,
+      maxAge: 30 * 60 * 1000, // 30 minutes
     };
 
     const refreshTokenCookieOptions = {
       httpOnly: true,
       secure: true,
       sameSite: "None",
-      maxAge: 10 * 24 * 60 * 60 * 1000,
+      maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
     };
 
     if (isAppleSafari) {
+      // Safari on iOS/macOS requires partitioned cookies
       accessTokenCookieOptions.partitioned = true;
       refreshTokenCookieOptions.partitioned = true;
       console.log("Setting partitioned cookies for Apple Safari (iOS/macOS)");
@@ -282,9 +285,11 @@ app.get("/auth/google/callback", (req, res, next) => {
       console.log("Setting normal cookies for other browsers");
     }
 
+    // Set cookies
     res.cookie("accessToken", accessToken, accessTokenCookieOptions);
     res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
 
+    // Redirect to frontend with success and device info
     return res.redirect(
       `${ORIGIN}/googleCallback?authSuccess=true&device=${encodeURIComponent(
         userAgentString
