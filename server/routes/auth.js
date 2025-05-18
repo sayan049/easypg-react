@@ -100,29 +100,7 @@ router.get("/check-session", authenticateJWT, (req, res) => {
   // const accessToken = req.headers['authorization']?.split(' ')[1]; // Get token from Authorization header
   const accessToken = req.cookies?.accessToken;
   const decoded = req.user;
-  // Verify the access token
-  // jwt.verify(accessToken, JWT_SECRET, (err, decoded) => {
-  //   if (err) {
-  //     return res.status(401).json({ isAuthenticated: false, message: "Invalid or expired access token." });
-  //   }
-
-  //   // console.log(decoded.id, decoded.email, decoded.type, decoded.name);
-
-  //   // Prepare response
-  //   const userResponse = {
-  //     isAuthenticated: true,
-  //     user: { id: decoded.id, email: decoded.email, type: decoded.type, name: decoded.name },
-  //     loginMethod: decoded.loginMethod,
-  //   };
-
-  //   // If user is an owner, attach the image
-  //   if (decoded.loginMethod === 'google') {
-  //     userResponse.user.image = decoded.image; // Assuming the image is stored in the decoded token
-  //   }
-
-  //   // Send the response with the user data
-  //   return res.status(200).json(userResponse);
-  // });
+ 
   const userResponse = {
     isAuthenticated: true,
     user: {
@@ -163,7 +141,7 @@ router.post("/logout", authenticateJWT, async (req, res) => {
     // Remove the refresh token based on the user type and device
     //const refreshToken = req.body.refreshToken; // Assumes the refresh token is sent in the body
     const refreshToken = req.cookies?.refreshToken;
-    console.log("logout" , refreshToken);
+    console.log("logout", refreshToken);
 
     if (!refreshToken) {
       return res
@@ -201,15 +179,17 @@ router.post("/logout", authenticateJWT, async (req, res) => {
 
     res.clearCookie("accessToken", {
       httpOnly: true,
+      secure: true, // true in production (HTTPS)
       sameSite: "None",
-      secure: true,
-      domain: '.messmate.co.in',
+      domain: ".messmate.co.in",
+      path: "/",
     });
     res.clearCookie("refreshToken", {
       httpOnly: true,
+      secure: true, // true in production (HTTPS)
       sameSite: "None",
-      secure: true,
-      domain: '.messmate.co.in',
+      domain: ".messmate.co.in",
+      path: "/",
     });
 
     return res.status(200).json({ message: "Logged out successfully." });

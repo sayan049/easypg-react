@@ -242,28 +242,26 @@ exports.loginHandler = async (req, res) => {
 
     await user.save();
 
-     // ✅ Set refresh token in HttpOnly cookie
-         res.cookie('accessToken', accessToken, {
+    // ✅ Set refresh token in HttpOnly cookie
+    res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true, // true in production (HTTPS)
-      sameSite: 'None',
-      domain: '.messmate.co.in',
-     // maxAge: 24 * 60 * 60 * 1000, // 1 hour
-     maxAge: 30 * 60 * 1000, // 5 minutes
+      sameSite: "None",
+      domain: ".messmate.co.in",
+      path: "/",
+      maxAge: 30 * 60 * 1000, // 30 minutes
     });
-    res.cookie('refreshToken', refreshToken, {
+    res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure:true, // true in production (HTTPS)
-      sameSite: 'None',
-      domain: '.messmate.co.in',
+      secure: true, // true in production (HTTPS)
+      sameSite: "None",
+      domain: ".messmate.co.in",
+      path: "/",
       maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
     });
-  
 
     res.status(200).json({
       message: "Login successful.",
-     // accessToken,
-      // refreshToken,
     });
 
     console.log("Successfully logged in");
@@ -272,7 +270,6 @@ exports.loginHandler = async (req, res) => {
     res.status(500).json({ message: "Server error." });
   }
 };
-
 
 exports.signupHandlerOwner = async (req, res) => {
   const {
@@ -295,17 +292,16 @@ exports.signupHandlerOwner = async (req, res) => {
   } = req.body;
 
   let rules = rulesToStay;
-if (typeof rules === "string") {
-  try {
-    rules = JSON.parse(rules);
-  } catch (e) {
-    rules = rules.split(",").map((item) => item.trim());
+  if (typeof rules === "string") {
+    try {
+      rules = JSON.parse(rules);
+    } catch (e) {
+      rules = rules.split(",").map((item) => item.trim());
+    }
   }
-}
-if (!Array.isArray(rules)) {
-  rules = [rules];
-}
-
+  if (!Array.isArray(rules)) {
+    rules = [rules];
+  }
 
   console.log(req.body.location);
 
@@ -403,7 +399,7 @@ if (!Array.isArray(rules)) {
       gender,
       roomInfo: parsedRoomInfo,
       minimumSecurityDeposit,
-      rulesToStay : rules,
+      rulesToStay: rules,
       minimumBookingDuration,
     });
 
@@ -616,27 +612,28 @@ exports.loginHandlerOwner = async (req, res) => {
     });
 
     await pgOwner.save();
-
-      res.cookie('refreshToken', refreshToken, {
+     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true, // true in production (HTTPS)
-      sameSite: 'None',
-      domain: '.messmate.co.in',
+      sameSite: "None",
+      domain: ".messmate.co.in",
+      path: "/",
+      maxAge: 30 * 60 * 1000, // 30 minutes
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true, // true in production (HTTPS)
+      sameSite: "None",
+      domain: ".messmate.co.in",
+      path: "/",
       maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
     });
-      res.cookie('accessToken', accessToken, {
-      httpOnly: true,
-      secure: true, // true in production (HTTPS)
-      sameSite: 'None',
-      domain: '.messmate.co.in',
-     // maxAge: 24 * 60 * 60 * 1000, // 1 hour
-     maxAge: 30 * 60 * 1000, // 5 minutes
-    });
+   
 
     res.status(200).json({
       message: "Login successful.",
-      // accessToken,
-      // refreshToken,
+      
     });
 
     console.log("Successfully logged in");

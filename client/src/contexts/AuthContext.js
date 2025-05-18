@@ -84,24 +84,17 @@ export const AuthProvider = ({ children }) => {
       return;
     }
   };
-  // useEffect(() => {
-  //   checkRefreshToken();
-  // }, []);
-  // useEffect(() => {
-  //   checkAccessToken();
-  // }, []);
+
 
   useEffect(() => {
     const checkSession = async () => {
       try {
         setLoading(true);
 
-        // const accessToken = localStorage.getItem("accessToken");
-        // const refreshToken = localStorage.getItem("refreshToken");
-        // No access token in memory initially
+       
         const accessToken = "xxx";
         const refreshToken = hasRefreshToken;
-        // console.log(accessToken, refreshToken);
+      
 
         const deviceInfo = navigator.userAgent || "Unknown Device";
 
@@ -122,7 +115,7 @@ export const AuthProvider = ({ children }) => {
           credentials: "include", // ✅ Important for cookies
         });
         // If the access token is expired, try refreshing it
-        if (response.status === 401) {
+       if (response.status === 401 || response.status === 403) {
           const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
             method: "POST",
             // headers: { "Content-Type": "application/json", "X-Device-Info": deviceInfo, },
@@ -236,50 +229,32 @@ export const AuthProvider = ({ children }) => {
     setLoading(true); // Start the loading indicator
 
     try {
-      // let accessToken = localStorage.getItem("accessToken");
-      // const refreshToken = localStorage.getItem("refreshToken");
+    
       const deviceInfo = navigator.userAgent || "Unknown Device";
-
-      // if (!hasRefreshToken) {
-      //   alert("No refresh token found. Please log in again.");
-      //   setLoading(false);
-      //   return;
-      // }
-
-      // if (!hasAccessToken) {
-      //   console.log("Access token not found. Trying to refresh...");
-      // }
 
       // Check session using the access token
       const sessionResponse = await fetch(`${baseurl}/auth/check-session`, {
         method: "GET",
         headers: {
-          //  Authorization: `Bearer ${accessToken}`,
+          
           "Content-Type": "application/json",
         },
         credentials: "include",
       });
 
       // if (sessionResponse.status === 401 || !accessToken) {
-      if (sessionResponse.status === 401 ) {
+     if (response.status === 401 || response.status === 403) {
         console.log("Access token expired. Refreshing...");
         // Refresh the access token if it's expired
         const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
-          // method: "POST",
-          // headers: {
-          //   "Content-Type": "application/json",
-          //   "X-Device-Info": deviceInfo,
-          // },
-          // body: JSON.stringify({ refreshToken }),
+          
           method: "POST",
           headers: { "X-Device-Info": deviceInfo },
           credentials: "include",
         });
 
         if (refreshResponse.ok) {
-          //const { accessToken: newAccessToken } = await refreshResponse.json();
-          //localStorage.setItem("accessToken", newAccessToken);
-          //accessToken = newAccessToken; // Use the new access token for logout
+         
           console.log("Access token refreshed successfully.");
         } else {
           console.error("Failed to refresh access token.");
@@ -293,7 +268,7 @@ export const AuthProvider = ({ children }) => {
       const logoutResponse = await fetch(`${baseurl}/auth/logout`, {
         method: "POST",
         headers: {
-          //  Authorization: `Bearer ${accessToken}`, // Use the updated or refreshed token
+        
           "Content-Type": "application/json",
           "X-Device-Info": deviceInfo,
         },
@@ -304,9 +279,7 @@ export const AuthProvider = ({ children }) => {
       const logoutData = await logoutResponse.json();
 
       if (logoutResponse.ok) {
-        // Clear tokens and reset state on successful logout
-        // localStorage.removeItem("accessToken");
-        // localStorage.removeItem("refreshToken");
+        
 
         setIsAuthenticated(false);
         setUser(null);
