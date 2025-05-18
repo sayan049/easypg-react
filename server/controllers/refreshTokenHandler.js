@@ -62,11 +62,12 @@ const refreshToken = {
       // Generate a new access token
       const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "30m" });
       res.cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // true in prod (HTTPS)
-        sameSite: "none", // Or "strict"
-        //maxAge: 60 * 60 * 1000, // 1 hour
-        maxAge: 30 * 60 * 1000, // 5 minutes
+       httpOnly: true,
+      secure: true, // true in production (HTTPS)
+      sameSite: "None",
+      domain: ".messmate.co.in",
+      path: "/",
+      maxAge: 30 * 60 * 1000, // 30 minutes
       });
 
       //res.status(200).json({ accessToken });

@@ -242,27 +242,26 @@ exports.loginHandler = async (req, res) => {
 
     await user.save();
 
-     // ✅ Set refresh token in HttpOnly cookie
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure:true, // true in production (HTTPS)
-      sameSite: 'None',
-       partitioned: true,
-      maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
-    });
-      res.cookie('accessToken', accessToken, {
+    // ✅ Set refresh token in HttpOnly cookie
+    res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true, // true in production (HTTPS)
-      sameSite: 'None',
-       partitioned: true,
-     // maxAge: 24 * 60 * 60 * 1000, // 1 hour
-     maxAge: 30 * 60 * 1000, // 5 minutes
+      sameSite: "None",
+      domain: ".messmate.co.in",
+      path: "/",
+      maxAge: 30 * 60 * 1000, // 30 minutes
+    });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true, // true in production (HTTPS)
+      sameSite: "None",
+      domain: ".messmate.co.in",
+      path: "/",
+      maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
     });
 
     res.status(200).json({
       message: "Login successful.",
-     // accessToken,
-      // refreshToken,
     });
 
     console.log("Successfully logged in");
@@ -272,225 +271,6 @@ exports.loginHandler = async (req, res) => {
   }
 };
 
-// Remove JSON.parse for roomInfo, no need to parse it manually
-// exports.signupHandlerOwner = async (req, res) => {
-//   const {
-//     firstName,
-//     lastName,
-//     email,
-//     address,
-//     password,
-//     pincode,
-//     mobileNo,
-//     messName,
-//     aboutMess,
-//     location,
-//     facility,
-//     gender,
-//     roomInfo, // Directly use roomInfo from req.body
-//   } = req.body;
-// console.log(req.body);
-//   let { profilePhoto, messPhoto } = req.files;
-
-//   try {
-//     // Check if the user already exists
-//     const existingUser = await PgOwner.findOne({ email });
-//     if (existingUser) {
-//       console.log({ error: `${email} already exists` });
-//       return res.status(400).json({ error: `${email} already exists` });
-//     }
-
-//     // Validate password
-//     if (!password) {
-//       console.log({ error: "Password is required" });
-//       return res.status(400).json({ error: "Password is required" });
-//     }
-
-//     // Hash the password
-//     const hashedPassword = await bcrypt.hash(password, 10);
-
-//     // Process profile photo
-//     if (profilePhoto && profilePhoto[0]) {
-//       const result = await cloudinary.uploader.upload(profilePhoto[0].path);
-//       profilePhoto = result.secure_url; // Save Cloudinary URL
-//     }
-
-//     // Process mess photos
-//     if (messPhoto && messPhoto.length > 0) {
-//       const messPhotoUrls = [];
-//       for (const photo of messPhoto) {
-//         const result = await cloudinary.uploader.upload(photo.path);
-//         messPhotoUrls.push(result.secure_url); // Save Cloudinary URLs
-//       }
-//       messPhoto = messPhotoUrls;
-//     }
-
-//     // Parse roomInfo if it exists
-//     let parsedRoomInfo = [];
-//     if (roomInfo && typeof roomInfo === 'string') {
-//       try {
-//         parsedRoomInfo = JSON.parse(roomInfo);
-//       } catch (error) {
-//         console.error("Error parsing roomInfo:", error);
-//         return res.status(400).json({ error: 'Invalid roomInfo format' });
-//       }
-//     }
-
-//     // Create new PG Owner
-//     const newOwner = await PgOwner.create({
-//       firstName,
-//       lastName,
-//       email,
-//       address,
-//       password: hashedPassword,
-//       pincode,
-//       mobileNo,
-//       messName,
-//       aboutMess,
-//       location,
-//       profilePhoto,
-//       messPhoto,
-//       facility,
-//       gender,
-//       roomInfo: parsedRoomInfo,
-//     });
-
-//     // Send confirmation email
-//     sendmailOwner(firstName, email, newOwner._id);
-
-//     // Return success response
-//     return res.status(201).json(newOwner);
-//   } catch (error) {
-//     console.error("Error creating user:", error);
-//     return res.status(500).json({ error: "Internal Server Error" });
-//   }
-// };
-
-// exports.signupHandlerOwner = async (req, res) => {
-//   const {
-//     firstName,
-//     lastName,
-//     email,
-//     address,
-//     password,
-//     pincode,
-//     mobileNo,
-//     messName,
-//     aboutMess,
-//     location,
-//     facility,
-//     gender,
-//     roomInfo,
-//   } = req.body;
-
-//   console.log(req.body.location); // Log location to check the format
-//   // Process facility array
-//   let facilities = req.body.facility;
-
-//   // Handle case where facility might come as string
-//   if (typeof facilities === "string") {
-//     try {
-//       facilities = JSON.parse(facilities);
-//     } catch (e) {
-//       facilities = facilities.split(",").map((item) => item.trim());
-//     }
-//   }
-
-//   // Ensure it's an array
-//   if (!Array.isArray(facilities)) {
-//     facilities = [facilities];
-//   }
-
-//   try {
-//     // Check if the user already exists
-//     const existingUser = await PgOwner.findOne({ email });
-//     if (existingUser) {
-//       return res.status(400).json({ message: ` already exists` });
-//     }
-
-//     // Validate password
-//     if (!password) {
-//       return res.status(400).json({ message: "Password is required" });
-//     }
-
-//     // Hash the password
-//     const hashedPassword = await bcrypt.hash(password, 10);
-
-//     // Get processed image URLs from the middleware
-//     const profilePhoto = req.cloudinaryResults?.profilePhoto?.[0] || null;
-//     const messPhoto = req.cloudinaryResults?.messPhoto || [];
-
-//     // Parse roomInfo if it exists
-//     let parsedRoomInfo = [];
-//     if (roomInfo && typeof roomInfo === "string") {
-//       try {
-//         parsedRoomInfo = JSON.parse(roomInfo);
-//       } catch (error) {
-//         console.error("Error parsing roomInfo:", error);
-//         return res.status(400).json({ message: "Invalid roomInfo format" });
-//       }
-//     }
-
-//     // Parse location if it's a string
-//     let parsedLocation = {};
-//     if (typeof location === "string") {
-//       try {
-//         parsedLocation = JSON.parse(location);
-//       } catch (error) {
-//         return res.status(400).json({ message: "Invalid location format" });
-//       }
-//     }
-
-//     // Validate and process location
-//     if (
-//       !parsedLocation ||
-//       parsedLocation.type !== "Point" ||
-//       !Array.isArray(parsedLocation.coordinates) ||
-//       parsedLocation.coordinates.length !== 2
-//     ) {
-//       return res.status(400).json({
-//         message:
-//           'Invalid location format. Location must be in GeoJSON format (type: "Point", coordinates: [longitude, latitude])',
-//       });
-//     }
-
-//     // ✅ Generate GeoHash for faster searches
-//     const geoHash = geohash.encode(
-//       parsedLocation.coordinates[1],
-//       parsedLocation.coordinates[0],
-//       5
-//     );
-
-//     // Create new PG Owner
-//     const newOwner = await PgOwner.create({
-//       firstName,
-//       lastName,
-//       email,
-//       address,
-//       password: hashedPassword,
-//       pincode,
-//       mobileNo,
-//       messName,
-//       aboutMess,
-//       location: parsedLocation, // ✅ Store in GeoJSON format
-//       geoHash, // ✅ Store computed GeoHash
-//       profilePhoto,
-//       messPhoto,
-//       facility: facilities,
-//       gender,
-//       roomInfo: parsedRoomInfo,
-//     });
-
-//     // // Send confirmation email
-//     // sendmailOwner(firstName, email, newOwner._id);
-
-//     // Return success response
-//     return res.status(201).json(newOwner);
-//   } catch (error) {
-//     console.error("Error creating user:", error);
-//     return res.status(500).json({ message: "Internal Server Error" });
-//   }
-// };
 exports.signupHandlerOwner = async (req, res) => {
   const {
     firstName,
@@ -512,17 +292,16 @@ exports.signupHandlerOwner = async (req, res) => {
   } = req.body;
 
   let rules = rulesToStay;
-if (typeof rules === "string") {
-  try {
-    rules = JSON.parse(rules);
-  } catch (e) {
-    rules = rules.split(",").map((item) => item.trim());
+  if (typeof rules === "string") {
+    try {
+      rules = JSON.parse(rules);
+    } catch (e) {
+      rules = rules.split(",").map((item) => item.trim());
+    }
   }
-}
-if (!Array.isArray(rules)) {
-  rules = [rules];
-}
-
+  if (!Array.isArray(rules)) {
+    rules = [rules];
+  }
 
   console.log(req.body.location);
 
@@ -620,7 +399,7 @@ if (!Array.isArray(rules)) {
       gender,
       roomInfo: parsedRoomInfo,
       minimumSecurityDeposit,
-      rulesToStay : rules,
+      rulesToStay: rules,
       minimumBookingDuration,
     });
 
@@ -833,27 +612,28 @@ exports.loginHandlerOwner = async (req, res) => {
     });
 
     await pgOwner.save();
-
-      res.cookie('refreshToken', refreshToken, {
+     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true, // true in production (HTTPS)
-      sameSite: 'None',
-       partitioned: true,
+      sameSite: "None",
+      domain: ".messmate.co.in",
+      path: "/",
+      maxAge: 30 * 60 * 1000, // 30 minutes
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true, // true in production (HTTPS)
+      sameSite: "None",
+      domain: ".messmate.co.in",
+      path: "/",
       maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
     });
-      res.cookie('accessToken', accessToken, {
-      httpOnly: true,
-      secure: true, // true in production (HTTPS)
-      sameSite: 'None',
-       partitioned: true,
-     // maxAge: 24 * 60 * 60 * 1000, // 1 hour
-     maxAge: 30 * 60 * 1000, // 5 minutes
-    });
+   
 
     res.status(200).json({
       message: "Login successful.",
-      // accessToken,
-      // refreshToken,
+      
     });
 
     console.log("Successfully logged in");
