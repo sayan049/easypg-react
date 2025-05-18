@@ -375,7 +375,8 @@ const StatSkeletonCard = () => (
   </div>
 );
 
-const BookingStatus = ({ owner }) => {
+// const BookingStatus = ({ owner }) => {
+  const BookingStatus = () => {
   const [tab, setTab] = useState("pending");
   const [maintenanceRequests, setMaintenanceRequests] = useState({
     requests: [],
@@ -398,7 +399,7 @@ const BookingStatus = ({ owner }) => {
     maintenance: false,
   });
   const limit = 10;
-  const { user } = useAuth();
+  const { user , owner } = useAuth();
   const ownerId = owner?._id;
   const socket = io(baseurl);
 
