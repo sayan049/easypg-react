@@ -7,19 +7,22 @@ const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
 const refreshToken = {
   refreshTokenHandler: async (req, res) => {
-    // const { refreshToken } = req.body;
     const refreshToken = req.cookies?.refreshToken;
-    console.log("ref", refreshToken);
+    const deviceInfo =
+      req.headers["x-device-info"] ||
+      req.headers["user-agent"] ||
+      "Unknown Device";
 
     if (!refreshToken) {
       return res.status(400).json({ message: "Refresh token is required" });
     }
 
     try {
-      // Verify refresh token
+      // Verify the old refresh token
       const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
       const { id, type, loginMethod } = decoded;
 
+      // Get user
       let user;
       if (type === "student") {
         user = await User.findById(id);
@@ -31,50 +34,71 @@ const refreshToken = {
         return res.status(403).json({ message: "User not found" });
       }
 
-      // Check if the refresh token exists in the user's stored tokens
-      const tokenEntry = user.refreshTokens.find(
-        (rt) =>
-          rt.token === refreshToken &&
-          (rt.device === req.headers["x-device-info"] ||
-            req.headers["user-agent"] ||
-            "Unknown Device")
+      // Check if the token exists for this device
+      const existingTokenIndex = user.refreshTokens.findIndex(
+        (rt) => rt.token === refreshToken && rt.device === deviceInfo
       );
 
-      if (!tokenEntry) {
+      if (existingTokenIndex === -1) {
         return res.status(403).json({ message: "Invalid refresh token" });
       }
 
-      // Prepare the payload for the new access token
+      // Remove the previous token for this device
+      user.refreshTokens.splice(existingTokenIndex, 1);
+
+      // Prepare payload for new tokens
       const name = user.firstName + " " + user.lastName;
       const payload = {
         id: user._id,
         email: user.email,
-        name: name,
+        name,
         type,
         loginMethod,
       };
 
-      // If the user is an owner and uses Google login, include the image in the payload
-      if (loginMethod === "google") {
-        payload.image = user.image; // Assuming 'image' field exists on the PgOwner model
+      if (loginMethod === "google" ) {
+        payload.image = user.image;
       }
 
-      // Generate a new access token
-      const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "30m" });
-      res.cookie("accessToken", accessToken, {
-       httpOnly: true,
-      secure: true, // true in production (HTTPS)
-      sameSite: "None",
-      domain: ".messmate.co.in",
-      path: "/",
-      maxAge: 30 * 60 * 1000, // 30 minutes
+      // Generate new tokens
+      const newAccessToken = jwt.sign(payload, JWT_SECRET, {
+        expiresIn: "30m",
+      });
+      const newRefreshToken = jwt.sign(payload, JWT_REFRESH_SECRET, {
+        expiresIn: "30d",
       });
 
-      //res.status(200).json({ accessToken });
-      res.status(200).json({ message: "Access token refreshed successfully" });
+      // Save new refresh token
+      user.refreshTokens.push({ token: newRefreshToken, device: deviceInfo });
+      await user.save();
+
+      // Send tokens via cookies
+      res.cookie("accessToken", newAccessToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        domain: ".messmate.co.in",
+        path: "/",
+        maxAge: 30 * 60 * 1000, // 30 minutes
+      });
+
+      res.cookie("refreshToken", newRefreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        domain: ".messmate.co.in",
+        path: "/",
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      });
+
+      res
+        .status(200)
+        .json({ message: "Access and refresh tokens refreshed successfully" });
     } catch (error) {
       console.error("Refresh token error:", error);
-      res.status(403).json({ message: "Invalid or expired refresh token" });
+      return res
+        .status(403)
+        .json({ message: "Invalid or expired refresh token" });
     }
   },
 
