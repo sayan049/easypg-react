@@ -54,7 +54,7 @@ app.set("socketio", io);
 io.on("connection", (socket) => {
   console.log("New client connected:", socket.id);
 
-  socket.on("join-room", (ownerId) => {
+  socket.on("join-owner-room", (ownerId) => {
     socket.join(ownerId);
     console.log(`Socket ${socket.id} joined room ${ownerId}`);
   });
@@ -63,7 +63,6 @@ io.on("connection", (socket) => {
     console.log("Client disconnected:", socket.id);
   });
 });
-
 
 app.set("trust proxy", 1);
 
