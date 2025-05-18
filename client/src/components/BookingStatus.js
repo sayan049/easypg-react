@@ -16,6 +16,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PropTypes from "prop-types";
 import { baseurl } from "../constant/urls";
+import { io } from "socket.io-client";
 
 // import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 
@@ -60,18 +61,6 @@ const BookingCard = React.memo(
     const toggleMaintenance = () => {
       setShowMaintenance((prev) => !prev);
     };
-    useEffect(() => {
-      socket.emit("join-owner-room", ownerId);
-
-      socket.on("new-booking-request", (data) => {
-        console.log("New booking received", data);
-        // Optional: Add logic to update state/UI with new booking
-      });
-
-      return () => {
-        socket.off("new-booking-request");
-      };
-    }, [ownerId]);
 
     const hasMaintenanceRequests = bookingMaintenanceRequests.length > 0;
 
@@ -411,6 +400,20 @@ const BookingStatus = ({ owner }) => {
   const limit = 10;
   const { user } = useAuth();
   const ownerId = owner?._id;
+  const socket = io(baseurl);
+
+  useEffect(() => {
+    socket.emit("join-owner-room", ownerId);
+
+    socket.on("new-booking-request", (data) => {
+      console.log("New booking received", data);
+      // Optional: Add logic to update state/UI with new booking
+    });
+
+    return () => {
+      socket.off("new-booking-request");
+    };
+  }, [ownerId]);
 
   const fetchMaintenanceRequests = async (bookingIds) => {
     try {
