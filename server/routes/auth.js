@@ -89,7 +89,7 @@ router.get("/getRecc", authHandlers.getTopRatedMesses);
 router.get("/viewDetails/:messId", authHandlers.viewDetails);
 router.get("/getCart", authenticateJWT, likedMess.cartMess);
 router.post("/send-otp",sendOtp);
-router.post("verify-otp",verifyOtp);
+router.post("/verify-otp",verifyOtp);
 
 // router.get("/protected", ensureAuthenticated, (req, res) => {
 //   res.json({ message: "This is a protected route", user: req.session.user });
