@@ -160,6 +160,7 @@ const UAParser = require("ua-parser-js");
 const ORIGIN = process.env.CLIENT_URL; // Default to localhost if not set
 const PORT = process.env.PORT || 8080;
 const PRERENDER_TOKEN = process.env.PRERENDER_TOKEN;
+
 console.log(ORIGIN, "origin");
 console.log(PRERENDER_TOKEN, "prerender");
 // Enhanced CORS configuration
@@ -178,6 +179,28 @@ const corsOptions = {
 };
 
 const app = express();
+
+const server = require("http").createServer(app);
+const { Server } = require("socket.io");
+
+const io = new Server(server, {
+  cors: {
+    origin: ORIGIN,
+    credentials: true,
+  },
+});
+
+app.set("socketio", io);
+
+io.on("connection", (socket) => {
+  console.log("New client connected:", socket.id);
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected:", socket.id);
+  });
+});
+
+
 
 app.set("trust proxy", 1);
 

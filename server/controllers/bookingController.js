@@ -453,7 +453,7 @@
 const Booking = require("../modules/Booking");
 const PgOwner = require("../modules/pgProvider");
 const User = require("../modules/user");
-const moment = require('moment'); 
+const moment = require("moment");
 const mongoose = require("mongoose");
 const MaintenanceRequest = require("../modules/MaintenanceRequest");
 const rateLimiters = new Map(); // In-memory rate limiter per studentId
@@ -594,6 +594,27 @@ exports.createBookingRequest = async (req, res) => {
     });
 
     await booking.save();
+    // Socket notifications
+    const bookingPayload = {
+      _id: booking._id,
+      room,
+      bedsBooked,
+      student: {
+        _id: student,
+        firstName: booking.student?.firstName || "Unknown",
+        lastName: booking.student?.lastName || "User",
+      },
+      status: "pending",
+      period: booking.period,
+      payment: booking.payment,
+      createdAt: booking.createdAt,
+    };
+
+    // Emit socket event to owner's room
+    const io = req.app.get("socketio"); // Get socket instance from app.js/server.js
+    io.to(pgOwner.toString()).emit("new-booking-request", {
+      booking: bookingPayload,
+    });
 
     // Send notifications
     const notificationPromises = [
@@ -618,22 +639,6 @@ exports.createBookingRequest = async (req, res) => {
     ];
 
     await Promise.all(notificationPromises);
-
-    // Socket notifications
-    const bookingPayload = {
-      _id: booking._id,
-      room,
-      bedsBooked,
-      student: {
-        _id: student,
-        firstName: booking.student?.firstName || "Unknown",
-        lastName: booking.student?.lastName || "User",
-      },
-      status: "pending",
-      period: booking.period,
-      payment: booking.payment,
-      createdAt: booking.createdAt,
-    };
 
     // SocketManager.notifyOwnerNewBooking(owner._id, bookingPayload);
     // SocketManager.notifyStudentBookingStatus(student, {
@@ -1458,12 +1463,10 @@ exports.cancelBooking = async (req, res) => {
       const currentBeds = bedCountToNumber[room.bedContains] || 0;
       const restoredBeds = currentBeds + booking.bedsBooked;
       if (restoredBeds > 5) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            message: "Restored beds exceed room capacity.",
-          });
+        return res.status(400).json({
+          success: false,
+          message: "Restored beds exceed room capacity.",
+        });
       }
 
       room.bedContains = numberToBedCount[restoredBeds];
@@ -1716,29 +1719,27 @@ exports.getOwnerDashboardStats = async (req, res) => {
 };
 //chart data for owner dashboard
 
-
-
 // Helper function to aggregate bookings by time frame
 const aggregateBookingsByTimeFrame = (bookings, timeFrame) => {
   const groupedData = {};
 
-  bookings.forEach(booking => {
+  bookings.forEach((booking) => {
     // Get time frame boundaries and labels
     const date = moment(booking.createdAt);
     let label, startDate;
-    
-    switch(timeFrame) {
-      case 'weekly':
-        startDate = date.startOf('week').format('YYYY-MM-DD');
-        label = `Week ${date.format('WW')}, ${date.format('YYYY')}`;
+
+    switch (timeFrame) {
+      case "weekly":
+        startDate = date.startOf("week").format("YYYY-MM-DD");
+        label = `Week ${date.format("WW")}, ${date.format("YYYY")}`;
         break;
-      case 'monthly':
-        startDate = date.startOf('month').format('YYYY-MM-DD');
-        label = date.format('MMM YYYY');
+      case "monthly":
+        startDate = date.startOf("month").format("YYYY-MM-DD");
+        label = date.format("MMM YYYY");
         break;
-      case 'yearly':
-        startDate = date.startOf('year').format('YYYY-MM-DD');
-        label = date.format('YYYY');
+      case "yearly":
+        startDate = date.startOf("year").format("YYYY-MM-DD");
+        label = date.format("YYYY");
         break;
     }
 
@@ -1750,18 +1751,18 @@ const aggregateBookingsByTimeFrame = (bookings, timeFrame) => {
         pending: 0,
         confirmed: 0,
         rejected: 0,
-        revenue: 0
+        revenue: 0,
       };
     }
 
     // Update counts
     const group = groupedData[startDate];
-    if (booking.status === 'pending') group.pending++;
-    if (booking.status === 'confirmed') group.confirmed++;
-    if (booking.status === 'rejected') group.rejected++;
-    
+    if (booking.status === "pending") group.pending++;
+    if (booking.status === "confirmed") group.confirmed++;
+    if (booking.status === "rejected") group.rejected++;
+
     // Add revenue for confirmed bookings
-    if (booking.status === 'confirmed') {
+    if (booking.status === "confirmed") {
       group.revenue += booking.payment?.totalAmount || 0;
     }
   });
@@ -1778,8 +1779,8 @@ exports.getChartStats = async (req, res) => {
     const ownerId = req.user.id;
 
     // Validation
-    if (!['weekly', 'monthly', 'yearly'].includes(timeFrame)) {
-      return res.status(400).json({ error: 'Invalid time frame' });
+    if (!["weekly", "monthly", "yearly"].includes(timeFrame)) {
+      return res.status(400).json({ error: "Invalid time frame" });
     }
 
     // Calculate date range
@@ -1789,13 +1790,15 @@ exports.getChartStats = async (req, res) => {
     // Get bookings with populated student data
     const bookings = await Booking.find({
       pgOwner: ownerId,
-      status: { $in: ['pending', 'confirmed', 'rejected'] },
-      createdAt: { $gte: startDate.toDate() }
-    }).populate('student', '_id name');
+      status: { $in: ["pending", "confirmed", "rejected"] },
+      createdAt: { $gte: startDate.toDate() },
+    }).populate("student", "_id name");
 
     // Process data
     const chartData = aggregateBookingsByTimeFrame(bookings, timeFrame);
-    const uniqueStudents = new Set(bookings.map(b => b.student._id.toString()));
+    const uniqueStudents = new Set(
+      bookings.map((b) => b.student._id.toString())
+    );
     const totalRevenue = chartData.reduce((sum, item) => sum + item.revenue, 0);
 
     // Final response structure
@@ -1806,17 +1809,16 @@ exports.getChartStats = async (req, res) => {
           totalBookings: bookings.length,
           totalStudents: uniqueStudents.size,
           totalRevenue,
-          avgRevenuePerBooking: totalRevenue / (bookings.length || 1)
+          avgRevenuePerBooking: totalRevenue / (bookings.length || 1),
         },
         timeframe: {
           start: startDate.toISOString(),
-          end: now.toISOString()
-        }
-      }
+          end: now.toISOString(),
+        },
+      },
     });
-
   } catch (error) {
-    console.error('Error in getChartStats:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error in getChartStats:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };

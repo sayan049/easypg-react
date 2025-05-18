@@ -60,6 +60,18 @@ const BookingCard = React.memo(
     const toggleMaintenance = () => {
       setShowMaintenance((prev) => !prev);
     };
+    useEffect(() => {
+      socket.emit("join-owner-room", ownerId);
+
+      socket.on("new-booking-request", (data) => {
+        console.log("New booking received", data);
+        // Optional: Add logic to update state/UI with new booking
+      });
+
+      return () => {
+        socket.off("new-booking-request");
+      };
+    }, [ownerId]);
 
     const hasMaintenanceRequests = bookingMaintenanceRequests.length > 0;
 
@@ -412,7 +424,7 @@ const BookingStatus = ({ owner }) => {
           withCredentials: true, // Automatically send cookies
           headers: {
             "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
+            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
           },
         }
       );
@@ -441,7 +453,7 @@ const BookingStatus = ({ owner }) => {
           withCredentials: true, // Automatically send cookies
           headers: {
             "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
+            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
           },
         }
       );
@@ -480,7 +492,7 @@ const BookingStatus = ({ owner }) => {
         withCredentials: true, // Automatically send cookies
         headers: {
           "Content-Type": "application/json",
-          "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
+          "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
         },
       });
 
@@ -593,7 +605,7 @@ const BookingStatus = ({ owner }) => {
           withCredentials: true, // Automatically send cookies
           headers: {
             "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
+            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
           },
         }
       );

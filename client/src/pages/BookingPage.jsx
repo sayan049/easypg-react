@@ -167,11 +167,11 @@ export default function BookingPage() {
   };
 
   const handleBookingRequest = async () => {
-    console.log(
-      "auth",
-      parseInt(messData.minimumBookingDuration.split(" ")[0]),
-      duration
-    );
+    // console.log(
+    //   "auth",
+    //   parseInt(messData.minimumBookingDuration.split(" ")[0]),
+    //   duration
+    // );
     if (isOwnerAuthenticated) {
       return toast.error("mess owners can't book messes");
     }
@@ -436,7 +436,7 @@ export default function BookingPage() {
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-gray-500" />
-                <span>{messData?.mobileNo.slice(0,4)}xxxxxx</span>
+                <span>{messData?.mobileNo.slice(0, 4)}xxxxxx</span>
               </div>
             </div>
           </div>
@@ -606,6 +606,11 @@ export default function BookingPage() {
                       className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors"
                       value={checkInDate}
                       min={new Date().toISOString().split("T")[0]}
+                      max={
+                        new Date(new Date().setMonth(new Date().getMonth() + 1))
+                          .toISOString()
+                          .split("T")[0]
+                      }
                       onChange={(e) => setCheckInDate(e.target.value)}
                       required
                     />
