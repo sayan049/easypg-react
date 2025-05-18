@@ -400,7 +400,8 @@ const StatSkeletonCard = () => (
   });
   const limit = 10;
   const { user , owner } = useAuth();
-  const ownerId = owner?._id;
+  console.log("owner",owner);
+  const ownerId = owner?.id;
   const socket = io(baseurl);
 
   useEffect(() => {
