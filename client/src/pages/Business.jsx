@@ -11,7 +11,7 @@ import {
   XCircle,
   Building,
   Star,
-  FileCheck2
+  FileCheck2,
 } from "lucide-react";
 import Footer from "../components/footer";
 import { Helmet } from "react-helmet";
@@ -98,7 +98,7 @@ const BusinessModel = () => {
           rel="canonical"
           href="https://www.messmate.co.in/business-model"
         />
-        <meta name="prerender" content="true"/>
+        <meta name="prerender" content="true" />
         <meta name="robots" content="index, follow" />
         <meta name="author" content="MessMate" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -228,11 +228,17 @@ const BusinessModel = () => {
                       {/* Responsive Video */}
                       <div className="relative pt-[56.25%]">
                         <video
-                          src="https://res.cloudinary.com/dlfwb6sqd/video/upload/v1747574930/720p_u27qmw.mp4"
                           className="absolute top-0 left-0 w-full h-full"
                           controls
                           autoPlay
-                        />
+                          muted
+                        >
+                          <source
+                            src="https://res.cloudinary.com/dlfwb6sqd/video/upload/v1747574930/720p_u27qmw.mp4"
+                            type="video/mp4"
+                          />
+                          Your browser does not support the video tag.
+                        </video>
                       </div>
                     </div>
                   </div>

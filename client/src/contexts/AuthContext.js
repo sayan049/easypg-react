@@ -243,7 +243,7 @@ export const AuthProvider = ({ children }) => {
       });
 
       // if (sessionResponse.status === 401 || !accessToken) {
-     if (response.status === 401 || response.status === 403) {
+     if (sessionResponse.status === 401 || sessionResponse.status === 403) {
         console.log("Access token expired. Refreshing...");
         // Refresh the access token if it's expired
         const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
