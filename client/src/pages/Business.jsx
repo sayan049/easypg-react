@@ -228,7 +228,7 @@ const BusinessModel = () => {
                       {/* Responsive Video */}
                       <div className="relative pt-[56.25%]">
                         <video
-                          src="https://res.cloudinary.com/dlfwb6sqd/video/upload/v1746537432/720p_gn4q9l.mp4"
+                          src="https://res.cloudinary.com/dlfwb6sqd/video/upload/v1747574930/720p_u27qmw.mp4"
                           className="absolute top-0 left-0 w-full h-full"
                           controls
                           autoPlay
