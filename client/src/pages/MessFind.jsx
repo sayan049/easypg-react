@@ -644,7 +644,8 @@ const MessFind = () => {
         <section aria-label="Search results">
           <div className="mt-6" style={{ height: "calc(100vh - 200px)" }}>
             <div className="text-lg font-bold mb-4 flex items-center justify-between mx-4">
-              {pgCount} Mess near {item?.split(",")[0]}
+              {pgCount} Mess near {item?.split(/[,|-]/)[0].trim()}
+
               <FiFilter
                 className="md:hidden cursor-pointer ml-4 w-6 h-6 text-gray-600"
                 onClick={() => setFilterModalOpen(true)}
