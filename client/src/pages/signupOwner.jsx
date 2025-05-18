@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Helmet } from "react-helmet";
+import { baseurl } from "../constant/urls";
 import {
   MapPin,
   Eye,
@@ -134,7 +135,7 @@ function SignupOwner() {
       setOtpError("");
 
       // In a real app, this would call your backend API
-      const response = await axios.post("/api/send-otp", {
+      const response = await axios.post(`${baseurl}/auth/send-otp`, {
         email: formData.email,
       });
 
@@ -170,7 +171,7 @@ function SignupOwner() {
       setIsVerifyingOtp(true);
 
       // In a real app, this would call your backend API
-      const response = await axios.post("/api/verify-otp", {
+      const response = await axios.post(`${baseurl}/auth/verify-otp`, {
         email: formData.email,
         otp: enteredOtp,
       });
@@ -360,34 +361,7 @@ function SignupOwner() {
     }));
   };
 
-  // Handle rules to stay
-  // const handleRuleChange = (index, value) => {
-  //   const newRules = [...rules]
-  //   newRules[index] = value
-  //   setRules(newRules)
 
-  //   // Update formData with non-empty rules
-  //   setFormData({
-  //     ...formData,
-  //     rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
-  //   })
-  // }
-
-  // const addRule = () => {
-  //   setRules([...rules, ""])
-  // }
-
-  // const removeRule = (index) => {
-  //   const newRules = [...rules]
-  //   newRules.splice(index, 1)
-  //   setRules(newRules)
-
-  //   // Update formData with non-empty rules
-  //   setFormData({
-  //     ...formData,
-  //     rulesToStay: newRules.filter((rule) => rule.trim() !== ""),
-  //   })
-  // }
 
   const handleVerifyEmail = () => {
     setShowOtp(true);
