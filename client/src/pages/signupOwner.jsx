@@ -54,6 +54,7 @@ function SignupOwner() {
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
   const [otpExpiry, setOtpExpiry] = useState(null);
   const [canResend, setCanResend] = useState(true);
+  const [timeLeft, setTimeLeft] = useState(0); // seconds
   const maxLength = 10;
 
   // New state for the additional fields
@@ -129,7 +130,7 @@ function SignupOwner() {
       toast.error("Please enter your email first");
       return;
     }
-  
+
     try {
       setIsSendingOtp(true);
       setOtpError("");
@@ -139,11 +140,12 @@ function SignupOwner() {
         email: formData.email,
       });
 
-    //  For demo, we'll simulate success
+      //  For demo, we'll simulate success
       setShowOtp(true);
       setOtpExpiry(Date.now() + 300000); // 5 minutes from now
       setCanResend(false);
       setTimeout(() => setCanResend(true), 30000); // 30 second cooldown
+      setTimeLeft(300); // 5 minutes in seconds
 
       toast.success("OTP sent to your email");
     } catch (error) {
@@ -186,6 +188,23 @@ function SignupOwner() {
       setIsVerifyingOtp(false);
     }
   };
+
+  useEffect(() => {
+    let interval;
+    if (timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            setCanResend(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [timeLeft]);
 
   useEffect(() => {
     document.title = "PG Owner Signup | Mess Mate";
@@ -360,8 +379,6 @@ function SignupOwner() {
       messPhoto: [...prevFormData.messPhoto, ...newMessPhotos],
     }));
   };
-
-
 
   const handleVerifyEmail = () => {
     setShowOtp(true);
@@ -683,66 +700,6 @@ function SignupOwner() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* <div className="relative">
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    <Mail className="h-4 w-4 inline mr-1" />
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full rounded-lg px-4 py-2.5 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                    placeholder="your.email@example.com"
-                    required
-                  />
-                  {!isEmailVerified ? (
-                    <button
-                      type="button"
-                      onClick={handleVerifyEmail}
-                      className={`px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 absolute right-1 ${
-                        showOtp ? "top-[38%]" : "top-[68%]"
-                      } transform -translate-y-1/2`}
-                    >
-                      Verify
-                    </button>
-                  ) : (
-                    <span
-                      className={`text-green-600 pt-2 absolute right-1 ${
-                        showOtp ? "top-[38%]" : "top-[68%]"
-                      }  transform -translate-y-1/2`}
-                    >
-                      &#10003;verified
-                    </span>
-                  )}
-                  {showOtp && !isEmailVerified && (
-                    <div className="mt-2 flex gap-2 items-center">
-                      {[0, 1, 2, 3].map((i) => (
-                        <input
-                          key={i}
-                          type="text"
-                          maxLength="1"
-                          value={otp[i] || ""}
-                          onChange={(e) => handleOtpChange(e, i)}
-                          onKeyDown={(e) => handleOtpKeyDown(e, i)}
-                          className="w-12 h-12 text-center text-lg rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                        />
-                      ))}
-                      <button
-                        type="button"
-                        onClick={() => handleOtpSubmit(otp.join(""))}
-                        className="px-4 py-2 h-12 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                      >
-                        Submit
-                      </button>
-                    </div>
-                  )}
-                </div> */}
                 {/* otp */}
                 <div className="relative">
                   <label
@@ -769,7 +726,9 @@ function SignupOwner() {
                       type="button"
                       onClick={sendOtp}
                       disabled={isSendingOtp || !formData.email}
-                      className={`px-4 py-2 absolute right-1 ${showOtp? "top-[23%]" : "top-[68%]"}  transform -translate-y-1/2 rounded-lg ${
+                      className={`px-4 py-2 absolute right-1 ${
+                        showOtp ? "top-[23%]" : "top-[68%]"
+                      }  transform -translate-y-1/2 rounded-lg ${
                         isSendingOtp || !formData.email
                           ? "bg-gray-300 cursor-not-allowed"
                           : "bg-teal-500 hover:bg-teal-600 text-white"
@@ -778,7 +737,11 @@ function SignupOwner() {
                       {isSendingOtp ? "Sending..." : "Verify"}
                     </button>
                   ) : (
-                    <span className={`text-green-600 pt-2 absolute right-1  ${showOtp? "top-[23%]" : "top-[63%]"} transform -translate-y-1/2`}>
+                    <span
+                      className={`text-green-600 pt-2 absolute right-1  ${
+                        showOtp ? "top-[23%]" : "top-[63%]"
+                      } transform -translate-y-1/2`}
+                    >
                       Verified
                     </span>
                   )}
@@ -834,7 +797,7 @@ function SignupOwner() {
                         </button>
                       </div>
 
-                      {otpExpiry && (
+                      {/* {otpExpiry && (
                         <p className="text-xs text-gray-500 text-center mt-2">
                           OTP expires in{" "}
                           {Math.floor((otpExpiry - Date.now()) / 60000)}:
@@ -842,6 +805,21 @@ function SignupOwner() {
                             .toString()
                             .padStart(2, "0")}
                         </p>
+                      )} */}
+                      {!canResend ? (
+                        <p className="text-sm text-gray-500">
+                          Resend OTP in {Math.floor(timeLeft / 60)}:
+                          {(timeLeft % 60).toString().padStart(2, "0")}
+                        </p>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={sendOtp}
+                          disabled={isSendingOtp}
+                          className="text-blue-600 underline"
+                        >
+                          Resend OTP
+                        </button>
                       )}
                     </div>
                   )}
