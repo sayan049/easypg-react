@@ -553,7 +553,8 @@ function SignupOwner() {
       formData.gender &&
       // New fields validation
       formData.minimumSecurityDeposit !== undefined &&
-      formData.minimumBookingDuration
+      formData.minimumBookingDuration &&
+      isEmailVerified
     );
   };
 
@@ -777,8 +778,8 @@ function SignupOwner() {
                       {isSendingOtp ? "Sending..." : "Verify"}
                     </button>
                   ) : (
-                    <span className={`text-green-600 pt-2 absolute right-1  ${showOtp? "top-[23%]" : "top-[68%]"} transform -translate-y-1/2`}>
-                      ✓ Verified
+                    <span className={`text-green-600 pt-2 absolute right-1  ${showOtp? "top-[23%]" : "top-[63%]"} transform -translate-y-1/2`}>
+                      Verified
                     </span>
                   )}
 
