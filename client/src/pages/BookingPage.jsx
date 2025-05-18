@@ -436,7 +436,7 @@ export default function BookingPage() {
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-gray-500" />
-                <span>{messData?.mobileNo}</span>
+                <span>{messData?.mobileNo.slice(0,4)}xxxxxx</span>
               </div>
             </div>
           </div>
