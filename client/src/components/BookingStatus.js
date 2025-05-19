@@ -417,14 +417,7 @@ const BookingStatus = () => {
       //     total: prev.pending.total + 1,
       //   },
       // }));
-      setBookings((prev) => ({
-        ...prev,
-        pending: {
-          ...prev.pending,
-          data: [data, ...prev.pending.data], // Add new booking at the top
-          total: prev.pending.total + 1,
-        },
-      }));
+      fetchAllBookings();
 
       toast.info("You have a new booking request!");
     });
