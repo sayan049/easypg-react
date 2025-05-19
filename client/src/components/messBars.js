@@ -181,15 +181,12 @@ function MessBars({
   // const clickNavi = (owner) => {
   //   navigate(`/details/Id=${owner._id}`);
   // };
-  const clickNavi = (owner, e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const clickNavi = (owner) => {
+
     navigate(`/details/${owner._id}`);
   };
 
-  const clickBook = (owner, e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const clickBook = (owner) => {
     navigate(`/booking/${owner._id}`);
   };
 
@@ -568,7 +565,7 @@ function MessBars({
                         className="px-4 py-2 bg-white text-primary-default border border-primary-light rounded-lg hover:bg-primary-light/20 transition-all duration-200 text-sm font-medium shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-default/50 focus:ring-offset-1"
                         onClick={(e) => {
                           e.stopPropagation();
-                          clickNavi(owner, e);
+                          clickNavi(owner);
                         }}
                         onTouchEnd={(e) => {
                           e.preventDefault();
@@ -580,9 +577,8 @@ function MessBars({
                       </button>
                       <button
                         className="px-4 py-2 bg-primary-default text-white rounded-lg hover:bg-primary-dark transition-all duration-200 text-sm font-medium shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-default/50 focus:ring-offset-1"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          clickBook(owner, e);
+                        onClick={() => {
+                          clickBook(owner);
                         }}
                         onTouchEnd={(e) => {
                           e.preventDefault();
