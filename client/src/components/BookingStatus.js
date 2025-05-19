@@ -381,6 +381,7 @@ const StatSkeletonCard = () => (
   const [maintenanceRequests, setMaintenanceRequests] = useState({
     requests: [],
   });
+  const [hit,setHit]= useState(false);
   const [bookings, setBookings] = useState({
     pending: { data: [], page: 1, total: 0 },
     confirmed: { data: [], page: 1, total: 0 },
@@ -400,7 +401,6 @@ const StatSkeletonCard = () => (
   });
   const limit = 10;
   const { user , owner } = useAuth();
-  console.log("owner",owner);
   const ownerId = owner?.id;
   const socket = io(baseurl);
 
@@ -409,6 +409,7 @@ const StatSkeletonCard = () => (
 
     socket.on("new-booking-request", (data) => {
       console.log("New booking received", data);
+      setHit(!hit);
       // Optional: Add logic to update state/UI with new booking
     });
 
@@ -689,7 +690,7 @@ const StatSkeletonCard = () => (
 
   useEffect(() => {
     fetchAllBookings();
-  }, []);
+  }, [hit]);
 
   // const PaginationControls = ({ status }) => {
   //   const current = bookings[status];
