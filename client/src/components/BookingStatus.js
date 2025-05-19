@@ -376,12 +376,12 @@ const StatSkeletonCard = () => (
 );
 
 // const BookingStatus = ({ owner }) => {
-  const BookingStatus = () => {
+const BookingStatus = () => {
   const [tab, setTab] = useState("pending");
   const [maintenanceRequests, setMaintenanceRequests] = useState({
     requests: [],
   });
-  const [hit,setHit]= useState(false);
+  const [hit, setHit] = useState(false);
   const [bookings, setBookings] = useState({
     pending: { data: [], page: 1, total: 0 },
     confirmed: { data: [], page: 1, total: 0 },
@@ -400,7 +400,7 @@ const StatSkeletonCard = () => (
     maintenance: false,
   });
   const limit = 10;
-  const { user , owner } = useAuth();
+  const { user, owner } = useAuth();
   const ownerId = owner?.id;
   const socket = io(baseurl);
 
@@ -409,8 +409,16 @@ const StatSkeletonCard = () => (
 
     socket.on("new-booking-request", (data) => {
       console.log("New booking received", data);
-      setHit(!hit);
-      // Optional: Add logic to update state/UI with new booking
+      setBookings((prev) => ({
+        ...prev,
+        pending: {
+          ...prev.pending,
+          data: [data, ...prev.pending.data], // prepend new booking
+          total: prev.pending.total + 1,
+        },
+      }));
+
+      toast.info("You have a new booking request!");
     });
 
     return () => {
@@ -546,53 +554,6 @@ const StatSkeletonCard = () => (
     }
   };
 
-  // const fetchBookingsByStatus = async (status, page = 1) => {
-  //   try {
-  //     setLoading((prev) => ({
-  //       ...prev,
-  //       list: true,
-  //       tabChange: status !== tab,
-  //     }));
-
-  //     const response = await axios.get(`${baseurl}/auth/bookings/owner`, {
-  //       params: {
-  //         status,
-  //         page,
-  //         limit,
-  //       },
-  //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-  //       },
-  //     });
-  //     console.log("Bookings by status response:", response.data);
-  //     setBookings((prev) => ({
-  //       ...prev,
-  //       [status]: {
-  //         data: response.data.bookings || [],
-  //         page,
-  //         total: response.data.pagination?.total || 0,
-  //       },
-  //     }));
-
-  //     if (status === "confirmed") {
-  //       const bookingIds = response.data.bookings.map((b) => b._id);
-  //       const { requests } = await fetchMaintenanceRequests(bookingIds);
-  //       setMaintenanceRequests({
-  //         requests: Array.isArray(requests) ? requests : [],
-  //       });
-  //     }
-
-  //     if (status !== tab) {
-  //       setTab(status);
-  //     }
-  //   } catch (error) {
-  //     console.error(`Error fetching ${status} bookings:`, error);
-  //     toast.error(`Failed to load ${status} bookings`);
-  //   } finally {
-  //     setLoading((prev) => ({ ...prev, list: false, tabChange: false }));
-  //   }
-  // };
-
   const handleTabChange = (newTab) => {
     setTab(newTab);
   };
@@ -690,7 +651,7 @@ const StatSkeletonCard = () => (
 
   useEffect(() => {
     fetchAllBookings();
-  }, [hit]);
+  }, []);
 
   // const PaginationControls = ({ status }) => {
   //   const current = bookings[status];
