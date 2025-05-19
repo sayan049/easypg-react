@@ -406,7 +406,10 @@ function MessBars({
                         </div>
                       )}
                       <button
-                        onClick={() => toggleLike(owner._id)}
+                        onClick={(e) =>{
+                          e.stopPropagation();
+                          toggleLike(owner._id);}
+                        }
                         className="absolute top-2 right-2 text-2xl text-red-500 "
                       >
                         {liked[owner._id] ? (
