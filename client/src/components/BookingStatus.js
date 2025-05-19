@@ -409,11 +409,19 @@ const BookingStatus = () => {
 
     socket.on("new-booking-request", (data) => {
       console.log("New booking received", data);
+      // setBookings((prev) => ({
+      //   ...prev,
+      //   pending: {
+      //     ...prev.pending,
+      //     data: [data, ...prev.pending.data], // prepend new booking
+      //     total: prev.pending.total + 1,
+      //   },
+      // }));
       setBookings((prev) => ({
         ...prev,
         pending: {
           ...prev.pending,
-          data: [data, ...prev.pending.data], // prepend new booking
+          data: [data, ...prev.pending.data], // Add new booking at the top
           total: prev.pending.total + 1,
         },
       }));
