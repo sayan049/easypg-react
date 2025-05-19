@@ -1035,19 +1035,13 @@ function MessBars({
                 : "ring-1 ring-gray-200"
             } bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-2 md:p-4`}
             onClick={(e) => {
-              if (e.target.tagName === "BUTTON" || e.target.closest("button")) {
-                return;
-              }
-              e.preventDefault();
+              if (e.target.closest("button")) return;
               if (owner?.location?.coordinates) {
                 clickCords(owner.location.coordinates, owner._id);
               }
             }}
             onTouchEnd={(e) => {
-              if (e.target.tagName === "BUTTON" || e.target.closest("button")) {
-                return;
-              }
-              e.preventDefault();
+              if (e.target.closest("button")) return;
               if (owner?.location?.coordinates) {
                 clickCords(owner.location.coordinates, owner._id);
               }
@@ -1274,7 +1268,7 @@ function MessBars({
                 <div className="w-full h-full sm:h-full">
                   <iframe
                     title={`Map view for ${owner.messName}`}
-                    src={`https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=${owner.location.coordinates[1]},${owner.location.coordinates[0]}`}
+                    src={`https://www.google.com/maps?q=${owner.location.coordinates[1]},${owner.location.coordinates[0]}&z=15&output=embed`}
                     width="100%"
                     height="100%"
                     className="rounded-xl"
