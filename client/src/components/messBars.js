@@ -90,8 +90,14 @@ function MessBars({
   };
 
   const styles = `
+   @-moz-document url-prefix() {
+    button {
+      touch-action: manipulation;
+    }
+  }
     .flip-card {
       perspective: 1000px;
+       pointer-events: auto;
     }
     .flip-card-inner {
       position: relative;
@@ -106,6 +112,7 @@ function MessBars({
       height: 100%;
       backface-visibility: hidden;
       border-radius: 0.75rem;
+      z-index: 2; // Add this
     }
     .flip-card-back {
       transform: rotateY(180deg);
@@ -157,10 +164,10 @@ function MessBars({
       // Assuming likedData is an array of mess objects, not just IDs
       likedData.forEach((mess) => {
         likedMap[mess._id] = true; // Storing the mess ID in the map
-       // console.log("Liked Mess ID:", mess._id); // Log the actual mess ID
+        // console.log("Liked Mess ID:", mess._id); // Log the actual mess ID
       });
 
-     // console.log("Liked Messes:", likedMap); // Log the full map of liked messes
+      // console.log("Liked Messes:", likedMap); // Log the full map of liked messes
       setLiked(likedMap); // Update state with the liked messes map
     } catch (err) {
       console.error("Failed to fetch liked messes", err);
@@ -174,11 +181,15 @@ function MessBars({
   // const clickNavi = (owner) => {
   //   navigate(`/details/Id=${owner._id}`);
   // };
-  const clickNavi = (owner) => {
+  const clickNavi = (owner, e) => {
+    e.preventDefault();
+    e.stopPropagation();
     navigate(`/details/${owner._id}`);
   };
 
-  const clickBook = (owner) => {
+  const clickBook = (owner, e) => {
+    e.preventDefault();
+    e.stopPropagation();
     navigate(`/booking/${owner._id}`);
   };
 
@@ -371,7 +382,8 @@ function MessBars({
                 ? "ring-2 ring-blue-500"
                 : "ring-1 ring-gray-200"
             } bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-2 md:p-4`}
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault();
               if (owner?.location?.coordinates) {
                 clickCords(owner.location.coordinates, owner._id);
               }
@@ -406,10 +418,10 @@ function MessBars({
                         </div>
                       )}
                       <button
-                        onClick={(e) =>{
+                        onClick={(e) => {
                           e.stopPropagation();
-                          toggleLike(owner._id);}
-                        }
+                          toggleLike(owner._id);
+                        }}
                         className="absolute top-2 right-2 text-2xl text-red-500 "
                       >
                         {liked[owner._id] ? (
@@ -556,6 +568,11 @@ function MessBars({
                         className="px-4 py-2 bg-white text-primary-default border border-primary-light rounded-lg hover:bg-primary-light/20 transition-all duration-200 text-sm font-medium shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-default/50 focus:ring-offset-1"
                         onClick={(e) => {
                           e.stopPropagation();
+                          clickNavi(owner, e);
+                        }}
+                        onTouchEnd={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
                           clickNavi(owner);
                         }}
                       >
@@ -564,6 +581,11 @@ function MessBars({
                       <button
                         className="px-4 py-2 bg-primary-default text-white rounded-lg hover:bg-primary-dark transition-all duration-200 text-sm font-medium shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-default/50 focus:ring-offset-1"
                         onClick={(e) => {
+                          e.stopPropagation();
+                          clickBook(owner, e);
+                        }}
+                        onTouchEnd={(e) => {
+                          e.preventDefault();
                           e.stopPropagation();
                           clickBook(owner);
                         }}
