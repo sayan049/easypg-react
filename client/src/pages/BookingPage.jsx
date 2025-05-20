@@ -8,6 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { bookingRequestUrl } from "../constant/urls";
 import "react-toastify/dist/ReactToastify.css";
 import { viewDetailsUrl } from "../constant/urls";
+import { Dialog } from "@headlessui/react";
 import {
   ArrowLeft,
   Share,
@@ -129,6 +130,80 @@ export const BookingSkeleton = () => {
   );
 };
 
+const TermsAndConditionsPopup = ({ onAccept, onClose }) => {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg max-w-2xl max-h-[90vh] overflow-y-auto">
+        <Dialog.Panel className="p-6">
+          <Dialog.Title className="text-2xl font-bold mb-4">
+            Terms & Conditions
+          </Dialog.Title>
+
+          <div className="prose prose-sm text-gray-700 mb-6">
+            <h3 className="font-semibold">1. Platform Usage</h3>
+            <p>
+              By using MessMate, you agree to pay a non-refundable platform fee
+              of ₹99 for each booking. This fee covers administrative costs and
+              is charged regardless of booking outcome.
+            </p>
+
+            <h3 className="font-semibold mt-4">2. Payment Terms</h3>
+            <p>
+              A 2% payment gateway charge will be applied to all transactions
+              and is non-refundable. The security deposit (typically one month's
+              rent) must be paid after signing the rental agreement.
+            </p>
+
+            <h3 className="font-semibold mt-4">3. Rental Agreement</h3>
+            <p>
+              We strongly recommend signing the rental agreement with the
+              property owner before making any security deposit payment.
+              MessMate is not responsible for disputes arising from unsigned
+              agreements.
+            </p>
+
+            <h3 className="font-semibold mt-4">4. Refund Policy</h3>
+            <p>
+              Platform fees and payment gateway charges are non-refundable.
+              Security deposits are refundable as per the terms of your rental
+              agreement with the property owner.
+            </p>
+
+            <h3 className="font-semibold mt-4">5. Legal Compliance</h3>
+            <p>
+              MessMate acts only as a booking platform. All legal agreements are
+              between tenant and property owner. We recommend verifying property
+              documents before payment.
+            </p>
+
+            <h3 className="font-semibold mt-4">6. Dispute Resolution</h3>
+            <p>
+              For any disputes, please contact our support team. Unresolved
+              disputes may be referred to local consumer forums in accordance
+              with Indian law.
+            </p>
+          </div>
+
+          <div className="flex justify-end space-x-3">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={onAccept}
+              className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700"
+            >
+              I Accept
+            </button>
+          </div>
+        </Dialog.Panel>
+      </div>
+    </div>
+  );
+};
+
 export default function BookingPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -141,6 +216,7 @@ export default function BookingPage() {
   const { user, IsAuthenticated, isOwnerAuthenticated } = useAuth();
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showTermsPopup, setShowTermsPopup] = useState(false);
 
   const { messId } = useParams();
 
@@ -321,6 +397,17 @@ export default function BookingPage() {
   };
 
   if (!messData) return <BookingSkeleton />;
+  {
+    showTermsPopup && (
+      <TermsAndConditionsPopup
+        onAccept={() => {
+          setShowTermsPopup(false);
+          handleBookingRequest();
+        }}
+        onClose={() => setShowTermsPopup(false)}
+      />
+    );
+  }
   return (
     <div className="min-h-screen bg-gray-50">
       <ToastContainer
@@ -703,7 +790,7 @@ export default function BookingPage() {
                     </div>
                   )}
 
-                  <div className="pt-4">
+                  {/* <div className="pt-4">
                     <button
                       className={`w-full py-3.5 px-4 rounded-lg font-medium text-white transition-all ${
                         !selectedRoom || !checkInDate || isLoading
@@ -711,6 +798,48 @@ export default function BookingPage() {
                           : "bg-teal-600 hover:bg-teal-700 shadow-md hover:shadow-lg"
                       }`}
                       onClick={handleBookingRequest}
+                      disabled={!selectedRoom || !checkInDate || isLoading}
+                    >
+                      {isLoading ? (
+                        <div className="flex items-center justify-center">
+                          <svg
+                            className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          Processing...
+                        </div>
+                      ) : (
+                        "Confirm Booking"
+                      )}
+                    </button>
+                  </div> */}
+                  <div className="pt-4">
+                    <button
+                      className={`w-full py-3.5 px-4 rounded-lg font-medium text-white transition-all ${
+                        !selectedRoom || !checkInDate || isLoading
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-teal-600 hover:bg-teal-700 shadow-md hover:shadow-lg"
+                      }`}
+                      onClick={() => {
+                        if (!selectedRoom || !checkInDate || isLoading) return;
+                        setShowTermsPopup(true);
+                      }}
                       disabled={!selectedRoom || !checkInDate || isLoading}
                     >
                       {isLoading ? (
