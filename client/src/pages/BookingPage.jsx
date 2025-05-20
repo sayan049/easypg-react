@@ -837,7 +837,7 @@ export default function BookingPage() {
                           : "bg-teal-600 hover:bg-teal-700 shadow-md hover:shadow-lg"
                       }`}
                       onClick={() => {
-                        if (!selectedRoom || !checkInDate || isLoading) return;
+                      //  if (!selectedRoom || !checkInDate || isLoading) return;
                         setShowTermsPopup(true);
                       }}
                       disabled={!selectedRoom || !checkInDate || isLoading}
