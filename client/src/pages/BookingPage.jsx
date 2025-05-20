@@ -397,17 +397,7 @@ export default function BookingPage() {
   };
 
   if (!messData) return <BookingSkeleton />;
-  {
-    showTermsPopup && (
-      <TermsAndConditionsPopup
-        onAccept={() => {
-          setShowTermsPopup(false);
-          handleBookingRequest();
-        }}
-        onClose={() => setShowTermsPopup(false)}
-      />
-    );
-  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <ToastContainer
@@ -837,7 +827,7 @@ export default function BookingPage() {
                           : "bg-teal-600 hover:bg-teal-700 shadow-md hover:shadow-lg"
                       }`}
                       onClick={() => {
-                      //  if (!selectedRoom || !checkInDate || isLoading) return;
+                        //  if (!selectedRoom || !checkInDate || isLoading) return;
                         setShowTermsPopup(true);
                       }}
                       disabled={!selectedRoom || !checkInDate || isLoading}
@@ -883,6 +873,15 @@ export default function BookingPage() {
           </div>
         </div>
       </main>
+      {showTermsPopup && (
+        <TermsAndConditionsPopup
+          onAccept={() => {
+            setShowTermsPopup(false);
+            handleBookingRequest();
+          }}
+          onClose={() => setShowTermsPopup(false)}
+        />
+      )}
     </div>
   );
 }
