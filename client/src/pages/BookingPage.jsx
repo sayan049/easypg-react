@@ -130,9 +130,9 @@ export const BookingSkeleton = () => {
   );
 };
 
-const TermsAndConditionsPopup = ({ onAccept, onClose }) => {
+const TermsAndConditionsPopup = ({ onAccept, onClose ,isOpen }) => {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center p-4 z-50">
+    <Dialog open={isOpen} onClose={onClose}  className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg max-w-2xl max-h-[90vh] overflow-y-auto">
         <Dialog.Panel className="p-6">
           <Dialog.Title className="text-2xl font-bold mb-4">
@@ -200,7 +200,7 @@ const TermsAndConditionsPopup = ({ onAccept, onClose }) => {
           </div>
         </Dialog.Panel>
       </div>
-    </div>
+    </Dialog >
   );
 };
 
@@ -217,6 +217,8 @@ export default function BookingPage() {
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showTermsPopup, setShowTermsPopup] = useState(false);
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
+
 
   const { messId } = useParams();
 
@@ -248,6 +250,10 @@ export default function BookingPage() {
     //   parseInt(messData.minimumBookingDuration.split(" ")[0]),
     //   duration
     // );
+    if (!hasAcceptedTerms) {
+    setShowTermsPopup(true);
+    return;
+  }
     if (isOwnerAuthenticated) {
       return toast.error("mess owners can't book messes");
     }
@@ -873,15 +879,17 @@ export default function BookingPage() {
           </div>
         </div>
       </main>
-      {showTermsPopup && (
+      {/* {showTermsPopup && ( */}
         <TermsAndConditionsPopup
+        isOpen={showTermsPopup}
           onAccept={() => {
+            setHasAcceptedTerms(true);
             setShowTermsPopup(false);
             handleBookingRequest();
           }}
           onClose={() => setShowTermsPopup(false)}
         />
-      )}
+      {/* )} */}
     </div>
   );
 }
