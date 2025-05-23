@@ -58,9 +58,35 @@ io.on("connection", (socket) => {
     socket.join(ownerId);
     console.log(`Socket ${socket.id} joined room ${ownerId}`);
   });
-   socket.on("join-user-room", (userId) => {
+  //  socket.on("join-user-room", (userId) => {
+  //   socket.join(userId);
+  //   console.log(`Socket ${socket.id} joined room ${userId}`);
+  // });
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected:", socket.id);
+  });
+});
+
+// In your connection setup (where you have io.on('connection'))
+io.on("connection", (socket) => {
+  console.log("New client connected:", socket.id);
+  console.log(
+    "Socket connected with cookies:",
+    socket.handshake.headers.cookie
+  );
+
+  socket.on("join-user-room", (userId) => {
+    console.log(`Attempting to join user room ${userId}`);
+    if (!userId) {
+      console.error("No userId provided to join-user-room");
+      return;
+    }
     socket.join(userId);
     console.log(`Socket ${socket.id} joined room ${userId}`);
+
+    // Test emit to verify room joining
+    io.to(userId).emit("room-joined-test", { success: true });
   });
 
   socket.on("disconnect", () => {
