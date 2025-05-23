@@ -61,57 +61,122 @@ const Cart = () => {
   const [gender, setGender] = useState("");
   const [loading, setLoading] = useState(true);
 
+  // const fetchMessData = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const res = await axios.get(getCartUrl, {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
+  //       },
+  //       withCredentials: true,
+  //     });
+  //     setMessData(res.data || []);
+  //   } catch (err) {
+  //     console.error(err);
+  //     toast.error("Failed to fetch mess data.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchMessData();
+  // }, []);
+
+  // const fetchLikedMesses = async () => {
+  //   try {
+  //     const res = await axios.get(getLikedMessUrl, {
+  //       //  headers: { Authorization: `Bearer ${token}` },
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
+  //       },
+  //       withCredentials: true,
+  //     });
+
+  //     const likedData = res.data || [];
+  //     const likedMap = {};
+
+  //     // Assuming likedData is an array of mess objects, not just IDs
+  //     likedData.forEach((mess) => {
+  //       likedMap[mess._id] = true; // Storing the mess ID in the map
+  //      // console.log("Liked Mess ID:", mess._id); // Log the actual mess ID
+  //     });
+
+  //    // console.log("Liked Messes:", likedMap); // Log the full map of liked messes
+  //     setLiked(likedMap); // Update state with the liked messes map
+  //   } catch (err) {
+  //     console.error("Failed to fetch liked messes", err);
+  //   }
+  // };
+
   const fetchMessData = async () => {
     setLoading(true);
     try {
       const res = await axios.get(getCartUrl, {
         headers: {
           "Content-Type": "application/json",
-          "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
+          "X-Requested-With": "XMLHttpRequest",
         },
         withCredentials: true,
       });
-      setMessData(res.data || []);
+
+      if (Array.isArray(res.data) && res.data.length > 0) {
+        setMessData(res.data);
+      } else {
+        setMessData([]); // Clear state if empty
+        toast.info("No messes found in your cart.");
+      }
     } catch (err) {
-      console.error(err);
-      toast.error("Failed to fetch mess data.");
+      console.error("Failed to fetch mess data:", err);
+      if (err.response?.status === 404) {
+        toast.info("No messes found in your cart.");
+      } else {
+        toast.error("Something went wrong while fetching mess data.");
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchMessData();
-  }, []);
-
   const fetchLikedMesses = async () => {
     try {
       const res = await axios.get(getLikedMessUrl, {
-        //  headers: { Authorization: `Bearer ${token}` },
         headers: {
           "Content-Type": "application/json",
-          "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
+          "X-Requested-With": "XMLHttpRequest",
         },
         withCredentials: true,
       });
 
       const likedData = res.data || [];
-      const likedMap = {};
 
-      // Assuming likedData is an array of mess objects, not just IDs
+      if (!Array.isArray(likedData) || likedData.length === 0) {
+        setLiked({});
+        toast.info("You haven't liked any mess yet.");
+        return;
+      }
+
+      const likedMap = {};
       likedData.forEach((mess) => {
-        likedMap[mess._id] = true; // Storing the mess ID in the map
-       // console.log("Liked Mess ID:", mess._id); // Log the actual mess ID
+        likedMap[mess._id] = true;
       });
 
-     // console.log("Liked Messes:", likedMap); // Log the full map of liked messes
-      setLiked(likedMap); // Update state with the liked messes map
+      setLiked(likedMap);
     } catch (err) {
-      console.error("Failed to fetch liked messes", err);
+      console.error("Failed to fetch liked messes:", err);
+
+      if (err.response?.status === 404) {
+        setLiked({});
+        toast.info("You haven't liked any mess yet.");
+      } else {
+        toast.error("Something went wrong while fetching liked messes.");
+      }
     }
   };
-
   useEffect(() => {
+    fetchMessData();
     fetchLikedMesses();
   }, []);
 
