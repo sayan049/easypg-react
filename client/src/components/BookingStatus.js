@@ -567,7 +567,8 @@ const BookingStatus = () => {
         `${baseurl}/auth/bookings/${bookingId}/status`,
         {
           status,
-          ...(reason && { rejectionReason: reason }),
+        //  ...(reason && { rejectionReason: reason }),
+         rejectionReason: reason?.trim() || "No reason provided",
         },
         {
           withCredentials: true, // Automatically send cookies
