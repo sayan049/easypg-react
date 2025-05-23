@@ -1100,7 +1100,7 @@ exports.handleBookingApproval = async (req, res) => {
       ownerRejectionReason: booking.ownerRejectionReason,
     };
     const io = req.app.get("socketio"); // Get socket instance from app.js/server.js
-    io.to(pgOwner.toString()).emit("update-booking-status", {
+    io.to(booking.student._id.toString()).emit("update-booking-status", {
       booking: bookingPayload,
     });
 
