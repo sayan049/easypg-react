@@ -1,4 +1,4 @@
-import React, { useState, useEffect , useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Cart from "../components/cart";
 import { useAuth } from "../contexts/AuthContext";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
@@ -115,42 +115,18 @@ function NewDashboard() {
       setLoading(false);
     }
   };
-
-  // const socket = io(baseurl, {
-  //   withCredentials: true,
-  // });
-
-  // useEffect(() => {
-  //   console.log("user?.id", user);
-
-  //   socket.emit("join-user-room", user?.id);
-
-  //   socket.on("update-booking-status", ({ booking }) => {
-  //     console.log("Booking status updated:", booking);
-  //     // Optionally update state/UI
-  //   });
-
-  //   return () => {
-  //     socket.off("update-booking-status");
-  //   };
-  // }, [user?.id]);
-  const socketRef = useRef(null);
-
+  const socket = io(baseurl);
   useEffect(() => {
-    socketRef.current = io(baseurl, { withCredentials: true });
-
-    const socket = socketRef.current;
-
-    if (user?.id) {
-      socket.emit("join-user-room", user.id);
-    }
+    socket.emit("join-user-room", user?.id);
 
     socket.on("update-booking-status", (data) => {
-      console.log("Booking status update:", data);
+      console.log("New booking received", data);
+
+      toast.info("New booking status update received");
     });
 
     return () => {
-      socket.disconnect();
+      socket.off("update-booking-status");
     };
   }, [user?.id]);
 
