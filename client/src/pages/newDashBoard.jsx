@@ -117,6 +117,7 @@ function NewDashboard() {
   };
   const socket = io(baseurl);
   useEffect(() => {
+    console.log("Socket connection established", user?.id);
     socket.emit("join-user-room", user?.id);
 
     socket.on("update-booking-status", (data) => {
