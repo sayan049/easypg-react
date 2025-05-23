@@ -2,66 +2,98 @@ import React from "react";
 
 const PrivacyPolicy = () => {
   return (
-    <div className="container mx-auto p-6 max-w-3xl">
-      <h1 className="text-3xl font-bold mb-4">Privacy Policy</h1>
-
-      <p>
-        Messmate respects your privacy and is committed to protecting your
-        personal information. This policy explains what data we collect, how we
-        use it, and your rights.
+    <div className="privacy-policy container mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
+      <p className="mb-4">
+        <strong>Last updated:</strong> May 23, 2025
       </p>
 
-      <h2 className="text-2xl mt-6 mb-2">1. Information We Collect</h2>
-      <ul className="list-disc pl-6">
-        <li>Personal identification information (name, email, phone, etc.)</li>
-        <li>Payment information via Razorpay (handled securely by Razorpay)</li>
-        <li>Usage data and cookies to improve experience</li>
-      </ul>
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Introduction</h2>
+        <p className="mb-4">
+          This Privacy Policy describes how Messmate ("we", "us", or "our")
+          collects, uses, and discloses your information when you use our
+          service.
+        </p>
+      </section>
 
-      <h2 className="text-2xl mt-6 mb-2">2. How We Use Your Information</h2>
-      <ul className="list-disc pl-6">
-        <li>To provide and manage bookings</li>
-        <li>To process payments securely</li>
-        <li>To communicate important updates and offers</li>
-        <li>To comply with legal obligations</li>
-      </ul>
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Data We Collect</h2>
+        <h3 className="text-xl font-medium mb-2">Personal Data</h3>
+        <ul className="list-disc pl-6 mb-4">
+          <li>Email address</li>
+          <li>First and last name</li>
+          <li>Phone number</li>
+          <li>Address information</li>
+        </ul>
 
-      <h2 className="text-2xl mt-6 mb-2">3. Sharing Information</h2>
-      <p>
-        We do not sell or rent your personal data to third parties. We may share
-        information with owners for booking purposes or with service providers
-        who help us operate.
-      </p>
+        <h3 className="text-xl font-medium mb-2">Usage Data</h3>
+        <p className="mb-4">
+          Includes IP address, browser type, pages visited, device information,
+          and other diagnostic data.
+        </p>
+      </section>
 
-      <h2 className="text-2xl mt-6 mb-2">4. Data Security</h2>
-      <p>
-        We implement security measures to protect your data but cannot guarantee
-        100% security over the internet.
-      </p>
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">How We Use Your Data</h2>
+        <ul className="list-disc pl-6">
+          <li>Provide and maintain our service</li>
+          <li>Manage your account</li>
+          <li>Contact you with updates</li>
+          <li>Improve our services</li>
+          <li>Legal compliance</li>
+        </ul>
+      </section>
 
-      <h2 className="text-2xl mt-6 mb-2">5. Cookies</h2>
-      <p>
-        We use cookies to personalize your experience. You can control cookie
-        settings through your browser.
-      </p>
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Data Sharing</h2>
+        <p className="mb-4">
+          We may share your information with service providers, business
+          partners, or when required by law. We never sell your personal data.
+        </p>
+      </section>
 
-      <h2 className="text-2xl mt-6 mb-2">6. Your Rights</h2>
-      <p>
-        You may request access, correction, or deletion of your personal data by
-        contacting us.
-      </p>
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Security</h2>
+        <p className="mb-4">
+          We use reasonable security measures to protect your data, but no
+          system is 100% secure.
+        </p>
+      </section>
 
-      <h2 className="text-2xl mt-6 mb-2">7. Contact Us</h2>
-      <p>
-        For privacy-related inquiries, email us at{" "}
-        <a href="mailto:messmatecompany@gmail.com" className="text-blue-600 underline">
-          messmatecompany@gmail.com
-        </a>
-        .
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Your Rights</h2>
+        <p className="mb-4">
+          You can request to access, update, or delete your personal information
+          through your account settings or by contacting us.
+        </p>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Contact Us</h2>
+        <p className="mb-2">
+          Email:{" "}
+          <a href="mailto:messmatecompany@gmail.com" className="text-blue-600">
+            messmatecompany@gmail.com
+          </a>
+        </p>
+        <p>
+          Website:{" "}
+          <a
+            href="https://www.messmate.co.in/#contactus"
+            className="text-blue-600"
+          >
+            https://www.messmate.co.in/
+          </a>
+        </p>
+      </section>
+
+      <p className="text-sm text-gray-600">
+        We may update this policy periodically. Please review this page for
+        changes.
       </p>
     </div>
   );
 };
 
 export default PrivacyPolicy;
-
