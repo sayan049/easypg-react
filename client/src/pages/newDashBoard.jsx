@@ -120,6 +120,7 @@ function NewDashboard() {
   const socket = io(baseurl);
 
   useEffect(() => {
+    console.log("user?.id", user);
 
   socket.emit("join-user-room", user?.id); 
 
