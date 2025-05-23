@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Cart from "../components/cart";
 import { useAuth } from "../contexts/AuthContext";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
@@ -21,6 +21,7 @@ import DashboardContent from "../components/dashboardContent";
 // const DashboardContent = React.lazy(() => import('./components/dashboardContent'));
 
 import Payments from "../components/payment";
+import { io } from "socket.io-client";
 
 function NewDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -64,7 +65,7 @@ function NewDashboard() {
           withCredentials: true, // Automatically send cookies
           headers: {
             "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
+            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
           },
         });
         if (response.data && response.data.success) {
@@ -98,7 +99,7 @@ function NewDashboard() {
             withCredentials: true, // Automatically send cookies
             headers: {
               "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
+              "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
             },
             params: { userId, type },
           }
@@ -114,6 +115,20 @@ function NewDashboard() {
       setLoading(false);
     }
   };
+  const socket = io(baseurl);
+  useEffect(() => {
+    socket.emit("join-user-room", user?.id);
+
+    socket.on("update-booking-status", (data) => {
+      console.log("New booking received", data);
+
+      toast.info("New booking status update received");
+    });
+
+    return () => {
+      socket.off("update-booking-status");
+    };
+  }, [user?.id]);
 
   useEffect(() => {
     if (user?.id) fetchAllData();
