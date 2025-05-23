@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useRef } from "react";
 import Cart from "../components/cart";
 import { useAuth } from "../contexts/AuthContext";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
@@ -22,7 +22,6 @@ import DashboardContent from "../components/dashboardContent";
 
 import Payments from "../components/payment";
 import { io } from "socket.io-client";
-
 
 function NewDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -66,7 +65,7 @@ function NewDashboard() {
           withCredentials: true, // Automatically send cookies
           headers: {
             "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
+            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
           },
         });
         if (response.data && response.data.success) {
@@ -100,7 +99,7 @@ function NewDashboard() {
             withCredentials: true, // Automatically send cookies
             headers: {
               "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
+              "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
             },
             params: { userId, type },
           }
@@ -117,22 +116,43 @@ function NewDashboard() {
     }
   };
 
-  const socket = io(baseurl);
+  // const socket = io(baseurl, {
+  //   withCredentials: true,
+  // });
+
+  // useEffect(() => {
+  //   console.log("user?.id", user);
+
+  //   socket.emit("join-user-room", user?.id);
+
+  //   socket.on("update-booking-status", ({ booking }) => {
+  //     console.log("Booking status updated:", booking);
+  //     // Optionally update state/UI
+  //   });
+
+  //   return () => {
+  //     socket.off("update-booking-status");
+  //   };
+  // }, [user?.id]);
+  const socketRef = useRef(null);
 
   useEffect(() => {
-    console.log("user?.id", user);
+    socketRef.current = io(baseurl, { withCredentials: true });
 
-  socket.emit("join-user-room", user?.id); 
+    const socket = socketRef.current;
 
-  socket.on("update-booking-status", ({ booking }) => {
-    console.log("Booking status updated:", booking);
-    // Optionally update state/UI
-  });
+    if (user?.id) {
+      socket.emit("join-user-room", user.id);
+    }
 
-  return () => {
-    socket.off("update-booking-status");
-  };
-}, [user?.id]);
+    socket.on("update-booking-status", (data) => {
+      console.log("Booking status update:", data);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [user?.id]);
 
   useEffect(() => {
     if (user?.id) fetchAllData();
