@@ -115,69 +115,20 @@ function NewDashboard() {
       setLoading(false);
     }
   };
-  // const socket = io(baseurl);
-  // useEffect(() => {
-  //   console.log("Socket connection established", user?.id);
-  //   socket.emit("join-user-room", user?.id);
-
-  //   socket.on("update-booking-status", (data) => {
-  //     console.log("New booking received", data);
-
-  //     toast.info("New booking status update received");
-  //   });
-
-  //   return () => {
-  //     socket.off("update-booking-status");
-  //   };
-  // }, [user?.id]);
-  const socketRef = useRef(null); // Use a ref to maintain socket instance
-
+  const socket = io(baseurl);
   useEffect(() => {
-    // Initialize socket only once
-    if (!socketRef.current) {
-      socketRef.current = io(baseurl, {
-        withCredentials: true,
-        transports: ["websocket", "polling"],
-      });
+    console.log("Socket connection established", user?.id);
+    socket.emit("join-user-room", user?.id);
 
-      // Connection event listeners
-      socketRef.current.on("connect", () => {
-        console.log("Socket connected:", socketRef.current.id);
-        if (user?.id) {
-          console.log("Joining user room:", user.id);
-          socketRef.current.emit("join-user-room", user.id);
-        }
-      });
+    socket.on("update-booking-status", (data) => {
+      console.log("New booking received", data);
 
-      socketRef.current.on("connect_error", (err) => {
-        console.log("Connection error:", err);
-      });
+      toast.info("New booking status update received");
+    });
 
-      // Message handler
-      socketRef.current.on("update-booking-status", (data) => {
-        console.log("New booking received", data);
-        toast.info("New booking status update received");
-        // Add any state updates here if needed
-      });
-    }
-
-    // Cleanup on unmount
     return () => {
-      if (socketRef.current) {
-        console.log("Disconnecting socket");
-        socketRef.current.off("update-booking-status");
-        socketRef.current.disconnect();
-        socketRef.current = null;
-      }
+      socket.off("update-booking-status");
     };
-  }, []); // Empty dependency array to run only once
-
-  // Re-join room when user.id changes
-  useEffect(() => {
-    if (socketRef.current && user?.id) {
-      console.log("User ID changed, rejoining room:", user.id);
-      socketRef.current.emit("join-user-room", user.id);
-    }
   }, [user?.id]);
 
   useEffect(() => {
