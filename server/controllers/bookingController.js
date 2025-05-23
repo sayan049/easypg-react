@@ -1094,6 +1094,16 @@ exports.handleBookingApproval = async (req, res) => {
     }
     await booking.save();
 
+    const bookingPayload = {
+      _id: booking._id,
+      status:booking.status,
+      ownerRejectionReason: booking.ownerRejectionReason,
+    };
+    const io = req.app.get("socketio"); // Get socket instance from app.js/server.js
+    io.to(pgOwner.toString()).emit("update-booking-status", {
+      booking: bookingPayload,
+    });
+
     // Send notifications
     const notificationMessage =
       status === "confirmed"

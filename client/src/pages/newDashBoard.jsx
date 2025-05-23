@@ -21,6 +21,8 @@ import DashboardContent from "../components/dashboardContent";
 // const DashboardContent = React.lazy(() => import('./components/dashboardContent'));
 
 import Payments from "../components/payment";
+import { io } from "socket.io-client";
+
 
 function NewDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -114,6 +116,22 @@ function NewDashboard() {
       setLoading(false);
     }
   };
+
+  const socket = io(baseurl);
+
+  useEffect(() => {
+
+  socket.emit("join-user-room", user?.id); 
+
+  socket.on("update-booking-status", ({ booking }) => {
+    console.log("Booking status updated:", booking);
+    // Optionally update state/UI
+  });
+
+  return () => {
+    socket.off("update-booking-status");
+  };
+}, [user?.id]);
 
   useEffect(() => {
     if (user?.id) fetchAllData();
