@@ -154,7 +154,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { baseurl } from "../constant/urls";
 import { useAuth } from "./AuthContext";
-import { set } from "mongoose";
 
 const SocketContext = createContext();
 
