@@ -134,18 +134,17 @@ function SignupOwner() {
     try {
       setIsSendingOtp(true);
       setOtpError("");
+      setOtp(["", "", "", ""]); // Reset OTP fields
 
-      // In a real app, this would call your backend API
+      // Actual API call
       const response = await axios.post(`${baseurl}/auth/send-otp`, {
         email: formData.email,
       });
 
-      //  For demo, we'll simulate success
       setShowOtp(true);
-      setOtpExpiry(Date.now() + 300000); // 5 minutes from now
+      setOtpExpiry(Date.now() + 300000); // 5 minutes expiration
       setCanResend(false);
-      setTimeout(() => setCanResend(true), 30000); // 30 second cooldown
-      setTimeLeft(300); // 5 minutes in seconds
+      setTimeLeft(300); // Start 5 minute countdown
 
       toast.success("OTP sent to your email");
     } catch (error) {
@@ -172,15 +171,15 @@ function SignupOwner() {
     try {
       setIsVerifyingOtp(true);
 
-      // In a real app, this would call your backend API
+      // Actual verification API call
       const response = await axios.post(`${baseurl}/auth/verify-otp`, {
         email: formData.email,
         otp: enteredOtp,
       });
 
-      // For demo, we'll simulate success
       setIsEmailVerified(true);
       setShowOtp(false);
+      setOtp(["", "", "", ""]); // Clear OTP fields
       toast.success("Email verified successfully");
     } catch (error) {
       setOtpError("Invalid OTP. Please try again.");
@@ -189,6 +188,7 @@ function SignupOwner() {
     }
   };
 
+  // Timer effect
   useEffect(() => {
     let interval;
     if (timeLeft > 0) {
@@ -722,65 +722,70 @@ function SignupOwner() {
                       type="button"
                       onClick={sendOtp}
                       disabled={isSendingOtp || !formData.email || !canResend}
-                      style={{
-                        borderTopLeftRadius: "0",
-                        borderBottomLeftRadius: "0",
-                        borderTopRightRadius: "9999px",
-                        borderBottomRightRadius: "9999px",
-                      }}
-                      className={`px-4 py-2 absolute right-1 ${
-                        showOtp ? "top-[23%]" : "top-[68%]"
-                      } transform -translate-y-1/2 ${
-                        isSendingOtp || !formData.email || !canResend
-                          ? "bg-primary-default cursor-not-allowed text-white"
-                          : "bg-primary-default hover:bg-primary-dark text-white"
-                      }`}
+                      className="px-4 py-2 absolute right-1 top-1/2 -translate-y-1/2 rounded-full bg-primary-default hover:bg-primary-dark text-white disabled:cursor-not-allowed disabled:opacity-75"
                     >
                       {isSendingOtp ? "Sending..." : "Verify"}
                     </button>
                   ) : (
-                    <span
-                      className={`text-green-600 pt-2 absolute right-1 ${
-                        showOtp ? "top-[23%]" : "top-[63%]"
-                      } transform -translate-y-1/2`}
-                    >
+                    <span className="text-green-600 absolute right-1 top-1/2 -translate-y-1/2">
                       Verified
                     </span>
                   )}
 
                   {showOtp && !isEmailVerified && (
                     <div className="mt-4 space-y-2">
-                      {/* OTP input fields remain the same */}
+                      <div className="flex gap-3 justify-center">
+                        {[0, 1, 2, 3].map((i) => (
+                          <input
+                            key={i}
+                            id={`otp-${i}`}
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            maxLength="1"
+                            value={otp[i] || ""}
+                            onChange={(e) => handleOtpChange(e, i)}
+                            onKeyDown={(e) => handleOtpKeyDown(e, i)}
+                            className="w-14 h-14 text-center text-xl rounded-xl border border-primary-light focus:outline-none focus:ring-2 focus:ring-[#2ca4b5] bg-[#116e7b1a] disabled:opacity-50"
+                            aria-label={`Digit ${i + 1} of OTP`}
+                            disabled={isVerifyingOtp}
+                          />
+                        ))}
+                      </div>
 
-                      <div className="flex justify-center gap-4 mt-2">
+                      {otpError && (
+                        <p className="text-red-500 text-sm text-center">
+                          {otpError}
+                        </p>
+                      )}
+
+                      <div className="flex flex-col items-center gap-3 mt-2">
                         <button
                           type="button"
                           onClick={verifyOtp}
                           disabled={isVerifyingOtp || otp.join("").length !== 4}
-                          className={`px-4 py-2 rounded-full ${
-                            isVerifyingOtp || otp.join("").length !== 4
-                              ? "bg-primary-default cursor-not-allowed text-white"
-                              : "bg-primary-default hover:bg-primary-dark text-white"
-                          }`}
+                          className="px-6 py-2 rounded-full bg-primary-default hover:bg-primary-dark text-white disabled:cursor-not-allowed disabled:opacity-75"
                         >
                           {isVerifyingOtp ? "Verifying..." : "Submit OTP"}
                         </button>
 
-                        {!canResend ? (
-                          <p className="text-sm text-gray-500">
-                            Resend OTP in {Math.floor(timeLeft / 60)}:
-                            {(timeLeft % 60).toString().padStart(2, "0")}
-                          </p>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={sendOtp}
-                            disabled={!canResend || isSendingOtp}
-                            className="text-primary-default hover:text-primary-dark underline text-sm"
-                          >
-                            Resend OTP
-                          </button>
-                        )}
+                        <div className="text-sm">
+                          {!canResend ? (
+                            <span className="text-gray-500">
+                              Resend available in {Math.floor(timeLeft / 60)}:
+                              {(timeLeft % 60).toString().padStart(2, "0")}
+                            </span>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={sendOtp}
+                              disabled={!canResend}
+                              className="text-primary-default hover:text-primary-dark underline"
+                            >
+                              Resend OTP
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   )}
