@@ -229,8 +229,8 @@ function NewDashboard() {
             icon={
               <div className="relative">
                 <CalendarCheck />
-                {hasUnreadBookingUpdate && (
-                  <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full animate-pulse" />
+                {localStorage.getItem("hasUnreadBookingUpdate") === "true" && (
+                  <span className="absolute top-0 right-0 h-3 w-3 bg-red-800 rounded-full animate-pulse" />
                 )}
               </div>
             }
