@@ -722,7 +722,7 @@ function SignupOwner() {
                       type="button"
                       onClick={sendOtp}
                       disabled={isSendingOtp || !formData.email || !canResend}
-                      className="px-4 py-2 absolute right-1 top-1/2 -translate-y-1/2 rounded-full bg-primary-default hover:bg-primary-dark text-white disabled:cursor-not-allowed disabled:opacity-75"
+                      className="px-4 py-2 absolute right-1  rounded-full bg-primary-default hover:bg-primary-dark text-white disabled:cursor-not-allowed disabled:opacity-75"
                     >
                       {isSendingOtp ? "Sending..." : "Verify"}
                     </button>
