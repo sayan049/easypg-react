@@ -37,7 +37,7 @@ const HomePage = () => {
     isOwnerAuthenticated,
     ownerName,
   } = useAuth();
-  const { hasUnread, isConnected, data } = useSocket();
+  const { hasUnread, isConnected, data ,setIsConnected } = useSocket();
   const [menuOpen, setMenuOpen] = useState(false);
   const [nearbyMesses, setNearbyMesses] = useState([]);
   const [isLocating, setIsLocating] = useState(false);
@@ -50,8 +50,7 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    if (user?.id && isConnected) {
-      fetchAllData();
+    if (isConnected) {
       if( data?.status === "rejected" ) {
         toast.info("your booking has been rejected by the owner");
       }
@@ -61,7 +60,7 @@ const HomePage = () => {
       
       setIsConnected(false);
     }
-  }, [isConnected, user?.id]);
+  }, [isConnected]);
 
   const debounceTimeout = useRef(null);
 
