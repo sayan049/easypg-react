@@ -225,10 +225,12 @@ export function SocketProvider({ children }) {
     };
 
     newSocket.on("new-booking-request", handleNewBooking);
-
     return () => {
-      newSocket.off("new-booking-request", handleNewBooking);
+      newSocket.disconnect();
     };
+    // return () => {
+    //   newSocket.off("new-booking-request", handleNewBooking);
+    // };
   }, [socket, owner?.id]);
 
   return (
