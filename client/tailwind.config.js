@@ -28,9 +28,9 @@ module.exports = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          light: '#a6dbe3',
-          default: '#2ca4b5',
-          dark: '#208696',
+          light: "#a6dbe3",
+          default: "#2ca4b5",
+          dark: "#208696",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
@@ -74,6 +74,8 @@ module.exports = {
         "fuck-bg":
           "linear-gradient(113deg, rgba(9,225,255,0.25) 25%, rgba(9,225,255,0.25) 25%)",
         "text-bg": "linear-gradient(90deg, #105760, #4e6e7b)",
+        "owner-gradient":
+          "linear-gradient(123deg, #09e1ff69, #d9d9d900 72.32%)",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -90,22 +92,19 @@ module.exports = {
           to: { height: 0 },
         },
         pulse: {
-          '0%, 100%': { opacity: 1 },
-          '50%': { opacity: 0.5 },
-        }
+          "0%, 100%": { opacity: 1 },
+          "50%": { opacity: 0.5 },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-         pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+        pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
       screens: {
         "max-lg": "1156px",
       },
     },
   },
-  plugins: [
-    require("tailwindcss-animate"),
-    require("tailwind-scrollbar-hide"),
-  ],
+  plugins: [require("tailwindcss-animate"), require("tailwind-scrollbar-hide")],
 };
