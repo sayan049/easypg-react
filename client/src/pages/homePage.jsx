@@ -37,13 +37,12 @@ const HomePage = () => {
     isOwnerAuthenticated,
     ownerName,
   } = useAuth();
-  const { hasUnread, isConnected, data, setIsConnected } = useSocket();
+  const { hasUnread, isConnected, data, setIsConnected ,hasUnreadOwner } = useSocket();
   const [menuOpen, setMenuOpen] = useState(false);
   const [nearbyMesses, setNearbyMesses] = useState([]);
   const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState(null);
   const searchContainerRef = useRef(null);
-  const [hasUnreadBookingUpdate, setHasUnreadBookingUpdate] = useState(false);
 
   useEffect(() => {
     document.title = "MessMate - Find your nearest PG/Mess easily";
@@ -57,6 +56,9 @@ const HomePage = () => {
       }
       if (data?.booking?.status === "confirmed") {
         toast.success("Your booking has been confirmed by the owner");
+      }
+      if (data?.booking?.status === "pending") {
+        toast.info("You have a new booking request!");
       }
 
       setIsConnected(false);
@@ -433,7 +435,7 @@ const HomePage = () => {
                   >
                     <UserProfile className="h-12 w-12 ring-2 ring-[#2CA4B5] rounded-full" />
                   </motion.div>
-                  {hasUnread && (
+                  {(hasUnread || hasUnreadOwner) && (
                     <span className="absolute top-0 right-0 h-3 w-3 bg-red-500 rounded-full " />
                   )}
 

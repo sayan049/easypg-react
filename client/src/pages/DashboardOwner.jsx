@@ -15,13 +15,7 @@ import Payments from "../components/paymentOwner";
 import SettingsOwner from "../components/settingsOwner";
 import { fetchDetailsUrl, baseurl } from "../constant/urls";
 import { useAuth } from "../contexts/AuthContext";
-
-const navItems = [
-  { name: "Dashboard", icon: <Home />, key: "dashboard" },
-  { name: "Booking Status", icon: <CalendarCheck />, key: "booking" },
-  { name: "Payments", icon: <CreditCard />, key: "payments" },
-  { name: "Settings", icon: <Gear />, key: "settings" },
-];
+import { useSocket } from "../contexts/socketContext";
 
 export default function DashboardOwner() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -34,6 +28,26 @@ export default function DashboardOwner() {
 
   const { ownerName, isOwnerAuthenticated, owner, type, handleLogout } =
     useAuth();
+  const { socket, hasUnreadOwner, setHasUnreadOwner } = useSocket();
+
+  const navItems = [
+    { name: "Dashboard", icon: <Home />, key: "dashboard" },
+    {
+      name: "Booking Status",
+      icon: (
+        <div>
+          {" "}
+          <CalendarCheck />{" "}
+          {hasUnreadOwner === "true" && (
+            <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full " />
+          )}
+        </div>
+      ),
+      key: "booking",
+    },
+    { name: "Payments", icon: <CreditCard />, key: "payments" },
+    { name: "Settings", icon: <Gear />, key: "settings" },
+  ];
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -58,7 +72,7 @@ export default function DashboardOwner() {
 
     const fetchDashboardData = async () => {
       try {
-        const token = localStorage.getItem("accessToken");
+        // const token = localStorage.getItem("accessToken");
         const response = await fetch(`${baseurl}/auth/dashboard/owner-stats`, {
           credentials: "include", // Automatically send cookies
           headers: {
@@ -136,7 +150,13 @@ export default function DashboardOwner() {
                 activeTab === item.key &&
                   "bg-blue-100 text-blue-600 font-medium"
               )}
-              onClick={() => setActiveTab(item.key)}
+              onClick={() => {
+                setActiveTab(item.key);
+                if (item.key === "booking") {
+                  setHasUnreadOwner(false);
+                  localStorage.setItem("hasUnreadPendingRequest", "false");
+                }
+              }}
             >
               {item.icon} {item.name}
             </button>
@@ -195,6 +215,10 @@ export default function DashboardOwner() {
                   )}
                   onClick={() => {
                     setActiveTab(item.key);
+                    if (item.key === "booking") {
+                      setHasUnreadOwner(false);
+                      localStorage.setItem("hasUnreadPendingRequest", "false");
+                    }
                     setMobileSidebarOpen(false);
                   }}
                 >

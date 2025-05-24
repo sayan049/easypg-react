@@ -121,17 +121,7 @@ function NewDashboard() {
   };
   useEffect(() => {
     console.log("Socket connection established", user?.id);
-    // socket.emit("join-user-room", user?.id);
 
-    // socket.on("update-booking-status", (data) => {
-    //   console.log("New booking received", data);
-    //   fetchAllData();
-    //   toast.info("New booking status update received");
-    // });
-
-    // return () => {
-    //   socket.off("update-booking-status");
-    // };
     if (isConnected) {
       fetchAllData();
       toast.info("New booking status update received");

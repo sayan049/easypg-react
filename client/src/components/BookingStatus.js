@@ -34,7 +34,6 @@ const BookingCard = React.memo(
     const [showMaintenance, setShowMaintenance] = useState(false);
     const [actionType, setActionType] = useState(null); // 'cancel' or 'resolve'
     const [actionMessage, setActionMessage] = useState(""); // for the entered message
-    const { setHasUnread } = useSocket();
 
     const statusColors = {
       pending: "bg-yellow-100 text-yellow-800",
@@ -383,6 +382,7 @@ const BookingStatus = () => {
   const [maintenanceRequests, setMaintenanceRequests] = useState({
     requests: [],
   });
+  const { setHasUnreadOwner, isConnected, setIsConnected } = useSocket();
   const [hit, setHit] = useState(false);
   const [bookings, setBookings] = useState({
     pending: { data: [], page: 1, total: 0 },
@@ -406,28 +406,34 @@ const BookingStatus = () => {
   const ownerId = owner?.id;
   const socket = io(baseurl);
 
+  // useEffect(() => {
+  //   socket.emit("join-owner-room", ownerId);
+
+  //   socket.on("new-booking-request", (data) => {
+  //     console.log("New booking received", data);
+  //     // setBookings((prev) => ({
+  //     //   ...prev,
+  //     //   pending: {
+  //     //     ...prev.pending,
+  //     //     data: [data, ...prev.pending.data], // prepend new booking
+  //     //     total: prev.pending.total + 1,
+  //     //   },
+  //     // }));
+  //     fetchAllBookings();
+
+  //     toast.info("You have a new booking request!");
+  //   });
+
+  //   return () => {
+  //     socket.off("new-booking-request");
+  //   };
+  // }, [ownerId]);
   useEffect(() => {
-    socket.emit("join-owner-room", ownerId);
-
-    socket.on("new-booking-request", (data) => {
-      console.log("New booking received", data);
-      // setBookings((prev) => ({
-      //   ...prev,
-      //   pending: {
-      //     ...prev.pending,
-      //     data: [data, ...prev.pending.data], // prepend new booking
-      //     total: prev.pending.total + 1,
-      //   },
-      // }));
+    if (isConnected) {
       fetchAllBookings();
-
-      toast.info("You have a new booking request!");
-    });
-
-    return () => {
-      socket.off("new-booking-request");
-    };
-  }, [ownerId]);
+      setIsConnected(false);
+    }
+  }, [ownerId, isConnected]);
 
   const fetchMaintenanceRequests = async (bookingIds) => {
     try {
@@ -569,8 +575,8 @@ const BookingStatus = () => {
         `${baseurl}/auth/bookings/${bookingId}/status`,
         {
           status,
-        //  ...(reason && { rejectionReason: reason }),
-         rejectionReason: reason?.trim() || "No reason provided",
+          //  ...(reason && { rejectionReason: reason }),
+          rejectionReason: reason?.trim() || "No reason provided",
         },
         {
           withCredentials: true, // Automatically send cookies

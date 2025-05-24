@@ -160,11 +160,15 @@ const SocketContext = createContext();
 export const useSocket = () => useContext(SocketContext);
 
 export function SocketProvider({ children }) {
-  const { user } = useAuth();
+  const { user, owner } = useAuth();
   const [socket, setSocket] = useState(null);
   const [hasUnread, setHasUnread] = useState(() => {
     return localStorage.getItem("hasUnreadBookingUpdate") === "true";
   });
+  const [hasUnreadOwner, setHasUnreadOwner] = useState(() => {
+    return localStorage.getItem("hasUnreadPendingRequest") === "true";
+  });
+
   const [isConnected, setIsConnected] = useState(false);
   const [data, setData] = useState(null);
 
@@ -191,6 +195,23 @@ export function SocketProvider({ children }) {
     }
   }, [user?.id]);
 
+  useEffect(() => {
+    socket.emit("join-owner-room", owner?._id);
+
+    socket.on("new-booking-request", (data) => {
+      console.log("New booking received", data);
+      localStorage.setItem("hasUnreadPendingRequest", "true");
+      setIsConnected(true);
+      console.log("Booking status:", data?.booking?.status); // ✅ Correct access
+
+      toast.info("You have a new booking request!");
+    });
+
+    return () => {
+      socket.off("new-booking-request");
+    };
+  }, [owner?._id]);
+
   return (
     <SocketContext.Provider
       value={{
@@ -200,6 +221,8 @@ export function SocketProvider({ children }) {
         isConnected,
         setIsConnected,
         data,
+        hasUnreadOwner,
+        setHasUnreadOwner
       }}
     >
       {children}
