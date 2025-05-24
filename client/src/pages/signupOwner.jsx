@@ -576,7 +576,7 @@ function SignupOwner() {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-owner-gradient min-h-screen">
       <Helmet>
         <title>
           PG/Mess Owner Registration | Mess Mate - List Your PG/Hostel
@@ -629,34 +629,29 @@ function SignupOwner() {
               <ArrowLeft className="h-5 w-5 text-gray-600" />
             </button>
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-teal-600">
-                Owner Registration
+              <h1 className="text-xl sm:text-3xl font-bold text-[#2ca4b5]">
+                Sign Up
               </h1>
               <p className="text-sm sm:text-base text-gray-600">
-                Create your PG/Mess owner account
+                Owner Registration
               </p>
             </div>
           </div>
-          <Link
-            to="/login/owner"
-            className="text-teal-600 hover:text-teal-700 font-medium"
-          >
-            Already have an account?
-          </Link>
         </header>
 
         <form
-          className="bg-white rounded-xl shadow-sm p-4 sm:p-6 md:p-8"
+          className=" p-4 sm:p-6 md:p-8"
           onSubmit={handleSubmit}
           method="POST"
           encType="multipart/form-data"
+          autoComplete="off"
         >
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column - Personal Information */}
             <div className="lg:col-span-2 space-y-6">
               <div>
                 <h2 className="text-xl font-semibold mb-4 flex items-center">
-                  <User className="h-5 w-5 mr-2 text-teal-600" />
+                  <User className="h-5 w-5 mr-2 text-[#2ca4b5]" />
                   Personal Information
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -671,9 +666,10 @@ function SignupOwner() {
                       type="text"
                       id="firstName"
                       name="firstName"
+                      autoComplete="off"
                       value={formData.firstName}
                       onChange={handleChange}
-                      className="w-full rounded-lg px-4 py-2.5 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      className="w-full rounded-full px-4 py-2.5  focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                       placeholder="Enter your first name"
                       required
                     />
@@ -691,7 +687,7 @@ function SignupOwner() {
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleChange}
-                      className="w-full rounded-lg px-4 py-2.5 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      className="w-full rounded-full px-4 py-2.5  focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                       placeholder="Enter your last name"
                       required
                     />
@@ -715,7 +711,7 @@ function SignupOwner() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full rounded-lg px-4 py-2.5 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full rounded-full px-4 py-2.5 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                     placeholder="your.email@example.com"
                     required
                     disabled={isEmailVerified}
@@ -726,19 +722,25 @@ function SignupOwner() {
                       type="button"
                       onClick={sendOtp}
                       disabled={isSendingOtp || !formData.email}
+                      style={{
+                        borderTopLeftRadius: "0",
+                        borderBottomLeftRadius: "0",
+                        borderTopRightRadius: "9999px",
+                        borderBottomRightRadius: "9999px",
+                      }}
                       className={`px-4 py-2 absolute right-1 ${
                         showOtp ? "top-[23%]" : "top-[68%]"
-                      }  transform -translate-y-1/2 rounded-lg ${
+                      } transform -translate-y-1/2 ${
                         isSendingOtp || !formData.email
-                          ? "bg-gray-300 cursor-not-allowed"
-                          : "bg-teal-500 hover:bg-teal-600 text-white"
+                          ? " bg-primary-default cursor-not-allowed text-white"
+                          : "bg-primary-default hover:bg-primary-dark  text-white"
                       }`}
                     >
                       {isSendingOtp ? "Sending..." : "Verify"}
                     </button>
                   ) : (
                     <span
-                      className={`text-green-600 pt-2 absolute right-1  ${
+                      className={`text-green-600 pt-2 absolute right-1 ${
                         showOtp ? "top-[23%]" : "top-[63%]"
                       } transform -translate-y-1/2`}
                     >
@@ -748,7 +750,7 @@ function SignupOwner() {
 
                   {showOtp && !isEmailVerified && (
                     <div className="mt-4 space-y-2">
-                      <div className="flex gap-2 justify-center">
+                      <div className="flex gap-3 justify-center">
                         {[0, 1, 2, 3].map((i) => (
                           <input
                             key={i}
@@ -760,7 +762,7 @@ function SignupOwner() {
                             value={otp[i] || ""}
                             onChange={(e) => handleOtpChange(e, i)}
                             onKeyDown={(e) => handleOtpKeyDown(e, i)}
-                            className="w-12 h-12 text-center text-lg rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                            className="w-14 h-14 text-center text-xl rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2ca4b5]"
                             aria-label={`Digit ${i + 1} of OTP`}
                             disabled={isVerifyingOtp}
                           />
@@ -778,7 +780,7 @@ function SignupOwner() {
                           type="button"
                           onClick={verifyOtp}
                           disabled={isVerifyingOtp || otp.join("").length !== 4}
-                          className={`px-4 py-2 rounded-lg ${
+                          className={`px-4 py-2 rounded-full ${
                             isVerifyingOtp || otp.join("").length !== 4
                               ? "bg-gray-300 cursor-not-allowed"
                               : "bg-blue-500 hover:bg-blue-600 text-white"
@@ -797,15 +799,6 @@ function SignupOwner() {
                         </button>
                       </div>
 
-                      {/* {otpExpiry && (
-                        <p className="text-xs text-gray-500 text-center mt-2">
-                          OTP expires in{" "}
-                          {Math.floor((otpExpiry - Date.now()) / 60000)}:
-                          {Math.floor(((otpExpiry - Date.now()) % 60000) / 1000)
-                            .toString()
-                            .padStart(2, "0")}
-                        </p>
-                      )} */}
                       {!canResend ? (
                         <p className="text-sm text-gray-500">
                           Resend OTP in {Math.floor(timeLeft / 60)}:
@@ -839,7 +832,7 @@ function SignupOwner() {
                     name="mobileNo"
                     value={formData.mobileNo}
                     onChange={handleChange}
-                    className="w-full rounded-lg px-4 py-2.5 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full rounded-full px-4 py-2.5  focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                     placeholder="Your mobile number"
                     required
                   />
@@ -860,7 +853,7 @@ function SignupOwner() {
                   name="address"
                   value={formData.address}
                   onChange={handleChange}
-                  className="w-full rounded-lg px-4 py-2.5 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full rounded-full px-4 py-2.5  focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                   placeholder="Enter your full address"
                   required
                 />
@@ -881,7 +874,7 @@ function SignupOwner() {
                     name="pincode"
                     value={formData.pincode}
                     onChange={handleChange}
-                    className="w-full rounded-lg px-4 py-2.5 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full rounded-full px-4 py-2.5  focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                     placeholder="Enter pincode"
                     required
                   />
@@ -901,7 +894,7 @@ function SignupOwner() {
                       name="password"
                       value={formData.password}
                       onChange={handleChange}
-                      className="w-full rounded-lg px-4 py-2.5 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      className="w-full rounded-full px-4 py-2.5  focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                       placeholder="Create a strong password"
                       required
                     />
@@ -940,12 +933,12 @@ function SignupOwner() {
                         : ""
                     }
                     readOnly
-                    className="w-full rounded-lg px-4 py-2.5 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500 bg-gray-50"
+                    className="w-full rounded-full px-4 py-2.5  focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                   />
                   <button
                     type="button"
                     onClick={mapMake}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 rounded-full bg-teal-100 text-teal-600 hover:bg-teal-200"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 rounded-full bg-primary-light text-primary-dark hover:bg-primary-default transition-colors"
                     aria-label="Get current location"
                   >
                     <MapPin className="h-5 w-5" />
@@ -956,9 +949,7 @@ function SignupOwner() {
 
             {/* Right Column - Profile Photo */}
             <div className="flex flex-col items-center justify-start">
-              <h2 className="text-xl font-semibold mb-4 self-start">
-                Profile Photo
-              </h2>
+              <h2 className="text-xl font-semibold mb-4 ">House Photo</h2>
               <label htmlFor="file" className="cursor-pointer">
                 <div className="mb-4 text-center">
                   <input
@@ -974,26 +965,23 @@ function SignupOwner() {
                       <img
                         src={URL.createObjectURL(image) || "/placeholder.svg"}
                         alt="Profile"
-                        className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-full object-cover mx-auto border-4 border-teal-500"
+                        className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-full object-cover mx-auto border-4 border-[#2ca4b5]"
                       />
-                      <div className="absolute bottom-2 right-2 bg-teal-500 rounded-full p-2 shadow-md">
+                      <div className="absolute bottom-2 right-2 bg-[#2ca4b5] rounded-full p-2 shadow-md">
                         <Upload className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                       </div>
                     </div>
                   ) : (
-                    <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-full bg-teal-100 mx-auto flex items-center justify-center border-4 border-dashed border-teal-300 hover:border-teal-500 transition-colors">
+                    <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-full bg-primary-light mx-auto flex items-center justify-center border-2 border-dashed border-primary-default hover:border-primary-dark transition-colors">
                       <div className="text-center">
-                        <Upload className="h-8 w-8 sm:h-10 sm:w-10 mx-auto text-teal-500" />
-                        <p className="mt-2 text-xs sm:text-sm text-teal-700">
-                          Upload Photo
-                        </p>
+                        <Upload className="h-8 w-8 sm:h-10 sm:w-10 mx-auto text-[#2ca4b5]" />
                       </div>
                     </div>
                   )}
                 </div>
               </label>
               <p className="text-xs sm:text-sm text-gray-500 text-center mt-2">
-                Upload a clear photo of yourself
+                Upload a photo of your house
               </p>
             </div>
           </div>
@@ -1001,7 +989,7 @@ function SignupOwner() {
           {/* Property Information */}
           <div className="mt-10 pt-6 border-t border-gray-200">
             <h2 className="text-xl font-semibold mb-6 flex items-center">
-              <Building className="h-5 w-5 mr-2 text-teal-600" />
+              <Building className="h-5 w-5 mr-2 text-[#2ca4b5]" />
               Property Information
             </h2>
 
@@ -1019,7 +1007,7 @@ function SignupOwner() {
                   name="messName"
                   value={formData.messName}
                   onChange={handleChange}
-                  className="w-full rounded-lg px-4 py-2.5 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full rounded-full px-4 py-2.5  focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                   placeholder="Enter your PG/Mess name"
                   required
                 />
@@ -1036,7 +1024,7 @@ function SignupOwner() {
                   name="gender"
                   value={formData.gender}
                   onChange={handleChange}
-                  className="w-full rounded-lg px-4 py-2.5 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full rounded-full px-4 py-2.5  focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                   required
                 >
                   <option value="">Select PG Type</option>
@@ -1060,7 +1048,7 @@ function SignupOwner() {
                 name="aboutMess"
                 value={formData.aboutMess}
                 onChange={handleChange}
-                className="w-full rounded-lg px-4 py-2.5 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full rounded-2xl px-4 py-2.5  focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                 placeholder="Describe your PG/Mess, its unique features, and surroundings"
                 rows="4"
                 required
@@ -1082,7 +1070,7 @@ function SignupOwner() {
                   name="minimumSecurityDeposit"
                   value={formData.minimumSecurityDeposit}
                   onChange={handleChange}
-                  className="w-full rounded-lg px-4 py-2.5 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full rounded-full px-4 py-2.5  focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                   required
                 >
                   <option value="0">No Deposit (0 months rent)</option>
@@ -1103,7 +1091,7 @@ function SignupOwner() {
                   name="minimumBookingDuration"
                   value={formData.minimumBookingDuration}
                   onChange={handleChange}
-                  className="w-full rounded-lg px-4 py-2.5 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full rounded-full px-4 py-2.5  focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                   required
                 >
                   <option value="1 Month">1 Month</option>
@@ -1123,7 +1111,7 @@ function SignupOwner() {
                 </label>
                 <div className="flex flex-wrap items-center gap-2">
                   <select
-                    className="text-sm rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500 px-3 py-1.5 w-full sm:w-auto"
+                    className="text-sm rounded-full focus:outline-none focus:ring focus:ring-[#2ca4b5] px-3 py-1.5 w-full sm:w-auto bg-[#116e7b1a]"
                     // onChange={(e) => {
                     //   if (e.target.value) {
                     //     setRules([...rules, e.target.value])
@@ -1162,7 +1150,7 @@ function SignupOwner() {
                   <button
                     type="button"
                     onClick={addRule}
-                    className="text-teal-600 hover:text-teal-700 flex items-center text-sm"
+                    className="text-[#2ca4b5] hover:text-teal-700 flex items-center text-sm"
                   >
                     <Plus className="h-4 w-4 mr-1" />
                     Add Custom Rule
@@ -1176,7 +1164,7 @@ function SignupOwner() {
                     type="text"
                     value={rule}
                     onChange={(e) => handleRuleChange(index, e.target.value)}
-                    className="flex-1 rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="flex-1 rounded-full px-4 py-2  focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a] "
                     placeholder={`Rule ${index + 1}`}
                   />
                   {rules.length > 1 && (
@@ -1197,7 +1185,7 @@ function SignupOwner() {
           </div>
 
           {/* Facilities */}
-          <div className="mt-10 pt-6 border-t border-gray-200">
+          <div className="mt-10 pt-6  border-t border-primary-light">
             <h2 className="text-xl font-semibold mb-4">Available Facilities</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {amenities.map((amenity) => (
@@ -1208,13 +1196,13 @@ function SignupOwner() {
                     value={amenity.label}
                     checked={formData.facility.includes(amenity.label)}
                     onChange={handleFacilityChange}
-                    className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-[#2ca4b5] focus:ring-[#2ca4b5] border-gray-300 rounded"
                   />
                   <label
                     htmlFor={amenity.id}
                     className="flex items-center text-sm text-gray-700"
                   >
-                    <amenity.icon className="h-4 w-4 text-teal-600 mr-1.5" />
+                    <amenity.icon className="h-4 w-4 text-[#2ca4b5] mr-1.5" />
                     {amenity.label}
                   </label>
                 </div>
@@ -1223,13 +1211,13 @@ function SignupOwner() {
           </div>
 
           {/* Room Information */}
-          <div className="mt-10 pt-6 border-t border-gray-200">
+          <div className="mt-10 pt-6 border-t border-primary-light">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-2">
               <h2 className="text-xl font-semibold">Room Information</h2>
               <button
                 type="button"
                 onClick={addRoom}
-                className="flex items-center px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors"
+                className="flex items-center px-4 py-2 bg-[#2ca4b5] text-white rounded-full hover:bg-primary-dark transition-colors"
               >
                 <Plus className="h-4 w-4 mr-1" />
                 Add Room
@@ -1240,7 +1228,7 @@ function SignupOwner() {
               {formData.roomInfo.map((room, index) => (
                 <div
                   key={index}
-                  className="bg-gray-50 rounded-lg p-4 border border-gray-200"
+                  className=" rounded-2xl p-4 border border-primary-light hover:border-primary-dark transition-colors"
                 >
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="font-medium text-gray-900">
@@ -1265,7 +1253,7 @@ function SignupOwner() {
                         name="bedContains"
                         value={room.bedContains}
                         onChange={(e) => handleRoomChange(index, e)}
-                        className="w-full rounded-lg px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        className="w-full rounded-full px-3 py-2  focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                         required
                       >
                         <option value="">Select Capacity</option>
@@ -1285,7 +1273,7 @@ function SignupOwner() {
                         name="pricePerHead"
                         value={room.pricePerHead}
                         onChange={(e) => handleRoomChange(index, e)}
-                        className="w-full rounded-lg px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        className="w-full rounded-full px-3 py-2  focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                         placeholder="Enter price"
                         required
                       />
@@ -1298,7 +1286,7 @@ function SignupOwner() {
                         name="roomAvailable"
                         value={room.roomAvailable}
                         onChange={(e) => handleRoomChange(index, e)}
-                        className="w-full rounded-lg px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        className="w-full rounded-full px-3 py-2  focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                         required
                       >
                         <option value={true}>Available</option>
@@ -1312,7 +1300,7 @@ function SignupOwner() {
           </div>
 
           {/* Mess Photos */}
-          <div className="mt-10 pt-6 border-t border-gray-200">
+          <div className="mt-10 pt-6 border-t border-primary-light">
             <h2 className="text-xl font-semibold mb-4">Property Photos</h2>
 
             <input
@@ -1328,9 +1316,9 @@ function SignupOwner() {
             {imgArray.length === 0 ? (
               <div
                 onClick={() => document.getElementById("fileInput").click()}
-                className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-teal-500 transition-colors"
+                className="border-2 border-dashed border-primary-light rounded-2xl p-8 text-center cursor-pointer hover:border-primary-dark transition-colors"
               >
-                <Upload className="h-10 w-10 mx-auto text-teal-500 mb-2" />
+                <Upload className="h-10 w-10 mx-auto text-[#2ca4b5] mb-2" />
                 <p className="text-gray-700 font-medium">
                   Upload Property Photos
                 </p>
@@ -1362,10 +1350,10 @@ function SignupOwner() {
                       onClick={() =>
                         document.getElementById("fileInput").click()
                       }
-                      className="w-full h-24 sm:h-28 md:h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-teal-500 transition-colors"
+                      className="w-full h-24 sm:h-28 md:h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-[#2ca4b5] transition-colors"
                     >
                       <div className="text-center">
-                        <Plus className="h-5 w-5 sm:h-6 sm:w-6 mx-auto text-teal-500" />
+                        <Plus className="h-5 w-5 sm:h-6 sm:w-6 mx-auto text-[#2ca4b5]" />
                         <p className="text-xs sm:text-sm text-gray-500 mt-1">
                           Add More
                         </p>
@@ -1381,27 +1369,30 @@ function SignupOwner() {
           </div>
 
           {/* Terms and Submit */}
-          <div className="mt-10 pt-6 border-t border-gray-200">
+          <div className="mt-10 pt-6 border-t border-primary-light">
             <div className="flex items-center mb-6">
               <input
                 type="checkbox"
                 id="terms"
                 checked={termsAccepted}
                 onChange={() => setTermsAccepted(!termsAccepted)}
-                className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded"
+                className="h-4 w-4 text-[#2ca4b5] focus:ring-[#2ca4b5] border-gray-300 rounded"
               />
               <label
                 htmlFor="terms"
                 className="ml-2 block text-sm text-gray-700"
               >
                 I agree to the{" "}
-                <Link to="/terms" className="text-teal-600 hover:text-teal-700">
+                <Link
+                  to="/terms"
+                  className="text-[#2ca4b5] hover:text-teal-700"
+                >
                   Terms & Conditions
                 </Link>{" "}
                 and{" "}
                 <Link
                   to="/privacy"
-                  className="text-teal-600 hover:text-teal-700"
+                  className="text-[#2ca4b5] hover:text-teal-700"
                 >
                   Privacy Policy
                 </Link>
@@ -1415,7 +1406,7 @@ function SignupOwner() {
                 className={`px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg text-white font-medium w-full sm:w-3/4 md:w-1/2 flex items-center justify-center ${
                   isSubmitting || !isFormComplete() || !termsAccepted
                     ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-teal-600 hover:bg-teal-700"
+                    : "bg-[#2ca4b5] hover:bg-teal-700"
                 }`}
               >
                 {isSubmitting ? (
@@ -1447,6 +1438,17 @@ function SignupOwner() {
                 )}
               </button>
             </div>
+          </div>
+          <div className="flex justify-center mt-4">
+            <p className="text-sm font-medium text-gray-700">
+              Already have an account?{" "}
+              <Link
+                to="/login/owner"
+                className="text-[#2ca4b5] hover:text-primary-dark"
+              >
+                Login
+              </Link>
+            </p>
           </div>
         </form>
       </div>
