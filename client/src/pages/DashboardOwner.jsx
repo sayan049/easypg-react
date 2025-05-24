@@ -35,7 +35,7 @@ export default function DashboardOwner() {
     {
       name: "Booking Status",
       icon: (
-        <div>
+        <div className="relative">
           {" "}
           <CalendarCheck />{" "}
           {hasUnreadOwner === true && (
