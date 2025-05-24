@@ -180,7 +180,7 @@ const HomePage = () => {
         console.error("Error decoding or accessing token:", error);
       }
     } else {
-     // console.log("Token is not present in cookies");
+      // console.log("Token is not present in cookies");
     }
   }, [IsAuthenticated, userName, isOwnerAuthenticated, ownerName]);
 
@@ -416,6 +416,10 @@ const HomePage = () => {
                   >
                     <UserProfile className="h-12 w-12 ring-2 ring-[#2CA4B5] rounded-full" />
                   </motion.div>
+                  {localStorage.getItem("hasUnreadBookingUpdate") ===
+                    "true" && (
+                    <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full " />
+                  )}
 
                   <AnimatePresence>
                     {showDropdown && (
@@ -950,18 +954,14 @@ const HomePage = () => {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                        <p className="font-medium text-white">
-                          View PGs
-                        </p>
+                        <p className="font-medium text-white">View PGs</p>
                       </div>
                     </div>
                     <div className="p-4">
                       <h3 className="text-lg font-semibold text-[#2CA4B5] group-hover:text-teal-700 transition-colors duration-300">
                         {city.name}
                       </h3>
-                      <p className="text-gray-600 text-sm">
-                        {city.PGs} PGs
-                      </p>
+                      <p className="text-gray-600 text-sm">{city.PGs} PGs</p>
                     </div>
                   </div>
                 </motion.div>
