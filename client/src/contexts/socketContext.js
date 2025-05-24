@@ -194,23 +194,41 @@ export function SocketProvider({ children }) {
       };
     }
   }, [user?.id]);
+  console.log("Socket initialized for owner:", owner);
+  //   useEffect(() => {
+  //     socket.emit("join-owner-room", owner?._id);
 
+  //     socket.on("new-booking-request", (data) => {
+  //       console.log("New booking received", data);
+  //       localStorage.setItem("hasUnreadPendingRequest", "true");
+  //       setIsConnected(true);
+  //       console.log("Booking status:", data?.booking?.status); // ✅ Correct access
+
+  //       toast.info("You have a new booking request!");
+  //     });
+
+  //     return () => {
+  //       socket.off("new-booking-request");
+  //     };
+  //   }, [owner?._id]);
   useEffect(() => {
-    socket.emit("join-owner-room", owner?._id);
+    if (!socket || !owner?._id) return;
 
-    socket.on("new-booking-request", (data) => {
+    socket.emit("join-owner-room", owner._id);
+
+    const handleNewBooking = (data) => {
       console.log("New booking received", data);
       localStorage.setItem("hasUnreadPendingRequest", "true");
       setIsConnected(true);
-      console.log("Booking status:", data?.booking?.status); // ✅ Correct access
-
       toast.info("You have a new booking request!");
-    });
+    };
+
+    socket.on("new-booking-request", handleNewBooking);
 
     return () => {
-      socket.off("new-booking-request");
+      socket.off("new-booking-request", handleNewBooking);
     };
-  }, [owner?._id]);
+  }, [socket, owner?._id]);
 
   return (
     <SocketContext.Provider
@@ -222,7 +240,7 @@ export function SocketProvider({ children }) {
         setIsConnected,
         data,
         hasUnreadOwner,
-        setHasUnreadOwner
+        setHasUnreadOwner,
       }}
     >
       {children}
