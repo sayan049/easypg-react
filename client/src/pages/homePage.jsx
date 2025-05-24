@@ -52,10 +52,10 @@ const HomePage = () => {
   useEffect(() => {
     console.log("data:", data, "isConnected:", isConnected , "data?.status:", data?.status);
     if (isConnected) {
-      if (data?.status === "rejected") {
+      if (data?.booking?.status === "rejected") {
         toast.info("your booking has been rejected by the owner");
       }
-      if (data?.status === "confirmed") {
+      if (data?.booking?.status === "confirmed") {
         toast.success("Your booking has been confirmed by the owner");
       }
 

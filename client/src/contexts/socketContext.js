@@ -180,8 +180,8 @@ export function SocketProvider({ children }) {
         setData(data);
         console.log("Booking status update received:", data);
         localStorage.setItem("hasUnreadBookingUpdate", "true");
-        if(data.status === "confirmed") {
-            localStorage.setItem("hasUnreadDashboardUpdate", "true");
+        if (data?.booking?.status === "confirmed") {
+          localStorage.setItem("hasUnreadDashboardUpdate", "true");
         }
       });
 
@@ -192,9 +192,17 @@ export function SocketProvider({ children }) {
   }, [user?.id]);
 
   return (
-    <SocketContext.Provider value={{ socket, hasUnread, setHasUnread , isConnected ,setIsConnected , data}}>
+    <SocketContext.Provider
+      value={{
+        socket,
+        hasUnread,
+        setHasUnread,
+        isConnected,
+        setIsConnected,
+        data,
+      }}
+    >
       {children}
     </SocketContext.Provider>
   );
 }
-
