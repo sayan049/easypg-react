@@ -196,8 +196,11 @@ function NewDashboard() {
   return (
     <div className="min-h-screen bg-gray-100 flex">
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-4 bg-white shadow">
-        <button onClick={() => setSidebarOpen(true)}>
+        <button className="relative" onClick={() => setSidebarOpen(true)}>
           <Menu className="w-6 h-6 text-gray-700" />
+          {localStorage.getItem("hasUnreadBookingUpdate") === "true" && (
+            <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full " />
+          )}
         </button>
         <h1 className="font-semibold text-lg">Dashboard</h1>
         <div className="w-6 h-6" />
@@ -212,11 +215,8 @@ function NewDashboard() {
           }`}
       >
         <div className="md:hidden flex justify-end mb-4">
-          <button className="relative" onClick={() => setSidebarOpen(false)}>
+          <button onClick={() => setSidebarOpen(false)}>
             <X className="w-5 h-5 text-gray-500" />
-             {localStorage.getItem("hasUnreadBookingUpdate") === "true" && (
-                  <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full " />
-                )}
           </button>
         </div>
 
