@@ -747,7 +747,7 @@ function SignupOwner() {
                             value={otp[i] || ""}
                             onChange={(e) => handleOtpChange(e, i)}
                             onKeyDown={(e) => handleOtpKeyDown(e, i)}
-                            className="w-14 h-14 text-center text-xl rounded-xl border border-primary-light focus:outline-none focus:ring-2 focus:ring-[#2ca4b5] bg-[#116e7b1a] disabled:opacity-50"
+                            className="w-14 h-14 text-center text-xl rounded-xl border border-primary-default focus:outline-none focus:ring-2 focus:ring-[#2ca4b5] bg-[#116e7b1a] disabled:opacity-50"
                             aria-label={`Digit ${i + 1} of OTP`}
                             disabled={isVerifyingOtp}
                           />
