@@ -178,6 +178,7 @@ export function SocketProvider({ children }) {
         setHasUnread(true);
         setIsConnected(true);
         setData(data);
+        console.log("Booking status update received:", data);
         localStorage.setItem("hasUnreadBookingUpdate", "true");
         if(data.status === "confirmed") {
             localStorage.setItem("hasUnreadDashboardUpdate", "true");
