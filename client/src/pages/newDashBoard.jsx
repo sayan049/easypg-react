@@ -48,13 +48,13 @@ function NewDashboard() {
   });
 
   const { userName, user, owner, type, handleLogout } = useAuth();
-  const { setHasUnread ,isConnected , setIsconnected } = useSocket();
+  const { setHasUnread, isConnected, setIsconnected, socket } = useSocket();
 
   const fetchAllData = async () => {
     try {
       setLoading(true);
       const userId = type === "student" ? user?.id : owner?.id;
-      if (!userId) return;
+      if (!userId || !socket) return;
 
       const detailsUrl = new URL(fetchDetailsUrl);
       detailsUrl.searchParams.append("userId", userId);
@@ -65,7 +65,6 @@ function NewDashboard() {
       setUserDetails(detailsData);
 
       if (type === "student") {
-        const token = localStorage.getItem("accessToken");
         const response = await axios.get(`${baseurl}/auth/bookings/user`, {
           withCredentials: true, // Automatically send cookies
           headers: {
@@ -120,7 +119,6 @@ function NewDashboard() {
       setLoading(false);
     }
   };
-  const socket = io(baseurl);
   useEffect(() => {
     console.log("Socket connection established", user?.id);
     // socket.emit("join-user-room", user?.id);
@@ -134,8 +132,9 @@ function NewDashboard() {
     // return () => {
     //   socket.off("update-booking-status");
     // };
-    if(isConnected){
+    if (isConnected) {
       fetchAllData();
+      toast.info("New booking status update received");
       setIsconnected(false);
     }
   }, [user?.id]);
@@ -149,6 +148,10 @@ function NewDashboard() {
     if (tab === "bookings") {
       setHasUnread(false);
       localStorage.setItem("hasUnreadBookingUpdate", "false");
+    }
+    if (tab === "dashboard") {
+      setHasUnread(false);
+      localStorage.setItem("hasUnreadDashboardUpdate", "false");
     }
     setSidebarOpen(false);
   };
@@ -228,7 +231,15 @@ function NewDashboard() {
         <ProfileHeader userName={userName} />
         <nav className="flex flex-col gap-4 mt-8">
           <SidebarButton
-            icon={<Home />}
+            icon={
+              <div className="relative">
+                <Home />
+                {localStorage.getItem("hasUnreadDashboardUpdate") ===
+                  "true" && (
+                  <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full " />
+                )}
+              </div>
+            }
             label="Dashboard"
             active={activeTab === "dashboard"}
             onClick={() => handleTabChange("dashboard")}

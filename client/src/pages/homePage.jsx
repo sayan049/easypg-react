@@ -37,7 +37,7 @@ const HomePage = () => {
     isOwnerAuthenticated,
     ownerName,
   } = useAuth();
-  const { hasUnread } = useSocket();
+  const { hasUnread, isConnected, data } = useSocket();
   const [menuOpen, setMenuOpen] = useState(false);
   const [nearbyMesses, setNearbyMesses] = useState([]);
   const [isLocating, setIsLocating] = useState(false);
@@ -48,6 +48,20 @@ const HomePage = () => {
   useEffect(() => {
     document.title = "MessMate - Find your nearest PG/Mess easily";
   }, []);
+
+  useEffect(() => {
+    if (user?.id && isConnected) {
+      fetchAllData();
+      if( data?.status === "rejected" ) {
+        toast.info("your booking has been rejected by the owner");
+      }
+      if (data?.status === "confirmed") {
+        toast.success("Your booking has been confirmed by the owner");
+      }
+      
+      setIsConnected(false);
+    }
+  }, [isConnected, user?.id]);
 
   const debounceTimeout = useRef(null);
 

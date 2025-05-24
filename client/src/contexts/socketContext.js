@@ -166,6 +166,7 @@ export function SocketProvider({ children }) {
     return localStorage.getItem("hasUnreadBookingUpdate") === "true";
   });
   const [isConnected, setIsConnected] = useState(false);
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     if (user?.id) {
@@ -176,7 +177,11 @@ export function SocketProvider({ children }) {
       newSocket.on("update-booking-status", (data) => {
         setHasUnread(true);
         setIsConnected(true);
+        setData(data);
         localStorage.setItem("hasUnreadBookingUpdate", "true");
+        if(data.status === "confirmed") {
+            localStorage.setItem("hasUnreadDashboardUpdate", "true");
+        }
       });
 
       return () => {
@@ -186,7 +191,7 @@ export function SocketProvider({ children }) {
   }, [user?.id]);
 
   return (
-    <SocketContext.Provider value={{ socket, hasUnread, setHasUnread , isConnected ,setIsConnected}}>
+    <SocketContext.Provider value={{ socket, hasUnread, setHasUnread , isConnected ,setIsConnected , data}}>
       {children}
     </SocketContext.Provider>
   );
