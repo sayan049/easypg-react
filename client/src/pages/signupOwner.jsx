@@ -727,7 +727,7 @@ function SignupOwner() {
                       {isSendingOtp ? "Sending..." : "Verify"}
                     </button>
                   ) : (
-                    <span className="text-green-600 absolute right-1 top-1/2 -translate-y-1/2">
+                    <span className="text-green-600 absolute right-1 ">
                       Verified
                     </span>
                   )}
