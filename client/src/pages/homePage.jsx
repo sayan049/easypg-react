@@ -16,6 +16,7 @@ import Recommendations from "../components/Recommendations";
 import { Home, Info, Phone, LogIn, Briefcase, X } from "lucide-react";
 import { Helmet } from "react-helmet";
 import { Map, MapPin } from "lucide-react";
+import { useSocket } from "../contexts/socketContext";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ const HomePage = () => {
     isOwnerAuthenticated,
     ownerName,
   } = useAuth();
+  const { hasUnread, isConnected, data, setIsConnected ,hasUnreadOwner } = useSocket();
   const [menuOpen, setMenuOpen] = useState(false);
   const [nearbyMesses, setNearbyMesses] = useState([]);
   const [isLocating, setIsLocating] = useState(false);
@@ -45,6 +47,23 @@ const HomePage = () => {
   useEffect(() => {
     document.title = "MessMate - Find your nearest PG/Mess easily";
   }, []);
+
+  useEffect(() => {
+    console.log("data:", data, "isConnected:", isConnected , "data?.status:", data?.status);
+    if (isConnected) {
+      if (data?.booking?.status === "rejected") {
+        toast.info("your booking has been rejected by the owner");
+      }
+      if (data?.booking?.status === "confirmed") {
+        toast.success("Your booking has been confirmed by the owner");
+      }
+      if (data?.booking?.status === "pending") {
+        toast.info("You have a new booking request!");
+      }
+
+      setIsConnected(false);
+    }
+  }, [isConnected, userName]);
 
   const debounceTimeout = useRef(null);
 
@@ -180,7 +199,7 @@ const HomePage = () => {
         console.error("Error decoding or accessing token:", error);
       }
     } else {
-     // console.log("Token is not present in cookies");
+      // console.log("Token is not present in cookies");
     }
   }, [IsAuthenticated, userName, isOwnerAuthenticated, ownerName]);
 
@@ -416,6 +435,9 @@ const HomePage = () => {
                   >
                     <UserProfile className="h-12 w-12 ring-2 ring-[#2CA4B5] rounded-full" />
                   </motion.div>
+                  {(hasUnread || hasUnreadOwner) && (
+                    <span className="absolute top-0 right-0 h-3 w-3 bg-red-500 rounded-full " />
+                  )}
 
                   <AnimatePresence>
                     {showDropdown && (
@@ -950,18 +972,14 @@ const HomePage = () => {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                        <p className="font-medium text-white">
-                          View PGs
-                        </p>
+                        <p className="font-medium text-white">View PGs</p>
                       </div>
                     </div>
                     <div className="p-4">
                       <h3 className="text-lg font-semibold text-[#2CA4B5] group-hover:text-teal-700 transition-colors duration-300">
                         {city.name}
                       </h3>
-                      <p className="text-gray-600 text-sm">
-                        {city.PGs} PGs
-                      </p>
+                      <p className="text-gray-600 text-sm">{city.PGs} PGs</p>
                     </div>
                   </div>
                 </motion.div>

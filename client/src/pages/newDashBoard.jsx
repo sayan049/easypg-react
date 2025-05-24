@@ -22,6 +22,7 @@ import DashboardContent from "../components/dashboardContent";
 
 import Payments from "../components/payment";
 import { io } from "socket.io-client";
+import { useSocket } from "../contexts/socketContext";
 
 function NewDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -42,14 +43,18 @@ function NewDashboard() {
   const [daysRemaining, setDaysRemaining] = useState(0);
   const [totalAmountConfirmed, setTotalAmountConfirmed] = useState(0);
   const [maintenanceHistory, setMaintenanceHistory] = useState([]);
+  const [hasUnreadBookingUpdate, setHasUnreadBookingUpdate] = useState(() => {
+    return localStorage.getItem("hasUnreadBookingUpdate") === "true";
+  });
 
   const { userName, user, owner, type, handleLogout } = useAuth();
+  const { setHasUnread, isConnected, setIsconnected, socket } = useSocket();
 
   const fetchAllData = async () => {
     try {
       setLoading(true);
       const userId = type === "student" ? user?.id : owner?.id;
-      if (!userId) return;
+      if (!userId || !socket) return;
 
       const detailsUrl = new URL(fetchDetailsUrl);
       detailsUrl.searchParams.append("userId", userId);
@@ -60,7 +65,6 @@ function NewDashboard() {
       setUserDetails(detailsData);
 
       if (type === "student") {
-        const token = localStorage.getItem("accessToken");
         const response = await axios.get(`${baseurl}/auth/bookings/user`, {
           withCredentials: true, // Automatically send cookies
           headers: {
@@ -115,20 +119,14 @@ function NewDashboard() {
       setLoading(false);
     }
   };
-  const socket = io(baseurl);
   useEffect(() => {
     console.log("Socket connection established", user?.id);
-    socket.emit("join-user-room", user?.id);
 
-    socket.on("update-booking-status", (data) => {
-      console.log("New booking received", data);
-
+    if (isConnected) {
+      fetchAllData();
       toast.info("New booking status update received");
-    });
-
-    return () => {
-      socket.off("update-booking-status");
-    };
+      setIsconnected(false);
+    }
   }, [user?.id]);
 
   useEffect(() => {
@@ -137,6 +135,14 @@ function NewDashboard() {
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
+    if (tab === "bookings") {
+      setHasUnread(false);
+      localStorage.setItem("hasUnreadBookingUpdate", "false");
+    }
+    if (tab === "dashboard") {
+      setHasUnread(false);
+      localStorage.setItem("hasUnreadDashboardUpdate", "false");
+    }
     setSidebarOpen(false);
   };
 
@@ -188,8 +194,11 @@ function NewDashboard() {
   return (
     <div className="min-h-screen bg-gray-100 flex">
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 flex justify-between items-center p-4 bg-white shadow">
-        <button onClick={() => setSidebarOpen(true)}>
+        <button className="relative" onClick={() => setSidebarOpen(true)}>
           <Menu className="w-6 h-6 text-gray-700" />
+          {localStorage.getItem("hasUnreadBookingUpdate") === "true" && (
+            <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full " />
+          )}
         </button>
         <h1 className="font-semibold text-lg">Dashboard</h1>
         <div className="w-6 h-6" />
@@ -212,13 +221,28 @@ function NewDashboard() {
         <ProfileHeader userName={userName} />
         <nav className="flex flex-col gap-4 mt-8">
           <SidebarButton
-            icon={<Home />}
+            icon={
+              <div className="relative">
+                <Home />
+                {localStorage.getItem("hasUnreadDashboardUpdate") ===
+                  "true" && (
+                  <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full " />
+                )}
+              </div>
+            }
             label="Dashboard"
             active={activeTab === "dashboard"}
             onClick={() => handleTabChange("dashboard")}
           />
           <SidebarButton
-            icon={<CalendarCheck />}
+            icon={
+              <div className="relative">
+                <CalendarCheck />
+                {localStorage.getItem("hasUnreadBookingUpdate") === "true" && (
+                  <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full " />
+                )}
+              </div>
+            }
             label="My Bookings"
             active={activeTab === "bookings"}
             onClick={() => handleTabChange("bookings")}

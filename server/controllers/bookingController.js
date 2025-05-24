@@ -762,7 +762,7 @@ exports.getAllOwnerBookings = async (req, res) => {
         .sort({ createdAt: -1 })
         .limit(limit)
         .lean()
-        .hint("owner_management_index")
+        // .hint("owner_management_index")
     );
 
     const countQueries = statuses.map((status) =>

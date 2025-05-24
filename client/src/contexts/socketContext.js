@@ -1,151 +1,118 @@
-// import React, { createContext, useEffect, useState, useContext } from 'react';
-// import { useAuth } from "../contexts/AuthContext";
-// import { io } from 'socket.io-client';
-// import { baseurl } from '../constant/urls';
 
-// const SocketContext = createContext();
+// SocketContext.js
+import { createContext, useContext, useEffect, useState } from "react";
+import { io } from "socket.io-client";
+import { baseurl } from "../constant/urls";
+import { useAuth } from "./AuthContext";
 
-// export const SocketProvider = ({ children }) => {
-//   const [socket, setSocket] = useState(null);
-//   const [isConnected, setIsConnected] = useState(false);
-//   const [isInitialized, setIsInitialized] = useState(false);
-//   const [connectionStatus, setConnectionStatus] = useState('disconnected');
-//   const { user } = useAuth();
+const SocketContext = createContext();
 
-//   useEffect(() => {
-//     if (!user?._id) {
-//       setIsInitialized(false);
-//       return;
-//     }
+export const useSocket = () => useContext(SocketContext);
 
-//     const socketInstance = io(baseurl, {
-//       transports: ['websocket'],
-//       reconnection: true,
-//       reconnectionAttempts: Infinity,
-//       reconnectionDelay: 1000,
-//       reconnectionDelayMax: 5000,
-//       timeout: 20000,
-//       auth: {
-//         token: localStorage.getItem('accessToken')
-//       },
-//       query: {
-//         userId: user._id,
-//         userType: user.role
-//       }
-//     });
+export function SocketProvider({ children }) {
+  const { user, owner } = useAuth();
+  const [socket, setSocket] = useState(null);
+  const [hasUnread, setHasUnread] = useState(() => {
+    return localStorage.getItem("hasUnreadBookingUpdate") === "true";
+  });
+  const [hasUnreadOwner, setHasUnreadOwner] = useState(() => {
+    return localStorage.getItem("hasUnreadPendingRequest") === "true";
+  });
 
-//     const onConnect = () => {
-//       setIsConnected(true);
-//       setIsInitialized(true);
-//       setConnectionStatus('connected');
-//       console.log('Socket connected:', socketInstance.id);
-      
-//       // Join appropriate room based on user role
-//       if (user.role === 'owner') {
-//         socketInstance.emit('owner-join', { userId: user._id }, (ack) => {
-//           console.log('Owner join acknowledgement:', ack);
-//         });
-//       } else {
-//         socketInstance.emit('user-join', { userId: user._id }, (ack) => {
-//           console.log('User join acknowledgement:', ack);
-//         });
-//       }
-//     };
+  const [isConnected, setIsConnected] = useState(false);
+  const [data, setData] = useState(null);
 
-//     const onDisconnect = (reason) => {
-//       setIsConnected(false);
-//       setConnectionStatus('disconnected');
-//       console.log('Socket disconnected:', reason);
-//       if (reason === 'io server disconnect') {
-//         setTimeout(() => socketInstance.connect(), 1000);
-//       }
-//     };
+  useEffect(() => {
+    const id = user?.id || owner?.id;
+    if (!id) return;
 
-//     const onConnectError = (error) => {
-//       console.error('Connection error:', error);
-//       if (error.message.includes("Authentication error")) {
-//         console.error("Auth failed - clearing tokens");
-//         localStorage.removeItem('accessToken');
-//       }
-//     };
+    const newSocket = io(baseurl);
+    setSocket(newSocket);
 
-//     // Set up event listeners
-//     socketInstance.on('connect', onConnect);
-//     socketInstance.on('disconnect', onDisconnect);
-//     socketInstance.on('connect_error', onConnectError);
+    if (user?.id) {
+      newSocket.emit("join-user-room", user.id);
+      newSocket.on("update-booking-status", (data) => {
+        setHasUnread(true);
+        setData(data);
+        setIsConnected(true);
+        localStorage.setItem("hasUnreadBookingUpdate", "true");
+        if (data?.booking?.status === "confirmed") {
+          localStorage.setItem("hasUnreadDashboardUpdate", "true");
+        }
+      });
+    }
 
-//     // Set initial state if already connected
-//     if (socketInstance.connected) {
-//       onConnect();
-//     }
+    if (owner?.id) {
+      newSocket.emit("join-owner-room", owner.id);
+      newSocket.on("new-booking-request", (data) => {
+        setHasUnreadOwner(true);
+        setData(data);
+        localStorage.setItem("hasUnreadPendingRequest", "true");
+        setIsConnected(true);
+      });
+    }
 
-//     setSocket(socketInstance);
+    return () => newSocket.disconnect();
+  }, [user?.id, owner?.id]);
 
-//     return () => {
-//       socketInstance.off('connect', onConnect);
-//       socketInstance.off('disconnect', onDisconnect);
-//       socketInstance.off('connect_error', onConnectError);
-//       socketInstance.disconnect();
-//       setIsInitialized(false);
-//       setIsConnected(false);
-//     };
-//   }, [user?._id]);
+  //   useEffect(() => {
+  //     if (user?.id) {
+  //       const newSocket = io(baseurl);
+  //       setSocket(newSocket);
+  //       newSocket.emit("join-user-room", user.id);
 
-//   // Enhanced emit function with retry logic
-//   const emitWithAck = (event, data, timeout = 5000, retries = 3, delay = 1000) => {
-//     return new Promise((resolve, reject) => {
-//       const attempt = (retryCount) => {
-//         console.log("soket",socket,"init",isInitialized,"connected",isConnected,"retryCount",retryCount);
-//         if (!socket || !isInitialized || !isConnected) {
-//           if (retryCount <= 0) {
-//             return reject(new Error('Socket not ready'));
-//           }
-//           return setTimeout(() => attempt(retryCount - 1), delay);
-//         }
+  //       newSocket.on("update-booking-status", (data) => {
+  //         setHasUnread(true);
+  //         setIsConnected(true);
+  //         setData(data);
+  //         console.log("Booking status update received:", data);
+  //         localStorage.setItem("hasUnreadBookingUpdate", "true");
+  //         if (data?.booking?.status === "confirmed") {
+  //           localStorage.setItem("hasUnreadDashboardUpdate", "true");
+  //         }
+  //       });
 
-//         let timedOut = false;
-//         const timer = setTimeout(() => {
-//           timedOut = true;
-//           reject(new Error('Socket timeout'));
-//         }, timeout);
+  //       return () => {
+  //         newSocket.disconnect();
+  //       };
+  //     }
+  //   }, [user?.id]);
 
-//         socket.emit(event, data, (response) => {
-//           if (timedOut) return;
-//           clearTimeout(timer);
+  //   useEffect(() => {
+  //     if (!owner?.id) return;
+  //     const newSocket = io(baseurl);
+  //     setSocket(newSocket);
+  //     newSocket.emit("join-owner-room", owner?.id);
 
-//           if (response?.success) {
-//             resolve(response);
-//           } else {
-//             reject(new Error(response?.message || 'Socket error'));
-//           }
-//         });
-//       };
+  //     const handleNewBooking = (data) => {
+  //       console.log("New booking received", data);
+  //       localStorage.setItem("hasUnreadPendingRequest", "true");
+  //       setIsConnected(true);
+  //     };
 
-//       attempt(retries);
-//     });
-//   };
+  //     newSocket.on("new-booking-request", handleNewBooking);
+  //     return () => {
+  //       newSocket.disconnect();
+  //     };
+  //     // return () => {
+  //     //   newSocket.off("new-booking-request", handleNewBooking);
+  //     // };
+  //   }, [socket, owner?.id]);
 
-//   return (
-//     <SocketContext.Provider value={{ 
-//       socket, 
-//       isConnected, 
-//       isInitialized,
-//       emitWithAck 
-//     }}>
-//       {children}
-//     </SocketContext.Provider>
-//   );
-// };
-
-// export const useSocket = () => {
-//   const context = useContext(SocketContext);
-//   if (!context) {
-//     throw new Error('useSocket must be used within a SocketProvider');
-//   }
-
-//   return { 
-//     ...context
-//   };
-// };
-
-// export default SocketProvider;
+  return (
+    <SocketContext.Provider
+      value={{
+        socket,
+        hasUnread,
+        setHasUnread,
+        isConnected,
+        setIsConnected,
+        data,
+        hasUnreadOwner,
+        setHasUnreadOwner,
+      }}
+    >
+      {children}
+    </SocketContext.Provider>
+  );
+}
