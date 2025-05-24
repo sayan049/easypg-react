@@ -216,7 +216,7 @@ export function SocketProvider({ children }) {
     if (!owner?.id) return;
     const newSocket = io(baseurl);
     setSocket(newSocket);
-    socket.emit("join-owner-room", owner?.id);
+    newSocket.emit("join-owner-room", owner?.id);
 
     const handleNewBooking = (data) => {
       console.log("New booking received", data);
@@ -224,10 +224,10 @@ export function SocketProvider({ children }) {
       setIsConnected(true);
     };
 
-    socket.on("new-booking-request", handleNewBooking);
+    newSocket.on("new-booking-request", handleNewBooking);
 
     return () => {
-      socket.off("new-booking-request", handleNewBooking);
+      newSocket.off("new-booking-request", handleNewBooking);
     };
   }, [socket, owner?.id]);
 
