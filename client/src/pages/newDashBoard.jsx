@@ -42,6 +42,9 @@ function NewDashboard() {
   const [daysRemaining, setDaysRemaining] = useState(0);
   const [totalAmountConfirmed, setTotalAmountConfirmed] = useState(0);
   const [maintenanceHistory, setMaintenanceHistory] = useState([]);
+  const [hasUnreadBookingUpdate, setHasUnreadBookingUpdate] = useState(() => {
+    return localStorage.getItem("hasUnreadBookingUpdate") === "true";
+  });
 
   const { userName, user, owner, type, handleLogout } = useAuth();
 
@@ -122,7 +125,8 @@ function NewDashboard() {
 
     socket.on("update-booking-status", (data) => {
       console.log("New booking received", data);
-        fetchAllData();
+      localStorage.setItem("hasUnreadBookingUpdate", "true");
+      fetchAllData();
       toast.info("New booking status update received");
     });
 
@@ -130,6 +134,11 @@ function NewDashboard() {
       socket.off("update-booking-status");
     };
   }, [user?.id]);
+
+  if (tab === "bookings") {
+    setHasUnreadBookingUpdate(false);
+    localStorage.setItem("hasUnreadBookingUpdate", "false");
+  }
 
   useEffect(() => {
     if (user?.id) fetchAllData();
