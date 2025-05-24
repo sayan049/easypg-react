@@ -17,6 +17,7 @@ import "react-toastify/dist/ReactToastify.css";
 import PropTypes from "prop-types";
 import { baseurl } from "../constant/urls";
 import { io } from "socket.io-client";
+import { useSocket } from "../contexts/socketContext";
 
 // import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 
@@ -33,6 +34,7 @@ const BookingCard = React.memo(
     const [showMaintenance, setShowMaintenance] = useState(false);
     const [actionType, setActionType] = useState(null); // 'cancel' or 'resolve'
     const [actionMessage, setActionMessage] = useState(""); // for the entered message
+    const { setHasUnread } = useSocket();
 
     const statusColors = {
       pending: "bg-yellow-100 text-yellow-800",

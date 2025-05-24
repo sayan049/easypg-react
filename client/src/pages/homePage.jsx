@@ -16,6 +16,7 @@ import Recommendations from "../components/Recommendations";
 import { Home, Info, Phone, LogIn, Briefcase, X } from "lucide-react";
 import { Helmet } from "react-helmet";
 import { Map, MapPin } from "lucide-react";
+import { useSocket } from "../contexts/socketContext";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ const HomePage = () => {
     isOwnerAuthenticated,
     ownerName,
   } = useAuth();
+  const { hasUnread } = useSocket();
   const [menuOpen, setMenuOpen] = useState(false);
   const [nearbyMesses, setNearbyMesses] = useState([]);
   const [isLocating, setIsLocating] = useState(false);
@@ -276,20 +278,6 @@ const HomePage = () => {
       }
     );
   };
-  useEffect(() => {
-    const checkUnread = () => {
-      setHasUnreadBookingUpdate(
-        localStorage.getItem("hasUnreadBookingUpdate") === "true"
-      );
-    };
-
-    checkUnread();
-    window.addEventListener("storage", checkUnread); // sync across tabs
-
-    return () => {
-      window.removeEventListener("storage", checkUnread);
-    };
-  }, []);
 
   // const nearMe = () => {
   //   navigator.geolocation.getCurrentPosition((position) => {
@@ -431,7 +419,7 @@ const HomePage = () => {
                   >
                     <UserProfile className="h-12 w-12 ring-2 ring-[#2CA4B5] rounded-full" />
                   </motion.div>
-                  {hasUnreadBookingUpdate && (
+                  {hasUnread && (
                     <span className="absolute top-0 right-0 h-3 w-3 bg-red-500 rounded-full " />
                   )}
 

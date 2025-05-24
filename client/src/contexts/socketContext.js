@@ -39,7 +39,7 @@
 //       setIsInitialized(true);
 //       setConnectionStatus('connected');
 //       console.log('Socket connected:', socketInstance.id);
-      
+
 //       // Join appropriate room based on user role
 //       if (user.role === 'owner') {
 //         socketInstance.emit('owner-join', { userId: user._id }, (ack) => {
@@ -126,11 +126,11 @@
 //   };
 
 //   return (
-//     <SocketContext.Provider value={{ 
-//       socket, 
-//       isConnected, 
+//     <SocketContext.Provider value={{
+//       socket,
+//       isConnected,
 //       isInitialized,
-//       emitWithAck 
+//       emitWithAck
 //     }}>
 //       {children}
 //     </SocketContext.Provider>
@@ -143,9 +143,52 @@
 //     throw new Error('useSocket must be used within a SocketProvider');
 //   }
 
-//   return { 
+//   return {
 //     ...context
 //   };
 // };
 
 // export default SocketProvider;
+// SocketContext.js
+import { createContext, useContext, useEffect, useState } from "react";
+import { io } from "socket.io-client";
+import { baseurl } from "../constant/urls";
+import { useAuth } from "./AuthContext";
+import { set } from "mongoose";
+
+const SocketContext = createContext();
+
+export const useSocket = () => useContext(SocketContext);
+
+export function SocketProvider({ children }) {
+  const { user } = useAuth();
+  const [socket, setSocket] = useState(null);
+  const [hasUnread, setHasUnread] = useState(() => {
+    return localStorage.getItem("hasUnreadBookingUpdate") === "true";
+  });
+  const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    if (user?.id) {
+      const newSocket = io(baseurl);
+      setSocket(newSocket);
+      newSocket.emit("join-user-room", user.id);
+
+      newSocket.on("update-booking-status", (data) => {
+        setHasUnread(true);
+        setIsConnected(true);
+        localStorage.setItem("hasUnreadBookingUpdate", "true");
+      });
+
+      return () => {
+        newSocket.disconnect();
+      };
+    }
+  }, [user?.id]);
+
+  return (
+    <SocketContext.Provider value={{ socket, hasUnread, setHasUnread , isConnected ,setIsConnected}}>
+      {children}
+    </SocketContext.Provider>
+  );
+}

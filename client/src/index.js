@@ -41,7 +41,7 @@ const root = createRoot(document.getElementById("root")); // Using createRoot di
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      {/* <SocketProvider>  */}
+      <SocketProvider> 
       <Router>
         <Routes>
           <Route path="/" element={<App />} />
@@ -136,7 +136,7 @@ root.render(
         }/> */}
         </Routes>
       </Router>
-      {/* </SocketProvider> */}
+      </SocketProvider>
     </AuthProvider>
   </React.StrictMode>
 );

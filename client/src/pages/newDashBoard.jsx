@@ -22,6 +22,7 @@ import DashboardContent from "../components/dashboardContent";
 
 import Payments from "../components/payment";
 import { io } from "socket.io-client";
+import { useSocket } from "../contexts/socketContext";
 
 function NewDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -47,6 +48,7 @@ function NewDashboard() {
   });
 
   const { userName, user, owner, type, handleLogout } = useAuth();
+  const { setHasUnread ,isConnected , setIsconnected } = useSocket();
 
   const fetchAllData = async () => {
     try {
@@ -94,7 +96,6 @@ function NewDashboard() {
           setPendingStay(response.data.pendingStays || []);
           setDaysRemaining(response.data.daysRemaining || 0);
           setTotalAmountConfirmed(response.data.totalAmountConfirmed || 0);
-          localStorage.setItem("hasUnreadBookingUpdate", "true");
         }
 
         const maintenanceResponse = await axios.get(
@@ -122,17 +123,21 @@ function NewDashboard() {
   const socket = io(baseurl);
   useEffect(() => {
     console.log("Socket connection established", user?.id);
-    socket.emit("join-user-room", user?.id);
+    // socket.emit("join-user-room", user?.id);
 
-    socket.on("update-booking-status", (data) => {
-      console.log("New booking received", data);
+    // socket.on("update-booking-status", (data) => {
+    //   console.log("New booking received", data);
+    //   fetchAllData();
+    //   toast.info("New booking status update received");
+    // });
+
+    // return () => {
+    //   socket.off("update-booking-status");
+    // };
+    if(isConnected){
       fetchAllData();
-      toast.info("New booking status update received");
-    });
-
-    return () => {
-      socket.off("update-booking-status");
-    };
+      setIsconnected(false);
+    }
   }, [user?.id]);
 
   useEffect(() => {
@@ -142,7 +147,7 @@ function NewDashboard() {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     if (tab === "bookings") {
-      setHasUnreadBookingUpdate(false);
+      setHasUnread(false);
       localStorage.setItem("hasUnreadBookingUpdate", "false");
     }
     setSidebarOpen(false);
