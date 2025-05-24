@@ -212,8 +212,11 @@ function NewDashboard() {
           }`}
       >
         <div className="md:hidden flex justify-end mb-4">
-          <button onClick={() => setSidebarOpen(false)}>
+          <button className="relative" onClick={() => setSidebarOpen(false)}>
             <X className="w-5 h-5 text-gray-500" />
+             {localStorage.getItem("hasUnreadBookingUpdate") === "true" && (
+                  <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full " />
+                )}
           </button>
         </div>
 
@@ -230,7 +233,7 @@ function NewDashboard() {
               <div className="relative">
                 <CalendarCheck />
                 {localStorage.getItem("hasUnreadBookingUpdate") === "true" && (
-                  <span className="absolute top-0 right-0 h-3 w-3 bg-red-800 rounded-full animate-pulse" />
+                  <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full " />
                 )}
               </div>
             }
