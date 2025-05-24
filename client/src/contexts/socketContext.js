@@ -211,9 +211,9 @@ export function SocketProvider({ children }) {
   //     };
   //   }, [owner?._id]);
   useEffect(() => {
-    if (!socket || !owner?.id) return;
+    if (!socket || !owner?._id) return;
 
-    socket.emit("join-owner-room", owner.id);
+    socket.emit("join-owner-room", owner?._id);
 
     const handleNewBooking = (data) => {
       console.log("New booking received", data);
@@ -226,7 +226,7 @@ export function SocketProvider({ children }) {
     return () => {
       socket.off("new-booking-request", handleNewBooking);
     };
-  }, [socket, owner?.id]);
+  }, [socket, owner?._id]);
 
   return (
     <SocketContext.Provider
