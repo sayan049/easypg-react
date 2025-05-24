@@ -94,6 +94,7 @@ function NewDashboard() {
           setPendingStay(response.data.pendingStays || []);
           setDaysRemaining(response.data.daysRemaining || 0);
           setTotalAmountConfirmed(response.data.totalAmountConfirmed || 0);
+          localStorage.setItem("hasUnreadBookingUpdate", "true");
         }
 
         const maintenanceResponse = await axios.get(
@@ -125,7 +126,6 @@ function NewDashboard() {
 
     socket.on("update-booking-status", (data) => {
       console.log("New booking received", data);
-      localStorage.setItem("hasUnreadBookingUpdate", "true");
       fetchAllData();
       toast.info("New booking status update received");
     });
