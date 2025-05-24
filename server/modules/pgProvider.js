@@ -147,7 +147,7 @@ const pgOwnerSchema = new mongoose.Schema({
 
   minimumBookingDuration: {
     type: String,
-    enum: ["1 Month", "3 Months", "6 Months", "1 Year"],
+    enum: ["1 Month", "3 Months", "6 Months", "12 Months"],
     default: "1 Month",
     required: function () {
       return !this.googleId;
