@@ -122,7 +122,7 @@ function NewDashboard() {
 
     socket.on("update-booking-status", (data) => {
       console.log("New booking received", data);
-
+        fetchAllData();
       toast.info("New booking status update received");
     });
 

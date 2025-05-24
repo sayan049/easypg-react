@@ -401,6 +401,7 @@ exports.signupHandlerOwner = async (req, res) => {
       minimumSecurityDeposit,
       rulesToStay: rules,
       minimumBookingDuration,
+      is_verified_Owner:true, // Set to true for initial registration
     });
 
     // sendmailOwner(firstName, email, newOwner._id);
