@@ -210,6 +210,8 @@ export function SocketProvider({ children }) {
   //       socket.off("new-booking-request");
   //     };
   //   }, [owner?._id]);
+  console.log("Socket initialized:", socket);
+  console.log("User ID:", owner?.id);
   useEffect(() => {
     if (!socket || !owner?._id) return;
 
