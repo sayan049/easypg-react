@@ -213,8 +213,9 @@ export function SocketProvider({ children }) {
   console.log("Socket initialized:", socket);
   console.log("User ID:", owner?.id);
   useEffect(() => {
-    if ( !owner?.id) return;
-
+    if (!owner?.id) return;
+    const newSocket = io(baseurl);
+    setSocket(newSocket);
     socket.emit("join-owner-room", owner?.id);
 
     const handleNewBooking = (data) => {
