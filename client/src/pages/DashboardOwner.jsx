@@ -118,8 +118,11 @@ export default function DashboardOwner() {
     <div className="min-h-screen flex flex-col md:flex-row relative">
       {/* Mobile Header */}
       <div className="md:hidden flex justify-between items-center p-4 bg-white shadow">
-        <button onClick={() => setMobileSidebarOpen(true)}>
+        <button onClick={() => setMobileSidebarOpen(true)} className="relative">
           <Menu className="w-6 h-6" />
+          {hasUnreadOwner === true && (
+            <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full " />
+          )}
         </button>
         <h1 className="text-lg font-semibold">Dashboard</h1>
         <div className="w-6" />
