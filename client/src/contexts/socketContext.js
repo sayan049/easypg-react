@@ -173,65 +173,79 @@ export function SocketProvider({ children }) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    if (user?.id) {
-      const newSocket = io(baseurl);
-      setSocket(newSocket);
-      newSocket.emit("join-user-room", user.id);
+    const id = user?.id || owner?.id;
+    if (!id) return;
 
+    const newSocket = io(baseurl);
+    setSocket(newSocket);
+
+    if (user?.id) {
+      newSocket.emit("join-user-room", user.id);
       newSocket.on("update-booking-status", (data) => {
         setHasUnread(true);
-        setIsConnected(true);
         setData(data);
-        console.log("Booking status update received:", data);
+        setIsConnected(true);
         localStorage.setItem("hasUnreadBookingUpdate", "true");
         if (data?.booking?.status === "confirmed") {
           localStorage.setItem("hasUnreadDashboardUpdate", "true");
         }
       });
-
-      return () => {
-        newSocket.disconnect();
-      };
     }
-  }, [user?.id]);
-  //   useEffect(() => {
-  //     socket.emit("join-owner-room", owner?._id);
 
-  //     socket.on("new-booking-request", (data) => {
+    if (owner?.id) {
+      newSocket.emit("join-owner-room", owner.id);
+      newSocket.on("new-booking-request", (data) => {
+        localStorage.setItem("hasUnreadPendingRequest", "true");
+        setIsConnected(true);
+      });
+    }
+
+    return () => newSocket.disconnect();
+  }, [user?.id, owner?.id]);
+
+  //   useEffect(() => {
+  //     if (user?.id) {
+  //       const newSocket = io(baseurl);
+  //       setSocket(newSocket);
+  //       newSocket.emit("join-user-room", user.id);
+
+  //       newSocket.on("update-booking-status", (data) => {
+  //         setHasUnread(true);
+  //         setIsConnected(true);
+  //         setData(data);
+  //         console.log("Booking status update received:", data);
+  //         localStorage.setItem("hasUnreadBookingUpdate", "true");
+  //         if (data?.booking?.status === "confirmed") {
+  //           localStorage.setItem("hasUnreadDashboardUpdate", "true");
+  //         }
+  //       });
+
+  //       return () => {
+  //         newSocket.disconnect();
+  //       };
+  //     }
+  //   }, [user?.id]);
+
+  //   useEffect(() => {
+  //     if (!owner?.id) return;
+  //     const newSocket = io(baseurl);
+  //     setSocket(newSocket);
+  //     newSocket.emit("join-owner-room", owner?.id);
+
+  //     const handleNewBooking = (data) => {
   //       console.log("New booking received", data);
   //       localStorage.setItem("hasUnreadPendingRequest", "true");
   //       setIsConnected(true);
-  //       console.log("Booking status:", data?.booking?.status); // ✅ Correct access
-
-  //       toast.info("You have a new booking request!");
-  //     });
-
-  //     return () => {
-  //       socket.off("new-booking-request");
   //     };
-  //   }, [owner?._id]);
-//   console.log("Socket initialized:", socket);
-//   console.log("User ID:", owner?.id);
-  useEffect(() => {
-    if (!owner?.id) return;
-    const newSocket = io(baseurl);
-    setSocket(newSocket);
-    newSocket.emit("join-owner-room", owner?.id);
 
-    const handleNewBooking = (data) => {
-      console.log("New booking received", data);
-      localStorage.setItem("hasUnreadPendingRequest", "true");
-      setIsConnected(true);
-    };
-
-    newSocket.on("new-booking-request", handleNewBooking);
-    return () => {
-      newSocket.disconnect();
-    };
-    // return () => {
-    //   newSocket.off("new-booking-request", handleNewBooking);
-    // };
-  }, [socket, owner?.id]);
+  //     newSocket.on("new-booking-request", handleNewBooking);
+  //     return () => {
+  //       newSocket.disconnect();
+  //     };
+  //     // return () => {
+  //     //   newSocket.off("new-booking-request", handleNewBooking);
+  //     // };
+  //   }, [socket, owner?.id]);
 
   return (
     <SocketContext.Provider
