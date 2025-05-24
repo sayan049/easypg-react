@@ -1318,7 +1318,24 @@ function SignupOwner() {
           </div>
 
           {/* Mess Photos */}
-          <div className="mt-10 pt-6 border-t border-primary-light">
+          <div
+            className="mt-10 pt-6 border-t border-primary-light"
+            onDrop={(e) => {
+              e.preventDefault();
+              // Pass dropped files to your imgUpload handler
+              if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                // Create a synthetic event object with target.files = dropped files
+                const syntheticEvent = {
+                  target: { files: e.dataTransfer.files },
+                };
+                imgUpload(syntheticEvent);
+                e.dataTransfer.clearData();
+              }
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+            }}
+          >
             <h2 className="text-xl font-semibold mb-4">Property Photos</h2>
 
             <input
