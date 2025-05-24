@@ -1392,7 +1392,7 @@ function SignupOwner() {
               <button
                 type="submit"
                 disabled={isSubmitting || !isFormComplete() || !termsAccepted}
-                className={`px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg text-white font-medium w-full sm:w-3/4 md:w-1/2 flex items-center justify-center ${
+                className={`px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-white font-medium w-full sm:w-3/4 md:w-1/2 flex items-center justify-center ${
                   isSubmitting || !isFormComplete() || !termsAccepted
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-[#2ca4b5] hover:bg-teal-700"
