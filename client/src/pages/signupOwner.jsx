@@ -705,6 +705,7 @@ function SignupOwner() {
                     <Mail className="h-4 w-4 inline mr-1" />
                     Email Address
                   </label>
+
                   <input
                     type="email"
                     id="email"
@@ -717,6 +718,7 @@ function SignupOwner() {
                     disabled={isEmailVerified}
                   />
 
+                  {/* VERIFY BUTTON OR VERIFIED TEXT */}
                   {!isEmailVerified ? (
                     <button
                       type="button"
@@ -728,26 +730,21 @@ function SignupOwner() {
                         borderTopRightRadius: "9999px",
                         borderBottomRightRadius: "9999px",
                       }}
-                      className={`px-4 py-2 absolute right-1 ${
-                        showOtp ? "top-[23%]" : "top-[68%]"
-                      } transform -translate-y-1/2 ${
+                      className={`px-4 py-2 absolute right-1 top-[50%] transform -translate-y-1/2 ${
                         isSendingOtp || !formData.email
-                          ? " bg-primary-default cursor-not-allowed text-white"
-                          : "bg-primary-default hover:bg-primary-dark  text-white"
+                          ? "bg-primary-default cursor-not-allowed text-white"
+                          : "bg-primary-default hover:bg-primary-dark text-white"
                       }`}
                     >
                       {isSendingOtp ? "Sending..." : "Verify"}
                     </button>
                   ) : (
-                    <span
-                      className={`text-green-600 pt-2 absolute right-1 ${
-                        showOtp ? "top-[23%]" : "top-[63%]"
-                      } transform -translate-y-1/2`}
-                    >
+                    <span className="text-green-600 absolute right-1 top-[50%] transform -translate-y-1/2">
                       Verified
                     </span>
                   )}
 
+                  {/* OTP SECTION */}
                   {showOtp && !isEmailVerified && (
                     <div className="mt-4 space-y-2">
                       <div className="flex gap-3 justify-center">
@@ -762,7 +759,7 @@ function SignupOwner() {
                             value={otp[i] || ""}
                             onChange={(e) => handleOtpChange(e, i)}
                             onKeyDown={(e) => handleOtpKeyDown(e, i)}
-                            className="w-14 h-14 text-center text-xl rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2ca4b5]"
+                            className="w-14 h-14 text-center text-xl rounded-xl border border-primary-light focus:outline-none focus:ring-2 focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                             aria-label={`Digit ${i + 1} of OTP`}
                             disabled={isVerifyingOtp}
                           />
@@ -782,8 +779,8 @@ function SignupOwner() {
                           disabled={isVerifyingOtp || otp.join("").length !== 4}
                           className={`px-4 py-2 rounded-full ${
                             isVerifyingOtp || otp.join("").length !== 4
-                              ? "bg-gray-300 cursor-not-allowed"
-                              : "bg-blue-500 hover:bg-blue-600 text-white"
+                              ? "bg-primary-default cursor-not-allowed text-white"
+                              : "bg-primary-default hover:bg-primary-dark text-white"
                           }`}
                         >
                           {isVerifyingOtp ? "Verifying..." : "Submit OTP"}
@@ -793,26 +790,18 @@ function SignupOwner() {
                           type="button"
                           onClick={sendOtp}
                           disabled={!canResend || isSendingOtp}
-                          className="text-blue-500 hover:text-blue-700 underline text-sm"
+                          className="text-primary-default hover:text-primary-dark underline text-sm"
                         >
                           Resend OTP
                         </button>
                       </div>
 
-                      {!canResend ? (
-                        <p className="text-sm text-gray-500">
+                      {/* TIMER BELOW RESEND */}
+                      {!canResend && (
+                        <p className="text-sm text-gray-500 text-center">
                           Resend OTP in {Math.floor(timeLeft / 60)}:
                           {(timeLeft % 60).toString().padStart(2, "0")}
                         </p>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={sendOtp}
-                          disabled={isSendingOtp}
-                          className="text-blue-600 underline"
-                        >
-                          Resend OTP
-                        </button>
                       )}
                     </div>
                   )}
