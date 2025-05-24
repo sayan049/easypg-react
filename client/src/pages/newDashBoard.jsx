@@ -135,17 +135,16 @@ function NewDashboard() {
     };
   }, [user?.id]);
 
-  if (tab === "bookings") {
-    setHasUnreadBookingUpdate(false);
-    localStorage.setItem("hasUnreadBookingUpdate", "false");
-  }
-
   useEffect(() => {
     if (user?.id) fetchAllData();
   }, [type, user, owner, user?.id]);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
+    if (tab === "bookings") {
+      setHasUnreadBookingUpdate(false);
+      localStorage.setItem("hasUnreadBookingUpdate", "false");
+    }
     setSidebarOpen(false);
   };
 
@@ -227,7 +226,14 @@ function NewDashboard() {
             onClick={() => handleTabChange("dashboard")}
           />
           <SidebarButton
-            icon={<CalendarCheck />}
+            icon={
+              <div className="relative">
+                <CalendarCheck />
+                {hasUnreadBookingUpdate && (
+                  <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full animate-pulse" />
+                )}
+              </div>
+            }
             label="My Bookings"
             active={activeTab === "bookings"}
             onClick={() => handleTabChange("bookings")}
