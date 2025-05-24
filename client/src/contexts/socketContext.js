@@ -220,7 +220,6 @@ export function SocketProvider({ children }) {
       console.log("New booking received", data);
       localStorage.setItem("hasUnreadPendingRequest", "true");
       setIsConnected(true);
-      toast.info("You have a new booking request!");
     };
 
     socket.on("new-booking-request", handleNewBooking);
