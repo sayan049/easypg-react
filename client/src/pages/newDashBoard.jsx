@@ -129,11 +129,11 @@ function NewDashboard() {
 
     fetchAllData();
 
-    if (isConnected) {
-      fetchAllData();
-      toast.info("New booking status update received");
-      setIsconnected(false);
-    }
+    // if (isConnected) {
+    //   fetchAllData();
+    //   toast.info("New booking status update received");
+    //   setIsconnected(false);
+    // }
   }, [type, user, owner, socket, isConnected]);
 
   const handleTabChange = (tab) => {
