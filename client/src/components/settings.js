@@ -11,7 +11,7 @@ import {
   faSave,
 } from "@fortawesome/free-solid-svg-icons";
 
-function Settings({ user }) {
+function Settings({ user, loginMethod }) {
   const { IsAuthenticated, owner, type, handleLogout } = useAuth();
   const [image, setImage] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -58,7 +58,7 @@ function Settings({ user }) {
     }
 
     const formData = new FormData();
-    formData.append("userId", user._id);
+    formData.append("userId", user.id);
     formData.append("type", type);
 
     Object.keys(personalInfo).forEach((key) => {
@@ -259,19 +259,9 @@ function Settings({ user }) {
       {/* Profile Picture */}
       <div className="flex justify-center mb-6">
         <div className="text-center">
-          <input
-            type="file"
-            accept="image/*"
-            id="profileUpload"
-            onChange={(e) => setImage(e.target.files[0])}
-            className="hidden"
-          />
-          <label htmlFor="profileUpload" className="cursor-pointer">
-            {IsAuthenticated && (
-              <UserProfile className="!h-24 !w-24 sm:!h-32 sm:!w-32" />
-            )}
-            {/* <div className="mt-2 text-sm text-gray-600">Click to upload photo</div> */}
-          </label>
+          {IsAuthenticated && (
+            <UserProfile className="!h-24 !w-24 sm:!h-32 sm:!w-32" />
+          )}
         </div>
       </div>
 
@@ -352,30 +342,32 @@ function Settings({ user }) {
         </section>
 
         {/* Password Management */}
-        <section className="space-y-4">
-          <h3 className="text-lg font-semibold">Password</h3>
+        {loginMethod === "local" && (
+          <section className="space-y-4">
+            <h3 className="text-lg font-semibold">Password</h3>
 
-          {["currentPassword", "newPassword", "confirmPassword"].map(
-            (field) => (
-              <input
-                key={field}
-                type="password"
-                name={field}
-                value={passwords[field]}
-                onChange={handlePasswordChange}
-                placeholder={field.replace(/([A-Z])/g, " $1")}
-                className="w-full p-2 border rounded text-sm"
-              />
-            )
-          )}
+            {["currentPassword", "newPassword", "confirmPassword"].map(
+              (field) => (
+                <input
+                  key={field}
+                  type="password"
+                  name={field}
+                  value={passwords[field]}
+                  onChange={handlePasswordChange}
+                  placeholder={field.replace(/([A-Z])/g, " $1")}
+                  className="w-full p-2 border rounded text-sm"
+                />
+              )
+            )}
 
-          {/* <button
-            onClick={handlePasswordReset}
-            className="bg-blue-500 text-white px-3 py-1.5 rounded text-sm"
-          >
-            Update Password
-          </button> */}
-        </section>
+            {/* <button
+      onClick={handlePasswordReset}
+      className="bg-blue-500 text-white px-3 py-1.5 rounded text-sm"
+    >
+      Update Password
+    </button> */}
+          </section>
+        )}
       </div>
 
       {/* Account Management */}

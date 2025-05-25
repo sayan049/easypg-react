@@ -47,7 +47,7 @@ function NewDashboard() {
     return localStorage.getItem("hasUnreadBookingUpdate") === "true";
   });
 
-  const { userName, user, owner, type, handleLogout } = useAuth();
+  const { userName, user, owner, type, handleLogout,loginMethod } = useAuth();
   const { setHasUnread, isConnected, setIsconnected, socket } = useSocket();
 
   const fetchAllData = async () => {
@@ -183,7 +183,7 @@ function NewDashboard() {
       case "payments":
         return <Payments />;
       case "settings":
-        return <Settings user={userDetails} />;
+        return <Settings user={userDetails} loginMethod={loginMethod} />;
       case "Cart":
         return <Cart />;
       default:
