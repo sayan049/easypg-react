@@ -265,6 +265,26 @@ export default function BookingPage() {
       return toast.error(
         `Minimum booking duration is ${messData.minimumBookingDuration}`
       );
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize to start of day
+
+    const selectedDate = new Date(checkInDate);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    const minDate = new Date(today);
+    minDate.setDate(today.getDate() + 4);
+
+    const maxDate = new Date(today);
+    maxDate.setDate(today.getDate() + 30);
+
+    if (selectedDate < minDate) {
+      return toast.error("Check-in date must be at least 4 days from today");
+    }
+    if (selectedDate > maxDate) {
+      return toast.error(
+        "Check-in date cannot be more than 30 days from today"
+      );
+    }
     try {
       setIsLoading(true);
 
@@ -692,7 +712,7 @@ export default function BookingPage() {
                       className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors"
                       value={checkInDate}
                       min={
-                        new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+                        new Date(Date.now() + 4 * 24 * 60 * 60 * 1000)
                           .toISOString()
                           .split("T")[0]
                       }
