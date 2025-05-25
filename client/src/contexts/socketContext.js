@@ -17,6 +17,9 @@ export function SocketProvider({ children }) {
   const [hasUnreadOwner, setHasUnreadOwner] = useState(() => {
     return localStorage.getItem("hasUnreadPendingRequest") === "true";
   });
+  const [hasUnreadOwnerCancel, setHasUnreadOwnerCancel] = useState(() => {
+    return localStorage.getItem("hasUnreadCancelRequest") === "true";
+  });
 
   const [isConnected, setIsConnected] = useState(false);
   const [data, setData] = useState(null);
@@ -50,7 +53,7 @@ export function SocketProvider({ children }) {
         setIsConnected(true);
       });
       newSocket.on("cancel-pending-request", (data) => {
-        console.log("🔥 cancel-pending-request received:", data);
+        //  console.log("🔥 cancel-pending-request received:", data);
         setData(data);
         setIsConnected(true);
       });
@@ -60,7 +63,13 @@ export function SocketProvider({ children }) {
         localStorage.setItem("hasUnreadPendingRequest", "true");
         setIsConnected(true);
         // Optional: show a toast or alert
-        console.log("⏰ Booking expired:", data);
+        // console.log("⏰ Booking expired:", data);
+      });
+      newSocket.on("cancel-confirm-request", (data) => {
+        setHasUnreadOwnerCancel(true);
+        setData(data);
+        localStorage.setItem("hasUnreadCancelRequest", "true");
+        setIsConnected(true);
       });
     }
 
@@ -78,6 +87,8 @@ export function SocketProvider({ children }) {
         data,
         hasUnreadOwner,
         setHasUnreadOwner,
+        hasUnreadOwnerCancel,
+        setHasUnreadOwnerCancel,
       }}
     >
       {children}

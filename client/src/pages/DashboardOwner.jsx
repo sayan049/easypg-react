@@ -26,12 +26,36 @@ export default function DashboardOwner() {
   });
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-  const { ownerName, isOwnerAuthenticated, owner, type, handleLogout, loginMethod } =
-    useAuth();
-  const { socket, hasUnreadOwner, setHasUnreadOwner } = useSocket();
+  const {
+    ownerName,
+    isOwnerAuthenticated,
+    owner,
+    type,
+    handleLogout,
+    loginMethod,
+  } = useAuth();
+  const {
+    socket,
+    hasUnreadOwner,
+    setHasUnreadOwner,
+    hasUnreadOwnerCancel,
+    setHasUnreadOwnerCancel,
+  } = useSocket();
 
   const navItems = [
-    { name: "Dashboard", icon: <Home />, key: "dashboard" },
+    {
+      name: "Dashboard",
+      icon: (
+        <div>
+          {" "}
+          <Home />{" "}
+          {hasUnreadOwnerCancel === true && (
+            <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full " />
+          )}
+        </div>
+      ),
+      key: "dashboard",
+    },
     {
       name: "Booking Status",
       icon: (
@@ -108,7 +132,9 @@ export default function DashboardOwner() {
       case "payments":
         return <Payments />;
       case "settings":
-        return <SettingsOwner userDetails={userDetails} loginMethod={loginMethod} />;
+        return (
+          <SettingsOwner userDetails={userDetails} loginMethod={loginMethod} />
+        );
       default:
         return null;
     }
@@ -120,7 +146,7 @@ export default function DashboardOwner() {
       <div className="md:hidden flex justify-between items-center p-4 bg-white shadow">
         <button onClick={() => setMobileSidebarOpen(true)} className="relative">
           <Menu className="w-6 h-6" />
-          {hasUnreadOwner === true && (
+          {(hasUnreadOwner === true || hasUnreadOwnerCancel === true) && (
             <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full " />
           )}
         </button>
@@ -158,6 +184,10 @@ export default function DashboardOwner() {
                 if (item.key === "booking") {
                   setHasUnreadOwner(false);
                   localStorage.setItem("hasUnreadPendingRequest", "false");
+                }
+                if (item.key === "dashboard") {
+                  setHasUnreadOwnerCancel(false);
+                  localStorage.setItem("hasUnreadCancelRequest", "false");
                 }
               }}
             >
@@ -221,6 +251,10 @@ export default function DashboardOwner() {
                     if (item.key === "booking") {
                       setHasUnreadOwner(false);
                       localStorage.setItem("hasUnreadPendingRequest", "false");
+                    }
+                    if (item.key === "dashboard") {
+                      setHasUnreadOwnerCancel(false);
+                      localStorage.setItem("hasUnreadCancelRequest", "false");
                     }
                     setMobileSidebarOpen(false);
                   }}

@@ -467,6 +467,7 @@ const {
 const { Types } = require("mongoose");
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
+const { request } = require("http");
 
 // Helper functions
 const bedCountToNumber = {
@@ -1468,6 +1469,7 @@ exports.cancelBooking = async (req, res) => {
         status: "cancelled",
         userCancellationReason: booking.userCancellationReason,
         room: booking.room,
+        requestType: "pending-cancel",
       };
       const io = req.app.get("socketio"); // Get socket instance from app.js/server.js
       io.to(booking.pgOwner._id.toString()).emit("cancel-pending-request", {
@@ -1482,7 +1484,17 @@ exports.cancelBooking = async (req, res) => {
 
     // 4. Confirmed booking → check timing
     if (booking.status === "confirmed") {
-      const hoursDiff = (startDate - now) / (1000 * 60 * 60);
+      // const hoursDiff = (startDate - now) / (1000 * 60 * 60);
+      const confirmedAt = new Date(booking.updatedAt);
+      const hoursSinceConfirmed = (now - confirmedAt) / (1000 * 60 * 60);
+
+      if (hoursSinceConfirmed > 48) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Booking can only be cancelled within 48 hours of confirmation.",
+        });
+      }
 
       // Current stays can't be cancelled
       if (now >= startDate && now <= endDate) {
@@ -1493,12 +1505,12 @@ exports.cancelBooking = async (req, res) => {
       }
 
       // Too late to cancel
-      if (startDate > now && hoursDiff <= 24) {
-        return res.status(400).json({
-          success: false,
-          message: "Can only cancel more than 24 hours before check-in.",
-        });
-      }
+      // if (startDate > now && hoursDiff <= 24) {
+      //   return res.status(400).json({
+      //     success: false,
+      //     message: "Can only cancel more than 24 hours before check-in.",
+      //   });
+      // }
 
       // 5. Restore beds
       const owner = await PgOwner.findById(booking.pgOwner);
@@ -1555,6 +1567,43 @@ exports.cancelBooking = async (req, res) => {
           booking._id
         ),
       ]);
+
+      //   const bookingPayload = {
+      //   _id: booking._id,
+      //   status: "cancelled",
+      //   userCancellationReason: booking.userCancellationReason,
+      //   room: booking.room,
+      //   requestType: "confirmed-cancel",
+      // };
+      // const io = req.app.get("socketio"); // Get socket instance from app.js/server.js
+      // io.to(booking.pgOwner._id.toString()).emit("cancel-confirm-request", {
+      //   booking: bookingPayload,
+      // });
+      const bookingPayload = {
+        _id: booking._id,
+        status: "cancelled",
+        userCancellationReason: booking.userCancellationReason,
+        room: booking.room,
+        requestType: "confirmed-cancel",
+      };
+
+      const io = req.app.get("socketio");
+      const ownerRoom = io.sockets.adapter.rooms.get(
+        booking.pgOwner._id.toString()
+      );
+
+      if (ownerRoom && ownerRoom.size > 0) {
+        io.to(booking.pgOwner._id.toString()).emit("cancel-confirm-request", {
+          booking: bookingPayload,
+        });
+      } else {
+        await MissedSocketEvent.create({
+          recipientId: booking.pgOwner._id,
+          recipientType: "owner",
+          eventType: "cancel-confirm-request",
+          payload: bookingPayload,
+        });
+      }
 
       return res.json({
         success: true,

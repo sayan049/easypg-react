@@ -55,7 +55,14 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    console.log("data:", data, "isConnected:", isConnected , "data?.status:", data?.status);
+    console.log(
+      "data:",
+      data,
+      "isConnected:",
+      isConnected,
+      "data?.status:",
+      data?.booking?.status
+    );
     if (isConnected) {
       if (data?.booking?.status === "rejected" || data?.status === "rejected") {
         toast.info("your booking has been rejected by the owner");
@@ -70,13 +77,30 @@ const HomePage = () => {
         toast.info("You have a new booking request! valid for 24 hours");
       }
       if (data?.booking?.status === "expired" || data?.status === "expired") {
-        toast.error(
-          "Your booking request has expired. Please check your bookings."
-        );
+        if (
+          data?.booking?.requestType === "pending-cancel" ||
+          data?.requestType === "pending-cancel"
+        ) {
+          toast.error(
+            "Your booking request has expired. Please check your bookings."
+          );
+        }
+        if (
+          data?.booking?.requestType === "confirm-cancel" ||
+          data?.requestType === "confirm-cancel"
+        ) {
+          toast.info(
+            "user cancelled your booking request. Please check your bookings."
+          );
+        }
       }
-       if (data?.booking?.status === "cancelled" || data?.status === "cancelled") {
-        console.log("pending request has been cancelled by the user for ", data?.booking?.room);
-        toast.info(`pending request has been cancelled by the user for ${data?.booking?.room}`);
+      if (
+        data?.booking?.status === "cancelled" ||
+        data?.status === "cancelled"
+      ) {
+        toast.info(
+          `pending request has been cancelled by the user for ${data?.booking?.room}`
+        );
       }
 
       setIsConnected(false);
@@ -1244,7 +1268,7 @@ const HomePage = () => {
                     ))}
                   </div>
                   <div className="mt-8 flex space-x-4">
-                    {[ "instagram","facebook", "linkedin"].map(
+                    {["instagram", "facebook", "linkedin"].map(
                       (social, index) => (
                         <motion.a
                           key={index}
