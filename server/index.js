@@ -19,6 +19,7 @@ const UAParser = require("ua-parser-js");
 const ORIGIN = process.env.CLIENT_URL; // Default to localhost if not set
 const PORT = process.env.PORT || 8080;
 const PRERENDER_TOKEN = process.env.PRERENDER_TOKEN;
+const MissedSocketEvent = require("./modules/missedSocket");
 
 console.log(ORIGIN, "origin");
 console.log(PRERENDER_TOKEN, "prerender");
@@ -55,8 +56,22 @@ app.set("socketio", io);
 io.on("connection", (socket) => {
   console.log("New client connected:", socket.id);
 
-  socket.on("join-owner-room", (ownerId) => {
+  socket.on("join-owner-room", async (ownerId) => {
     socket.join(ownerId);
+    // Emit missed events
+    const missedEvents = await MissedSocketEvent.find({
+      recipientId: ownerId,
+      recipientType: "owner",
+    });
+    missedEvents.forEach((event) => {
+      socket.emit(event.eventType, event.payload);
+    });
+
+    // Delete after sending
+    await MissedSocketEvent.deleteMany({
+      recipientId: ownerId,
+      recipientType: "owner",
+    });
     console.log(`Socket ${socket.id} joined room ${ownerId}`);
   });
   socket.on("join-user-room", (userId) => {

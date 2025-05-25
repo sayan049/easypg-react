@@ -596,7 +596,7 @@ exports.createBookingRequest = async (req, res) => {
     await booking.save();
 
     // Start 2-minute expiration timer
-// if i run cron here?
+    // if i run cron here?
 
     // Socket notifications
     const bookingPayload = {
@@ -613,12 +613,22 @@ exports.createBookingRequest = async (req, res) => {
       payment: booking.payment,
       createdAt: booking.createdAt,
     };
-
+    const io = req.app.get("socketio");
+    const ownerRoom = io.sockets.adapter.rooms.get(pgOwner.toString());
     // Emit socket event to owner's room
-    const io = req.app.get("socketio"); // Get socket instance from app.js/server.js
-    io.to(pgOwner.toString()).emit("new-booking-request", {
-      booking: bookingPayload,
-    });
+    if (ownerRoom && ownerRoom.size > 0) {
+      // Get socket instance from app.js/server.js
+      io.to(pgOwner.toString()).emit("new-booking-request", {
+        booking: bookingPayload,
+      });
+    } else {
+      await MissedSocketEvent.create({
+        recipientId: pgOwner,
+        recipientType: "owner",
+        eventType: "new-booking-request",
+        payload: bookingPayload,
+      });
+    }
 
     // Send notifications
     const notificationPromises = [
