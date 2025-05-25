@@ -613,11 +613,11 @@ exports.createBookingRequest = async (req, res) => {
       payment: booking.payment,
       createdAt: booking.createdAt,
     };
-
+    const io = req.app.get("socketio");
     const ownerRoom = io.sockets.adapter.rooms.get(pgOwner.toString());
     // Emit socket event to owner's room
     if (ownerRoom && ownerRoom.size > 0) {
-      const io = req.app.get("socketio"); // Get socket instance from app.js/server.js
+      // Get socket instance from app.js/server.js
       io.to(pgOwner.toString()).emit("new-booking-request", {
         booking: bookingPayload,
       });
