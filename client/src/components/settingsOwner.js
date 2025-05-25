@@ -291,27 +291,27 @@ const SettingsOwner = ({ userDetails, loginMethod }) => {
 
     // Append mess photos (only newly added File objects)
 
-try {
-  const res = await fetch(updateDetailsUrl, {
-    method: "POST",
-    body: formData,
-  });
+    try {
+      const res = await fetch(updateDetailsUrl, {
+        method: "POST",
+        body: formData,
+      });
 
-  const result = await res.json();
+      const result = await res.json();
 
-  if (res.ok) {
-    toast.success(result.message || "Details updated successfully.");
-    // alert("Updated successfully!");
-    // console.log(result.data);
-  } else {
-    toast.error(result.error || result.message || "Update failed.");
-    // alert(result.error || result.message || "Update failed.");
-  }
-} catch (err) {
-  console.error("Update error:", err);
-  toast.error("An error occurred during update.");
-  // alert("An error occurred during update.");
-}
+      if (res.ok) {
+        toast.success(result.message || "Details updated successfully.");
+        // alert("Updated successfully!");
+        // console.log(result.data);
+      } else {
+        toast.error(result.error || result.message || "Update failed.");
+        // alert(result.error || result.message || "Update failed.");
+      }
+    } catch (err) {
+      console.error("Update error:", err);
+      toast.error("An error occurred during update.");
+      // alert("An error occurred during update.");
+    }
   };
 
   // Rules management functions
@@ -565,9 +565,7 @@ try {
             </form>
           </div>
         ) : (
-          <p className="text-sm text-gray-500">
-            Password cannot be updated for Google sign-in accounts.
-          </p>
+          <></>
         )}
       </div>
 
@@ -949,9 +947,15 @@ try {
 
       {/* Mess Photos */}
       <div className="space-y-4">
-        <h3 className="font-semibold text-lg">Mess Photos</h3>
+        <h3 className="font-semibold text-lg flex justify-between items-center">
+          Mess Photos
+          <span className="text-sm text-gray-500">
+            {details.messPhoto.length}/10 uploaded
+          </span>
+        </h3>
+
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {/* Add Photo Box (only show if less than 10 photos) */}
+          {/* Add Photo Box */}
           {details.messPhoto.length < 10 && (
             <div
               className="flex items-center justify-center h-24 border rounded bg-gray-100 cursor-pointer hover:bg-gray-200 relative"
@@ -966,17 +970,31 @@ try {
                 className="hidden"
                 onChange={(e) => {
                   const files = Array.from(e.target.files);
-                  if (files.length) {
-                    const updatedPhotos = [
-                      ...details.messPhoto,
-                      ...files,
-                    ].slice(0, 10);
-                    setDetails((prev) => ({
-                      ...prev,
-                      messPhoto: updatedPhotos,
-                    }));
-                    e.target.value = ""; // reset input
+                  const currentCount = details.messPhoto.length;
+
+                  if (currentCount >= 10) {
+                    toast.error("Maximum 10 photos allowed.");
+                    e.target.value = "";
+                    return;
                   }
+
+                  const remainingSlots = 10 - currentCount;
+                  const filesToAdd = files.slice(0, remainingSlots);
+
+                  if (files.length > remainingSlots) {
+                    toast.error(
+                      `You can only upload ${remainingSlots} more photo${
+                        remainingSlots > 1 ? "s" : ""
+                      }.`
+                    );
+                  }
+
+                  setDetails((prev) => ({
+                    ...prev,
+                    messPhoto: [...prev.messPhoto, ...filesToAdd],
+                  }));
+
+                  e.target.value = "";
                 }}
               />
             </div>
