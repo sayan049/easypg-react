@@ -46,7 +46,7 @@ export default function DashboardOwner() {
     {
       name: "Dashboard",
       icon: (
-        <div>
+        <div className="relative">
           {" "}
           <Home />{" "}
           {hasUnreadOwnerCancel === true && (

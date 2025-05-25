@@ -85,22 +85,27 @@ const HomePage = () => {
             "Your booking request has expired. Please check your bookings."
           );
         }
-        if (
-          data?.booking?.requestType === "confirm-cancel" ||
-          data?.requestType === "confirm-cancel"
-        ) {
-          toast.info(
-            "user cancelled your booking request. Please check your bookings."
-          );
-        }
       }
       if (
         data?.booking?.status === "cancelled" ||
         data?.status === "cancelled"
       ) {
-        toast.info(
-          `pending request has been cancelled by the user for ${data?.booking?.room}`
-        );
+        if (
+          data?.booking?.requestType === "pending-cancel" ||
+          data?.requestType === "pending-cancel"
+        ) {
+          toast.info(
+            `pending request has been cancelled by the user for ${data?.booking?.room}`
+          );
+        }
+        if (
+          data?.booking?.requestType === "confirmed-cancel" ||
+          data?.requestType === "confirmed-cancel"
+        ) {
+          toast.info(
+            "user cancelled your booking request. Please check your bookings."
+          );
+        }
       }
 
       setIsConnected(false);
