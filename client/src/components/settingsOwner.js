@@ -291,26 +291,27 @@ const SettingsOwner = ({ userDetails, loginMethod }) => {
 
     // Append mess photos (only newly added File objects)
 
-    try {
-      const res = await fetch(updateDetailsUrl, {
-        method: "POST",
-        body: formData,
-      });
+try {
+  const res = await fetch(updateDetailsUrl, {
+    method: "POST",
+    body: formData,
+  });
 
-      const result = await res.json();
-      if (res.ok) {
-        toast.success("Updated successfully!");
-        //alert("Updated successfully!");
-        //  console.log(result.data);
-      } else {
-        toast.error(result.error || "Update failed.");
-        // alert(result.error || "Update failed.");
-      }
-    } catch (err) {
-      console.error("Update error:", err);
-      toast.error("An error occurred during update.");
-      //alert("An error occurred during update.");
-    }
+  const result = await res.json();
+
+  if (res.ok) {
+    toast.success(result.message || "Details updated successfully.");
+    // alert("Updated successfully!");
+    // console.log(result.data);
+  } else {
+    toast.error(result.error || result.message || "Update failed.");
+    // alert(result.error || result.message || "Update failed.");
+  }
+} catch (err) {
+  console.error("Update error:", err);
+  toast.error("An error occurred during update.");
+  // alert("An error occurred during update.");
+}
   };
 
   // Rules management functions
