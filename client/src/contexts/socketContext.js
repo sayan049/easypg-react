@@ -49,6 +49,10 @@ export function SocketProvider({ children }) {
         localStorage.setItem("hasUnreadPendingRequest", "true");
         setIsConnected(true);
       });
+      newSocket.on("cancel-pending-request", (data) => {
+        setData(data);
+        setIsConnected(true);
+      });
       newSocket.on("bookingExpired", (data) => {
         setHasUnreadOwner(true);
         setData(data);

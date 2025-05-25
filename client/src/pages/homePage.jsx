@@ -63,6 +63,9 @@ const HomePage = () => {
       if (data?.booking?.status === "expired" || data?.status === "expired") {
         toast.error("Your booking request has expired. Please check your bookings.");
       }
+       if (data?.booking?.status === "cancelled" || data?.status === "cancelled") {
+        toast.info(`pending request has been cancelled by the user for ${data?.booking?.room}`);
+      }
 
       setIsConnected(false);
     }
