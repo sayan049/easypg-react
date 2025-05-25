@@ -982,7 +982,7 @@ const HomePage = () => {
                       <h3 className="text-lg font-semibold text-[#2CA4B5] group-hover:text-teal-700 transition-colors duration-300">
                         {city.name}
                       </h3>
-                      <p className="text-gray-600 text-sm">{city.PGs} PGs</p>
+                      {/* <p className="text-gray-600 text-sm">{city.PGs} PGs</p> */}
                     </div>
                   </div>
                 </motion.div>

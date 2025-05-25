@@ -47,91 +47,94 @@ function NewDashboard() {
     return localStorage.getItem("hasUnreadBookingUpdate") === "true";
   });
 
-  const { userName, user, owner, type, handleLogout,loginMethod } = useAuth();
+  const { userName, user, owner, type, handleLogout, loginMethod } = useAuth();
   const { setHasUnread, isConnected, setIsconnected, socket } = useSocket();
 
-  const fetchAllData = async () => {
-    try {
-      setLoading(true);
-      const userId = type === "student" ? user?.id : owner?.id;
-      if (!userId || !socket) return;
+  useEffect(() => {
+    const ready = type === "student" ? user?.id : owner?.id;
+    if (!ready) return;
 
-      const detailsUrl = new URL(fetchDetailsUrl);
-      detailsUrl.searchParams.append("userId", userId);
-      detailsUrl.searchParams.append("type", type);
-      const detailsResponse = await fetch(detailsUrl, { method: "GET" });
-      if (!detailsResponse.ok) throw new Error("Failed to fetch user details");
-      const detailsData = await detailsResponse.json();
-      setUserDetails(detailsData);
+    const fetchAllData = async () => {
+      try {
+        const userId = type === "student" ? user?.id : owner?.id;
+        if (!userId || !socket) return;
+        setLoading(true);
+        const detailsUrl = new URL(fetchDetailsUrl);
+        detailsUrl.searchParams.append("userId", userId);
+        detailsUrl.searchParams.append("type", type);
 
-      if (type === "student") {
-        const response = await axios.get(`${baseurl}/auth/bookings/user`, {
-          withCredentials: true, // Automatically send cookies
-          headers: {
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
-          },
-        });
-        if (response.data && response.data.success) {
-          const bookingsData = response.data.bookings || [];
-          const bookingsWithDates = bookingsData.map((booking) => {
-            const endDate = new Date(booking.period.startDate);
-            endDate.setMonth(
-              endDate.getMonth() + booking.period.durationMonths
-            );
-            return { ...booking, period: { ...booking.period, endDate } };
-          });
+        const detailsResponse = await fetch(detailsUrl, { method: "GET" });
+        if (!detailsResponse.ok)
+          throw new Error("Failed to fetch user details");
+        const detailsData = await detailsResponse.json();
+        setUserDetails(detailsData);
 
-          setBookings(bookingsWithDates);
-          setStats({
-            upcoming: response.data.stats.upcoming,
-            active: response.data.stats.current,
-            past: response.data.stats.past,
-            pending: response.data.stats.pending,
-          });
-          setCurrentStay(response.data.currentStays || []);
-          setUpcomingStay(response.data.upcomingStays || []);
-          setPastStay(response.data.pastStays || []);
-          setPendingStay(response.data.pendingStays || []);
-          setDaysRemaining(response.data.daysRemaining || 0);
-          setTotalAmountConfirmed(response.data.totalAmountConfirmed || 0);
-        }
-
-        const maintenanceResponse = await axios.get(
-          `${baseurl}/auth/maintenance/history`,
-          {
-            withCredentials: true, // Automatically send cookies
+        if (type === "student") {
+          const response = await axios.get(`${baseurl}/auth/bookings/user`, {
+            withCredentials: true,
             headers: {
               "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
+              "X-Requested-With": "XMLHttpRequest",
             },
-            params: { userId, type },
+          });
+
+          if (response.data && response.data.success) {
+            const bookingsData = response.data.bookings || [];
+            const bookingsWithDates = bookingsData.map((booking) => {
+              const endDate = new Date(booking.period.startDate);
+              endDate.setMonth(
+                endDate.getMonth() + booking.period.durationMonths
+              );
+              return { ...booking, period: { ...booking.period, endDate } };
+            });
+
+            setBookings(bookingsWithDates);
+            setStats({
+              upcoming: response.data.stats.upcoming,
+              active: response.data.stats.current,
+              past: response.data.stats.past,
+              pending: response.data.stats.pending,
+            });
+            setCurrentStay(response.data.currentStays || []);
+            setUpcomingStay(response.data.upcomingStays || []);
+            setPastStay(response.data.pastStays || []);
+            setPendingStay(response.data.pendingStays || []);
+            setDaysRemaining(response.data.daysRemaining || 0);
+            setTotalAmountConfirmed(response.data.totalAmountConfirmed || 0);
           }
-        );
-        if (maintenanceResponse.data.success) {
-          setMaintenanceHistory(maintenanceResponse.data.data || []);
+
+          const maintenanceResponse = await axios.get(
+            `${baseurl}/auth/maintenance/history`,
+            {
+              withCredentials: true,
+              headers: {
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+              },
+              params: { userId, type },
+            }
+          );
+
+          if (maintenanceResponse.data.success) {
+            setMaintenanceHistory(maintenanceResponse.data.data || []);
+          }
         }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error(error.response?.data?.message || "Failed to load data");
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error(error.response?.data?.message || "Failed to load data");
-    } finally {
-      setLoading(false);
-    }
-  };
-  useEffect(() => {
-    console.log("Socket connection established", user?.id);
+    };
 
-    if (isConnected) {
-      fetchAllData();
-      toast.info("New booking status update received");
-      setIsconnected(false);
-    }
-  }, [user?.id]);
+    fetchAllData();
 
-  useEffect(() => {
-    if (user?.id) fetchAllData();
-  }, [type, user, owner, user?.id]);
+    // if (isConnected) {
+    //   fetchAllData();
+    //   toast.info("New booking status update received");
+    //   setIsconnected(false);
+    // }
+  }, [type, user, owner, socket, isConnected]);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -147,7 +150,7 @@ function NewDashboard() {
   };
 
   const renderContent = () => {
-    if (loading) {
+    if (loading || !user) {
       return (
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
@@ -379,7 +382,7 @@ export default NewDashboard;
 //           withCredentials: true,
 //           headers: { "Content-Type": "application/json" }
 //         });
-        
+
 //         if (bookingsResponse.data?.success) {
 //           const processedBookings = bookingsResponse.data.bookings.map(booking => ({
 //             ...booking,
@@ -390,7 +393,7 @@ export default NewDashboard;
 //               )
 //             }
 //           }));
-          
+
 //           setBookings(processedBookings);
 //           setStats(bookingsResponse.data.stats);
 //           setCurrentStay(bookingsResponse.data.currentStays || []);
@@ -444,13 +447,13 @@ export default NewDashboard;
 //   const handleTabChange = (tab) => {
 //     setActiveTab(tab);
 //     setSidebarOpen(false);
-    
+
 //     // Update unread statuses
 //     const updates = {
 //       bookings: "hasUnreadBookingUpdate",
 //       dashboard: "hasUnreadDashboardUpdate"
 //     };
-    
+
 //     if (updates[tab]) {
 //       setHasUnread(false);
 //       localStorage.setItem(updates[tab], "false");
@@ -516,16 +519,16 @@ export default NewDashboard;
 //         </div>
 
 //         <ProfileHeader userName={userName} />
-        
+
 //         <nav className="flex flex-col gap-4 mt-8">
 //           {[
-//             { 
+//             {
 //               icon: <Home />,
 //               label: "Dashboard",
 //               tab: "dashboard",
 //               badge: "hasUnreadDashboardUpdate"
 //             },
-//             { 
+//             {
 //               icon: <CalendarCheck />,
 //               label: "My Bookings",
 //               tab: "bookings",
