@@ -42,8 +42,14 @@ const HomePage = () => {
     isOwnerAuthenticated,
     ownerName,
   } = useAuth();
-  const { hasUnread, isConnected, data, setIsConnected, hasUnreadOwner ,hasUnreadOwnerCancel } =
-    useSocket();
+  const {
+    hasUnread,
+    isConnected,
+    data,
+    setIsConnected,
+    hasUnreadOwner,
+    hasUnreadOwnerCancel,
+  } = useSocket();
   const [menuOpen, setMenuOpen] = useState(false);
   const [nearbyMesses, setNearbyMesses] = useState([]);
   const [isLocating, setIsLocating] = useState(false);
@@ -77,14 +83,9 @@ const HomePage = () => {
         toast.info("You have a new booking request! valid for 24 hours");
       }
       if (data?.booking?.status === "expired" || data?.status === "expired") {
-        if (
-          data?.booking?.requestType === "pending-cancel" ||
-          data?.requestType === "pending-cancel"
-        ) {
-          toast.error(
-            "Your booking request has expired. Please check your bookings."
-          );
-        }
+        toast.error(
+          "Your booking request has expired. Please check your bookings."
+        );
       }
       if (
         data?.booking?.status === "cancelled" ||
