@@ -50,7 +50,7 @@ export function SocketProvider({ children }) {
         setIsConnected(true);
       });
       newSocket.on("cancel-pending-request", (data) => {
-        console.log("🔥 cancel-pending-request received:", data); // ✅ Add this
+        console.log("🔥 cancel-pending-request received:", data);
         setData(data);
         setIsConnected(true);
       });
