@@ -1115,10 +1115,28 @@ exports.handleBookingApproval = async (req, res) => {
       status: booking.status,
       ownerRejectionReason: booking.ownerRejectionReason,
     };
-    const io = req.app.get("socketio"); // Get socket instance from app.js/server.js
-    io.to(booking.student._id.toString()).emit("update-booking-status", {
-      booking: bookingPayload,
-    });
+    // const io = req.app.get("socketio"); // Get socket instance from app.js/server.js
+    // io.to(booking.student._id.toString()).emit("update-booking-status", {
+    //   booking: bookingPayload,
+    // });
+    const io = req.app.get("socketio");
+    const userRoom = io.sockets.adapter.rooms.get(
+      booking.student._id.toString()
+    );
+    // Emit socket event to owner's room
+    if (userRoom && userRoom.size > 0) {
+      // Get socket instance from app.js/server.js
+      io.to(booking.student._id.toString()).emit("update-booking-status", {
+        booking: bookingPayload,
+      });
+    } else {
+      await MissedSocketEvent.create({
+        recipientId: booking.student._id,
+        recipientType: "user",
+        eventType: "update-booking-status",
+        payload: bookingPayload,
+      });
+    }
 
     // Send notifications
     const notificationMessage =

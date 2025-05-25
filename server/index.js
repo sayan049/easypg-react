@@ -74,8 +74,22 @@ io.on("connection", (socket) => {
     });
     console.log(`Socket ${socket.id} joined room ${ownerId}`);
   });
-  socket.on("join-user-room", (userId) => {
+  socket.on("join-user-room", async (userId) => {
     socket.join(userId);
+    // Emit missed events
+    const missedEvents = await MissedSocketEvent.find({
+      recipientId: userId,
+      recipientType: "user",
+    });
+    missedEvents.forEach((event) => {
+      socket.emit(event.eventType, event.payload);
+    });
+
+    // Delete after sending
+    await MissedSocketEvent.deleteMany({
+      recipientId: userId,
+      recipientType: "user",
+    });
     console.log(`Socket ${socket.id} joined room ${userId}`);
   });
 
