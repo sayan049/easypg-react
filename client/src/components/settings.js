@@ -372,7 +372,7 @@ function Settings({ user, loginMethod }) {
       </div>
 
       {/* Account Management */}
-      <div className="mt-8 flex   justify-between items-center gap-4">
+      <div className="mt-8 flex   justify-center items-center gap-4">
         {/* <button
           onClick={() => setIsModalOpen(true)}
           className="text-blue-500 hover:text-blue-700 text-sm"
@@ -397,7 +397,7 @@ function Settings({ user, loginMethod }) {
       </div>
 
       {/* Account Modal */}
-      {isModalOpen && (
+      {/* {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-6 max-w-sm w-full">
             <div className="flex justify-between items-center mb-4">
@@ -423,7 +423,7 @@ function Settings({ user, loginMethod }) {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
