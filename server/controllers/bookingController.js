@@ -1524,7 +1524,7 @@ exports.cancelBooking = async (req, res) => {
 
       const bookingPayload = {
         _id: booking._id,
-        status: booking.status,
+        status: "cancelled",
         userCancellationReason: booking.userCancellationReason,
         room: booking.room,
       };

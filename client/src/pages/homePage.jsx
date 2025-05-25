@@ -49,7 +49,7 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    console.log("data:", data, "isConnected:", isConnected , "data?.status:", data?.status);
+    console.log("data:", data, "isConnected:", isConnected , "data?.status:", data?.booking?.status);
     if (isConnected) {
       if (data?.booking?.status === "rejected" || data?.status === "rejected") {
         toast.info("your booking has been rejected by the owner");
