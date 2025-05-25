@@ -55,14 +55,7 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    console.log(
-      "data:",
-      data,
-      "isConnected:",
-      isConnected,
-      "data?.status:",
-      data?.status
-    );
+    console.log("data:", data, "isConnected:", isConnected , "data?.status:", data?.status);
     if (isConnected) {
       if (data?.booking?.status === "rejected" || data?.status === "rejected") {
         toast.info("your booking has been rejected by the owner");
@@ -80,6 +73,10 @@ const HomePage = () => {
         toast.error(
           "Your booking request has expired. Please check your bookings."
         );
+      }
+       if (data?.booking?.status === "cancelled" || data?.status === "cancelled") {
+        console.log("pending request has been cancelled by the user for ", data?.booking?.room);
+        toast.info(`pending request has been cancelled by the user for ${data?.booking?.room}`);
       }
 
       setIsConnected(false);

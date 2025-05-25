@@ -1463,6 +1463,17 @@ exports.cancelBooking = async (req, res) => {
         ),
       ]);
 
+      const bookingPayload = {
+        _id: booking._id,
+        status: "cancelled",
+        userCancellationReason: booking.userCancellationReason,
+        room: booking.room,
+      };
+      const io = req.app.get("socketio"); // Get socket instance from app.js/server.js
+      io.to(booking.pgOwner._id.toString()).emit("cancel-pending-request", {
+        booking: bookingPayload,
+      });
+
       return res.json({
         success: true,
         message: "Pending booking cancelled successfully.",
