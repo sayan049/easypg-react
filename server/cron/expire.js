@@ -4,7 +4,9 @@ const Booking = require("../modules/Booking");
 const startExpirationJob = () => {
   cron.schedule("*/10 * * * *", async () => {
     const now = new Date();
-    const expiredThreshold = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    // const expiredThreshold = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const expiredThreshold = new Date(now.getTime() - 2 * 60 * 1000);
+
 
     try {
       const result = await Booking.updateMany(
