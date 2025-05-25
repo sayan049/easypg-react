@@ -51,22 +51,22 @@ const HomePage = () => {
   useEffect(() => {
     console.log("data:", data, "isConnected:", isConnected , "data?.status:", data?.status);
     if (isConnected) {
-      if (data?.booking?.status === "rejected" ) {
+      if (data?.booking?.status === "rejected" || data?.status === "rejected") {
         toast.info("your booking has been rejected by the owner");
       }
-      if (data?.booking?.status === "confirmed" ) {
+      if (data?.booking?.status === "confirmed" || data?.status === "confirmed") {
         toast.success("Your booking has been confirmed by the owner");
       }
-      if (data?.booking?.status === "pending" ) {
+      if (data?.booking?.status === "pending" || data?.status === "pending") {
         toast.info("You have a new booking request! valid for 24 hours");
       }
-      if (data?.booking?.status === "expired" ) {
+      if (data?.booking?.status === "expired" || data?.status === "expired") {
         toast.error("Your booking request has expired. Please check your bookings.");
       }
 
       setIsConnected(false);
     }
-  }, [isConnected, userName]);
+  }, [isConnected, data]);
 
   const debounceTimeout = useRef(null);
 
