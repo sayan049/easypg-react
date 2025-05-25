@@ -293,9 +293,9 @@ exports.updateDetails = async (req, res) => {
       }
 
       // Handle profile photo
-      // if (req.cloudinaryResults?.profilePhoto?.[0]) {
-      //   updatedUser.profilePhoto = req.cloudinaryResults.profilePhoto[0];
-      // }
+      if (req.cloudinaryResults?.profilePhoto?.[0]) {
+        updatedUser.profilePhoto = req.cloudinaryResults.profilePhoto[0];
+      }
 
       // Handle mess photos - combine existing and new ones
       const existingUrls =
