@@ -24,7 +24,7 @@ const SettingsOwner = ({ userDetails, loginMethod }) => {
     gender: "",
     facility: [],
     roomInfo: [], // not an object
-
+    profilePhoto: null,
     messPhoto: [],
     rulesToStay: [], // Initialize as empty array
     minimumSecurityDeposit: 0,
@@ -159,7 +159,23 @@ const SettingsOwner = ({ userDetails, loginMethod }) => {
     if (passwordStrength < 70) return "bg-yellow-500";
     return "bg-green-500";
   };
+  // Add profile photo handling functions
+  const handleProfilePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setDetails((prev) => ({
+        ...prev,
+        profilePhoto: file,
+      }));
+    }
+  };
 
+  const removeProfilePhoto = () => {
+    setDetails((prev) => ({
+      ...prev,
+      profilePhoto: null,
+    }));
+  };
   useEffect(() => {
     if (userDetails) {
       setDetails((prev) => ({
@@ -180,6 +196,7 @@ const SettingsOwner = ({ userDetails, loginMethod }) => {
         roomInfo: Array.isArray(userDetails?.roomInfo)
           ? userDetails.roomInfo
           : [],
+        profilePhoto: userDetails.profilePhoto || null,
         messPhoto: userDetails?.messPhoto || [],
         rulesToStay: Array.isArray(userDetails?.rulesToStay)
           ? userDetails.rulesToStay
@@ -236,6 +253,9 @@ const SettingsOwner = ({ userDetails, loginMethod }) => {
     newFiles.forEach((file) => {
       formData.append("messPhoto", file); // Field name must match multer config
     });
+    if (details.profilePhoto instanceof File) {
+      formData.append("profilePhoto", details.profilePhoto);
+    }
 
     // Required identifiers
     formData.append("type", "owner");
@@ -343,9 +363,49 @@ const SettingsOwner = ({ userDetails, loginMethod }) => {
         position="top-center"
         toastClassName="!w-[300px]   mx-auto mt-4 sm:mt-0  "
       />
-      <div className="flex flex-col items-center space-y-2">
-        <UserProfile className="w-24 h-24 rounded-full" readOnly />
-        <h2 className="text-lg font-semibold">Owner</h2>
+      <div className="flex items-center gap-4 mb-6">
+        <div className="relative">
+          <img
+            src={
+              details.profilePhoto instanceof File
+                ? URL.createObjectURL(details.profilePhoto)
+                : details.profilePhoto || "/default-avatar.png"
+            }
+            className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
+            alt="Profile"
+          />
+          <label
+            htmlFor="profilePhotoInput"
+            className="absolute bottom-0 right-0 bg-blue-600 text-white p-1 rounded-full cursor-pointer hover:bg-blue-700"
+          >
+            <Plus className="h-4 w-4" />
+            <input
+              type="file"
+              id="profilePhotoInput"
+              accept="image/*"
+              className="hidden"
+              onChange={handleProfilePhotoChange}
+            />
+          </label>
+          {details.profilePhoto && (
+            <button
+              type="button"
+              onClick={removeProfilePhoto}
+              className="absolute top-0 right-0 bg-red-600 text-white p-1 rounded-full hover:bg-red-700"
+            >
+              <Minus className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+        <div>
+          <h2 className="text-lg font-semibold">Profile Photo</h2>
+          <p className="text-sm text-gray-500">
+            Click the + to upload a new photo
+            {details.profilePhoto instanceof File && (
+              <span className="text-green-600 ml-2">(New photo selected)</span>
+            )}
+          </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
