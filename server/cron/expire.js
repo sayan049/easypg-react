@@ -1,5 +1,5 @@
 const cron = require("node-cron");
-const Booking = require("../models/booking");
+const Booking = require("../modules/Booking");
 
 const startExpirationJob = () => {
   cron.schedule("*/10 * * * *", async () => {
