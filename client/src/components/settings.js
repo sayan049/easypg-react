@@ -283,7 +283,7 @@ function Settings({ user, loginMethod }) {
                   onChange={handleInputChange}
                   placeholder={`Your ${key.replace(/([A-Z])/g, " $1")}`}
                   readOnly={editingField !== key}
-                  className="w-full p-2 border rounded text-sm pr-10"
+                  className="w-full p-2 border rounded text-sm pr-10 focus:outline-none focus:ring-2 focus:ring-blue-300"
                 />
                 {key !== "email" && (
                   <button
@@ -306,7 +306,7 @@ function Settings({ user, loginMethod }) {
               readOnly
               onClick={mapMake}
               placeholder="Click to set location"
-              className="w-full p-2 border rounded text-sm pr-10 cursor-pointer"
+              className="w-full p-2 border rounded text-sm pr-10 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
             <FontAwesomeIcon
               icon={faMapMarkerAlt}
@@ -322,7 +322,7 @@ function Settings({ user, loginMethod }) {
               handleInputChange(e);
               setIsEditing(true);
             }}
-            className="w-full p-2 border rounded text-sm"
+            className="w-full p-2 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
           >
             <option value="" disabled>
               Select Mess Type
@@ -356,7 +356,7 @@ function Settings({ user, loginMethod }) {
                   value={passwords[field]}
                   onChange={handlePasswordChange}
                   placeholder={field.replace(/([A-Z])/g, " $1")}
-                  className="w-full p-2 border rounded text-sm"
+                  className="w-full p-2 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
                 />
               )
             )}
