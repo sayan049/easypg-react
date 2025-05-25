@@ -8,7 +8,8 @@ const sendOtp = async (req, res) => {
   if (!email) return res.status(400).json({ error: "Email is required" });
 
   const existingProvider = await pgProvider.findOne({ email });
-  if (existingProvider) {
+  const existingUser = await User.findOne({ email });
+  if (existingProvider || existingUser) {
     return res.status(400).json({ error: "Email already exists" });
   }
   const transporter = nodemailer.createTransport({

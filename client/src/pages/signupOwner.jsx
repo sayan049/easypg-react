@@ -259,10 +259,44 @@ function SignupOwner() {
 
   const loadfile = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setFormData({ ...formData, profilePhoto: file });
-      setImage(file);
+    if (!file) return;
+
+    if (!file.type.match("image.*")) {
+      setErrorMessage("Only image files are allowed.");
+      toast.error("Only image files are allowed.");
+      return;
     }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImage(reader.result); // For preview
+    };
+    reader.readAsDataURL(file);
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      profilePhoto: file, // For submission
+    }));
+  };
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (!file || !file.type.match("image.*")) {
+      setErrorMessage("Only image files are allowed.");
+      toast.error("Only image files are allowed.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImage(reader.result);
+    };
+    reader.readAsDataURL(file);
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      profilePhoto: file,
+    }));
   };
 
   const handleFacilityChange = (e) => {
@@ -380,18 +414,18 @@ function SignupOwner() {
     }));
   };
 
-  const handleVerifyEmail = () => {
-    setShowOtp(true);
-  };
+  // const handleVerifyEmail = () => {
+  //   setShowOtp(true);
+  // };
 
-  const handleOtpSubmit = () => {
-    if (otp.join("") === "1234") {
-      setIsEmailVerified(true);
-      setShowOtp(false);
-    } else {
-      alert("Invalid OTP");
-    }
-  };
+  // const handleOtpSubmit = () => {
+  //   if (otp.join("") === "1234") {
+  //     setIsEmailVerified(true);
+  //     setShowOtp(false);
+  //   } else {
+  //     alert("Invalid OTP");
+  //   }
+  // };
 
   const handleOtpChange = (e, index) => {
     const value = e.target.value.replace(/\D/g, "").slice(0, 1);
@@ -720,10 +754,13 @@ function SignupOwner() {
                   {!isEmailVerified ? (
                     <button
                       type="button"
-                      onClick={sendOtp}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        sendOtp();
+                      }}
                       disabled={isSendingOtp || !formData.email || !canResend}
                       className="px-4 pt-2 pb-[0.6rem] border-2 border-primary-default
- absolute right-[0px]  rounded-full bg-primary-default hover:bg-primary-dark text-white disabled:cursor-not-allowed disabled:opacity-75"
+ absolute right-[0px]  rounded-full bg-primary-default hover:bg-primary-dark text-white disabled:cursor-not-allowed disabled:opacity-75 z-10"
                     >
                       {isSendingOtp ? "Sending..." : "Verify"}
                     </button>
@@ -922,9 +959,13 @@ function SignupOwner() {
             </div>
 
             {/* Right Column - Profile Photo */}
-            <div className="flex flex-col items-center justify-start">
-              <h2 className="text-xl font-semibold mb-4 ">House Photo</h2>
-              <label htmlFor="file" className="cursor-pointer">
+            <div
+              className="flex flex-col items-center justify-start"
+              onDrop={(e) => handleDrop(e)}
+              onDragOver={(e) => e.preventDefault()}
+            >
+              <h2 className="text-xl font-semibold mb-4">House Photo</h2>
+              <label htmlFor="file" className="cursor-pointer w-full">
                 <div className="mb-4 text-center">
                   <input
                     type="file"
@@ -935,20 +976,23 @@ function SignupOwner() {
                     className="hidden"
                   />
                   {image ? (
-                    <div className="relative">
+                    <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 mx-auto">
                       <img
-                        src={URL.createObjectURL(image) || "/placeholder.svg"}
+                        src={image || "/placeholder.svg"}
                         alt="Profile"
-                        className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-full object-cover mx-auto border-4 border-[#2ca4b5]"
+                        className="w-full h-full rounded-full object-cover border-4 border-[#2ca4b5]"
                       />
-                      <div className="absolute bottom-2 right-2 bg-[#2ca4b5] rounded-full p-2 shadow-md">
-                        <Upload className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                      <div className="absolute bottom-2 right-2 bg-[#2ca4b5] rounded-full p-2 shadow-md cursor-pointer flex items-center justify-center">
+                        <Upload className="h-5 w-5 text-white" />
                       </div>
                     </div>
                   ) : (
                     <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-full bg-primary-light mx-auto flex items-center justify-center border-2 border-dashed border-primary-default hover:border-primary-dark transition-colors">
                       <div className="text-center">
                         <Upload className="h-8 w-8 sm:h-10 sm:w-10 mx-auto text-[#2ca4b5]" />
+                        <p className="text-xs mt-1 text-gray-500">
+                          Drag & Drop or Click
+                        </p>
                       </div>
                     </div>
                   )}
@@ -1071,7 +1115,7 @@ function SignupOwner() {
                   <option value="1 Month">1 Month</option>
                   <option value="3 Months">3 Months</option>
                   <option value="6 Months">6 Months</option>
-                  <option value="12 months">1 Year</option>
+                  <option value="12 Months">1 Year</option>
                 </select>
               </div>
             </div>
@@ -1274,7 +1318,24 @@ function SignupOwner() {
           </div>
 
           {/* Mess Photos */}
-          <div className="mt-10 pt-6 border-t border-primary-light">
+          <div
+            className="mt-10 pt-6 border-t border-primary-light"
+            onDrop={(e) => {
+              e.preventDefault();
+              // Pass dropped files to your imgUpload handler
+              if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                // Create a synthetic event object with target.files = dropped files
+                const syntheticEvent = {
+                  target: { files: e.dataTransfer.files },
+                };
+                imgUpload(syntheticEvent);
+                e.dataTransfer.clearData();
+              }
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+            }}
+          >
             <h2 className="text-xl font-semibold mb-4">Property Photos</h2>
 
             <input
