@@ -452,6 +452,7 @@
 // };
 const Booking = require("../modules/Booking");
 const PgOwner = require("../modules/pgProvider");
+const MissedSocketEvent = require("../modules/missedSocket");
 const User = require("../modules/user");
 const moment = require("moment");
 const mongoose = require("mongoose");
