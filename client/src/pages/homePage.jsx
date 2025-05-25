@@ -42,7 +42,7 @@ const HomePage = () => {
     isOwnerAuthenticated,
     ownerName,
   } = useAuth();
-  const { hasUnread, isConnected, data, setIsConnected, hasUnreadOwner } =
+  const { hasUnread, isConnected, data, setIsConnected, hasUnreadOwner ,hasUnreadOwnerCancel } =
     useSocket();
   const [menuOpen, setMenuOpen] = useState(false);
   const [nearbyMesses, setNearbyMesses] = useState([]);
@@ -493,7 +493,7 @@ const HomePage = () => {
                   >
                     <UserProfile className="h-12 w-12 ring-2 ring-[#2CA4B5] rounded-full" />
                   </motion.div>
-                  {(hasUnread || hasUnreadOwner) && (
+                  {(hasUnread || hasUnreadOwner || hasUnreadOwnerCancel) && (
                     <span className="absolute top-0 right-0 h-3 w-3 bg-red-500 rounded-full " />
                   )}
 
