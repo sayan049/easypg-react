@@ -58,7 +58,7 @@ const HomePage = () => {
         toast.success("Your booking has been confirmed by the owner");
       }
       if (data?.booking?.status === "pending" && isOwnerAuthenticated) {
-        toast.info("You have a new booking request!");
+        toast.info("You have a new booking request! valid for 24 hours");
       }
       if (data?.booking?.status === "expired" && isOwnerAuthenticated) {
         toast.error("Your booking request has expired. Please check your bookings.");

@@ -596,21 +596,7 @@ exports.createBookingRequest = async (req, res) => {
     await booking.save();
 
     // Start 2-minute expiration timer
-    setTimeout(async () => {
-      const existing = await Booking.findById(booking._id);
-      if (existing && existing.status === "pending") {
-        existing.status = "expired";
-        await existing.save();
-
-        // Emit to owner that the booking expired
-        io.to(pgOwner.toString()).emit("bookingExpired", {
-          bookingId: booking._id,
-          room: booking.room,
-        });
-
-        console.log(`⏰ Booking ${booking._id} expired after 2 mins`);
-      }
-    }, 2 * 60 * 1000); // 2 minutes
+// if i run cron here?
 
     // Socket notifications
     const bookingPayload = {
