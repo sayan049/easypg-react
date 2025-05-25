@@ -12,6 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function Settings({ user, loginMethod }) {
+ console.log("Settings component rendered with user:", user);
   const { IsAuthenticated, owner, type, handleLogout } = useAuth();
   const [image, setImage] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -58,7 +59,7 @@ function Settings({ user, loginMethod }) {
     }
 
     const formData = new FormData();
-    formData.append("userId", user.id);
+    formData.append("userId", user._id);
     formData.append("type", type);
 
     Object.keys(personalInfo).forEach((key) => {
