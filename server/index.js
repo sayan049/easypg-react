@@ -19,7 +19,6 @@ const UAParser = require("ua-parser-js");
 const ORIGIN = process.env.CLIENT_URL; // Default to localhost if not set
 const PORT = process.env.PORT || 8080;
 const PRERENDER_TOKEN = process.env.PRERENDER_TOKEN;
-const startExpirationJob=require("./cron/expire");
 
 console.log(ORIGIN, "origin");
 console.log(PRERENDER_TOKEN, "prerender");
@@ -39,7 +38,6 @@ const corsOptions = {
 };
 
 const app = express();
-startExpirationJob();
 
 const server = require("http").createServer(app);
 const { Server } = require("socket.io");
@@ -50,7 +48,8 @@ const io = new Server(server, {
     credentials: true,
   },
 });
-
+const startExpirationJob = require("./cron/expire");
+startExpirationJob(io);
 app.set("socketio", io);
 
 io.on("connection", (socket) => {
@@ -60,7 +59,7 @@ io.on("connection", (socket) => {
     socket.join(ownerId);
     console.log(`Socket ${socket.id} joined room ${ownerId}`);
   });
-   socket.on("join-user-room", (userId) => {
+  socket.on("join-user-room", (userId) => {
     socket.join(userId);
     console.log(`Socket ${socket.id} joined room ${userId}`);
   });
