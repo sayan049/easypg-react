@@ -51,86 +51,90 @@ function NewDashboard() {
   const { setHasUnread, isConnected, setIsconnected, socket } = useSocket();
 
   useEffect(() => {
-  const ready = type === "student" ? user?.id : owner?.id;
-  if (!ready) return;
+    const ready = type === "student" ? user?.id : owner?.id;
+    if (!ready) return;
 
-  const fetchAllData = async () => {
-    try {
-      setLoading(true);
-      const userId = type === "student" ? user?.id : owner?.id;
-      if (!userId || !socket) return;
+    const fetchAllData = async () => {
+      try {
+        const userId = type === "student" ? user?.id : owner?.id;
+        if (!userId || !socket) return;
+        setLoading(true);
+        const detailsUrl = new URL(fetchDetailsUrl);
+        detailsUrl.searchParams.append("userId", userId);
+        detailsUrl.searchParams.append("type", type);
 
-      const detailsUrl = new URL(fetchDetailsUrl);
-      detailsUrl.searchParams.append("userId", userId);
-      detailsUrl.searchParams.append("type", type);
+        const detailsResponse = await fetch(detailsUrl, { method: "GET" });
+        if (!detailsResponse.ok)
+          throw new Error("Failed to fetch user details");
+        const detailsData = await detailsResponse.json();
+        setUserDetails(detailsData);
 
-      const detailsResponse = await fetch(detailsUrl, { method: "GET" });
-      if (!detailsResponse.ok) throw new Error("Failed to fetch user details");
-      const detailsData = await detailsResponse.json();
-      setUserDetails(detailsData);
-
-      if (type === "student") {
-        const response = await axios.get(`${baseurl}/auth/bookings/user`, {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-          },
-        });
-
-        if (response.data && response.data.success) {
-          const bookingsData = response.data.bookings || [];
-          const bookingsWithDates = bookingsData.map((booking) => {
-            const endDate = new Date(booking.period.startDate);
-            endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
-            return { ...booking, period: { ...booking.period, endDate } };
+        if (type === "student") {
+          const response = await axios.get(`${baseurl}/auth/bookings/user`, {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+            },
           });
 
-          setBookings(bookingsWithDates);
-          setStats({
-            upcoming: response.data.stats.upcoming,
-            active: response.data.stats.current,
-            past: response.data.stats.past,
-            pending: response.data.stats.pending,
-          });
-          setCurrentStay(response.data.currentStays || []);
-          setUpcomingStay(response.data.upcomingStays || []);
-          setPastStay(response.data.pastStays || []);
-          setPendingStay(response.data.pendingStays || []);
-          setDaysRemaining(response.data.daysRemaining || 0);
-          setTotalAmountConfirmed(response.data.totalAmountConfirmed || 0);
-        }
+          if (response.data && response.data.success) {
+            const bookingsData = response.data.bookings || [];
+            const bookingsWithDates = bookingsData.map((booking) => {
+              const endDate = new Date(booking.period.startDate);
+              endDate.setMonth(
+                endDate.getMonth() + booking.period.durationMonths
+              );
+              return { ...booking, period: { ...booking.period, endDate } };
+            });
 
-        const maintenanceResponse = await axios.get(`${baseurl}/auth/maintenance/history`, {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-          },
-          params: { userId, type },
-        });
+            setBookings(bookingsWithDates);
+            setStats({
+              upcoming: response.data.stats.upcoming,
+              active: response.data.stats.current,
+              past: response.data.stats.past,
+              pending: response.data.stats.pending,
+            });
+            setCurrentStay(response.data.currentStays || []);
+            setUpcomingStay(response.data.upcomingStays || []);
+            setPastStay(response.data.pastStays || []);
+            setPendingStay(response.data.pendingStays || []);
+            setDaysRemaining(response.data.daysRemaining || 0);
+            setTotalAmountConfirmed(response.data.totalAmountConfirmed || 0);
+          }
 
-        if (maintenanceResponse.data.success) {
-          setMaintenanceHistory(maintenanceResponse.data.data || []);
+          const maintenanceResponse = await axios.get(
+            `${baseurl}/auth/maintenance/history`,
+            {
+              withCredentials: true,
+              headers: {
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+              },
+              params: { userId, type },
+            }
+          );
+
+          if (maintenanceResponse.data.success) {
+            setMaintenanceHistory(maintenanceResponse.data.data || []);
+          }
         }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error(error.response?.data?.message || "Failed to load data");
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error(error.response?.data?.message || "Failed to load data");
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  fetchAllData();
-
-  if (isConnected) {
     fetchAllData();
-    toast.info("New booking status update received");
-    setIsconnected(false);
-  }
-}, [type, user, owner, socket, isConnected]);
 
+    if (isConnected) {
+      fetchAllData();
+      toast.info("New booking status update received");
+      setIsconnected(false);
+    }
+  }, [type, user, owner, socket, isConnected]);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
