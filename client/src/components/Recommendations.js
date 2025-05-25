@@ -25,7 +25,7 @@ const Recommendations = () => {
   const clickNavi = (owner) => {
     navigate(`/details/${owner._id}`);
   };
-  return (
+  return messes.length > 0 ? (
     <section className="py-10 bg-gray-50">
       <div className="container mx-auto px-6">
         <motion.div
@@ -165,7 +165,7 @@ const Recommendations = () => {
         </div>
       </div>
     </section>
-  );
+  ):null;
 };
 
 export default Recommendations;
