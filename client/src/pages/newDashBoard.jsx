@@ -50,7 +50,15 @@ function NewDashboard() {
   const { userName, user, owner, type, handleLogout,loginMethod } = useAuth();
   const { setHasUnread, isConnected, setIsconnected, socket } = useSocket();
 
-  const fetchAllData = async () => {
+
+  useEffect(() => {
+    console.log("Socket connection established", user?.id);
+
+    
+  }, [user?.id]);
+
+  useEffect(() => {
+      const fetchAllData = async () => {
     try {
       setLoading(true);
       const userId = type === "student" ? user?.id : owner?.id;
@@ -119,19 +127,13 @@ function NewDashboard() {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    console.log("Socket connection established", user?.id);
-
+    if (user?.id) fetchAllData();
     if (isConnected) {
       fetchAllData();
       toast.info("New booking status update received");
       setIsconnected(false);
     }
-  }, [user?.id]);
-
-  useEffect(() => {
-    if (user?.id) fetchAllData();
-  }, [type, user, owner, user?.id]);
+  }, [type, user, owner, user?.id,isConnected]);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
