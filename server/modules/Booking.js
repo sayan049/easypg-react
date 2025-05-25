@@ -131,7 +131,7 @@ const bookingSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "confirmed", "cancelled", "rejected" , "expired"],
+      enum: ["pending", "confirmed", "cancelled", "rejected", "expired"],
       default: "pending",
     },
     payment: {
@@ -201,6 +201,13 @@ bookingSchema.index(
   {
     expireAfterSeconds: 5184000,
     partialFilterExpression: { status: { $in: ["cancelled", "rejected"] } },
+  }
+);
+bookingSchema.index(
+  { createdAt: 1 },
+  {
+    expireAfterSeconds: 86400, // 24 hours in seconds
+    partialFilterExpression: { status: "pending" },
   }
 );
 

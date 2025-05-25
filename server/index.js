@@ -48,8 +48,8 @@ const io = new Server(server, {
     credentials: true,
   },
 });
-const startExpirationJob = require("./cron/expire");
-startExpirationJob(io);
+// const startExpirationJob = require("./cron/expire");
+// startExpirationJob(io);
 app.set("socketio", io);
 
 io.on("connection", (socket) => {

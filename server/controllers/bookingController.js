@@ -594,6 +594,10 @@ exports.createBookingRequest = async (req, res) => {
     });
 
     await booking.save();
+
+    // Start 2-minute expiration timer
+// if i run cron here?
+
     // Socket notifications
     const bookingPayload = {
       _id: booking._id,
@@ -1833,5 +1837,3 @@ exports.getChartStats = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
-
