@@ -46,8 +46,6 @@ export const AuthProvider = ({ children }) => {
   const [hasRefreshToken, setHasRefreshToken] = useState(null);
   const [hasAccessToken, setHasAccessToken] = useState(null);
 
-
-
   const checkRefreshToken = async () => {
     try {
       const response = await fetch(`${baseurl}/auth/getRefreshToken`, {
@@ -59,7 +57,6 @@ export const AuthProvider = ({ children }) => {
       setHasRefreshToken(data.hasRefreshToken);
       console.log("Refresh token exists:", data.hasRefreshToken);
       return data.hasRefreshToken;
-
     } catch (error) {
       console.error("Error checking refresh token:", error);
       setHasRefreshToken(null);
@@ -77,7 +74,6 @@ export const AuthProvider = ({ children }) => {
       setHasAccessToken(data.hasAccessToken);
       console.log("access token exists:", data.hasAccessToken);
       return data.hasRefreshToken;
-
     } catch (error) {
       console.error("Error checking access token:", error);
       setHasAccessToken(null);
@@ -85,16 +81,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-
   useEffect(() => {
     const checkSession = async () => {
       try {
         setLoading(true);
 
-       
         const accessToken = "xxx";
         const refreshToken = hasRefreshToken;
-      
 
         const deviceInfo = navigator.userAgent || "Unknown Device";
 
@@ -115,7 +108,7 @@ export const AuthProvider = ({ children }) => {
           credentials: "include", // ✅ Important for cookies
         });
         // If the access token is expired, try refreshing it
-       if (response.status === 401 || response.status === 403) {
+        if (response.status === 401 || response.status === 403) {
           const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
             method: "POST",
             // headers: { "Content-Type": "application/json", "X-Device-Info": deviceInfo, },
@@ -138,7 +131,7 @@ export const AuthProvider = ({ children }) => {
               },
               credentials: "include",
             });
-        //    console.log("res", response);
+            //    console.log("res", response);
           } else {
             // If refresh token is invalid, reset the state and return
             resetState();
@@ -179,7 +172,6 @@ export const AuthProvider = ({ children }) => {
     setOwner(null);
     setLoginMethod(null);
     setType(null);
-    setCurrentAccessToken(null);
   };
 
   // Helper function to update state based on authentication data
@@ -229,32 +221,28 @@ export const AuthProvider = ({ children }) => {
     setLoading(true); // Start the loading indicator
 
     try {
-    
       const deviceInfo = navigator.userAgent || "Unknown Device";
 
       // Check session using the access token
       const sessionResponse = await fetch(`${baseurl}/auth/check-session`, {
         method: "GET",
         headers: {
-          
           "Content-Type": "application/json",
         },
         credentials: "include",
       });
 
       // if (sessionResponse.status === 401 || !accessToken) {
-     if (sessionResponse.status === 401 || sessionResponse.status === 403) {
+      if (sessionResponse.status === 401 || sessionResponse.status === 403) {
         console.log("Access token expired. Refreshing...");
         // Refresh the access token if it's expired
         const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
-          
           method: "POST",
           headers: { "X-Device-Info": deviceInfo },
           credentials: "include",
         });
 
         if (refreshResponse.ok) {
-         
           console.log("Access token refreshed successfully.");
         } else {
           console.error("Failed to refresh access token.");
@@ -268,7 +256,6 @@ export const AuthProvider = ({ children }) => {
       const logoutResponse = await fetch(`${baseurl}/auth/logout`, {
         method: "POST",
         headers: {
-        
           "Content-Type": "application/json",
           "X-Device-Info": deviceInfo,
         },
@@ -279,8 +266,6 @@ export const AuthProvider = ({ children }) => {
       const logoutData = await logoutResponse.json();
 
       if (logoutResponse.ok) {
-        
-
         setIsAuthenticated(false);
         setUser(null);
         setUserName(null);
@@ -292,7 +277,7 @@ export const AuthProvider = ({ children }) => {
         setOwnerImage(null);
         setIsOwnerAuthenticated(false);
 
-     //   console.log(logoutData.message); // Optional: Log the server response
+        //   console.log(logoutData.message); // Optional: Log the server response
       } else {
         console.error("Logout error:", logoutData.message);
         alert("Your session has expired or is invalid. Please log in again.");
@@ -321,8 +306,6 @@ export const AuthProvider = ({ children }) => {
         setIsOwnerAuthenticated,
         setIsAuthenticated,
         handleLogout,
-        setCurrentAccessToken,
-        currentaccessToken,
       }}
     >
       {!loading ? children : <LoadingSpinner />}
