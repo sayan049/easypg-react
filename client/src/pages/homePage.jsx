@@ -51,16 +51,16 @@ const HomePage = () => {
   useEffect(() => {
     console.log("data:", data, "isConnected:", isConnected , "data?.status:", data?.status);
     if (isConnected) {
-      if (data?.booking?.status === "rejected" && IsAuthenticated) {
+      if (data?.booking?.status === "rejected" ) {
         toast.info("your booking has been rejected by the owner");
       }
-      if (data?.booking?.status === "confirmed" && IsAuthenticated) {
+      if (data?.booking?.status === "confirmed" ) {
         toast.success("Your booking has been confirmed by the owner");
       }
-      if (data?.booking?.status === "pending" && isOwnerAuthenticated) {
+      if (data?.booking?.status === "pending" ) {
         toast.info("You have a new booking request! valid for 24 hours");
       }
-      if (data?.booking?.status === "expired" && isOwnerAuthenticated) {
+      if (data?.booking?.status === "expired" ) {
         toast.error("Your booking request has expired. Please check your bookings.");
       }
 
