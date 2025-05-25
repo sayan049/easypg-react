@@ -50,14 +50,20 @@ function NewDashboard() {
   const { userName, user, owner, type, handleLogout, loginMethod } = useAuth();
   const { setHasUnread, isConnected, setIsconnected, socket } = useSocket();
 
+  useEffect(() => {
+  const ready = type === "student" ? user?.id : owner?.id;
+  if (!ready) return;
+
   const fetchAllData = async () => {
     try {
+      setLoading(true);
       const userId = type === "student" ? user?.id : owner?.id;
       if (!userId || !socket) return;
-      setLoading(true);
+
       const detailsUrl = new URL(fetchDetailsUrl);
       detailsUrl.searchParams.append("userId", userId);
       detailsUrl.searchParams.append("type", type);
+
       const detailsResponse = await fetch(detailsUrl, { method: "GET" });
       if (!detailsResponse.ok) throw new Error("Failed to fetch user details");
       const detailsData = await detailsResponse.json();
@@ -65,19 +71,18 @@ function NewDashboard() {
 
       if (type === "student") {
         const response = await axios.get(`${baseurl}/auth/bookings/user`, {
-          withCredentials: true, // Automatically send cookies
+          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
+            "X-Requested-With": "XMLHttpRequest",
           },
         });
+
         if (response.data && response.data.success) {
           const bookingsData = response.data.bookings || [];
           const bookingsWithDates = bookingsData.map((booking) => {
             const endDate = new Date(booking.period.startDate);
-            endDate.setMonth(
-              endDate.getMonth() + booking.period.durationMonths
-            );
+            endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
             return { ...booking, period: { ...booking.period, endDate } };
           });
 
@@ -96,17 +101,15 @@ function NewDashboard() {
           setTotalAmountConfirmed(response.data.totalAmountConfirmed || 0);
         }
 
-        const maintenanceResponse = await axios.get(
-          `${baseurl}/auth/maintenance/history`,
-          {
-            withCredentials: true, // Automatically send cookies
-            headers: {
-              "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
-            },
-            params: { userId, type },
-          }
-        );
+        const maintenanceResponse = await axios.get(`${baseurl}/auth/maintenance/history`, {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+          },
+          params: { userId, type },
+        });
+
         if (maintenanceResponse.data.success) {
           setMaintenanceHistory(maintenanceResponse.data.data || []);
         }
@@ -118,19 +121,16 @@ function NewDashboard() {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    console.log("Socket connection established", user?.id);
 
-    if (isConnected) {
-      fetchAllData();
-      toast.info("New booking status update received");
-      setIsconnected(false);
-    }
-  }, [user?.id]);
+  fetchAllData();
 
-  useEffect(() => {
+  if (isConnected) {
     fetchAllData();
-  }, [type, user, owner, user?.id]);
+    toast.info("New booking status update received");
+    setIsconnected(false);
+  }
+}, [type, user, owner, socket, isConnected]);
+
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
