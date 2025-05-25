@@ -357,7 +357,7 @@ function NewDashboard() {
   const [authInitialized, setAuthInitialized] = useState(false);
 
   const { userName, user, owner, type, handleLogout, loginMethod } = useAuth();
-  const { setHasUnread, isConnected, setIsconnected } = useSocket();
+  const { setHasUnread, isConnected, setIsconnected , socket } = useSocket();
 
   const fetchAllData = async () => {
     try {
@@ -434,6 +434,7 @@ function NewDashboard() {
   }, [user?.id, owner?.id, type]);
 
   useEffect(() => {
+    if(!socket) return;
     if (isConnected && authInitialized) {
       fetchAllData();
       setIsconnected(false);
