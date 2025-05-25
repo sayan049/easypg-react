@@ -363,7 +363,7 @@ function NewDashboard() {
     try {
       setLoading(true);
       const userId = type === "student" ? user?.id : owner?.id;
-      if (!userId) return;
+      if (!userId || !socket) return;
 
       // Fetch user details
       const detailsUrl = new URL(fetchDetailsUrl);
@@ -434,7 +434,7 @@ function NewDashboard() {
   }, [user?.id, owner?.id, type]);
 
   useEffect(() => {
-    if(!socket) return;
+    // if(!socket) return;
     if (isConnected && authInitialized) {
       fetchAllData();
       setIsconnected(false);
