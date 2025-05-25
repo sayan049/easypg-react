@@ -19,6 +19,7 @@ const UAParser = require("ua-parser-js");
 const ORIGIN = process.env.CLIENT_URL; // Default to localhost if not set
 const PORT = process.env.PORT || 8080;
 const PRERENDER_TOKEN = process.env.PRERENDER_TOKEN;
+const startExpirationJob=require("./controllers/bookingController");
 
 console.log(ORIGIN, "origin");
 console.log(PRERENDER_TOKEN, "prerender");
@@ -38,6 +39,7 @@ const corsOptions = {
 };
 
 const app = express();
+startExpirationJob();
 
 const server = require("http").createServer(app);
 const { Server } = require("socket.io");

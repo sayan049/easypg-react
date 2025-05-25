@@ -130,9 +130,13 @@ export const BookingSkeleton = () => {
   );
 };
 
-const TermsAndConditionsPopup = ({ onAccept, onClose ,isOpen }) => {
+const TermsAndConditionsPopup = ({ onAccept, onClose, isOpen }) => {
   return (
-    <Dialog open={isOpen} onClose={onClose}  className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center p-4 z-50">
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center p-4 z-50"
+    >
       <div className="bg-white rounded-lg max-w-2xl max-h-[90vh] overflow-y-auto">
         <Dialog.Panel className="p-6">
           <Dialog.Title className="text-2xl font-bold mb-4">
@@ -200,7 +204,7 @@ const TermsAndConditionsPopup = ({ onAccept, onClose ,isOpen }) => {
           </div>
         </Dialog.Panel>
       </div>
-    </Dialog >
+    </Dialog>
   );
 };
 
@@ -218,7 +222,6 @@ export default function BookingPage() {
   const [copied, setCopied] = useState(false);
   const [showTermsPopup, setShowTermsPopup] = useState(false);
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
-
 
   const { messId } = useParams();
 
@@ -251,9 +254,9 @@ export default function BookingPage() {
     //   duration
     // );
     if (!hasAcceptedTerms) {
-    setShowTermsPopup(true);
-    return;
-  }
+      setShowTermsPopup(true);
+      return;
+    }
     if (isOwnerAuthenticated) {
       return toast.error("mess owners can't book messes");
     }
@@ -688,7 +691,11 @@ export default function BookingPage() {
                       type="date"
                       className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors"
                       value={checkInDate}
-                      min={new Date().toISOString().split("T")[0]}
+                      min={
+                        new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+                          .toISOString()
+                          .split("T")[0]
+                      }
                       max={
                         new Date(new Date().setMonth(new Date().getMonth() + 1))
                           .toISOString()
@@ -880,15 +887,15 @@ export default function BookingPage() {
         </div>
       </main>
       {/* {showTermsPopup && ( */}
-        <TermsAndConditionsPopup
+      <TermsAndConditionsPopup
         isOpen={showTermsPopup}
-          onAccept={() => {
-            setHasAcceptedTerms(true);
-            setShowTermsPopup(false);
-            handleBookingRequest();
-          }}
-          onClose={() => setShowTermsPopup(false)}
-        />
+        onAccept={() => {
+          setHasAcceptedTerms(true);
+          setShowTermsPopup(false);
+          handleBookingRequest();
+        }}
+        onClose={() => setShowTermsPopup(false)}
+      />
       {/* )} */}
     </div>
   );

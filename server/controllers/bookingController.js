@@ -458,6 +458,7 @@ const mongoose = require("mongoose");
 const MaintenanceRequest = require("../modules/MaintenanceRequest");
 const rateLimiters = new Map(); // In-memory rate limiter per studentId
 const RATE_LIMIT_DURATION = 60 * 1000; // 1 minute
+const cron = require("node-cron");
 const {
   sendNotification,
   NOTIFICATION_TYPES,
@@ -755,14 +756,15 @@ exports.getAllOwnerBookings = async (req, res) => {
 
     const statuses = ["pending", "confirmed", "rejected"];
 
-    const queries = statuses.map((status) =>
-      Booking.find({ pgOwner: ownerId, status })
-        .populate("student", "firstName lastName email")
-        .populate("pgOwner", "messName")
-        .sort({ createdAt: -1 })
-        .limit(limit)
-        .lean()
-        // .hint("owner_management_index")
+    const queries = statuses.map(
+      (status) =>
+        Booking.find({ pgOwner: ownerId, status })
+          .populate("student", "firstName lastName email")
+          .populate("pgOwner", "messName")
+          .sort({ createdAt: -1 })
+          .limit(limit)
+          .lean()
+      // .hint("owner_management_index")
     );
 
     const countQueries = statuses.map((status) =>
@@ -1096,7 +1098,7 @@ exports.handleBookingApproval = async (req, res) => {
 
     const bookingPayload = {
       _id: booking._id,
-      status:booking.status,
+      status: booking.status,
       ownerRejectionReason: booking.ownerRejectionReason,
     };
     const io = req.app.get("socketio"); // Get socket instance from app.js/server.js
@@ -1832,3 +1834,26 @@ exports.getChartStats = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+const startExpirationJob = () => {
+  cron.schedule("*/10 * * * *", async () => {
+    const now = new Date();
+    const expiredThreshold =new Date(now.getTime() - 2 * 60 * 1000);
+    //  new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+    try {
+      const result = await Booking.updateMany(
+        { status: "pending", createdAt: { $lte: expiredThreshold } },
+        { $set: { status: "expired" } }
+      );
+
+      if (result.modifiedCount > 0) {
+        console.log(`✅ ${result.modifiedCount} pending bookings expired`);
+      }
+    } catch (err) {
+      console.error("❌ Error expiring bookings:", err);
+    }
+  });
+};
+
+module.exports = startExpirationJob;
