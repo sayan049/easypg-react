@@ -1,9 +1,13 @@
 import React from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Footer from "../components/footer";
 
 function LandingPage() {
+   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div>
       <Helmet>

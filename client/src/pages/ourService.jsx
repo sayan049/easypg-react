@@ -362,7 +362,7 @@ const OurService = () => {
           </section>
 
           {/* PG Showcase */}
-          <section className="py-12 md:py-16 overflow-hidden" ref={addToRefs}>
+          {/* <section className="py-12 md:py-16 overflow-hidden" ref={addToRefs}>
             <div className="container mx-auto px-4">
               <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
                 PGs on{" "}
@@ -413,7 +413,7 @@ const OurService = () => {
                 ))}
               </div>
             </div>
-          </section>
+          </section> */}
 
           {/* Testimonials */}
           <section

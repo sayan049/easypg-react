@@ -29,6 +29,11 @@ const HomePage = () => {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isLocationChanged, setIsLocationChanged] = useState(false);
+  const socialIcons = {
+    facebook: "https://api.iconify.design/mdi:facebook.svg?color=white",
+    linkedin: "https://api.iconify.design/mdi:linkedin.svg?color=white",
+    instagram: "https://api.iconify.design/mdi:instagram.svg?color=white",
+  };
   const {
     userName,
     IsAuthenticated,
@@ -37,7 +42,8 @@ const HomePage = () => {
     isOwnerAuthenticated,
     ownerName,
   } = useAuth();
-  const { hasUnread, isConnected, data, setIsConnected ,hasUnreadOwner } = useSocket();
+  const { hasUnread, isConnected, data, setIsConnected, hasUnreadOwner } =
+    useSocket();
   const [menuOpen, setMenuOpen] = useState(false);
   const [nearbyMesses, setNearbyMesses] = useState([]);
   const [isLocating, setIsLocating] = useState(false);
@@ -49,19 +55,31 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    console.log("data:", data, "isConnected:", isConnected , "data?.status:", data?.status);
+    console.log(
+      "data:",
+      data,
+      "isConnected:",
+      isConnected,
+      "data?.status:",
+      data?.status
+    );
     if (isConnected) {
       if (data?.booking?.status === "rejected" || data?.status === "rejected") {
         toast.info("your booking has been rejected by the owner");
       }
-      if (data?.booking?.status === "confirmed" || data?.status === "confirmed") {
+      if (
+        data?.booking?.status === "confirmed" ||
+        data?.status === "confirmed"
+      ) {
         toast.success("Your booking has been confirmed by the owner");
       }
       if (data?.booking?.status === "pending" || data?.status === "pending") {
         toast.info("You have a new booking request! valid for 24 hours");
       }
       if (data?.booking?.status === "expired" || data?.status === "expired") {
-        toast.error("Your booking request has expired. Please check your bookings.");
+        toast.error(
+          "Your booking request has expired. Please check your bookings."
+        );
       }
 
       setIsConnected(false);
@@ -311,6 +329,17 @@ const HomePage = () => {
   //     setIsLocationChanged(true);
   //   });
   // };
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.substring(1); // remove #
+      const element = document.getElementById(id);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth" });
+        }, 100); // slight delay to ensure page renders first
+      }
+    }
+  }, [location]);
 
   return (
     <>
@@ -1010,11 +1039,13 @@ const HomePage = () => {
                 </p>
                 <p className="text-gray-700 leading-relaxed mb-6">
                   We are more than just an app—we are a community committed to
-                  simplifying the lives of college students. At MessMate, we
-                  believe that finding a comfortable and affordable place to
-                  live shouldn't be a hassle, especially for students starting a
-                  new chapter away from home.
+                  simplifying the lives of students and working professionals.
+                  At MessMate, we believe that finding a comfortable and
+                  affordable place to live shouldn't be a hassle, whether you're
+                  starting a new chapter in college or moving to a new city for
+                  work.
                 </p>
+
                 <motion.button
                   whileHover={{ scale: 1.05, x: 5 }}
                   whileTap={{ scale: 0.95 }}
@@ -1167,7 +1198,7 @@ const HomePage = () => {
                 viewport={{ once: true, margin: "-100px" }}
                 className="md:w-2/3"
               >
-                <div className="bg-white border-l-4 border-[#2CA4B5] rounded-lg p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div className="bg-white border-l-4 border-[#2CA4B5] rounded-lg p-8 ">
                   <p className="text-gray-700 mb-6 leading-relaxed">
                     We are here to assist you! Reach out to us for inquiries,
                     feedback, or support. Our team is dedicated to providing the
@@ -1216,34 +1247,21 @@ const HomePage = () => {
                     ))}
                   </div>
                   <div className="mt-8 flex space-x-4">
-                    {["facebook", "twitter", "instagram"].map(
+                    {[ "instagram","facebook", "linkedin"].map(
                       (social, index) => (
                         <motion.a
                           key={index}
                           href="#"
                           whileHover={{ y: -5 }}
                           className="bg-[#2CA4B5] text-white p-3 rounded-full hover:bg-teal-600 transition-colors duration-300"
+                          aria-label={social}
                         >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
+                          <img
+                            src={socialIcons[social]}
+                            alt={social}
                             className="h-5 w-5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d={
-                                social === "facebook"
-                                  ? "M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"
-                                  : social === "twitter"
-                                  ? "M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"
-                                  : "M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01M7.5 7.5h9m-9 9h9M3 3h18v18H3z"
-                              }
-                            />
-                          </svg>
+                            loading="lazy"
+                          />
                         </motion.a>
                       )
                     )}

@@ -35,6 +35,7 @@ import TermsAndConditions from "./pages/TermsAndConditions";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import CancellationRefunds from "./pages/CancellationRefunds";
 import ShippingPolicy from "./pages/ShippingPolicy";
+import Faqs from "./pages/Faqs";
 // Create the root once and specify the container
 const root = createRoot(document.getElementById("root")); // Using createRoot directly
 
@@ -43,100 +44,101 @@ root.render(
   <React.StrictMode>
     <AuthProvider>
       <SocketProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<App />} />
-          {/* <Route path="/newHome" element={<NewHomePage />} /> */}
-          <Route path="/about" element={<About />} />
-          {/* <Route path="/newHome" element={<NewHomePage />} /> */}
-          {/* Public Pages */}
-          <Route path="/choose-role" element={<ProviderSeeker />} />
-          {/* <Route path="/NewDashBoard" element={<NewDashboard />} /> */}
-          <Route path="/business-model" element={<BusinessModel />} />
-          <Route path="/our-services" element={<OurService />} />
-          <Route path="/terms" element={<TermsAndConditions />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/refund" element={<CancellationRefunds />} />
-          <Route path="/s&d" element={<ShippingPolicy />} />
-          <Route
-            path="/signup/user"
-            element={
-              <ProtectedRoute>
-                <SignUpUser />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/Secure" element={<SecurityCheck />} />
-          <Route
-            path="/login/user"
-            element={
-              <ProtectedRoute>
-                <LoginUser />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/owner/partner" element={<LandingPage />} />
-          <Route
-            path="/login/owner"
-            element={
-              <ProtectedRoute>
-                <LoginOwner />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/signup/owner"
-            element={
-              <ProtectedRoute>
-                <SignupOwner />
-              </ProtectedRoute>
-            }
-          />
+        <Router>
+          <Routes>
+            <Route path="/" element={<App />} />
+            {/* <Route path="/newHome" element={<NewHomePage />} /> */}
+            <Route path="/about" element={<About />} />
+            {/* <Route path="/newHome" element={<NewHomePage />} /> */}
+            {/* Public Pages */}
+            <Route path="/choose-role" element={<ProviderSeeker />} />
+            {/* <Route path="/NewDashBoard" element={<NewDashboard />} /> */}
+            <Route path="/business-model" element={<BusinessModel />} />
+            <Route path="/our-services" element={<OurService />} />
+            <Route path="/terms" element={<TermsAndConditions />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/refund" element={<CancellationRefunds />} />
+            <Route path="/s&d" element={<ShippingPolicy />} />
+            <Route path="/faqs" element={<Faqs />} />
+            <Route
+              path="/signup/user"
+              element={
+                <ProtectedRoute>
+                  <SignUpUser />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/Secure" element={<SecurityCheck />} />
+            <Route
+              path="/login/user"
+              element={
+                <ProtectedRoute>
+                  <LoginUser />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/owner/partner" element={<LandingPage />} />
+            <Route
+              path="/login/owner"
+              element={
+                <ProtectedRoute>
+                  <LoginOwner />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/signup/owner"
+              element={
+                <ProtectedRoute>
+                  <SignupOwner />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* <Route path="/MessFind" element={<MessFind />} /> */}
-          <Route path="/find-mess/:initialItem" element={<MessFind />} />
+            {/* <Route path="/MessFind" element={<MessFind />} /> */}
+            <Route path="/find-mess/:initialItem" element={<MessFind />} />
 
-          <Route path="/MailVerify" element={<MailVerify />} />
-          <Route path="/MailVerifyOwner" element={<MailVerifyOwner />} />
-          <Route path="/booking/:messId" element={<BookingPage />} />
-          <Route
-            path="/protected"
-            element={
-              <ProtectedRoute>
-                <SecurityCheck />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard/user"
-            element={
-              <IsAuth>
-                <NewDashboard />
-              </IsAuth>
-            }
-          />
+            <Route path="/MailVerify" element={<MailVerify />} />
+            <Route path="/MailVerifyOwner" element={<MailVerifyOwner />} />
+            <Route path="/booking/:messId" element={<BookingPage />} />
+            <Route
+              path="/protected"
+              element={
+                <ProtectedRoute>
+                  <SecurityCheck />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/user"
+              element={
+                <IsAuth>
+                  <NewDashboard />
+                </IsAuth>
+              }
+            />
 
-          <Route
-            path="/dashboard/owner"
-            element={
-              <IsAuth>
-                <DashboardOwner />
-              </IsAuth>
-            }
-          />
+            <Route
+              path="/dashboard/owner"
+              element={
+                <IsAuth>
+                  <DashboardOwner />
+                </IsAuth>
+              }
+            />
 
-          {/* <Route path="/details/Id=:messId" element={<ViewDetails />} /> */}
-          <Route path="/details/:messId" element={<ViewDetails />} />
+            {/* <Route path="/details/Id=:messId" element={<ViewDetails />} /> */}
+            <Route path="/details/:messId" element={<ViewDetails />} />
 
-          {/* <Route path="/BookingPage" element={<BookingPage />} /> */}
+            {/* <Route path="/BookingPage" element={<BookingPage />} /> */}
 
-          <Route path="/googleCallback" element={<GoogleCallbackPage />} />
+            <Route path="/googleCallback" element={<GoogleCallbackPage />} />
 
-          {/* <Route path="/test" element={
+            {/* <Route path="/test" element={
           <Test/>
         }/> */}
-        </Routes>
-      </Router>
+          </Routes>
+        </Router>
       </SocketProvider>
     </AuthProvider>
   </React.StrictMode>
