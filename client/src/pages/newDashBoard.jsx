@@ -47,15 +47,14 @@ function NewDashboard() {
     return localStorage.getItem("hasUnreadBookingUpdate") === "true";
   });
 
-  const { userName, user, owner, type, handleLogout,loginMethod } = useAuth();
+  const { userName, user, owner, type, handleLogout, loginMethod } = useAuth();
   const { setHasUnread, isConnected, setIsconnected, socket } = useSocket();
 
   const fetchAllData = async () => {
     try {
-      setLoading(true);
       const userId = type === "student" ? user?.id : owner?.id;
       if (!userId || !socket) return;
-
+      setLoading(true);
       const detailsUrl = new URL(fetchDetailsUrl);
       detailsUrl.searchParams.append("userId", userId);
       detailsUrl.searchParams.append("type", type);
@@ -130,7 +129,7 @@ function NewDashboard() {
   }, [user?.id]);
 
   useEffect(() => {
-    if (user?.id) fetchAllData();
+    fetchAllData();
   }, [type, user, owner, user?.id]);
 
   const handleTabChange = (tab) => {
@@ -147,7 +146,7 @@ function NewDashboard() {
   };
 
   const renderContent = () => {
-    if (loading||!user) {
+    if (loading || !user) {
       return (
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
@@ -379,7 +378,7 @@ export default NewDashboard;
 //           withCredentials: true,
 //           headers: { "Content-Type": "application/json" }
 //         });
-        
+
 //         if (bookingsResponse.data?.success) {
 //           const processedBookings = bookingsResponse.data.bookings.map(booking => ({
 //             ...booking,
@@ -390,7 +389,7 @@ export default NewDashboard;
 //               )
 //             }
 //           }));
-          
+
 //           setBookings(processedBookings);
 //           setStats(bookingsResponse.data.stats);
 //           setCurrentStay(bookingsResponse.data.currentStays || []);
@@ -444,13 +443,13 @@ export default NewDashboard;
 //   const handleTabChange = (tab) => {
 //     setActiveTab(tab);
 //     setSidebarOpen(false);
-    
+
 //     // Update unread statuses
 //     const updates = {
 //       bookings: "hasUnreadBookingUpdate",
 //       dashboard: "hasUnreadDashboardUpdate"
 //     };
-    
+
 //     if (updates[tab]) {
 //       setHasUnread(false);
 //       localStorage.setItem(updates[tab], "false");
@@ -516,16 +515,16 @@ export default NewDashboard;
 //         </div>
 
 //         <ProfileHeader userName={userName} />
-        
+
 //         <nav className="flex flex-col gap-4 mt-8">
 //           {[
-//             { 
+//             {
 //               icon: <Home />,
 //               label: "Dashboard",
 //               tab: "dashboard",
 //               badge: "hasUnreadDashboardUpdate"
 //             },
-//             { 
+//             {
 //               icon: <CalendarCheck />,
 //               label: "My Bookings",
 //               tab: "bookings",
