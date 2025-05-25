@@ -7,8 +7,8 @@ const startExpirationJob = () => {
     // const expiredThreshold = new Date(now.getTime() - 24 * 60 * 60 * 1000);
     const expiredThreshold = new Date(now.getTime() - 2 * 60 * 1000);
 
-
     try {
+      console.log("🕒 Cron running...");
       const result = await Booking.updateMany(
         { status: "pending", createdAt: { $lte: expiredThreshold } },
         { $set: { status: "expired" } }
