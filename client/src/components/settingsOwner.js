@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 const input =
   "border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300 bg-text-bg bg-clip-text text-transparent";
 
-const SettingsOwner = ({ userDetails }) => {
+const SettingsOwner = ({ userDetails, loginMethod }) => {
   const [details, setDetails] = useState({
     name: "",
     email: "",
@@ -190,7 +190,7 @@ const SettingsOwner = ({ userDetails }) => {
       }));
     }
   }, [userDetails]);
- // console.log(details);
+  // console.log(details);
   // Inside your component
   const renumberRooms = (rooms) => {
     return rooms.map((room, index) => ({
@@ -261,7 +261,7 @@ const SettingsOwner = ({ userDetails }) => {
     formData.append("roomInfo", JSON.stringify(details.roomInfo));
     formData.append("existingPhotoUrls", JSON.stringify(existingUrls)); // this is important
 
-      formData.append("rulesToStay", details.rulesToStay.join(","));
+    formData.append("rulesToStay", details.rulesToStay.join(","));
     formData.append("minimumSecurityDeposit", details.minimumSecurityDeposit);
     formData.append("minimumBookingDuration", details.minimumBookingDuration);
 
@@ -281,7 +281,7 @@ const SettingsOwner = ({ userDetails }) => {
       if (res.ok) {
         toast.success("Updated successfully!");
         //alert("Updated successfully!");
-      //  console.log(result.data);
+        //  console.log(result.data);
       } else {
         toast.error(result.error || "Update failed.");
         // alert(result.error || "Update failed.");
@@ -294,48 +294,48 @@ const SettingsOwner = ({ userDetails }) => {
   };
 
   // Rules management functions
- const addPredefinedRule = (e) => {
-  const rule = e.target.value.trim();
-  if (rule && !details.rulesToStay.includes(rule)) {
-    setDetails(prev => ({
-      ...prev,
-      rulesToStay: [...prev.rulesToStay, rule],
-    }));
-  }
-  e.target.value = "";
-};
+  const addPredefinedRule = (e) => {
+    const rule = e.target.value.trim();
+    if (rule && !details.rulesToStay.includes(rule)) {
+      setDetails((prev) => ({
+        ...prev,
+        rulesToStay: [...prev.rulesToStay, rule],
+      }));
+    }
+    e.target.value = "";
+  };
 
-const addCustomRule = () => {
-  const rule = customRuleInput.trim();
-  if (rule && !details.rulesToStay.includes(rule)) {
-    setDetails(prev => ({
-      ...prev,
-      rulesToStay: [...prev.rulesToStay, rule],
-    }));
-    setCustomRuleInput("");
-    setShowCustomInput(false);
-  }
-};
+  const addCustomRule = () => {
+    const rule = customRuleInput.trim();
+    if (rule && !details.rulesToStay.includes(rule)) {
+      setDetails((prev) => ({
+        ...prev,
+        rulesToStay: [...prev.rulesToStay, rule],
+      }));
+      setCustomRuleInput("");
+      setShowCustomInput(false);
+    }
+  };
 
-const updateRule = (index, newValue) => {
-  const rule = newValue.trim();
-  if (rule) {
-    const updatedRules = [...details.rulesToStay];
-    updatedRules[index] = rule;
-    setDetails(prev => ({
+  const updateRule = (index, newValue) => {
+    const rule = newValue.trim();
+    if (rule) {
+      const updatedRules = [...details.rulesToStay];
+      updatedRules[index] = rule;
+      setDetails((prev) => ({
+        ...prev,
+        rulesToStay: updatedRules,
+      }));
+    }
+  };
+
+  const removeRule = (index) => {
+    const updatedRules = details.rulesToStay.filter((_, i) => i !== index);
+    setDetails((prev) => ({
       ...prev,
       rulesToStay: updatedRules,
     }));
-  }
-};
-
-const removeRule = (index) => {
-  const updatedRules = details.rulesToStay.filter((_, i) => i !== index);
-  setDetails(prev => ({
-    ...prev,
-    rulesToStay: updatedRules,
-  }));
-};
+  };
 
   return (
     <div className="p-4 max-w-6xl mx-auto space-y-8">
@@ -399,107 +399,115 @@ const removeRule = (index) => {
         </div>
 
         {/* Update Password */}
-        <div className="space-y-4">
-          <h3 className="font-semibold text-lg">Update Password</h3>
+        {loginMethod === "local" ? (
+          <div className="space-y-4">
+            <h3 className="font-semibold text-lg">Update Password</h3>
 
-          {/* Error/Success Messages */}
-          {/* {passwordError && (
-            <div className="p-2 bg-red-100 text-red-700 rounded-md text-sm">
-              {passwordError}
-            </div>
-          )} */}
+            {/* Error/Success Messages */}
+            {/* {passwordError && (
+      <div className="p-2 bg-red-100 text-red-700 rounded-md text-sm">
+        {passwordError}
+      </div>
+    )} */}
 
-          {/* {passwordSuccess && (
-            <div className="p-2 bg-green-100 text-green-700 rounded-md text-sm">
-              Password updated successfully!
-            </div>
-          )} */}
+            {/* {passwordSuccess && (
+      <div className="p-2 bg-green-100 text-green-700 rounded-md text-sm">
+        Password updated successfully!
+      </div>
+    )} */}
 
-          <form onSubmit={handlePasswordUpdate} className="space-y-4">
-            <input
-              type="password"
-              name="currentPassword"
-              placeholder="Current Password"
-              className={input}
-              value={passwordData.currentPassword}
-              onChange={handlePasswordChange}
-              required
-            />
-            <input
-              type="password"
-              name="newPassword"
-              placeholder="New Password"
-              className={input}
-              value={passwordData.newPassword}
-              onChange={handlePasswordChange}
-              required
-              minLength={8}
-            />
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              className={input}
-              value={passwordData.confirmPassword}
-              onChange={handlePasswordChange}
-              required
-            />
+            <form onSubmit={handlePasswordUpdate} className="space-y-4">
+              <input
+                type="password"
+                name="currentPassword"
+                placeholder="Current Password"
+                className={input}
+                value={passwordData.currentPassword}
+                onChange={handlePasswordChange}
+                required
+              />
+              <input
+                type="password"
+                name="newPassword"
+                placeholder="New Password"
+                className={input}
+                value={passwordData.newPassword}
+                onChange={handlePasswordChange}
+                required
+                minLength={8}
+              />
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                className={input}
+                value={passwordData.confirmPassword}
+                onChange={handlePasswordChange}
+                required
+              />
 
-            {/* Password Strength Meter */}
-            <div>
-              <label className="text-sm text-gray-500">Password Strength</label>
-              <div className="h-1 w-full bg-gray-300 rounded">
-                <div
-                  className={`h-1 ${getStrengthColor()} rounded`}
-                  style={{ width: `${passwordStrength}%` }}
-                ></div>
+              {/* Password Strength Meter */}
+              <div>
+                <label className="text-sm text-gray-500">
+                  Password Strength
+                </label>
+                <div className="h-1 w-full bg-gray-300 rounded">
+                  <div
+                    className={`h-1 ${getStrengthColor()} rounded`}
+                    style={{ width: `${passwordStrength}%` }}
+                  ></div>
+                </div>
+                {passwordData.newPassword && (
+                  <p className="text-xs mt-1 text-gray-500">
+                    {passwordStrength < 30
+                      ? "Weak"
+                      : passwordStrength < 70
+                      ? "Moderate"
+                      : "Strong"}
+                  </p>
+                )}
               </div>
-              {passwordData.newPassword && (
-                <p className="text-xs mt-1 text-gray-500">
-                  {passwordStrength < 30
-                    ? "Weak"
-                    : passwordStrength < 70
-                    ? "Moderate"
-                    : "Strong"}
-                </p>
-              )}
-            </div>
 
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50 w-full"
-              disabled={isUpdatingPassword}
-            >
-              {isUpdatingPassword ? (
-                <span className="flex items-center justify-center">
-                  <svg
-                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Updating...
-                </span>
-              ) : (
-                "Update Password"
-              )}
-            </button>
-          </form>
-        </div>
+              <button
+                type="submit"
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50 w-full"
+                disabled={isUpdatingPassword}
+              >
+                {isUpdatingPassword ? (
+                  <span className="flex items-center justify-center">
+                    <svg
+                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Updating...
+                  </span>
+                ) : (
+                  "Update Password"
+                )}
+              </button>
+            </form>
+          </div>
+        ) : (
+          <p className="text-sm text-gray-500">
+            Password cannot be updated for Google sign-in accounts.
+          </p>
+        )}
       </div>
 
       {/* Mess Details */}

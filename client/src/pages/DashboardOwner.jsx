@@ -26,7 +26,7 @@ export default function DashboardOwner() {
   });
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-  const { ownerName, isOwnerAuthenticated, owner, type, handleLogout } =
+  const { ownerName, isOwnerAuthenticated, owner, type, handleLogout, loginMethod } =
     useAuth();
   const { socket, hasUnreadOwner, setHasUnreadOwner } = useSocket();
 
@@ -108,7 +108,7 @@ export default function DashboardOwner() {
       case "payments":
         return <Payments />;
       case "settings":
-        return <SettingsOwner userDetails={userDetails} />;
+        return <SettingsOwner userDetails={userDetails} loginMethod={loginMethod} />;
       default:
         return null;
     }
