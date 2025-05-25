@@ -1,4 +1,3 @@
-
 // SocketContext.js
 import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
@@ -50,54 +49,18 @@ export function SocketProvider({ children }) {
         localStorage.setItem("hasUnreadPendingRequest", "true");
         setIsConnected(true);
       });
+      newSocket.on("bookingExpired", (data) => {
+        setHasUnreadOwner(true);
+        setData(data);
+        localStorage.setItem("hasUnreadPendingRequest", "true");
+        setIsConnected(true);
+        // Optional: show a toast or alert
+        console.log("⏰ Booking expired:", data);
+      });
     }
 
     return () => newSocket.disconnect();
   }, [user?.id, owner?.id]);
-
-  //   useEffect(() => {
-  //     if (user?.id) {
-  //       const newSocket = io(baseurl);
-  //       setSocket(newSocket);
-  //       newSocket.emit("join-user-room", user.id);
-
-  //       newSocket.on("update-booking-status", (data) => {
-  //         setHasUnread(true);
-  //         setIsConnected(true);
-  //         setData(data);
-  //         console.log("Booking status update received:", data);
-  //         localStorage.setItem("hasUnreadBookingUpdate", "true");
-  //         if (data?.booking?.status === "confirmed") {
-  //           localStorage.setItem("hasUnreadDashboardUpdate", "true");
-  //         }
-  //       });
-
-  //       return () => {
-  //         newSocket.disconnect();
-  //       };
-  //     }
-  //   }, [user?.id]);
-
-  //   useEffect(() => {
-  //     if (!owner?.id) return;
-  //     const newSocket = io(baseurl);
-  //     setSocket(newSocket);
-  //     newSocket.emit("join-owner-room", owner?.id);
-
-  //     const handleNewBooking = (data) => {
-  //       console.log("New booking received", data);
-  //       localStorage.setItem("hasUnreadPendingRequest", "true");
-  //       setIsConnected(true);
-  //     };
-
-  //     newSocket.on("new-booking-request", handleNewBooking);
-  //     return () => {
-  //       newSocket.disconnect();
-  //     };
-  //     // return () => {
-  //     //   newSocket.off("new-booking-request", handleNewBooking);
-  //     // };
-  //   }, [socket, owner?.id]);
 
   return (
     <SocketContext.Provider
