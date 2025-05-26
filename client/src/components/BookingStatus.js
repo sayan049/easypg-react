@@ -20,7 +20,40 @@ import { io } from "socket.io-client";
 import { useSocket } from "../contexts/socketContext";
 
 // import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
+const RejectModal = ({ isOpen, onClose, onSubmit }) => {
+  const [reason, setReason] = useState("");
 
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+      <div className="bg-white rounded-xl shadow-md p-6 w-96">
+        <h2 className="text-lg font-semibold mb-4">Reject Booking</h2>
+        <textarea
+          className="w-full border rounded p-2 mb-4"
+          rows="4"
+          placeholder="Enter rejection reason"
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+        />
+        <div className="flex justify-end gap-2">
+          <button onClick={onClose} className="px-4 py-2 bg-gray-200 rounded">
+            Cancel
+          </button>
+          <button
+            onClick={() => {
+              onSubmit(reason);
+              setReason("");
+            }}
+            className="px-4 py-2 bg-red-500 text-white rounded"
+          >
+            Reject
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 const BookingCard = React.memo(
   ({
     booking,
@@ -300,6 +333,11 @@ const BookingCard = React.memo(
                 <XCircleIcon className="w-4 h-4" />
                 Reject
               </button>
+              <RejectModal
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
+                onSubmit={handleModalSubmit}
+              />
             </div>
           )}
 
@@ -657,11 +695,17 @@ const BookingStatus = () => {
     handleStatusChange(bookingId, "confirmed");
   };
 
-  const handleReject = (bookingId) => {
-    const reason = prompt("Please enter rejection reason:");
+  // const handleReject = (bookingId) => {
+  //   const reason = prompt("Please enter rejection reason:");
+  //   if (reason) {
+  //     handleStatusChange(bookingId, "rejected", reason);
+  //   }
+  // };
+  const handleModalSubmit = (reason) => {
     if (reason) {
-      handleStatusChange(bookingId, "rejected", reason);
+      handleStatusChange(currentBookingId, "rejected", reason);
     }
+    setShowModal(false);
   };
 
   useEffect(() => {
