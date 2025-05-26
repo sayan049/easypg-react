@@ -457,6 +457,7 @@ const User = require("../modules/user");
 const moment = require("moment");
 const mongoose = require("mongoose");
 const MaintenanceRequest = require("../modules/MaintenanceRequest");
+const FraudReport = require("../modules/Fraudreport")
 const rateLimiters = new Map(); // In-memory rate limiter per studentId
 const RATE_LIMIT_DURATION = 60 * 1000; // 1 minute
 const {
@@ -2081,5 +2082,36 @@ exports.getChartStats = async (req, res) => {
   } catch (error) {
     console.error("Error in getChartStats:", error);
     res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+//Fraud report submission
+
+
+
+exports.submitFraudReport = async (req, res) => {
+  try {
+    const { stayId, reason } = req.body;
+    const userId = req.user.id; // Assuming you have user auth middleware and user info in req.user
+    console.log("User ID for fraud report:", userId);
+    console.log("Stay ID:", stayId);
+    console.log(req.body);
+    if (!stayId || !reason) {
+      return res.status(400).json({ message: 'stayId and reason are required.' });
+    }
+
+    const newReport = new FraudReport({
+      stayId,
+      reason,
+      reportedBy: userId,
+      reportedAt: new Date(),
+    });
+
+    await newReport.save();
+
+    return res.status(201).json({ message: 'Report submitted successfully' });
+  } catch (error) {
+    console.error('Error submitting fraud report:', error);
+    return res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 };

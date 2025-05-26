@@ -34,8 +34,12 @@ const {
   submitFeedback,
   getOwnerDashboardStats,
   getChartStats,
+  submitFraudReport
 } = require("../controllers/bookingController");
 const {sendOtp,verifyOtp}= require("../controllers/otpHnadlers");
+
+//admin import
+
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
@@ -313,5 +317,8 @@ router.post("/ratings-feedback", authenticateJWT, submitFeedback);
 router.get("/dashboard/owner-stats", authenticateJWT, getOwnerDashboardStats);
 //dashboard chart stats
 router.get("/owner/chart-stats", authenticateJWT, getChartStats);
+//submit fraud report
+router.post('/report-fraud', authenticateJWT, submitFraudReport);
+
 
 module.exports = router;

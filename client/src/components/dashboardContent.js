@@ -25,6 +25,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { baseurl } from "../constant/urls";
+import ContactOwnerButton from "./ContactOwnerButton";
+import ReportFraudModal from "./ReportFraudModal";
 import {
   MdOutlineAcUnit,
   MdTv,
@@ -38,6 +40,7 @@ import {
   MdPersonOutline,
   MdEmail,
   MdPhone,
+  MdReportProblem,
 } from "react-icons/md";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 const DashboardContent = ({
@@ -59,6 +62,53 @@ const DashboardContent = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCancelInput, setShowCancelInput] = useState(null); // bookingId
   const [cancelReason, setCancelReason] = useState("");
+  const [showReportModal, setShowReportModal] = React.useState(false);
+  const [selectedStay, setSelectedStay] = React.useState(null);
+
+  const [submittingReport, setSubmittingReport] = React.useState(false);
+  const [reportSuccess, setReportSuccess] = React.useState(null);
+
+  const handleReportSubmit = async (reason) => {
+    try {
+      setSubmittingReport(true);
+
+      const res = await axios.post(
+        `${baseurl}/auth/report-fraud`,
+        {
+          stayId: selectedStay._id,
+          reason,
+        },
+        {
+          withCredentials: true, // Automatically send cookies
+          headers: {
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest", // Helps with CORS/CSRF
+          },
+        }
+      );
+
+      if (res.status === 201) {
+        toast.success(res.data.message || "Report submitted successfully!");
+        setReportSuccess(true);
+
+        // Auto-close modal after short delay
+        setTimeout(() => {
+          setShowReportModal(false);
+          setSelectedStay(null);
+          setReportSuccess(null);
+        }, 1500);
+      } else {
+        throw new Error("Unexpected response status");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to submit the report.");
+      setReportSuccess(false);
+    } finally {
+      setSubmittingReport(false);
+    }
+  };
+
   const handleCancelBooking = async (bookingId) => {
     try {
       // console.log("Cancel Booking ID:", bookingId);
@@ -290,7 +340,11 @@ const DashboardContent = ({
                     </p>
                     <p className="text-sm text-gray-600 flex items-center gap-2">
                       <MdPhone />{" "}
-                      {stay.pgOwner?.mobileNo || "Phone not specified"}
+                      {stay.pgOwner?.mobileNo
+                        ? `${stay.pgOwner.mobileNo.slice(0, 4)}${"X".repeat(
+                            stay.pgOwner.mobileNo.length - 4
+                          )}`
+                        : "Phone not specified"}
                     </p>
                     <p className="text-sm text-gray-600 flex items-center gap-2">
                       <HiOutlineLocationMarker />{" "}
@@ -388,8 +442,9 @@ const DashboardContent = ({
               )}
 
               {/* Action Buttons: Cancel + Contact */}
-              <div className=" px-6 py-4 border-t border-gray-200 flex justify-between items-center mt-6">
-                {/* <div className="flex gap-3 w-full md:w-auto">
+              <div className="px-6 py-4 border-t border-gray-200 flex flex-col md:flex-row md:justify-between items-start md:items-center mt-6 gap-4">
+                {/* Left Side: Cancel and Contact */}
+                <div className="flex gap-3 w-full md:w-auto">
                   {showCancelInput === stay._id ? (
                     <div className="space-y-2 w-full">
                       <textarea
@@ -425,53 +480,36 @@ const DashboardContent = ({
                       Cancel Booking
                     </button>
                   )}
-
-                  <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                    Contact Owner
-                  </button>
-                </div> */}
-                <div className="flex flex-row gap-3 w-full md:w-auto md:items-start">
-                  {showCancelInput === stay._id ? (
-                    <div className="space-y-2 w-auto">
-                      <textarea
-                        rows="3"
-                        className="w-full border rounded p-2 text-sm"
-                        placeholder="Optional: Reason for cancellation"
-                        value={cancelReason}
-                        onChange={(e) => setCancelReason(e.target.value)}
-                      />
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleCancelBooking(stay._id)}
-                          className="px-3 py-1 bg-red-500 text-white rounded text-sm"
-                        >
-                          Submit Cancel
-                        </button>
-                        <button
-                          onClick={() => {
-                            setShowCancelInput(null);
-                            setCancelReason("");
-                          }}
-                          className="px-3 py-1 border rounded text-sm"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => setShowCancelInput(stay._id)}
-                      className="px-4 py-2 text-sm border border-red-500 text-red-500 rounded-md hover:bg-red-50"
-                    >
-                      Cancel Booking
-                    </button>
-                  )}
-
-                  <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 self-start">
-                    Contact Owner
-                  </button>
+                  <ContactOwnerButton mobileNo={stay.pgOwner?.mobileNo} />
                 </div>
+
+                {/* Right Side: Report Button */}
+                <button
+                  onClick={() => {
+                    setSelectedStay(stay);
+                    setShowReportModal(true);
+                    setReportSuccess(null); // reset report result
+                  }}
+                  className="text-sm flex items-center gap-2 px-3 py-2 border border-red-400 text-red-500 hover:bg-red-50 rounded-md"
+                >
+                  <MdReportProblem className="text-lg" />
+                  Report Fraud
+                </button>
               </div>
+
+              {/* Report Modal */}
+              {showReportModal && selectedStay?._id === stay._id && (
+                <ReportFraudModal
+                  stay={selectedStay}
+                  onClose={() => {
+                    setShowReportModal(false);
+                    setSelectedStay(null);
+                  }}
+                  onSubmit={handleReportSubmit}
+                  submitting={submittingReport}
+                  success={reportSuccess}
+                />
+              )}
             </div>
           ))}
         </div>
@@ -528,7 +566,11 @@ const DashboardContent = ({
                     </p>
                     <p className="text-sm text-gray-600 flex items-center gap-2">
                       <MdPhone />{" "}
-                      {stay.pgOwner?.mobileNo || "Phone not specified"}
+                      {stay.pgOwner?.mobileNo
+                        ? `${stay.pgOwner.mobileNo.slice(0, 4)}${"X".repeat(
+                            stay.pgOwner.mobileNo.length - 4
+                          )}`
+                        : "Phone not specified"}
                     </p>
                     <p className="text-sm text-gray-600 flex items-center gap-2">
                       <HiOutlineLocationMarker />{" "}
@@ -626,7 +668,8 @@ const DashboardContent = ({
               )}
 
               {/* Action Buttons: Cancel + Contact */}
-              <div className="px-6 py-4 border-t border-gray-200 flex justify-between items-center mt-6">
+              <div className="px-6 py-4 border-t border-gray-200 flex flex-col md:flex-row md:justify-between items-start md:items-center mt-6 gap-4">
+                {/* Left Side: Cancel and Contact */}
                 <div className="flex gap-3 w-full md:w-auto">
                   {showCancelInput === stay._id ? (
                     <div className="space-y-2 w-full">
@@ -663,12 +706,36 @@ const DashboardContent = ({
                       Cancel Booking
                     </button>
                   )}
-
-                  <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                    Contact Owner
-                  </button>
+                  <ContactOwnerButton mobileNo={stay.pgOwner?.mobileNo} />
                 </div>
+
+                {/* Right Side: Report Button */}
+                <button
+                  onClick={() => {
+                    setSelectedStay(stay);
+                    setShowReportModal(true);
+                    setReportSuccess(null); // reset report result
+                  }}
+                  className="text-sm flex items-center gap-2 px-3 py-2 border border-red-400 text-red-500 hover:bg-red-50 rounded-md"
+                >
+                  <MdReportProblem className="text-lg" />
+                  Report Fraud
+                </button>
               </div>
+
+              {/* Report Modal */}
+              {showReportModal && selectedStay?._id === stay._id && (
+                <ReportFraudModal
+                  stay={selectedStay}
+                  onClose={() => {
+                    setShowReportModal(false);
+                    setSelectedStay(null);
+                  }}
+                  onSubmit={handleReportSubmit}
+                  submitting={submittingReport}
+                  success={reportSuccess}
+                />
+              )}
             </div>
           ))}
         </div>
