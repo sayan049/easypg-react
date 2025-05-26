@@ -601,28 +601,6 @@ exports.createBookingRequest = async (req, res) => {
     // if i run cron here?
 
     // Send notifications
-    const notificationPromises = [
-      sendNotification(
-        owner._id,
-        "PgOwner",
-        "New Booking Request",
-        `New booking request for ${room} (${bedsBooked} bed${
-          bedsBooked > 1 ? "s" : ""
-        })`,
-        NOTIFICATION_TYPES.BOOKING,
-        booking._id
-      ),
-      sendNotification(
-        student,
-        "User",
-        "Booking Request Sent",
-        `Your booking request for ${owner.messName} has been submitted`,
-        NOTIFICATION_TYPES.BOOKING,
-        booking._id
-      ),
-    ];
-
-    await Promise.all(notificationPromises);
 
     // SocketManager.notifyOwnerNewBooking(owner._id, bookingPayload);
     // SocketManager.notifyStudentBookingStatus(student, {
@@ -639,6 +617,29 @@ exports.createBookingRequest = async (req, res) => {
 
     setImmediate(async () => {
       try {
+        const notificationPromises = [
+          sendNotification(
+            owner._id,
+            "PgOwner",
+            "New Booking Request",
+            `New booking request for ${room} (${bedsBooked} bed${
+              bedsBooked > 1 ? "s" : ""
+            })`,
+            NOTIFICATION_TYPES.BOOKING,
+            booking._id
+          ),
+          sendNotification(
+            student,
+            "User",
+            "Booking Request Sent",
+            `Your booking request for ${owner.messName} has been submitted`,
+            NOTIFICATION_TYPES.BOOKING,
+            booking._id
+          ),
+        ];
+
+        await Promise.all(notificationPromises);
+
         // Socket notifications
         const bookingPayload = {
           _id: booking._id,
@@ -1578,31 +1579,32 @@ exports.cancelBooking = async (req, res) => {
       booking.userCancellationReason = cancellationReason || "";
       await booking.save();
 
-      // Notifications
-      const msg = cancellationReason
-        ? `You cancelled your booking for ${booking.room}.Reason: ${cancellationReason}`
-        : `You cancelled your booking for ${booking.room}`;
-
-      await Promise.all([
-        sendNotification(
-          booking.student,
-          "User",
-          "Booking Cancelled",
-          msg,
-          NOTIFICATION_TYPES.BOOKING,
-          booking._id
-        ),
-        sendNotification(
-          booking.pgOwner,
-          "PgOwner",
-          "Booking Cancelled",
-          `Booking for ${booking.room} has been cancelled by ${fullname} for reason: ${cancellationReason}`,
-          NOTIFICATION_TYPES.BOOKING,
-          booking._id
-        ),
-      ]);
       setImmediate(async () => {
         try {
+          // Notifications
+          const msg = cancellationReason
+            ? `You cancelled your booking for ${booking.room}.Reason: ${cancellationReason}`
+            : `You cancelled your booking for ${booking.room}`;
+
+          await Promise.all([
+            sendNotification(
+              booking.student,
+              "User",
+              "Booking Cancelled",
+              msg,
+              NOTIFICATION_TYPES.BOOKING,
+              booking._id
+            ),
+            sendNotification(
+              booking.pgOwner,
+              "PgOwner",
+              "Booking Cancelled",
+              `Booking for ${booking.room} has been cancelled by ${fullname} for reason: ${cancellationReason}`,
+              NOTIFICATION_TYPES.BOOKING,
+              booking._id
+            ),
+          ]);
+
           const bookingPayload = {
             _id: booking._id,
             status: "cancelled",
@@ -1688,7 +1690,22 @@ exports.cancelBooking = async (req, res) => {
       booking.userCancellationReason = cancellationReason || "";
       await booking.save();
 
-      const msg = cancellationReason
+    
+
+      //   const bookingPayload = {
+      //   _id: booking._id,
+      //   status: "cancelled",
+      //   userCancellationReason: booking.userCancellationReason,
+      //   room: booking.room,
+      //   requestType: "confirmed-cancel",
+      // };
+      // const io = req.app.get("socketio"); // Get socket instance from app.js/server.js
+      // io.to(booking.pgOwner._id.toString()).emit("cancel-confirm-request", {
+      //   booking: bookingPayload,
+      // });
+      setImmediate(async () => {
+        try {
+            const msg = cancellationReason
         ? `You cancelled your booking for ${booking.room}.Reason: ${cancellationReason}`
         : `You cancelled your booking for ${booking.room}`;
 
@@ -1711,19 +1728,7 @@ exports.cancelBooking = async (req, res) => {
         ),
       ]);
 
-      //   const bookingPayload = {
-      //   _id: booking._id,
-      //   status: "cancelled",
-      //   userCancellationReason: booking.userCancellationReason,
-      //   room: booking.room,
-      //   requestType: "confirmed-cancel",
-      // };
-      // const io = req.app.get("socketio"); // Get socket instance from app.js/server.js
-      // io.to(booking.pgOwner._id.toString()).emit("cancel-confirm-request", {
-      //   booking: bookingPayload,
-      // });
-      setImmediate(async () => {
-        try {
+      
           const bookingPayload = {
             _id: booking._id,
             status: "cancelled",
