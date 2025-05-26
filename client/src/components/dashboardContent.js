@@ -430,7 +430,7 @@ const DashboardContent = ({
                     Contact Owner
                   </button>
                 </div> */}
-                <div className="flex flex-row gap-3  md:w-auto md:items-start">
+                <div className="flex flex-row gap-3  md:w-auto md:items-start flex-wrap">
                   {showCancelInput === stay._id ? (
                     <div className="space-y-2 w-auto">
                       <textarea

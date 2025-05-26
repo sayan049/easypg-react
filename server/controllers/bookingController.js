@@ -1051,141 +1051,123 @@ exports.handleBookingApproval = async (req, res) => {
   try {
     const { id } = req.params;
     const { status, rejectionReason } = req.body;
-    console.log(id, status, rejectionReason);
+    console.log("Checkpoint 1:", id, status);
+
     if (!["confirmed", "rejected"].includes(status)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid status",
-        allowedStatuses: ["confirmed", "rejected"],
-      });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid status" });
     }
 
     if (status === "rejected" && !rejectionReason?.trim()) {
-      return res.status(400).json({
-        success: false,
-        message: "Rejection reason is required when rejecting a booking",
-      });
+      return res
+        .status(400)
+        .json({ success: false, message: "Rejection reason required" });
     }
 
     const booking = await Booking.findById(id).populate("student pgOwner");
-    if (!booking) {
+    if (!booking)
       return res
         .status(404)
         .json({ success: false, message: "Booking not found" });
-    }
+
+    console.log("Checkpoint 2: Booking fetched");
 
     if (booking.status !== "pending") {
-      return res.status(400).json({
-        success: false,
-        message: `Booking cannot be updated from ${booking.status} status`,
-      });
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: `Cannot update from ${booking.status}`,
+        });
     }
 
-    // Handle bed deduction only for confirmation
     if (status === "confirmed") {
       const owner = await PgOwner.findById(booking.pgOwner._id);
       const room = owner.roomInfo.find((r) => r.room === booking.room);
 
-      if (!room) {
-        return res.status(400).json({
-          success: false,
-          message: "Room no longer exists",
-        });
-      }
+      if (!room)
+        return res
+          .status(400)
+          .json({ success: false, message: "Room not found" });
 
-      // Check current availability
       const currentAvailableBeds = bedCountToNumber[room.bedContains] || 0;
-
       if (currentAvailableBeds < booking.bedsBooked) {
-        return res.status(400).json({
-          success: false,
-          message: `Not enough beds available (Requested: ${booking.bedsBooked}, Available: ${currentAvailableBeds})`,
-        });
+        return res
+          .status(400)
+          .json({ success: false, message: `Not enough beds` });
       }
 
-      // Deduct beds
-      const updatedBeds = currentAvailableBeds - booking.bedsBooked;
-      room.bedContains = numberToBedCount[updatedBeds] || "one";
-      room.roomAvailable = updatedBeds > 0;
+      room.bedContains =
+        numberToBedCount[currentAvailableBeds - booking.bedsBooked] || "one";
+      room.roomAvailable = currentAvailableBeds - booking.bedsBooked > 0;
       await owner.save();
+      console.log("Checkpoint 3: Beds updated");
     }
 
-    // Update booking status
     booking.status = status;
-    if (status === "rejected") {
-      booking.ownerRejectionReason = rejectionReason;
-    }
+    if (status === "rejected") booking.ownerRejectionReason = rejectionReason;
     await booking.save();
 
-    // Send notifications
-    const notificationMessage =
+    console.log("Checkpoint 4: Booking saved");
+
+    const message =
       status === "confirmed"
-        ? `Your booking for ${booking.pgOwner.messName} (Room: ${booking.room}) has been confirmed!`
-        : `Your booking request for ${booking.pgOwner.messName} was rejected. Reason: ${rejectionReason}`;
+        ? `Confirmed for ${booking.pgOwner.messName} (Room: ${booking.room})`
+        : `Rejected for ${booking.pgOwner.messName}. Reason: ${rejectionReason}`;
 
     await sendNotification(
       booking.student._id,
       "User",
-      `Booking ${status.charAt(0).toUpperCase() + status.slice(1)}`,
-      notificationMessage,
+      `Booking ${status}`,
+      message,
       NOTIFICATION_TYPES.BOOKING,
       booking._id
     );
 
-    // Socket notifications
+    console.log("Checkpoint 5: Notification sent");
+
     const bookingData = booking.toObject();
-
-    // SocketManager.notifyStudentBookingStatus(booking.student._id, {
-    //   _id: booking._id,
-    //   status,
-    //   message: notificationMessage,
-    //   ...(status === 'rejected' && { rejectionReason })
-    // });
-
-    // if (status === 'confirmed') {
-    //   SocketManager.notifyOwnerBookingUpdate(booking.pgOwner._id, bookingData);
-    // }
 
     res.status(200).json({
       success: true,
       message: `Booking ${status} successfully`,
       booking: bookingData,
     });
+
+    // ✅ Safe async side effects after response
     setImmediate(async () => {
       try {
-        const bookingPayload = {
-          _id: booking._id,
-          status: booking.status,
-          ownerRejectionReason: booking.ownerRejectionReason,
-        };
-        // const io = req.app.get("socketio"); // Get socket instance from app.js/server.js
-        // io.to(booking.student._id.toString()).emit("update-booking-status", {
-        //   booking: bookingPayload,
-        // });
         const io = req.app.get("socketio");
         const userRoom = io.sockets.adapter.rooms.get(
           booking.student._id.toString()
         );
-        // Emit socket event to owner's room
+        const payload = {
+          _id: booking._id,
+          status: booking.status,
+          ownerRejectionReason: booking.ownerRejectionReason,
+        };
+
         if (userRoom && userRoom.size > 0) {
-          // Get socket instance from app.js/server.js
           io.to(booking.student._id.toString()).emit("update-booking-status", {
-            booking: bookingPayload,
+            booking: payload,
           });
         } else {
           await MissedSocketEvent.create({
             recipientId: booking.student._id,
             recipientType: "user",
             eventType: "update-booking-status",
-            payload: bookingPayload,
+            payload,
           });
         }
+
+        console.log("Checkpoint 6: Socket/missed event handled");
       } catch (err) {
-        console.error("Post-response error (socket/notification):", err);
+        console.error("Post-response socket error:", err);
       }
     });
   } catch (error) {
-    console.error("Booking approval error:", error);
+    console.error("Booking approval error (main):", error);
     res.status(500).json({
       success: false,
       message: "Failed to update booking status",
@@ -1193,6 +1175,153 @@ exports.handleBookingApproval = async (req, res) => {
     });
   }
 };
+
+// exports.handleBookingApproval = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const { status, rejectionReason } = req.body;
+//     console.log(id, status, rejectionReason);
+//     if (!["confirmed", "rejected"].includes(status)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid status",
+//         allowedStatuses: ["confirmed", "rejected"],
+//       });
+//     }
+
+//     if (status === "rejected" && !rejectionReason?.trim()) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Rejection reason is required when rejecting a booking",
+//       });
+//     }
+
+//     const booking = await Booking.findById(id).populate("student pgOwner");
+//     if (!booking) {
+//       return res
+//         .status(404)
+//         .json({ success: false, message: "Booking not found" });
+//     }
+
+//     if (booking.status !== "pending") {
+//       return res.status(400).json({
+//         success: false,
+//         message: `Booking cannot be updated from ${booking.status} status`,
+//       });
+//     }
+
+//     // Handle bed deduction only for confirmation
+//     if (status === "confirmed") {
+//       const owner = await PgOwner.findById(booking.pgOwner._id);
+//       const room = owner.roomInfo.find((r) => r.room === booking.room);
+
+//       if (!room) {
+//         return res.status(400).json({
+//           success: false,
+//           message: "Room no longer exists",
+//         });
+//       }
+
+//       // Check current availability
+//       const currentAvailableBeds = bedCountToNumber[room.bedContains] || 0;
+
+//       if (currentAvailableBeds < booking.bedsBooked) {
+//         return res.status(400).json({
+//           success: false,
+//           message: `Not enough beds available (Requested: ${booking.bedsBooked}, Available: ${currentAvailableBeds})`,
+//         });
+//       }
+
+//       // Deduct beds
+//       const updatedBeds = currentAvailableBeds - booking.bedsBooked;
+//       room.bedContains = numberToBedCount[updatedBeds] || "one";
+//       room.roomAvailable = updatedBeds > 0;
+//       await owner.save();
+//     }
+
+//     // Update booking status
+//     booking.status = status;
+//     if (status === "rejected") {
+//       booking.ownerRejectionReason = rejectionReason;
+//     }
+//     await booking.save();
+
+//     // Send notifications
+//     const notificationMessage =
+//       status === "confirmed"
+//         ? `Your booking for ${booking.pgOwner.messName} (Room: ${booking.room}) has been confirmed!`
+//         : `Your booking request for ${booking.pgOwner.messName} was rejected. Reason: ${rejectionReason}`;
+
+//     await sendNotification(
+//       booking.student._id,
+//       "User",
+//       `Booking ${status.charAt(0).toUpperCase() + status.slice(1)}`,
+//       notificationMessage,
+//       NOTIFICATION_TYPES.BOOKING,
+//       booking._id
+//     );
+
+//     // Socket notifications
+//     const bookingData = booking.toObject();
+
+//     // SocketManager.notifyStudentBookingStatus(booking.student._id, {
+//     //   _id: booking._id,
+//     //   status,
+//     //   message: notificationMessage,
+//     //   ...(status === 'rejected' && { rejectionReason })
+//     // });
+
+//     // if (status === 'confirmed') {
+//     //   SocketManager.notifyOwnerBookingUpdate(booking.pgOwner._id, bookingData);
+//     // }
+//     setImmediate(async () => {
+//       try {
+//         const bookingPayload = {
+//           _id: booking._id,
+//           status: booking.status,
+//           ownerRejectionReason: booking.ownerRejectionReason,
+//         };
+//         // const io = req.app.get("socketio"); // Get socket instance from app.js/server.js
+//         // io.to(booking.student._id.toString()).emit("update-booking-status", {
+//         //   booking: bookingPayload,
+//         // });
+//         const io = req.app.get("socketio");
+//         const userRoom = io.sockets.adapter.rooms.get(
+//           booking.student._id.toString()
+//         );
+//         // Emit socket event to owner's room
+//         if (userRoom && userRoom.size > 0) {
+//           // Get socket instance from app.js/server.js
+//           io.to(booking.student._id.toString()).emit("update-booking-status", {
+//             booking: bookingPayload,
+//           });
+//         } else {
+//           await MissedSocketEvent.create({
+//             recipientId: booking.student._id,
+//             recipientType: "user",
+//             eventType: "update-booking-status",
+//             payload: bookingPayload,
+//           });
+//         }
+//       } catch (err) {
+//         console.error("Post-response error (socket/notification):", err);
+//       }
+//     });
+
+//     res.status(200).json({
+//       success: true,
+//       message: `Booking ${status} successfully`,
+//       booking: bookingData,
+//     });
+//   } catch (error) {
+//     console.error("Booking approval error:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Failed to update booking status",
+//       error: process.env.NODE_ENV === "development" ? error.message : undefined,
+//     });
+//   }
+// };
 //maintenance request from user
 exports.maintenanceRequestHandler = async (req, res) => {
   const userId = req.user.id;
