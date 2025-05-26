@@ -25,6 +25,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { baseurl } from "../constant/urls";
+import ContactOwnerButton from "./ContactOwnerButton";
+import ReportFraudModal from "./ReportFraudModal";
 import {
   MdOutlineAcUnit,
   MdTv,
@@ -38,6 +40,7 @@ import {
   MdPersonOutline,
   MdEmail,
   MdPhone,
+  MdReportProblem,
 } from "react-icons/md";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 const DashboardContent = ({
@@ -59,9 +62,52 @@ const DashboardContent = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCancelInput, setShowCancelInput] = useState(null); // bookingId
   const [cancelReason, setCancelReason] = useState("");
+  const [showReportModal, setShowReportModal] = React.useState(false);
+  const [selectedStay, setSelectedStay] = React.useState(null);
+
+  const [submittingReport, setSubmittingReport] = React.useState(false);
+  const [reportSuccess, setReportSuccess] = React.useState(null);
+
+  const handleReportSubmit = async (reason) => {
+    setSubmittingReport(true);
+    setReportSuccess(null);
+
+    try {
+      const response = await fetch("/api/report-fraud", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+        credentials: "include", // for sending cookies with the request
+        body: JSON.stringify({
+          stayId: selectedStay._id,
+          reason,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit report");
+      }
+
+      setReportSuccess(true);
+
+      setTimeout(() => {
+        setShowReportModal(false);
+        setSelectedStay(null);
+        setReportSuccess(null);
+      }, 2000);
+    } catch (error) {
+      console.error("Report submission error:", error);
+      setReportSuccess(false);
+    } finally {
+      setSubmittingReport(false);
+    }
+  };
+
   const handleCancelBooking = async (bookingId) => {
     try {
-     // console.log("Cancel Booking ID:", bookingId);
+      // console.log("Cancel Booking ID:", bookingId);
       const token = localStorage.getItem("accessToken");
       const res = await axios.post(
         `${baseurl}/auth/bookings/${bookingId}/cancel`,
@@ -69,9 +115,9 @@ const DashboardContent = ({
         {
           withCredentials: true, // Automatically send cookies
           headers: {
-    "Content-Type": "application/json",
-    "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
-  }
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
+          },
         }
       );
 
@@ -139,9 +185,9 @@ const DashboardContent = ({
           },
         }
       );
-      toast.success("Maintenance request submitted successfully!")
-    //  alert("Maintenance request submitted successfully!");
-     // console.log("Response:", response.data);
+      toast.success("Maintenance request submitted successfully!");
+      //  alert("Maintenance request submitted successfully!");
+      // console.log("Response:", response.data);
       // Optionally, reset form fields
       setTitle("");
       setDescription("");
@@ -287,7 +333,11 @@ const DashboardContent = ({
                     </p>
                     <p className="text-sm text-gray-600 flex items-center gap-2">
                       <MdPhone />{" "}
-                      {stay.pgOwner?.mobileNo || "Phone not specified"}
+                      {stay.pgOwner?.mobileNo
+                        ? `${stay.pgOwner.mobileNo.slice(0, 4)}${"X".repeat(
+                            stay.pgOwner.mobileNo.length - 4
+                          )}`
+                        : "Phone not specified"}
                     </p>
                     <p className="text-sm text-gray-600 flex items-center gap-2">
                       <HiOutlineLocationMarker />{" "}
@@ -385,7 +435,8 @@ const DashboardContent = ({
               )}
 
               {/* Action Buttons: Cancel + Contact */}
-              <div className=" px-6 py-4 border-t border-gray-200 flex justify-between items-center mt-6">
+              <div className="px-6 py-4 border-t border-gray-200 flex flex-col md:flex-row md:justify-between items-start md:items-center mt-6 gap-4">
+                {/* Left Side: Cancel and Contact */}
                 <div className="flex gap-3 w-full md:w-auto">
                   {showCancelInput === stay._id ? (
                     <div className="space-y-2 w-full">
@@ -423,11 +474,32 @@ const DashboardContent = ({
                     </button>
                   )}
 
-                  <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                    Contact Owner
-                  </button>
+                  <ContactOwnerButton mobileNo={stay.pgOwner?.mobileNo} />
                 </div>
+
+                {/* Right Side: Report Button */}
+                <button
+                  onClick={() => {
+                    setSelectedStay(stay._id);
+                    setShowReportModal(true);
+                    setReportSuccess(null); // Reset success message state if you use it
+                  }}
+                  className="text-sm flex items-center gap-2 px-3 py-2 border border-red-400 text-red-500 hover:bg-red-50 rounded-md"
+                >
+                  <MdReportProblem className="text-lg" />
+                  Report Fraud
+                </button>
               </div>
+              {/* Render the Modal when triggered */}
+              {showReportModal && selectedStay && (
+                <ReportFraudModal
+                  stay={selectedStay}
+                  onClose={() => setShowReportModal(false)}
+                  onSubmit={handleReportSubmit}
+                  submitting={submittingReport}
+                  success={reportSuccess}
+                />
+              )}
             </div>
           ))}
         </div>
@@ -484,7 +556,11 @@ const DashboardContent = ({
                     </p>
                     <p className="text-sm text-gray-600 flex items-center gap-2">
                       <MdPhone />{" "}
-                      {stay.pgOwner?.mobileNo || "Phone not specified"}
+                      {stay.pgOwner?.mobileNo
+                        ? `${stay.pgOwner.mobileNo.slice(0, 4)}${"X".repeat(
+                            stay.pgOwner.mobileNo.length - 4
+                          )}`
+                        : "Phone not specified"}
                     </p>
                     <p className="text-sm text-gray-600 flex items-center gap-2">
                       <HiOutlineLocationMarker />{" "}
@@ -620,9 +696,7 @@ const DashboardContent = ({
                     </button>
                   )}
 
-                  <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                    Contact Owner
-                  </button>
+                  <ContactOwnerButton mobileNo={stay.pgOwner?.mobileNo} />
                 </div>
               </div>
             </div>

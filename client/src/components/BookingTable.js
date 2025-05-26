@@ -1050,6 +1050,7 @@ import {
   MdPersonOutline,
   MdKitchen,
 } from "react-icons/md";
+import ContactOwnerButton from "./ContactOwnerButton";
 
 const BookingTable = ({
   bookings = [],
@@ -1088,7 +1089,7 @@ const BookingTable = ({
           withCredentials: true, // Automatically send cookies
           headers: {
             "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
+            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
           },
         }
       );
@@ -1120,7 +1121,7 @@ const BookingTable = ({
           withCredentials: true, // Automatically send cookies
           headers: {
             "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
+            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
           },
           responseType: "blob",
         }
@@ -1252,7 +1253,11 @@ const BookingTable = ({
                     </p>
                     <p className="text-sm text-gray-600 flex items-center gap-2">
                       <MdPhone />{" "}
-                      {stay.pgOwner?.mobileNo || "Phone not specified"}
+                      {stay.pgOwner?.mobileNo
+                        ? `${stay.pgOwner.mobileNo.slice(0, 4)}${"X".repeat(
+                            stay.pgOwner.mobileNo.length - 4
+                          )}`
+                        : "Phone not specified"}
                     </p>
                     <p className="text-sm text-gray-600 flex items-center gap-2">
                       <HiOutlineLocationMarker />{" "}
