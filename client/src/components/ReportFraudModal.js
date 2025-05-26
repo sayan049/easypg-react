@@ -38,14 +38,16 @@ function ReportFraudModal({ stay, onClose, onSubmit, submitting, success }) {
   if (!stay) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
-      <div className="bg-white rounded-lg w-full max-w-md sm:max-w-lg p-6 relative">
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-2">
+      <div className="bg-white rounded-lg w-full max-w-md sm:max-w-md p-4 sm:p-6 relative">
         {/* Header */}
-        <div className="flex items-center justify-center sm:justify-between relative mb-4">
-          <h2 className="text-xl font-semibold">Report Fraud</h2>
+        <div className="flex items-center justify-center sm:justify-between mb-4">
+          <h2 className="text-xl font-semibold flex-1 text-center sm:text-left">
+            Report Fraud
+          </h2>
           <button
             onClick={onClose}
-            className="absolute sm:static right-3 text-gray-600 hover:text-gray-900"
+            className="ml-2 text-gray-600 hover:text-gray-900"
             aria-label="Close modal"
             disabled={submitting}
           >
@@ -87,19 +89,21 @@ function ReportFraudModal({ stay, onClose, onSubmit, submitting, success }) {
         <textarea
           id="description-textarea"
           rows={4}
-          className={`w-full rounded p-2 mb-1 border-2 border-dashed transition-colors duration-200 ${
-            error
-              ? "border-red-500"
-              : "border-primary-light hover:border-primary-dark focus:border-primary-dark"
-          }`}
+          className={`w-full rounded p-2 mb-1 border-2 border-dashed transition-colors duration-200
+    ${
+      error
+        ? "border-red-500"
+        : "border-primary-light hover:border-primary-dark focus:border-primary-dark"
+    } 
+    focus:outline-none
+  `}
           placeholder="Describe the issue or add details"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           disabled={submitting}
         />
-        {error && (
-          <p className="text-red-600 text-sm mb-3">{error}</p>
-        )}
+
+        {error && <p className="text-red-600 text-sm mb-3">{error}</p>}
 
         {success === true && (
           <p className="text-green-600 mb-3">Report submitted successfully!</p>
