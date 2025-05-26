@@ -72,10 +72,20 @@ const DashboardContent = ({
     try {
       setSubmittingReport(true);
 
-      const res = await axios.post(`${baseurl}/auth/report-fraud`, {
-        stayId: selectedStay._id,
-        reason,
-      });
+      const res = await axios.post(
+        `${baseurl}/auth/report-fraud`,
+        {
+          stayId: selectedStay._id,
+          reason,
+        },
+        {
+          withCredentials: true, // Automatically send cookies
+          headers: {
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest", // Helps with CORS/CSRF
+          },
+        }
+      );
 
       if (res.status === 201) {
         toast.success(res.data.message || "Report submitted successfully!");
