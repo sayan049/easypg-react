@@ -67,7 +67,14 @@ const BookingCard = React.memo(
     const [showMaintenance, setShowMaintenance] = useState(false);
     const [actionType, setActionType] = useState(null); // 'cancel' or 'resolve'
     const [actionMessage, setActionMessage] = useState(""); // for the entered message
-
+    const [showModal, setShowModal] = useState(false);
+    const [currentBookingId, setCurrentBookingId] = useState(null);
+    const handleModalSubmit = (reason) => {
+      if (reason) {
+        handleStatusChange(currentBookingId, "rejected", reason);
+      }
+      setShowModal(false);
+    };
     const statusColors = {
       pending: "bg-yellow-100 text-yellow-800",
       confirmed: "bg-green-100 text-green-800",
@@ -700,6 +707,16 @@ const BookingStatus = () => {
   //   if (reason) {
   //     handleStatusChange(bookingId, "rejected", reason);
   //   }
+  // };
+  const handleReject = (bookingId) => {
+    setCurrentBookingId(bookingId);
+    setShowModal(true);
+  };
+  // const handleModalSubmit = (reason) => {
+  //   if (reason) {
+  //     handleStatusChange(currentBookingId, "rejected", reason);
+  //   }
+  //   setShowModal(false);
   // };
   const handleModalSubmit = (reason) => {
     if (reason) {
