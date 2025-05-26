@@ -69,36 +69,30 @@ const DashboardContent = ({
   const [reportSuccess, setReportSuccess] = React.useState(null);
 
   const handleReportSubmit = async (reason) => {
-    setSubmittingReport(true);
-    setReportSuccess(null);
-
     try {
-      const response = await fetch(`${baseurl}/auth/report-fraud`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Requested-With": "XMLHttpRequest",
-        },
-        credentials: "include", // for sending cookies with the request
-        body: JSON.stringify({
-          stayId: selectedStay._id,
-          reason,
-        }),
+      setSubmittingReport(true);
+
+      const res = await axios.post(`${baseurl}/auth/report-fraud`, {
+        stayId: selectedStay._id,
+        reason,
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to submit report");
+      if (res.status === 201) {
+        toast.success(res.data.message || "Report submitted successfully!");
+        setReportSuccess(true);
+
+        // Auto-close modal after short delay
+        setTimeout(() => {
+          setShowReportModal(false);
+          setSelectedStay(null);
+          setReportSuccess(null);
+        }, 1500);
+      } else {
+        throw new Error("Unexpected response status");
       }
-
-      setReportSuccess(true);
-
-      setTimeout(() => {
-        setShowReportModal(false);
-        setSelectedStay(null);
-        setReportSuccess(null);
-      }, 2000);
-    } catch (error) {
-      console.error("Report submission error:", error);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to submit the report.");
       setReportSuccess(false);
     } finally {
       setSubmittingReport(false);
@@ -484,7 +478,7 @@ const DashboardContent = ({
                   onClick={() => {
                     setSelectedStay(stay);
                     setShowReportModal(true);
-                    setReportSuccess(null); // reset success state
+                    setReportSuccess(null); // reset report result
                   }}
                   className="text-sm flex items-center gap-2 px-3 py-2 border border-red-400 text-red-500 hover:bg-red-50 rounded-md"
                 >
@@ -493,7 +487,7 @@ const DashboardContent = ({
                 </button>
               </div>
 
-              {/* Modal */}
+              {/* Report Modal */}
               {showReportModal && selectedStay?._id === stay._id && (
                 <ReportFraudModal
                   stay={selectedStay}
@@ -502,7 +496,7 @@ const DashboardContent = ({
                     setSelectedStay(null);
                   }}
                   onSubmit={handleReportSubmit}
-                  submitting={reportSubmitting}
+                  submitting={submittingReport}
                   success={reportSuccess}
                 />
               )}
@@ -710,7 +704,7 @@ const DashboardContent = ({
                   onClick={() => {
                     setSelectedStay(stay);
                     setShowReportModal(true);
-                    setReportSuccess(null); // reset success state
+                    setReportSuccess(null); // reset report result
                   }}
                   className="text-sm flex items-center gap-2 px-3 py-2 border border-red-400 text-red-500 hover:bg-red-50 rounded-md"
                 >
@@ -719,7 +713,7 @@ const DashboardContent = ({
                 </button>
               </div>
 
-              {/* Modal */}
+              {/* Report Modal */}
               {showReportModal && selectedStay?._id === stay._id && (
                 <ReportFraudModal
                   stay={selectedStay}
@@ -728,7 +722,7 @@ const DashboardContent = ({
                     setSelectedStay(null);
                   }}
                   onSubmit={handleReportSubmit}
-                  submitting={reportSubmitting}
+                  submitting={submittingReport}
                   success={reportSuccess}
                 />
               )}
