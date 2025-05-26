@@ -600,38 +600,6 @@ exports.createBookingRequest = async (req, res) => {
     // Start 2-minute expiration timer
     // if i run cron here?
 
-    // Socket notifications
-    const bookingPayload = {
-      _id: booking._id,
-      room,
-      bedsBooked,
-      student: {
-        _id: student,
-        firstName: booking.student?.firstName || "Unknown",
-        lastName: booking.student?.lastName || "User",
-      },
-      status: "pending",
-      period: booking.period,
-      payment: booking.payment,
-      createdAt: booking.createdAt,
-    };
-    const io = req.app.get("socketio");
-    const ownerRoom = io.sockets.adapter.rooms.get(pgOwner.toString());
-    // Emit socket event to owner's room
-    if (ownerRoom && ownerRoom.size > 0) {
-      // Get socket instance from app.js/server.js
-      io.to(pgOwner.toString()).emit("new-booking-request", {
-        booking: bookingPayload,
-      });
-    } else {
-      await MissedSocketEvent.create({
-        recipientId: pgOwner,
-        recipientType: "owner",
-        eventType: "new-booking-request",
-        payload: bookingPayload,
-      });
-    }
-
     // Send notifications
     const notificationPromises = [
       sendNotification(
@@ -667,6 +635,44 @@ exports.createBookingRequest = async (req, res) => {
       success: true,
       booking: booking.toObject(),
       message: "Booking request sent successfully",
+    });
+
+    setImmediate(async () => {
+      try {
+        // Socket notifications
+        const bookingPayload = {
+          _id: booking._id,
+          room,
+          bedsBooked,
+          student: {
+            _id: student,
+            firstName: booking.student?.firstName || "Unknown",
+            lastName: booking.student?.lastName || "User",
+          },
+          status: "pending",
+          period: booking.period,
+          payment: booking.payment,
+          createdAt: booking.createdAt,
+        };
+        const io = req.app.get("socketio");
+        const ownerRoom = io.sockets.adapter.rooms.get(pgOwner.toString());
+        // Emit socket event to owner's room
+        if (ownerRoom && ownerRoom.size > 0) {
+          // Get socket instance from app.js/server.js
+          io.to(pgOwner.toString()).emit("new-booking-request", {
+            booking: bookingPayload,
+          });
+        } else {
+          await MissedSocketEvent.create({
+            recipientId: pgOwner,
+            recipientType: "owner",
+            eventType: "new-booking-request",
+            payload: bookingPayload,
+          });
+        }
+      } catch (err) {
+        console.error("Post-response error (socket/notification):", err);
+      }
     });
   } catch (error) {
     console.error("Booking creation error:", error);
