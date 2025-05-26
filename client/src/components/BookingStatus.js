@@ -696,7 +696,7 @@ const BookingStatus = () => {
   //     </div>
   //   );
   // };
-  if (loading.list) {
+  if (loading.list || !owner) {
     return (
       <div className="p-4 space-y-6">
         {/* Skeleton for stats */}

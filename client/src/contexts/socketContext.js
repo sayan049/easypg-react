@@ -28,7 +28,13 @@ export function SocketProvider({ children }) {
     const id = user?.id || owner?.id;
     if (!id) return;
 
-    const newSocket = io(baseurl);
+    // const newSocket = io(baseurl);
+    const newSocket = io(baseurl, {
+      reconnectionAttempts: 5,
+      reconnectionDelay: 2000,
+      transports: ["websocket"], // Prefer WebSocket over long-polling
+    });
+
     setSocket(newSocket);
 
     if (user?.id) {
