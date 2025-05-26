@@ -48,6 +48,7 @@ const io = new Server(server, {
     origin: ORIGIN,
     credentials: true,
   },
+  transports: ["websocket"]
 });
 // const startExpirationJob = require("./cron/expire");
 // startExpirationJob(io);
