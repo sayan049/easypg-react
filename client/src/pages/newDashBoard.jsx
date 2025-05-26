@@ -277,7 +277,7 @@ function NewDashboard() {
         </button>
       </aside>
 
-      <main className="flex-1 px-2 sm:px-4 pt-20 md:pt-4">
+      <main className="flex-1 px-2 sm:px-4 pt-20 md:pt-4 w-full">
         {renderContent()}
       </main>
     </div>
