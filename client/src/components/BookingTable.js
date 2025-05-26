@@ -1088,7 +1088,7 @@ const BookingTable = ({
           withCredentials: true, // Automatically send cookies
           headers: {
             "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
+            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
           },
         }
       );
@@ -1104,8 +1104,9 @@ const BookingTable = ({
         toast.error("Something went wrong. Please try again.");
       }
     } catch (error) {
+      const msg = error.response?.data?.message || "An error occurred while submitting feedback.";
       console.error("Feedback submission error:", error);
-      toast.error("An error occurred while submitting feedback.");
+      toast.error(msg);
     }
   };
 
@@ -1120,7 +1121,7 @@ const BookingTable = ({
           withCredentials: true, // Automatically send cookies
           headers: {
             "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
+            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
           },
           responseType: "blob",
         }

@@ -453,8 +453,10 @@ const BookingStatus = () => {
       );
       return response.data || { requests: [] };
     } catch (error) {
+      const msg = error.response?.data?.message || "Something went wrong";
+
       console.error("Error fetching maintenance requests:", error);
-      toast.error("Failed to load maintenance requests");
+      toast.error(msg);
       return { requests: [] };
     } finally {
       setLoading((prev) => ({ ...prev, maintenance: false }));
@@ -556,8 +558,9 @@ const BookingStatus = () => {
         });
       }
     } catch (error) {
+      const msg = error.response?.data?.message || "Failed to load bookings";
       console.error("Error fetching all bookings:", error);
-      toast.error("Failed to load bookings");
+      toast.error(msg);
     } finally {
       setLoading((prev) => ({ ...prev, list: false }));
     }
@@ -641,8 +644,10 @@ const BookingStatus = () => {
 
       toast.success(`Booking ${status} successfully`);
     } catch (error) {
+      const msg =
+        error.response?.data?.message || `Failed to ${status} booking`;
       console.error(`Status change error (${status}):`, error);
-      toast.error(`Failed to ${status} booking`);
+      toast.error(msg);
     } finally {
       setLoading((prev) => ({ ...prev, action: false }));
     }

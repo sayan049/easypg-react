@@ -148,7 +148,8 @@ const DashboardContent = ({
       setSelectedStayId("");
     } catch (error) {
       console.error("Error submitting maintenance request:", error);
-      alert("There was an error submitting the request. Please try again.");
+      // alert("There was an error submitting the request. Please try again.");
+      toast.error(error.response?.data?.message || "Failed to submit maintenance request");
     } finally {
       setIsSubmitting(false); // Stop loading after submission attempt
     }
