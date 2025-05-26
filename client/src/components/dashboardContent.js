@@ -61,7 +61,7 @@ const DashboardContent = ({
   const [cancelReason, setCancelReason] = useState("");
   const handleCancelBooking = async (bookingId) => {
     try {
-     // console.log("Cancel Booking ID:", bookingId);
+      // console.log("Cancel Booking ID:", bookingId);
       const token = localStorage.getItem("accessToken");
       const res = await axios.post(
         `${baseurl}/auth/bookings/${bookingId}/cancel`,
@@ -69,9 +69,9 @@ const DashboardContent = ({
         {
           withCredentials: true, // Automatically send cookies
           headers: {
-    "Content-Type": "application/json",
-    "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
-  }
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
+          },
         }
       );
 
@@ -139,9 +139,9 @@ const DashboardContent = ({
           },
         }
       );
-      toast.success("Maintenance request submitted successfully!")
-    //  alert("Maintenance request submitted successfully!");
-     // console.log("Response:", response.data);
+      toast.success("Maintenance request submitted successfully!");
+      //  alert("Maintenance request submitted successfully!");
+      // console.log("Response:", response.data);
       // Optionally, reset form fields
       setTitle("");
       setDescription("");
@@ -149,7 +149,9 @@ const DashboardContent = ({
     } catch (error) {
       console.error("Error submitting maintenance request:", error);
       // alert("There was an error submitting the request. Please try again.");
-      toast.error(error.response?.data?.message || "Failed to submit maintenance request");
+      toast.error(
+        error.response?.data?.message || "Failed to submit maintenance request"
+      );
     } finally {
       setIsSubmitting(false); // Stop loading after submission attempt
     }
@@ -387,7 +389,7 @@ const DashboardContent = ({
 
               {/* Action Buttons: Cancel + Contact */}
               <div className=" px-6 py-4 border-t border-gray-200 flex justify-between items-center mt-6">
-                <div className="flex gap-3 w-full md:w-auto">
+                {/* <div className="flex gap-3 w-full md:w-auto">
                   {showCancelInput === stay._id ? (
                     <div className="space-y-2 w-full">
                       <textarea
@@ -425,6 +427,47 @@ const DashboardContent = ({
                   )}
 
                   <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    Contact Owner
+                  </button>
+                </div> */}
+                <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto md:items-start">
+                  {showCancelInput === stay._id ? (
+                    <div className="space-y-2 w-full md:w-auto">
+                      <textarea
+                        rows="3"
+                        className="w-full border rounded p-2 text-sm"
+                        placeholder="Optional: Reason for cancellation"
+                        value={cancelReason}
+                        onChange={(e) => setCancelReason(e.target.value)}
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleCancelBooking(stay._id)}
+                          className="px-3 py-1 bg-red-500 text-white rounded text-sm"
+                        >
+                          Submit Cancel
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowCancelInput(null);
+                            setCancelReason("");
+                          }}
+                          className="px-3 py-1 border rounded text-sm"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setShowCancelInput(stay._id)}
+                      className="px-4 py-2 text-sm border border-red-500 text-red-500 rounded-md hover:bg-red-50"
+                    >
+                      Cancel Booking
+                    </button>
+                  )}
+
+                  <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 self-start">
                     Contact Owner
                   </button>
                 </div>
