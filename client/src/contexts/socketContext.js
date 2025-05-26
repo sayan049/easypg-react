@@ -32,7 +32,6 @@ export function SocketProvider({ children }) {
     const newSocket = io(baseurl, {
       reconnectionAttempts: 5,
       reconnectionDelay: 2000,
-      transports: ["websocket"], // Prefer WebSocket over long-polling
     });
 
     setSocket(newSocket);
