@@ -771,7 +771,7 @@ exports.getOwnerBookings = async (req, res) => {
 };
 exports.getAllOwnerBookings = async (req, res) => {
   try {
-    console.log("Authenticated User:", req.user);
+  //  console.log("Authenticated User:", req.user);
 
     const ownerId = req.user.id;
     const limit = parseInt(req.query.limit, 10) || 10;
@@ -1728,7 +1728,7 @@ exports.cancelBooking = async (req, res) => {
         ),
       ]);
 
-      
+
           const bookingPayload = {
             _id: booking._id,
             status: "cancelled",
