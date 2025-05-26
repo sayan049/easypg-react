@@ -340,11 +340,6 @@ const BookingCard = React.memo(
                 <XCircleIcon className="w-4 h-4" />
                 Reject
               </button>
-              <RejectModal
-                isOpen={showModal}
-                onClose={() => setShowModal(false)}
-                onSubmit={handleModalSubmit}
-              />
             </div>
           )}
 
@@ -429,6 +424,8 @@ const BookingStatus = () => {
   });
   const { setHasUnreadOwner, isConnected, setIsConnected } = useSocket();
   const [hit, setHit] = useState(false);
+  const [currentBookingId, setCurrentBookingId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const [bookings, setBookings] = useState({
     pending: { data: [], page: 1, total: 0 },
     confirmed: { data: [], page: 1, total: 0 },
@@ -922,6 +919,11 @@ const BookingStatus = () => {
             </>
           )}
         </div>
+        <RejectModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          onSubmit={handleModalSubmit}
+        />
       </div>
     </BookingStatusErrorBoundary>
   );
