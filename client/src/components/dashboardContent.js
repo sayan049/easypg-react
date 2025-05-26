@@ -73,7 +73,7 @@ const DashboardContent = ({
     setReportSuccess(null);
 
     try {
-      const response = await fetch("/api/report-fraud", {
+      const response = await fetch(`${baseurl}/auth/report-fraud`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
