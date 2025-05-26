@@ -465,7 +465,7 @@ const HomePage = () => {
                   loading="lazy"
                 />
                 <div
-                  className="text-2xl font-bold bg-gradient-to-r from-[#2CA4B5] to-teal-600 bg-clip-text text-transparent mt-[10px] 
+                  className="text-2xl font-bold text-[#2ca4b5] mt-[10px] ml-[-1px]
 "
                 >
                   essMate

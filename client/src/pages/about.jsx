@@ -17,7 +17,7 @@ import {
   X,
   Home,
   Phone,
-  Briefcase
+  Briefcase,
 } from "lucide-react";
 import { Helmet } from "react-helmet";
 
@@ -162,25 +162,28 @@ const About = () => {
             isOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
-          
-            <button onClick={() => setIsOpen(false)} aria-label="Close menu" className="absolute top-2 right-1">
-              <X className="h-6 w-6 text-gray-600 hover:text-[#2ca4b5]  " />
-            </button>
-          
+          <button
+            onClick={() => setIsOpen(false)}
+            aria-label="Close menu"
+            className="absolute top-2 right-1"
+          >
+            <X className="h-6 w-6 text-gray-600 hover:text-[#2ca4b5]  " />
+          </button>
+
           <div className="flex flex-col p-4 space-y-6 mt-12">
             <Link
               to="/"
               className="text-gray-600 hover:text-[#2ca4b5]"
               onClick={() => setIsOpen(false)}
             >
-              <Home  className="inline mr-4 text-[#2ca4b5]" /> Home
+              <Home className="inline mr-4 text-[#2ca4b5]" /> Home
             </Link>
             <Link
               to="/#services"
               className="text-gray-600 hover:text-[#2ca4b5]"
               onClick={() => setIsOpen(false)}
             >
-             <Briefcase  className="inline mr-4 text-[#2ca4b5]" /> Services
+              <Briefcase className="inline mr-4 text-[#2ca4b5]" /> Services
             </Link>
 
             <Link
@@ -188,7 +191,8 @@ const About = () => {
               className="text-gray-600 hover:text-[#2ca4b5]"
               onClick={() => setIsOpen(false)}
             >
-              <Phone className="inline mr-4 text-[#2ca4b5]" />Contact Us
+              <Phone className="inline mr-4 text-[#2ca4b5]" />
+              Contact Us
             </Link>
           </div>
         </div>
@@ -401,51 +405,51 @@ const About = () => {
           <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center">
             Meet Our Team
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="flex flex-col items-center text-center">
-              <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-teal-200 mb-4">
-                <img
-                  src="/placeholder.svg?height=96&width=96"
-                  alt="Rahul Sharma"
-                  width={96}
-                  height={96}
-                  className="w-full h-full object-cover"
-                />
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8">
+            {[
+              {
+                name: "Sayan Patra",
+                title: "Founder & CEO",
+                description: "Full Stack Developer",
+                img: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1748291321/IMG20231025064623_quhilt.webp",
+              },
+              {
+                name: "Rishi Saha",
+                title: "Co-founder & CTO",
+                description: "Full Stack Developer",
+                img: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1748292073/Gemini_Generated_Image_jt8n56jt8n56jt8n_1_o6ykwu.webp",
+              },
+              {
+                name: "Sandip Hembram",
+                title: "CMO & CDO",
+                description: "UI and UX Designer",
+                img: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1748291268/WhatsApp_Image_2025-05-24_at_12.06.04_AM_tni4ek.webp",
+              },
+              {
+                name: "Tanmoy Sarkar",
+                title: "COO",
+                description: "Android Developer",
+                img: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1748291252/aaaa_evhrhz.webp",
+              },
+            ].map((member, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center text-center"
+              >
+                <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-primary-light mb-4 hover:border-primary-dark transition-colors duration-200">
+                  <img
+                    src={member.img}
+                    alt={member.name}
+                    width={96}
+                    height={96}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <h3 className="font-semibold">{member.name}</h3>
+                <p className="text-[#2ca4b5] mb-1">{member.title}</p>
+                <p className="text-gray-600 text-sm">{member.description}</p>
               </div>
-              <h3 className="font-semibold">Rahul Sharma</h3>
-              <p className="text-[#2ca4b5] mb-1">Co-founder & CEO</p>
-              <p className="text-gray-600 text-sm">
-                Former student at IIT Delhi
-              </p>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-teal-200 mb-4">
-                <img
-                  src="/placeholder.svg?height=96&width=96"
-                  alt="Priya Patel"
-                  width={96}
-                  height={96}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h3 className="font-semibold">Priya Patel</h3>
-              <p className="text-[#2ca4b5] mb-1">Co-founder & COO</p>
-              <p className="text-gray-600 text-sm">Ex-Consultant, McKinsey</p>
-            </div>
-            <div className="flex flex-col items-center text-center">
-              <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-teal-200 mb-4">
-                <img
-                  src="/placeholder.svg?height=96&width=96"
-                  alt="Amit Kumar"
-                  width={96}
-                  height={96}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h3 className="font-semibold">Amit Kumar</h3>
-              <p className="text-[#2ca4b5] mb-1">Tech Lead</p>
-              <p className="text-gray-600 text-sm">Full Stack Developer</p>
-            </div>
+            ))}
           </div>
         </section>
 
