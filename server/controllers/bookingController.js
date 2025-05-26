@@ -2093,7 +2093,9 @@ exports.submitFraudReport = async (req, res) => {
   try {
     const { stayId, reason } = req.body;
     const userId = req.user.id; // Assuming you have user auth middleware and user info in req.user
-
+    console.log("User ID for fraud report:", userId);
+    console.log("Stay ID:", stayId);
+    console.log(req.body);
     if (!stayId || !reason) {
       return res.status(400).json({ message: 'stayId and reason are required.' });
     }
