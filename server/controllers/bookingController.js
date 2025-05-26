@@ -685,7 +685,7 @@ exports.createBookingRequest = async (req, res) => {
 };
 exports.getOwnerBookings = async (req, res) => {
   try {
-    console.log("Authenticated User:", req.user);
+    console.log("Authenticated User:", req.user.name);
 
     const ownerId = req.user.id;
     const page = parseInt(req.query.page, 10) || 1;
@@ -1074,12 +1074,10 @@ exports.handleBookingApproval = async (req, res) => {
     console.log("Checkpoint 2: Booking fetched");
 
     if (booking.status !== "pending") {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: `Cannot update from ${booking.status}`,
-        });
+      return res.status(400).json({
+        success: false,
+        message: `Cannot update from ${booking.status}`,
+      });
     }
 
     if (status === "confirmed") {
@@ -1111,22 +1109,6 @@ exports.handleBookingApproval = async (req, res) => {
 
     console.log("Checkpoint 4: Booking saved");
 
-    const message =
-      status === "confirmed"
-        ? `Confirmed for ${booking.pgOwner.messName} (Room: ${booking.room})`
-        : `Rejected for ${booking.pgOwner.messName}. Reason: ${rejectionReason}`;
-
-    await sendNotification(
-      booking.student._id,
-      "User",
-      `Booking ${status}`,
-      message,
-      NOTIFICATION_TYPES.BOOKING,
-      booking._id
-    );
-
-    console.log("Checkpoint 5: Notification sent");
-
     const bookingData = booking.toObject();
 
     res.status(200).json({
@@ -1138,6 +1120,22 @@ exports.handleBookingApproval = async (req, res) => {
     // ✅ Safe async side effects after response
     setImmediate(async () => {
       try {
+        const message =
+          status === "confirmed"
+            ? `Confirmed for ${booking.pgOwner.messName} (Room: ${booking.room})`
+            : `Rejected for ${booking.pgOwner.messName}. Reason: ${rejectionReason}`;
+
+        await sendNotification(
+          booking.student._id,
+          "User",
+          `Booking ${status}`,
+          message,
+          NOTIFICATION_TYPES.BOOKING,
+          booking._id
+        );
+
+        console.log("Checkpoint 5: Notification sent");
+
         const io = req.app.get("socketio");
         const userRoom = io.sockets.adapter.rooms.get(
           booking.student._id.toString()
