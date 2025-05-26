@@ -69,12 +69,7 @@ const BookingCard = React.memo(
     const [actionMessage, setActionMessage] = useState(""); // for the entered message
     const [showModal, setShowModal] = useState(false);
     const [currentBookingId, setCurrentBookingId] = useState(null);
-    const handleModalSubmit = (reason) => {
-      if (reason) {
-        handleStatusChange(currentBookingId, "rejected", reason);
-      }
-      setShowModal(false);
-    };
+
     const statusColors = {
       pending: "bg-yellow-100 text-yellow-800",
       confirmed: "bg-green-100 text-green-800",
