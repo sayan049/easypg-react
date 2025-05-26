@@ -133,7 +133,7 @@ const Cart = () => {
       if (err.response?.status === 404) {
         toast.info("No messes found in your cart.");
       } else {
-        toast.error("Something went wrong while fetching mess data.");
+        toast.error(err.response?.data?.message||"Something went wrong while fetching mess data.");
       }
     } finally {
       setLoading(false);
@@ -171,7 +171,7 @@ const Cart = () => {
         setLiked({});
         toast.info("You haven't liked any mess yet.");
       } else {
-        toast.error("Something went wrong while fetching liked messes.");
+        toast.error(err.response?.data?.message||"Something went wrong while fetching liked messes.");
       }
     }
   };

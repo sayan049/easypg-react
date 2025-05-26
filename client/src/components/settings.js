@@ -85,7 +85,7 @@ function Settings({ user, loginMethod }) {
       setIsEditing(false);
       setEditingField(null);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message || "An error occurred");
       return;
     }
 

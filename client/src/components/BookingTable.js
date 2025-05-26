@@ -1105,8 +1105,9 @@ const BookingTable = ({
         toast.error("Something went wrong. Please try again.");
       }
     } catch (error) {
+      const msg = error.response?.data?.message || "An error occurred while submitting feedback.";
       console.error("Feedback submission error:", error);
-      toast.error("An error occurred while submitting feedback.");
+      toast.error(msg);
     }
   };
 

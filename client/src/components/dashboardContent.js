@@ -194,7 +194,10 @@ const DashboardContent = ({
       setSelectedStayId("");
     } catch (error) {
       console.error("Error submitting maintenance request:", error);
-      alert("There was an error submitting the request. Please try again.");
+      // alert("There was an error submitting the request. Please try again.");
+      toast.error(
+        error.response?.data?.message || "Failed to submit maintenance request"
+      );
     } finally {
       setIsSubmitting(false); // Stop loading after submission attempt
     }
@@ -435,8 +438,7 @@ const DashboardContent = ({
               )}
 
               {/* Action Buttons: Cancel + Contact */}
-              <div className="px-6 py-4 border-t border-gray-200 flex flex-col md:flex-row md:justify-between items-start md:items-center mt-6 gap-4">
-                {/* Left Side: Cancel and Contact */}
+              <div className=" px-6 py-4 border-t border-gray-200 flex justify-between items-center mt-6">
                 <div className="flex gap-3 w-full md:w-auto">
                   {showCancelInput === stay._id ? (
                     <div className="space-y-2 w-full">
@@ -474,32 +476,11 @@ const DashboardContent = ({
                     </button>
                   )}
 
-                  <ContactOwnerButton mobileNo={stay.pgOwner?.mobileNo} />
+                  <button className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    Contact Owner
+                  </button>
                 </div>
-
-                {/* Right Side: Report Button */}
-                <button
-                  onClick={() => {
-                    setSelectedStay(stay._id);
-                    setShowReportModal(true);
-                    setReportSuccess(null); // Reset success message state if you use it
-                  }}
-                  className="text-sm flex items-center gap-2 px-3 py-2 border border-red-400 text-red-500 hover:bg-red-50 rounded-md"
-                >
-                  <MdReportProblem className="text-lg" />
-                  Report Fraud
-                </button>
               </div>
-              {/* Render the Modal when triggered */}
-              {showReportModal && selectedStay && (
-                <ReportFraudModal
-                  stay={selectedStay}
-                  onClose={() => setShowReportModal(false)}
-                  onSubmit={handleReportSubmit}
-                  submitting={submittingReport}
-                  success={reportSuccess}
-                />
-              )}
             </div>
           ))}
         </div>

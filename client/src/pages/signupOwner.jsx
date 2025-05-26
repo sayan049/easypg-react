@@ -148,7 +148,7 @@ function SignupOwner() {
 
       toast.success("OTP sent to your email");
     } catch (error) {
-      toast.error("Failed to send OTP. Please try again.");
+      toast.error(error.response?.data?.message||"Failed to send OTP. Please try again.");
     } finally {
       setIsSendingOtp(false);
     }
@@ -182,7 +182,8 @@ function SignupOwner() {
       setOtp(["", "", "", ""]); // Clear OTP fields
       toast.success("Email verified successfully");
     } catch (error) {
-      setOtpError("Invalid OTP. Please try again.");
+      toast.error(error.response?.data?.message || "Invalid OTP. Please try again.");
+    //  setOtpError("Invalid OTP. Please try again.");
     } finally {
       setIsVerifyingOtp(false);
     }

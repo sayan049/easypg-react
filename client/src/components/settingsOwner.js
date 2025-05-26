@@ -147,7 +147,7 @@ const SettingsOwner = ({ userDetails, loginMethod }) => {
         confirmPassword: "",
       });
     } catch (err) {
-      toast.error(err.message || "An error occurred");
+      toast.error(err.response?.data?.message ||err.message || "An error occurred");
       setPasswordError(err.message);
     } finally {
       setIsUpdatingPassword(false);
@@ -309,7 +309,7 @@ const SettingsOwner = ({ userDetails, loginMethod }) => {
       }
     } catch (err) {
       console.error("Update error:", err);
-      toast.error("An error occurred during update.");
+      toast.error(err.response?.data?.message||"An error occurred during update.");
       // alert("An error occurred during update.");
     }
   };

@@ -42,8 +42,14 @@ const HomePage = () => {
     isOwnerAuthenticated,
     ownerName,
   } = useAuth();
-  const { hasUnread, isConnected, data, setIsConnected, hasUnreadOwner } =
-    useSocket();
+  const {
+    hasUnread,
+    isConnected,
+    data,
+    setIsConnected,
+    hasUnreadOwner,
+    hasUnreadOwnerCancel,
+  } = useSocket();
   const [menuOpen, setMenuOpen] = useState(false);
   const [nearbyMesses, setNearbyMesses] = useState([]);
   const [isLocating, setIsLocating] = useState(false);
@@ -55,7 +61,14 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    console.log("data:", data, "isConnected:", isConnected , "data?.status:", data?.status);
+    console.log(
+      "data:",
+      data,
+      "isConnected:",
+      isConnected,
+      "data?.status:",
+      data?.booking?.status
+    );
     if (isConnected) {
       if (data?.booking?.status === "rejected" || data?.status === "rejected") {
         toast.info("your booking has been rejected by the owner");
@@ -74,9 +87,26 @@ const HomePage = () => {
           "Your booking request has expired. Please check your bookings."
         );
       }
-       if (data?.booking?.status === "cancelled" || data?.status === "cancelled") {
-        console.log("pending request has been cancelled by the user for ", data?.booking?.room);
-        toast.info(`pending request has been cancelled by the user for ${data?.booking?.room}`);
+      if (
+        data?.booking?.status === "cancelled" ||
+        data?.status === "cancelled"
+      ) {
+        if (
+          data?.booking?.requestType === "pending-cancel" ||
+          data?.requestType === "pending-cancel"
+        ) {
+          toast.info(
+            `pending request has been cancelled by the user for ${data?.booking?.room}`
+          );
+        }
+        if (
+          data?.booking?.requestType === "confirmed-cancel" ||
+          data?.requestType === "confirmed-cancel"
+        ) {
+          toast.info(
+            "user cancelled your booking request. Please check your bookings."
+          );
+        }
       }
 
       setIsConnected(false);
@@ -464,7 +494,7 @@ const HomePage = () => {
                   >
                     <UserProfile className="h-12 w-12 ring-2 ring-[#2CA4B5] rounded-full" />
                   </motion.div>
-                  {(hasUnread || hasUnreadOwner) && (
+                  {(hasUnread || hasUnreadOwner || hasUnreadOwnerCancel) && (
                     <span className="absolute top-0 right-0 h-3 w-3 bg-red-500 rounded-full " />
                   )}
 
@@ -1244,7 +1274,7 @@ const HomePage = () => {
                     ))}
                   </div>
                   <div className="mt-8 flex space-x-4">
-                    {[ "instagram","facebook", "linkedin"].map(
+                    {["instagram", "facebook", "linkedin"].map(
                       (social, index) => (
                         <motion.a
                           key={index}

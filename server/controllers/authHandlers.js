@@ -518,7 +518,7 @@ exports.findMess = async (req, res) => {
 
     // Generate 7-character GeoHash for user's location
     const userGeohash = geohash.encode(latitude, longitude, 5);
-    console.log("🔍 User GeoHash:", userGeohash);
+   // console.log("🔍 User GeoHash:", userGeohash);
 
     // Get 7-character neighboring GeoHashes
     let neighbors = geohash
@@ -526,7 +526,7 @@ exports.findMess = async (req, res) => {
       .map((hash) => hash.substring(0, 5));
     neighbors.push(userGeohash); // Include user's geohash
 
-    console.log("🗺 Neighboring GeoHashes:", neighbors);
+   // console.log("🗺 Neighboring GeoHashes:", neighbors);
 
     // Query MongoDB using correct geohashes
     const nearbyPGs = await PgOwner.find({ geoHash: { $in: neighbors } })

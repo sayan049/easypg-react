@@ -63,7 +63,7 @@ function StickyBookingCard({ messData, isVisible }) {
             ))}
           </select>
         </div> */}
-        <p className="text-sm text-gray-600 mt-1">Booking Fee: ₹100</p>
+        <p className="text-sm text-gray-600 mt-1">Booking Fee: ₹0</p>
       </div>
 
       {/* Right Section: Action */}
