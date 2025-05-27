@@ -281,6 +281,7 @@ export default function BookingPage() {
   setIsLoading(true);
 
   try {
+    console.log("Updating phone number for user:", user.id ,updateDetailsUrl);
     const payload = {
       userId: user.id,
       type: user.type || "student", // Default to "student" if type is not set
