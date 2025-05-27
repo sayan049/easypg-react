@@ -195,7 +195,7 @@ exports.updateDetails = async (req, res) => {
 
   // console.log("Uploaded files:", req.files);
   // console.log("Cloudinary results:", req.cloudinaryResults);
-
+  console.log("Update data:", updateData ,type, userId);
   try {
     let updatedUser;
 
