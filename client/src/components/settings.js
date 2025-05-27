@@ -44,7 +44,16 @@ function Settings({ user, loginMethod }) {
     const { name, value } = e.target;
     console.log("Input change:", name, value);
     if (name === "location") return;
-    setPersonalInfo({ ...personalInfo, [name]: value });
+  //  setPersonalInfo({ ...personalInfo, [name]: value });
+    if (value === "") {
+      setPersonalInfo({ ...personalInfo, [name]: "" });
+    }
+    else if (value === null) {
+      setPersonalInfo({ ...personalInfo, [name]: null });
+    }
+    else {
+      setPersonalInfo({ ...personalInfo, [name]: value });
+    }
   };
 
   const handlePasswordChange = (e) => {
@@ -138,8 +147,6 @@ function Settings({ user, loginMethod }) {
     setPersonalInfo(initialData);
     toast.success("Reset to default settings!");
   };
-
-
 
   const mapMake = () => {
     navigator.geolocation.getCurrentPosition((position) => {
