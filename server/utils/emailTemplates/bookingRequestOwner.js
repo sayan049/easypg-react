@@ -27,7 +27,7 @@ module.exports = function bookingRequestOwnerTemplate({
 <body style="margin:0;padding:0;font-family:'Montserrat',Arial,sans-serif;background:#ffffff;">
   <div style="max-width:600px;margin:auto;padding:40px 20px;">
     <div style="text-align:center;margin-bottom:30px;">
-      <img src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp" alt="MessMate" style="width:48px;height:48px;">
+      <img src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1748370229/png_company_xskvfs.png" alt="MessMate" style="width:40px;">
     </div>
 
     <div style="background:#ffffff;border-radius:12px;padding:40px;border:1px solid #e5e7eb;">
@@ -58,10 +58,10 @@ module.exports = function bookingRequestOwnerTemplate({
 
       <div style="margin-bottom:32px;">
         <h2 style="font-size:16px;color:#374151;margin:0 0 12px 0;">Booking Details</h2>
-        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+        <div style="display:grid;grid-template-columns:repeat(1,1fr);gap:12px;">
           <div style="background:#f9fafb;border-radius:8px;padding:16px;">
             <div style="color:#6b7280;font-size:14px;">Booking ID</div>
-            <div style="color:#111827;font-weight:600;">#MM${booking_id}</div>
+            <div style="color:#111827;font-weight:600;">${booking_id}</div>
           </div>
           <div style="background:#f9fafb;border-radius:8px;padding:16px;">
             <div style="color:#6b7280;font-size:14px;">Check-in Date</div>
@@ -103,8 +103,9 @@ module.exports = function bookingRequestOwnerTemplate({
       </div>
     </div>
 
-    <div style="text-align:center;padding:32px 0;color:#6b7280;font-size:12px;">
-      <div style="margin-bottom:16px;">
+    <div style="text-align:center;padding:32px 0;color:#6b7280;font-size:12px; background-color: #dbdbdb;
+    border-radius: 10px;">
+      <div style="margin-bottom:10px;">
         <a href="${terms_link}" style="color:#6b7280;text-decoration:none;margin:0 8px;">Terms</a>
         <a href="${privacy_link}" style="color:#6b7280;text-decoration:none;margin:0 8px;">Privacy</a>
       

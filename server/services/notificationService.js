@@ -130,6 +130,8 @@ const mongoose = require("mongoose");
 const Notification = require("../modules/Notification");
 const bookingRequestUserTemplate = require("../utils/emailTemplates/bookingRequestUser");
 const bookingRequestOwnerTemplate = require("../utils/emailTemplates/bookingRequestOwner");
+const confirmedBookingUserTemplate = require("../utils/emailTemplates/confirmedbookingUser");
+const rejectedBookingUser = require("../utils/emailTemplates/rejectedBookingUser");
 require("dotenv").config();
 
 // Email configuration
@@ -223,12 +225,18 @@ exports.sendNotification = async (
  */
 function generateBookingEmailTemplate(recipientType, data) {
   if (recipientType === "User") {
-    return bookingRequestUserTemplate(data);
-  } else if (recipientType === "pgOwner") {
+    if (data.status === "confirmed") {
+      return confirmedBookingUserTemplate(data);
+    } else if (data.status === "rejected") {
+      return rejectedBookingUser(data);
+    }
+    return bookingRequestUserTemplate(data); 
+  } else if (recipientType === "PgOwner") {
     return bookingRequestOwnerTemplate(data);
   }
   return generateEmailTemplate("Booking Notification", "A new booking update occurred.", NOTIFICATION_TYPES.BOOKING);
 }
+
 
 /**
  * Default simple email template

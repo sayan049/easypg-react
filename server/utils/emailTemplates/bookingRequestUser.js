@@ -20,14 +20,14 @@ module.exports = function bookingRequestUserTemplate({
 <body style="margin: 0; padding: 0; font-family: 'Montserrat', Arial, sans-serif; -webkit-font-smoothing: antialiased; background-color: #ffffff;">
   <div style="max-width: 600px; margin: auto; padding: 30px 20px;">
     <div style="text-align: center; margin-bottom: 40px;">
-      <img src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp" 
+      <img src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1748370229/png_company_xskvfs.png" 
            alt="MessMate" 
            style="width: 60px; height: 60px; margin-bottom: 20px;">
     </div>
 
     <div style="background: #ffffff; border-radius: 8px; padding: 30px; border: 1px solid #e5e7eb;">
-      <div style="background: #fffbeb; color: #d97706; padding: 10px 20px; border-radius: 20px; 
-                  display: inline-block; margin: 0 auto 25px; text-align: center; width: 100%; max-width: 240px;">
+      <div style="background: #fffbeb; color: #d97706;  border-radius: 20px; 
+                  display: inline-block; margin: 0 auto 25px; text-align: center; width: 100%;">
         <span style="font-weight: 600; font-size: 14px;">✓ REQUEST SUBMITTED</span>
       </div>
 
@@ -52,7 +52,7 @@ module.exports = function bookingRequestUserTemplate({
             <strong style="font-size: 16px; color: #1f2937;">${pgName}</strong>
           </td>
           <td style="padding: 12px; border: 1px solid #e5e7eb; width: 50%;">
-            <span style="font-size: 13px; color: #6b7280;">Host Contact</span><br>
+            <span style="font-size: 13px; color: #6b7280;">Owner Contact</span><br>
             <strong style="font-size: 16px; color: #1f2937;">${hostContact}</strong>
           </td>
         </tr>
@@ -71,7 +71,7 @@ module.exports = function bookingRequestUserTemplate({
             <div style="position: relative; z-index: 1;">
               <div style="width: 32px; height: 32px; background: #e5e7eb; border-radius: 50%; 
                           color: #6b7280; line-height: 32px; margin: 0 auto 8px;">2</div>
-              <span style="font-size: 12px; color: #6b7280;">Host Approval</span>
+              <span style="font-size: 12px; color: #6b7280;">Owner Approval</span>
             </div>
             <div style="position: relative; z-index: 1;">
               <div style="width: 32px; height: 32px; background: #e5e7eb; border-radius: 50%; 
@@ -85,7 +85,7 @@ module.exports = function bookingRequestUserTemplate({
       <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 20px; margin: 25px 0;">
         <h3 style="color: #15803d; margin: 0 0 15px 0;">What's Next?</h3>
         <ul style="margin: 0; padding-left: 20px; color: #64748b;">
-          <li style="margin-bottom: 8px;">Host will respond within ${responseTime}</li>
+          <li style="margin-bottom: 8px;">Owner will respond within ${responseTime}</li>
           <li style="margin-bottom: 8px;">You'll receive confirmation email once approved</li>
           <li>Payment will be collected after confirmation</li>
         </ul>

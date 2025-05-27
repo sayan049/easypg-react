@@ -670,12 +670,11 @@ exports.createBookingRequest = async (req, res) => {
               submissionTime: moment(booking.createdAt)
                 .tz("Asia/Kolkata")
                 .format("hh:mm A"),
-                pgName: owner.messName,
-                hostContact:owner.email || "N/A",
-                responseTime: "24 hours",
-                termsLink: `${frontendUrl}/terms`,
-                privacyLink: `${frontendUrl}/privacy`,
-
+              pgName: owner.messName,
+              hostContact: owner.email || "N/A",
+              responseTime: "24 hours",
+              termsLink: `${frontendUrl}/terms`,
+              privacyLink: `${frontendUrl}/privacy`,
             }
           ),
         ];
@@ -1095,6 +1094,18 @@ exports.handleBookingApproval = async (req, res) => {
     const { id } = req.params;
     const { status, rejectionReason } = req.body;
     console.log("Checkpoint 1:", id, status);
+    const ownerId = req.user.id;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid booking ID" });
+    }
+    // const owner = await PgOwner.findById(ownerId);
+    // if (!owner) {
+    //   return res
+    //     .status(404)
+    //     .json({ success: false, message: "Owner not found" });
+    // }
 
     if (!["confirmed", "rejected"].includes(status)) {
       return res
@@ -1163,19 +1174,85 @@ exports.handleBookingApproval = async (req, res) => {
     // ✅ Safe async side effects after response
     setImmediate(async () => {
       try {
-        const message =
-          status === "confirmed"
-            ? `Confirmed for ${booking.pgOwner.messName} (Room: ${booking.room})`
-            : `Rejected for ${booking.pgOwner.messName}. Reason: ${rejectionReason}`;
+        // const message =
+        //   status === "confirmed"
+        //     ? `Confirmed for ${booking.pgOwner.messName} (Room: ${booking.room})`
+        //     : `Rejected for ${booking.pgOwner.messName}. Reason: ${rejectionReason}`;
 
-        await sendNotification(
-          booking.student._id,
-          "User",
-          `Booking ${status}`,
-          message,
-          NOTIFICATION_TYPES.BOOKING,
-          booking._id
-        );
+        // await sendNotification(
+        //   booking.student._id,
+        //   "User",
+        //   `Booking ${status}`,
+        //   message,
+        //   NOTIFICATION_TYPES.BOOKING,
+        //   booking._id
+        // );
+        const coords = booking?.student?.location?.coordinates;
+
+        const browse_link =
+          Array.isArray(coords) && coords.length === 2
+            ? `https://messmate.co.in/find-mess/you?lat=${coords[1]}&lng=${coords[0]}`
+            : "https://messmate.co.in/";
+        const startDate = new Date(booking.period.startDate);
+        const endDate = new Date(startDate);
+        endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
+        const formatDateForCalendar = (date) => {
+          return moment(date).tz("Asia/Kolkata").format("YYYYMMDDTHHmmss");
+        };
+        if (status === "confirmed") {
+          const calendarLink = `https://www.google.com/calendar/render?action=TEMPLATE&text=PG+Check-in+at+${
+            booking.pgOwner.messName
+          }&dates=${formatDateForCalendar(startDate)}/${formatDateForCalendar(
+            endDate
+          )}&details=Room:+${booking.room}&location=PG+${
+            booking.pgOwner.messName
+          }`;
+
+          await sendNotification(
+            booking.student._id,
+            "User",
+            "Booking Confirmed",
+            `Booking Confirmed for ${booking.pgOwner.messName}`,
+            NOTIFICATION_TYPES.BOOKING,
+            booking._id,
+            {
+               status: "confirmed",
+              pg_name: booking.pgOwner.messName,
+              checkin_date: moment(booking.period.startDate)
+                .tz("Asia/Kolkata")
+                .format("DD MMM YYYY"),
+              total_amount: booking.pricePerHead,
+              host_name:
+                booking.pgOwner.firstName + " " + booking.pgOwner.lastName,
+              host_phone: booking.pgOwner.mobileNo,
+              booking_id: "#" + booking._id.toString().slice(-6).toUpperCase(),
+              contact_us: "https://messmate.co.in/#contactus",
+              privacy_policy: "https://messmate.co.in/privacy",
+              terms_of_service: "https://messmate.co.in/terms",
+              cancellation_policy: "https://messmate.co.in/refund",
+              calendar_link: calendarLink,
+            }
+          );
+        } else {
+          await sendNotification(
+            booking.student._id,
+            "User",
+            "Booking Rejected",
+            `Booking Rejected for ${booking.pgOwner.messName}`,
+            NOTIFICATION_TYPES.BOOKING,
+            booking._id,
+            {
+               status: "rejected",
+              pg_name: booking.pgOwner.messName,
+              request_id: "#" + booking._id.toString().slice(-6).toUpperCase(),
+              host_message: booking.ownerRejectionReason,
+              browse_link: `${browse_link}`,
+              contact_us: "https://messmate.co.in/#contactus",
+              privacy_policy: "https://messmate.co.in/privacy",
+              terms_of_service: "https://messmate.co.in/terms",
+            }
+          );
+        }
 
         console.log("Checkpoint 5: Notification sent");
 
