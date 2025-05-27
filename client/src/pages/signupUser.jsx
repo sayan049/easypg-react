@@ -291,7 +291,7 @@ function SignUpForm() {
                     placeholder="Pin Code"
                     value={pin}
                     onChange={(e) => setPin(e.target.value)}
-                    className="flex-1 rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
+                    className="w-full rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-[#2ca4b5] bg-[#116e7b1a]"
                     autoComplete="postal-code"
                     aria-required="true"
                   />
