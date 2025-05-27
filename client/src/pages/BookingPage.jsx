@@ -289,6 +289,7 @@ export default function BookingPage() {
           throw new Error("Failed to fetch user details");
         const detailsData = await detailsResponse.json();
         setUserDetails(detailsData);
+        console.log("User details:", detailsData.phone);
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error(error.response?.data?.message || "Failed to load data");
@@ -307,7 +308,7 @@ export default function BookingPage() {
     }
 
     try {
-      console.log("Updating phone number for user:", user.id, updateDetailsUrl);
+    //  console.log("Updating phone number for user:", user.id, updateDetailsUrl);
       const payload = {
         userId: user.id,
         type: user.type || "student", // Default to "student" if type is not set
