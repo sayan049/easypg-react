@@ -133,7 +133,10 @@ const Cart = () => {
       if (err.response?.status === 404) {
         toast.info("No messes found in your cart.");
       } else {
-        toast.error(err.response?.data?.message||"Something went wrong while fetching mess data.");
+        toast.error(
+          err.response?.data?.message ||
+            "Something went wrong while fetching mess data."
+        );
       }
     } finally {
       setLoading(false);
@@ -171,7 +174,10 @@ const Cart = () => {
         setLiked({});
         toast.info("You haven't liked any mess yet.");
       } else {
-        toast.error(err.response?.data?.message||"Something went wrong while fetching liked messes.");
+        toast.error(
+          err.response?.data?.message ||
+            "Something went wrong while fetching liked messes."
+        );
       }
     }
   };
@@ -251,7 +257,7 @@ const Cart = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <ToastContainer />
+      <ToastContainer toastClassName="!max-w-[90vw] mx-auto mt-4 sm:mt-0" />
       <div className="flex flex-col space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">

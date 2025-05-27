@@ -12,7 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function Settings({ user, loginMethod }) {
- console.log("Settings component rendered with user:", user);
+  console.log("Settings component rendered with user:", user);
   const { IsAuthenticated, owner, type, handleLogout } = useAuth();
   const [image, setImage] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -85,7 +85,9 @@ function Settings({ user, loginMethod }) {
       setIsEditing(false);
       setEditingField(null);
     } catch (error) {
-      toast.error(error.response?.data?.message || error.message || "An error occurred");
+      toast.error(
+        error.response?.data?.message || error.message || "An error occurred"
+      );
       return;
     }
 
@@ -251,7 +253,7 @@ function Settings({ user, loginMethod }) {
     <div className="max-w-4xl mx-auto p-4 sm:p-6">
       <ToastContainer
         position="top-center"
-        toastClassName="!w-full max-w-xs !text-sm"
+        toastClassName="!max-w-[90vw] mx-auto mt-4 sm:mt-0"
         autoClose={3000}
       />
 

@@ -26,6 +26,8 @@ import {
   Twitter,
   Mail,
 } from "lucide-react";
+import { use } from "react";
+import {updateDetailsUrl} from "../constant/urls";
 
 // components/BookingSkeleton.jsx
 export const BookingSkeleton = () => {
@@ -222,10 +224,12 @@ export default function BookingPage() {
   const [copied, setCopied] = useState(false);
   const [showTermsPopup, setShowTermsPopup] = useState(false);
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const { messId } = useParams();
 
   useEffect(() => {
+    console.log(user, "user in booking page");
     const fetchMessDetails = async () => {
       try {
         const res = await axios.get(`${viewDetailsUrl}/${messId}`);
@@ -237,6 +241,30 @@ export default function BookingPage() {
 
     fetchMessDetails();
   }, [messId]);
+
+  const handleUpdate = async () => {
+    if (!phone) return toast("Please enter a phone number.");
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(phone)) {
+      return toast("Please enter a valid 10-digit phone number.");
+    }
+    setLoading(true);
+
+    try {
+      const payload = {
+        userId,
+        type: userType, // "student" or "owner"
+        ...(userType === "student" ? { phone } : { mobileNo: phone }),
+      };
+
+      const res = await axios.put(updateDetailsUrl, payload);
+      //  setMessage("Phone number updated successfully.");
+    } catch (err) {
+      toast("Failed to update phone number.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Convert bedCount string to number
   const bedCountToNumber = {
@@ -439,6 +467,7 @@ export default function BookingPage() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
+        toastClassName="!max-w-[90vw] mx-auto mt-4 sm:mt-0"
         style={{ zIndex: 9999 }}
       />
 
@@ -638,6 +667,23 @@ export default function BookingPage() {
                 </div>
               </div>
             </div>
+
+            {/* Phone Number Section */}
+            {!user?.phone && (
+              <div className="bg-white rounded-xl shadow-sm p-6 max-w-[25rem]">
+                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                  <Phone className="h-5 w-5 mr-2 text-teal-600" />
+                  Your Phone Number
+                </h2>
+                <input
+                  type="tel"
+                  placeholder="Enter your phone number"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+            )}
 
             {/* Room Preview */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -863,7 +909,12 @@ export default function BookingPage() {
                         //  if (!selectedRoom || !checkInDate || isLoading) return;
                         setShowTermsPopup(true);
                       }}
-                      disabled={!selectedRoom || !checkInDate || isLoading}
+                      disabled={
+                        !selectedRoom ||
+                        !checkInDate ||
+                        isLoading ||
+                        (phoneNumber === "" && !user?.phone)
+                      }
                     >
                       {isLoading ? (
                         <div className="flex items-center justify-center">
@@ -913,6 +964,7 @@ export default function BookingPage() {
           setHasAcceptedTerms(true);
           setShowTermsPopup(false);
           handleBookingRequest();
+          handleUpdate();
         }}
         onClose={() => setShowTermsPopup(false)}
       />

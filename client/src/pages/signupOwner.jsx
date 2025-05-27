@@ -650,6 +650,7 @@ function SignupOwner() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
+        toastClassName="!max-w-[90vw] mx-auto mt-4 sm:mt-0"
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

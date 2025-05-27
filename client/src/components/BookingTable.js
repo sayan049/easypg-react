@@ -1178,6 +1178,7 @@ const BookingTable = ({
         draggable
         pauseOnHover
         theme="light" // or "dark", "colored"
+        toastClassName="!max-w-[90vw] mx-auto mt-4 sm:mt-0"
       />
 
       {/* Booking Summary */}
