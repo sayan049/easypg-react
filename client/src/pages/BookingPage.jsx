@@ -243,18 +243,18 @@ export default function BookingPage() {
   }, [messId]);
 
   const handleUpdate = async () => {
-    if (!phone) return toast("Please enter a phone number.");
+    if (!phoneNumber) return toast("Please enter a phone number.");
     const phoneRegex = /^[6-9]\d{9}$/;
-    if (!phoneRegex.test(phone)) {
+    if (!phoneRegex.test(phoneNumber)) {
       return toast("Please enter a valid 10-digit phone number.");
     }
-    setLoading(true);
+    setIsLoading(true);
 
     try {
       const payload = {
-        userId,
-        type: userType, // "student" or "owner"
-        ...(userType === "student" ? { phone } : { mobileNo: phone }),
+        userId:user.id,
+        type: "student",
+        phone:phoneNumber
       };
 
       const res = await axios.put(updateDetailsUrl, payload);
@@ -262,7 +262,7 @@ export default function BookingPage() {
     } catch (err) {
       toast("Failed to update phone number.");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
