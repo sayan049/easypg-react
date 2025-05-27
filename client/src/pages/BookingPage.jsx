@@ -242,36 +242,65 @@ export default function BookingPage() {
     fetchMessDetails();
   }, [messId]);
 
+  // const handleUpdate = async () => {
+  //   if (!phoneNumber) return toast("Please enter a phone number.");
+  //   const phoneRegex = /^[6-9]\d{9}$/;
+  //   if (!phoneRegex.test(phoneNumber)) {
+  //     return toast("Please enter a valid 10-digit phone number.");
+  //   }
+  //   setIsLoading(true);
+
+  //   try {
+  //     const payload = {
+  //       userId: user.id,
+  //       type: "student",
+  //       phone: phoneNumber,
+  //     };
+
+  //     await fetch(updateDetailsUrl, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(payload),
+  //     });
+
+  //     //  setMessage("Phone number updated successfully.");
+  //   } catch (err) {
+  //     toast(err.message||"Failed to update phone number.");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
   const handleUpdate = async () => {
-    if (!phoneNumber) return toast("Please enter a phone number.");
-    const phoneRegex = /^[6-9]\d{9}$/;
-    if (!phoneRegex.test(phoneNumber)) {
-      return toast("Please enter a valid 10-digit phone number.");
-    }
-    setIsLoading(true);
+  if (!phoneNumber) return toast("Please enter a phone number.");
+  const phoneRegex = /^[6-9]\d{9}$/;
+  if (!phoneRegex.test(phoneNumber)) {
+    return toast("Please enter a valid 10-digit phone number.");
+  }
+  setIsLoading(true);
 
-    try {
-      const payload = {
-        userId: user.id,
-        type: "student",
-        phone: phoneNumber,
-      };
+  try {
+    console.log("Updating phone number for user:", user.id ,updateDetailsUrl);
+    const payload = {
+      userId: user.id,
+      type: user.type || "student", // Default to "student" if type is not set
+      phone: phoneNumber,
+    };
 
-      await fetch(updateDetailsUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      //  setMessage("Phone number updated successfully.");
-    } catch (err) {
-      toast("Failed to update phone number.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    await axios.post(updateDetailsUrl, payload, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    toast.success("Phone number updated successfully.");
+  } catch (err) {
+    toast.error(err.message || "Failed to update phone number.");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   // Convert bedCount string to number
   const bedCountToNumber = {
