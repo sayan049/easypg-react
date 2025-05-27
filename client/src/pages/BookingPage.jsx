@@ -257,12 +257,15 @@ export default function BookingPage() {
         phone: phoneNumber,
       };
 
-      const response = await fetch(updateDetailsUrl, {
+      await fetch(updateDetailsUrl, {
         method: "POST",
-        body: payload ? JSON.stringify(payload) : null,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
+
       //  setMessage("Phone number updated successfully.");
-      
     } catch (err) {
       toast("Failed to update phone number.");
     } finally {
