@@ -42,6 +42,7 @@ function Settings({ user, loginMethod }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log("Input change:", name, value);
     if (name === "location") return;
     setPersonalInfo({ ...personalInfo, [name]: value });
   };
