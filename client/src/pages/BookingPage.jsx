@@ -888,7 +888,7 @@ export default function BookingPage() {
                         !selectedRoom ||
                         !checkInDate ||
                         isLoading ||
-                        (setPhoneNumber === "" && !user?.phone)
+                        (phoneNumber === "" && !user?.phone)
                       }
                     >
                       {isLoading ? (
