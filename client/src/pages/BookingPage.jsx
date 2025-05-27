@@ -884,7 +884,12 @@ export default function BookingPage() {
                         //  if (!selectedRoom || !checkInDate || isLoading) return;
                         setShowTermsPopup(true);
                       }}
-                      disabled={!selectedRoom || !checkInDate || isLoading}
+                      disabled={
+                        !selectedRoom ||
+                        !checkInDate ||
+                        isLoading ||
+                        (setPhoneNumber === "" && !user?.phone)
+                      }
                     >
                       {isLoading ? (
                         <div className="flex items-center justify-center">
