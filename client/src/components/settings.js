@@ -44,12 +44,14 @@ function Settings({ user, loginMethod }) {
     const { name, value } = e.target;
     console.log("Input change:", name, value);
     if (name === "location") return;
-    //  setPersonalInfo({ ...personalInfo, [name]: value });
+  //  setPersonalInfo({ ...personalInfo, [name]: value });
     if (value === "") {
       setPersonalInfo({ ...personalInfo, [name]: "" });
-    } else if (value === null) {
+    }
+    else if (value === null) {
       setPersonalInfo({ ...personalInfo, [name]: null });
-    } else {
+    }
+    else {
       setPersonalInfo({ ...personalInfo, [name]: value });
     }
   };
@@ -66,60 +68,29 @@ function Settings({ user, loginMethod }) {
       return;
     }
 
-    // const formData = new FormData();
-    // formData.append("userId", user._id);
-    // formData.append("type", type);
+    const formData = new FormData();
+    formData.append("userId", user._id);
+    formData.append("type", type);
 
-    // Object.keys(personalInfo).forEach((key) => {
-    //   if (personalInfo[key]) {
-    //     formData.append(
-    //       key,
-    //       key === "location"
-    //         ? JSON.stringify(personalInfo[key])
-    //         : personalInfo[key] ?? ""
-    //     );
-    //   }
-    // });
+    Object.keys(personalInfo).forEach((key) => {
+      if (personalInfo[key]) {
+        formData.append(
+          key,
+          key === "location"
+            ? JSON.stringify(personalInfo[key])
+            : personalInfo[key] ?? ""
+        );
+      }
+    });
 
-    // try {
-    //   const response = await fetch(updateDetailsUrl, {
-    //     method: "POST",
-    //     body: formData,
-    //   });
-
-    //   if (!response.ok) throw new Error("Failed to update details");
-    //   await response.json();
-    //   toast.success("Profile details updated!");
-    //   setIsEditing(false);
-    //   setEditingField(null);
     try {
-      const formData = new FormData();
-      formData.append("userId", user._id);
-      formData.append("type", type);
-
-      // Handle all fields including null values
-      Object.keys(personalInfo).forEach((key) => {
-        const value = personalInfo[key];
-
-        if (key === "location") {
-          formData.append(key, JSON.stringify(value));
-        } else {
-          // Explicitly send empty string for null values
-          formData.append(key, value === null ? "" : value || "");
-        }
-      });
-
       const response = await fetch(updateDetailsUrl, {
         method: "POST",
         body: formData,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to update details");
-      }
-
-      const result = await response.json();
+      if (!response.ok) throw new Error("Failed to update details");
+      await response.json();
       toast.success("Profile details updated!");
       setIsEditing(false);
       setEditingField(null);
