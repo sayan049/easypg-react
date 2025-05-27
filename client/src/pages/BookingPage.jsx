@@ -27,7 +27,7 @@ import {
   Mail,
 } from "lucide-react";
 import { use } from "react";
-import updateDetailsUrl from "../constant/urls";
+import {updateDetailsUrl} from "../constant/urls";
 
 // components/BookingSkeleton.jsx
 export const BookingSkeleton = () => {
