@@ -44,12 +44,14 @@ function Settings({ user, loginMethod }) {
     const { name, value } = e.target;
     console.log("Input change:", name, value);
     if (name === "location") return;
-    //  setPersonalInfo({ ...personalInfo, [name]: value });
+  //  setPersonalInfo({ ...personalInfo, [name]: value });
     if (value === "") {
       setPersonalInfo({ ...personalInfo, [name]: "" });
-    } else if (value === null) {
+    }
+    else if (value === null) {
       setPersonalInfo({ ...personalInfo, [name]: null });
-    } else {
+    }
+    else {
       setPersonalInfo({ ...personalInfo, [name]: value });
     }
   };
@@ -70,23 +72,13 @@ function Settings({ user, loginMethod }) {
     formData.append("userId", user._id);
     formData.append("type", type);
 
-    // Object.keys(personalInfo).forEach((key) => {
-    //   if (personalInfo[key]) {
-    //     formData.append(
-    //       key,
-    //       key === "location"
-    //         ? JSON.stringify(personalInfo[key])
-    //         : personalInfo[key] ?? ""
-    //     );
-    //   }
-    // });
     Object.keys(personalInfo).forEach((key) => {
-      if (personalInfo[key] !== undefined) {
+      if (personalInfo[key]) {
         formData.append(
           key,
           key === "location"
             ? JSON.stringify(personalInfo[key])
-            : personalInfo[key]
+            : personalInfo[key] ?? ""
         );
       }
     });
