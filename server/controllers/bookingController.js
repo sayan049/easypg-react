@@ -454,7 +454,7 @@ const Booking = require("../modules/Booking");
 const PgOwner = require("../modules/pgProvider");
 const MissedSocketEvent = require("../modules/missedSocket");
 const User = require("../modules/user");
-const moment = require("moment");
+
 const mongoose = require("mongoose");
 const MaintenanceRequest = require("../modules/MaintenanceRequest");
 const FraudReport = require("../modules/Fraudreport");
@@ -675,7 +675,7 @@ exports.createBookingRequest = async (req, res) => {
                 responseTime: "24 hours",
                 termsLink: `${frontendUrl}/terms`,
                 privacyLink: `${frontendUrl}/privacy`,
-                
+
             }
           ),
         ];
