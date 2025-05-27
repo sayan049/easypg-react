@@ -42,8 +42,18 @@ function Settings({ user, loginMethod }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log("Input change:", name, value);
     if (name === "location") return;
-    setPersonalInfo({ ...personalInfo, [name]: value });
+  //  setPersonalInfo({ ...personalInfo, [name]: value });
+    if (value === "") {
+      setPersonalInfo({ ...personalInfo, [name]: "" });
+    }
+    else if (value === null) {
+      setPersonalInfo({ ...personalInfo, [name]: null });
+    }
+    else {
+      setPersonalInfo({ ...personalInfo, [name]: value });
+    }
   };
 
   const handlePasswordChange = (e) => {
@@ -68,7 +78,7 @@ function Settings({ user, loginMethod }) {
           key,
           key === "location"
             ? JSON.stringify(personalInfo[key])
-            : personalInfo[key]
+            : personalInfo[key] ?? ""
         );
       }
     });
@@ -133,89 +143,10 @@ function Settings({ user, loginMethod }) {
     }
   };
 
-  // const handleSaveChanges = async () => {
-  //   const phoneRegex = /^[0-9]{10}$/;
-  //   if (personalInfo.phone && !phoneRegex.test(personalInfo.phone)) {
-  //     toast.error("Please enter a valid 10-digit phone number");
-  //     return;
-  //   }
-
-  //   const formData = new FormData();
-  //   formData.append("userId", user._id);
-  //   formData.append("type", type);
-
-  //   Object.keys(personalInfo).forEach((key) => {
-  //     if (personalInfo[key]) {
-  //       formData.append(
-  //         key,
-  //         key === "location"
-  //           ? JSON.stringify(personalInfo[key])
-  //           : personalInfo[key]
-  //       );
-  //     }
-  //   });
-
-  //   try {
-  //     const response = await fetch(updateDetailsUrl, {
-  //       method: "POST",
-  //       body: formData,
-  //     });
-
-  //     if (!response.ok) throw new Error("Failed to update details");
-  //     await response.json();
-  //     toast.success("Changes saved successfully!");
-  //     setIsEditing(false);
-  //     setEditingField(null);
-  //   } catch (error) {
-  //     toast.error(error.message);
-  //   }
-  // };
-
   const handleReset = () => {
     setPersonalInfo(initialData);
     toast.success("Reset to default settings!");
   };
-
-  // const handlePasswordReset = async () => {
-  //   const { currentPassword, newPassword, confirmPassword } = passwords;
-
-  //   if (!currentPassword || !newPassword || !confirmPassword) {
-  //     toast.error("All fields are required!");
-  //     return;
-  //   }
-  //   if (newPassword.length < 6) {
-  //     toast.error("Password must be at least 6 characters");
-  //     return;
-  //   }
-  //   if (newPassword !== confirmPassword) {
-  //     toast.error("Passwords don't match!");
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await fetch(resetPasswordDashboard, {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         userId: type === "student" ? user?._id : owner?._id,
-  //         type,
-  //         currentPassword,
-  //         newPassword,
-  //       }),
-  //     });
-
-  //     if (!response.ok) throw new Error("Password update failed");
-
-  //     toast.success("Password updated successfully!");
-  //     setPasswords({
-  //       currentPassword: "",
-  //       newPassword: "",
-  //       confirmPassword: "",
-  //     });
-  //   } catch (error) {
-  //     toast.error(error.message);
-  //   }
-  // };
 
   const mapMake = () => {
     navigator.geolocation.getCurrentPosition((position) => {

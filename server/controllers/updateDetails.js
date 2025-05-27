@@ -195,7 +195,7 @@ exports.updateDetails = async (req, res) => {
 
   // console.log("Uploaded files:", req.files);
   // console.log("Cloudinary results:", req.cloudinaryResults);
-  console.log("Update data:", updateData ,type, userId);
+  console.log("Update data:", updateData, type, userId);
   try {
     let updatedUser;
 
@@ -266,7 +266,7 @@ exports.updateDetails = async (req, res) => {
               console.error("Error parsing location:", e);
               continue;
             }
-          } else if (key === "facility" || key=== "rulesToStay") {
+          } else if (key === "facility" || key === "rulesToStay") {
             updatedUser[key] =
               typeof updateData[key] === "string"
                 ? updateData[key].split(",").map((f) => f.trim())
@@ -287,7 +287,8 @@ exports.updateDetails = async (req, res) => {
               continue;
             }
           } else {
-            updatedUser[key] = updateData[key];
+            // updatedUser[key] = updateData[key];
+            updatedUser[key] = updateData[key] === "" ? null : updateData[key];
           }
         }
       }
