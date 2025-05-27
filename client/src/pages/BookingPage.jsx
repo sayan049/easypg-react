@@ -27,6 +27,7 @@ import {
   Mail,
 } from "lucide-react";
 import { use } from "react";
+import updateDetailsUrl from "../constant/urls";
 
 // components/BookingSkeleton.jsx
 export const BookingSkeleton = () => {
@@ -240,6 +241,30 @@ export default function BookingPage() {
 
     fetchMessDetails();
   }, [messId]);
+
+  const handleUpdate = async () => {
+    if (!phone) return toast("Please enter a phone number.");
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(phone)) {
+      return toast("Please enter a valid 10-digit phone number.");
+    }
+    setLoading(true);
+
+    try {
+      const payload = {
+        userId,
+        type: userType, // "student" or "owner"
+        ...(userType === "student" ? { phone } : { mobileNo: phone }),
+      };
+
+      const res = await axios.put(updateDetailsUrl, payload);
+      //  setMessage("Phone number updated successfully.");
+    } catch (err) {
+      toast("Failed to update phone number.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Convert bedCount string to number
   const bedCountToNumber = {
@@ -939,6 +964,7 @@ export default function BookingPage() {
           setHasAcceptedTerms(true);
           setShowTermsPopup(false);
           handleBookingRequest();
+          handleUpdate();
         }}
         onClose={() => setShowTermsPopup(false)}
       />
