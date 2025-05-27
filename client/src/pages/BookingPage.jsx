@@ -7,7 +7,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import { bookingRequestUrl } from "../constant/urls";
 import "react-toastify/dist/ReactToastify.css";
-import { viewDetailsUrl } from "../constant/urls";
+import { viewDetailsUrl, fetchDetailsUrl } from "../constant/urls";
 import { Dialog } from "@headlessui/react";
 import {
   ArrowLeft,
@@ -276,9 +276,10 @@ export default function BookingPage() {
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        const userId = type === "student" ? user?.id : owner?.id;
-        if (!userId || !socket) return;
-        setLoading(true);
+        const type = user?.type;
+        const userId = type === "student" ? user?.id : "";
+        if (!userId) return;
+        setIsLoading(true);
         const detailsUrl = new URL(fetchDetailsUrl);
         detailsUrl.searchParams.append("userId", userId);
         detailsUrl.searchParams.append("type", type);
@@ -288,7 +289,12 @@ export default function BookingPage() {
           throw new Error("Failed to fetch user details");
         const detailsData = await detailsResponse.json();
         setUserDetails(detailsData);
-      } catch (error) {}
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error(error.response?.data?.message || "Failed to load data");
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchAllData();
   }, [user]);
