@@ -193,8 +193,8 @@ exports.updateDetails = async (req, res) => {
   const { type, userId, ...updateData } = req.body;
   const { messPhoto } = req.files;
 
-  console.log("Uploaded files:", req.files);
-  console.log("Cloudinary results:", req.cloudinaryResults);
+  // console.log("Uploaded files:", req.files);
+  // console.log("Cloudinary results:", req.cloudinaryResults);
 
   try {
     let updatedUser;

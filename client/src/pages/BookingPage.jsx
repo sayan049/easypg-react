@@ -267,7 +267,7 @@ export default function BookingPage() {
 
       //  setMessage("Phone number updated successfully.");
     } catch (err) {
-      toast("Failed to update phone number.");
+      toast(err.message||"Failed to update phone number.");
     } finally {
       setIsLoading(false);
     }
