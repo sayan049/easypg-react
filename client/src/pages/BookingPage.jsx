@@ -27,7 +27,7 @@ import {
   Mail,
 } from "lucide-react";
 import { use } from "react";
-import {updateDetailsUrl} from "../constant/urls";
+import { updateDetailsUrl } from "../constant/urls";
 
 // components/BookingSkeleton.jsx
 export const BookingSkeleton = () => {
@@ -252,13 +252,17 @@ export default function BookingPage() {
 
     try {
       const payload = {
-        userId:user.id,
+        userId: user.id,
         type: "student",
-        phone:phoneNumber
+        phone: phoneNumber,
       };
 
-      const res = await axios.put(updateDetailsUrl, payload);
+      const response = await fetch(updateDetailsUrl, {
+        method: "POST",
+        body: payload ? JSON.stringify(payload) : null,
+      });
       //  setMessage("Phone number updated successfully.");
+      
     } catch (err) {
       toast("Failed to update phone number.");
     } finally {
@@ -901,7 +905,10 @@ export default function BookingPage() {
                   <div className="pt-4">
                     <button
                       className={`w-full py-3.5 px-4 rounded-lg font-medium text-white transition-all ${
-                        !selectedRoom || !checkInDate || isLoading
+                        !selectedRoom ||
+                        !checkInDate ||
+                        isLoading ||
+                        (phoneNumber === "" && !user?.phone)
                           ? "bg-gray-400 cursor-not-allowed"
                           : "bg-teal-600 hover:bg-teal-700 shadow-md hover:shadow-lg"
                       }`}
