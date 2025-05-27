@@ -1678,6 +1678,7 @@ const BookingStatus = () => {
           draggable
           pauseOnHover
           style={{ zIndex: 9999 }}
+          toastClassName="!max-w-[90vw] mx-auto mt-4 sm:mt-0"
         />
         <div className="space-y-4">
           <h1 className="text-xl font-bold">Booking Status</h1>

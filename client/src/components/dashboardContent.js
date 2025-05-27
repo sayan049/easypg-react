@@ -243,6 +243,7 @@ const DashboardContent = ({
         draggable
         pauseOnHover
         style={{ zIndex: 9999 }} // Ensure it's above other elements
+        toastClassName="!max-w-[90vw] mx-auto mt-4 sm:mt-0"
       />
       {/* Welcome Message */}
       <div className="mb-8">

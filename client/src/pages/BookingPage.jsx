@@ -439,6 +439,7 @@ export default function BookingPage() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
+        toastClassName="!max-w-[90vw] mx-auto mt-4 sm:mt-0"
         style={{ zIndex: 9999 }}
       />
 
