@@ -288,10 +288,7 @@ exports.updateDetails = async (req, res) => {
             }
           } else {
             // updatedUser[key] = updateData[key];
-            updatedUser[key] =
-              updateData[key] === "" || updateData[key] === "null"
-                ? null
-                : updateData[key];
+            updatedUser[key] = updateData[key] === "" ? null : updateData[key];
           }
         }
       }
