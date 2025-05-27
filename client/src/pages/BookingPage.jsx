@@ -225,6 +225,7 @@ export default function BookingPage() {
   const [showTermsPopup, setShowTermsPopup] = useState(false);
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [userDetails, setUserDetails] = useState(null);
 
   const { messId } = useParams();
 
@@ -272,35 +273,53 @@ export default function BookingPage() {
   //     setIsLoading(false);
   //   }
   // };
-  const handleUpdate = async () => {
-  if (!phoneNumber) return toast("Please enter a phone number.");
-  const phoneRegex = /^[6-9]\d{9}$/;
-  if (!phoneRegex.test(phoneNumber)) {
-    return toast("Please enter a valid 10-digit phone number.");
-  }
-  setIsLoading(true);
+  useEffect(() => {
+    const fetchAllData = async () => {
+      try {
+        const userId = type === "student" ? user?.id : owner?.id;
+        if (!userId || !socket) return;
+        setLoading(true);
+        const detailsUrl = new URL(fetchDetailsUrl);
+        detailsUrl.searchParams.append("userId", userId);
+        detailsUrl.searchParams.append("type", type);
 
-  try {
-    console.log("Updating phone number for user:", user.id ,updateDetailsUrl);
-    const payload = {
-      userId: user.id,
-      type: user.type || "student", // Default to "student" if type is not set
-      phone: phoneNumber,
+        const detailsResponse = await fetch(detailsUrl, { method: "GET" });
+        if (!detailsResponse.ok)
+          throw new Error("Failed to fetch user details");
+        const detailsData = await detailsResponse.json();
+        setUserDetails(detailsData);
+      } catch (error) {}
     };
+    fetchAllData();
+  }, [user]);
 
-    await axios.post(updateDetailsUrl, payload, {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    toast.success("Phone number updated successfully.");
-  } catch (err) {
-    toast.error(err.message || "Failed to update phone number.");
-  } finally {
-    setIsLoading(false);
-  }
-};
+  const handleUpdate = async () => {
+    if (!phoneNumber) return toast("Please enter a phone number.");
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(phoneNumber)) {
+      return toast("Please enter a valid 10-digit phone number.");
+    }
+
+    try {
+      console.log("Updating phone number for user:", user.id, updateDetailsUrl);
+      const payload = {
+        userId: user.id,
+        type: user.type || "student", // Default to "student" if type is not set
+        phone: phoneNumber,
+      };
+
+      await axios.post(updateDetailsUrl, payload, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      // toast.success("Phone number updated successfully.");
+    } catch (err) {
+      toast.error(err.message || "Failed to update phone number.");
+    } finally {
+    }
+  };
 
   // Convert bedCount string to number
   const bedCountToNumber = {
@@ -351,7 +370,9 @@ export default function BookingPage() {
     }
     try {
       setIsLoading(true);
-
+      if (!userDetails.phone) {
+        handleUpdate();
+      } // Update phone number if needed
       // Validate inputs
       if (!selectedRoom || !checkInDate) {
         toast.error("Please select a room and check-in date");
@@ -705,7 +726,7 @@ export default function BookingPage() {
             </div>
 
             {/* Phone Number Section */}
-            {!user?.phone && (
+            {!userDetails?.phone && (
               <div className="bg-white rounded-xl shadow-sm p-6 max-w-[25rem]">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                   <Phone className="h-5 w-5 mr-2 text-teal-600" />
@@ -940,7 +961,7 @@ export default function BookingPage() {
                         !selectedRoom ||
                         !checkInDate ||
                         isLoading ||
-                        (phoneNumber === "" && !user?.phone)
+                        (phoneNumber === "" && !userDetails?.phone)
                           ? "bg-gray-400 cursor-not-allowed"
                           : "bg-teal-600 hover:bg-teal-700 shadow-md hover:shadow-lg"
                       }`}
@@ -952,7 +973,7 @@ export default function BookingPage() {
                         !selectedRoom ||
                         !checkInDate ||
                         isLoading ||
-                        (phoneNumber === "" && !user?.phone)
+                        (phoneNumber === "" && !userDetails?.phone)
                       }
                     >
                       {isLoading ? (
@@ -1003,7 +1024,6 @@ export default function BookingPage() {
           setHasAcceptedTerms(true);
           setShowTermsPopup(false);
           handleBookingRequest();
-          handleUpdate();
         }}
         onClose={() => setShowTermsPopup(false)}
       />
