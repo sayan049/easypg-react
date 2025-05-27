@@ -27,7 +27,7 @@ import {
   Mail,
 } from "lucide-react";
 import { use } from "react";
-import {updateDetailsUrl} from "../constant/urls";
+import { updateDetailsUrl } from "../constant/urls";
 
 // components/BookingSkeleton.jsx
 export const BookingSkeleton = () => {
@@ -243,26 +243,33 @@ export default function BookingPage() {
   }, [messId]);
 
   const handleUpdate = async () => {
-    if (!phone) return toast("Please enter a phone number.");
+    if (!phoneNumber) return toast("Please enter a phone number.");
     const phoneRegex = /^[6-9]\d{9}$/;
-    if (!phoneRegex.test(phone)) {
+    if (!phoneRegex.test(phoneNumber)) {
       return toast("Please enter a valid 10-digit phone number.");
     }
-    setLoading(true);
+    setIsLoading(true);
 
     try {
       const payload = {
-        userId,
-        type: userType, // "student" or "owner"
-        ...(userType === "student" ? { phone } : { mobileNo: phone }),
+        userId: user.id,
+        type: "student",
+        phone: phoneNumber,
       };
 
-      const res = await axios.put(updateDetailsUrl, payload);
+      await fetch(updateDetailsUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
       //  setMessage("Phone number updated successfully.");
     } catch (err) {
       toast("Failed to update phone number.");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -901,7 +908,10 @@ export default function BookingPage() {
                   <div className="pt-4">
                     <button
                       className={`w-full py-3.5 px-4 rounded-lg font-medium text-white transition-all ${
-                        !selectedRoom || !checkInDate || isLoading
+                        !selectedRoom ||
+                        !checkInDate ||
+                        isLoading ||
+                        (phoneNumber === "" && !user?.phone)
                           ? "bg-gray-400 cursor-not-allowed"
                           : "bg-teal-600 hover:bg-teal-700 shadow-md hover:shadow-lg"
                       }`}
