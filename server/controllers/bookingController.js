@@ -457,7 +457,7 @@ const User = require("../modules/user");
 const moment = require("moment");
 const mongoose = require("mongoose");
 const MaintenanceRequest = require("../modules/MaintenanceRequest");
-const FraudReport = require("../modules/Fraudreport")
+const FraudReport = require("../modules/Fraudreport");
 const rateLimiters = new Map(); // In-memory rate limiter per studentId
 const RATE_LIMIT_DURATION = 60 * 1000; // 1 minute
 const {
@@ -469,6 +469,8 @@ const { Types } = require("mongoose");
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
 const { request } = require("http");
+const moment = require("moment-timezone");
+const frontendUrl = process.env.CLIENT_URL || "http://localhost:3000";
 
 // Helper functions
 const bedCountToNumber = {
@@ -542,6 +544,12 @@ exports.createBookingRequest = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Owner not found" });
     }
+    const user = await User.findById(student);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Student not found" });
+    }
 
     const roomInfo = owner.roomInfo.find((r) => r.room === room);
     if (!roomInfo) {
@@ -554,7 +562,7 @@ exports.createBookingRequest = async (req, res) => {
       student,
       pgOwner,
       room,
-      status: { $in: ["pending", "confirmed"] }, // Don't allow duplicates if already requested or booked
+      status: { $in: ["pending"] }, // Don't allow duplicates if already requested or booked
     });
 
     if (existingBooking) {
@@ -623,11 +631,29 @@ exports.createBookingRequest = async (req, res) => {
             owner._id,
             "PgOwner",
             "New Booking Request",
-            `New booking request for ${room} (${bedsBooked} bed${
-              bedsBooked > 1 ? "s" : ""
-            })`,
+            `New booking request from${
+              user.firstName + " " + user.lastName
+            } for ${room} (${bedsBooked} bed${bedsBooked > 1 ? "s" : ""})`,
             NOTIFICATION_TYPES.BOOKING,
-            booking._id
+            booking._id,
+            {
+              guest_name: `${user?.firstName || "Unknown"} ${
+                user?.lastName || ""
+              }`.trim(),
+              guest_phone: user?.phone || "N/A",
+              booking_id: "#" + booking._id.toString().slice(-6).toUpperCase(),
+              checkin_date: moment(booking.period.startDate)
+                .tz("Asia/Kolkata")
+                .format("DD MMM YYYY"),
+              duration: booking.period.durationMonths,
+              requested_price: booking.pricePerHead,
+              pg_name: owner.messName,
+              pg_address: owner.address || "N/A",
+              dashboard_link: `${frontendUrl}/dashboard/owner`,
+              terms_link: `${frontendUrl}/terms`,
+              privacy_link: `${frontendUrl}/privacy`,
+              expiry_date: "24 hours",
+            }
           ),
           sendNotification(
             student,
@@ -635,7 +661,22 @@ exports.createBookingRequest = async (req, res) => {
             "Booking Request Sent",
             `Your booking request for ${owner.messName} has been submitted`,
             NOTIFICATION_TYPES.BOOKING,
-            booking._id
+            booking._id,
+            {
+              requestId: "#" + booking._id.toString().slice(-6).toUpperCase(),
+              submissionDate: moment(booking.createdAt)
+                .tz("Asia/Kolkata")
+                .format("DD MMM YYYY"),
+              submissionTime: moment(booking.createdAt)
+                .tz("Asia/Kolkata")
+                .format("hh:mm A"),
+                pgName: owner.messName,
+                hostContact:owner.email || "N/A",
+                responseTime: "24 hours",
+                termsLink: `${frontendUrl}/terms`,
+                privacyLink: `${frontendUrl}/privacy`,
+                
+            }
           ),
         ];
 
@@ -772,7 +813,7 @@ exports.getOwnerBookings = async (req, res) => {
 };
 exports.getAllOwnerBookings = async (req, res) => {
   try {
-  //  console.log("Authenticated User:", req.user);
+    //  console.log("Authenticated User:", req.user);
 
     const ownerId = req.user.id;
     const limit = parseInt(req.query.limit, 10) || 10;
@@ -1691,8 +1732,6 @@ exports.cancelBooking = async (req, res) => {
       booking.userCancellationReason = cancellationReason || "";
       await booking.save();
 
-    
-
       //   const bookingPayload = {
       //   _id: booking._id,
       //   status: "cancelled",
@@ -1706,29 +1745,28 @@ exports.cancelBooking = async (req, res) => {
       // });
       setImmediate(async () => {
         try {
-            const msg = cancellationReason
-        ? `You cancelled your booking for ${booking.room}.Reason: ${cancellationReason}`
-        : `You cancelled your booking for ${booking.room}`;
+          const msg = cancellationReason
+            ? `You cancelled your booking for ${booking.room}.Reason: ${cancellationReason}`
+            : `You cancelled your booking for ${booking.room}`;
 
-      await Promise.all([
-        sendNotification(
-          booking.student._id,
-          "User",
-          "Booking Cancelled",
-          msg,
-          NOTIFICATION_TYPES.BOOKING,
-          booking._id
-        ),
-        sendNotification(
-          booking.pgOwner._id,
-          "PgOwner",
-          "Booking Cancelled",
-          `Booking for ${booking.room} has been cancelled by ${fullname}`,
-          NOTIFICATION_TYPES.BOOKING,
-          booking._id
-        ),
-      ]);
-
+          await Promise.all([
+            sendNotification(
+              booking.student._id,
+              "User",
+              "Booking Cancelled",
+              msg,
+              NOTIFICATION_TYPES.BOOKING,
+              booking._id
+            ),
+            sendNotification(
+              booking.pgOwner._id,
+              "PgOwner",
+              "Booking Cancelled",
+              `Booking for ${booking.room} has been cancelled by ${fullname}`,
+              NOTIFICATION_TYPES.BOOKING,
+              booking._id
+            ),
+          ]);
 
           const bookingPayload = {
             _id: booking._id,
@@ -2087,8 +2125,6 @@ exports.getChartStats = async (req, res) => {
 
 //Fraud report submission
 
-
-
 exports.submitFraudReport = async (req, res) => {
   try {
     const { stayId, reason } = req.body;
@@ -2097,7 +2133,9 @@ exports.submitFraudReport = async (req, res) => {
     console.log("Stay ID:", stayId);
     console.log(req.body);
     if (!stayId || !reason) {
-      return res.status(400).json({ message: 'stayId and reason are required.' });
+      return res
+        .status(400)
+        .json({ message: "stayId and reason are required." });
     }
 
     const newReport = new FraudReport({
@@ -2109,9 +2147,11 @@ exports.submitFraudReport = async (req, res) => {
 
     await newReport.save();
 
-    return res.status(201).json({ message: 'Report submitted successfully' });
+    return res.status(201).json({ message: "Report submitted successfully" });
   } catch (error) {
-    console.error('Error submitting fraud report:', error);
-    return res.status(500).json({ message: 'Server error. Please try again later.' });
+    console.error("Error submitting fraud report:", error);
+    return res
+      .status(500)
+      .json({ message: "Server error. Please try again later." });
   }
 };

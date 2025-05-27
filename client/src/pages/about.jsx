@@ -421,13 +421,13 @@ const About = () => {
               },
               {
                 name: "Sandip Hembram",
-                title: "CMO & CDO",
+                title: "Co-founder & CMO",
                 description: "UI and UX Designer",
                 img: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1748291268/WhatsApp_Image_2025-05-24_at_12.06.04_AM_tni4ek.webp",
               },
               {
                 name: "Tanmoy Sarkar",
-                title: "COO",
+                title: " Co-founder & COO",
                 description: "Android Developer",
                 img: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1748291252/aaaa_evhrhz.webp",
               },
