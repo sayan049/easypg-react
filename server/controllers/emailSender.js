@@ -125,7 +125,7 @@ async function sendmail(name, email, userId) {
     <div class="email-container">
       <div style="text-align: center">
         <img
-          src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
+          src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1748370229/png_company_xskvfs.png"
           alt="MessMate - Company Logo"
           class="logo"
         />
