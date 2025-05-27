@@ -26,6 +26,7 @@ import {
   Twitter,
   Mail,
 } from "lucide-react";
+import { use } from "react";
 
 // components/BookingSkeleton.jsx
 export const BookingSkeleton = () => {
@@ -227,7 +228,7 @@ export default function BookingPage() {
   const { messId } = useParams();
 
   useEffect(() => {
-    console.log(user,"user in booking page");
+    console.log(user, "user in booking page");
     const fetchMessDetails = async () => {
       try {
         const res = await axios.get(`${viewDetailsUrl}/${messId}`);
@@ -643,19 +644,21 @@ export default function BookingPage() {
             </div>
 
             {/* Phone Number Section */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                <Phone className="h-5 w-5 mr-2 text-teal-600" />
-                Your Phone Number
-              </h2>
-              <input
-                type="tel"
-                placeholder="Enter your phone number"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-              />
-            </div>
+            {!user?.phone && (
+              <div className="bg-white rounded-xl shadow-sm p-6 max-w-[25rem]">
+                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                  <Phone className="h-5 w-5 mr-2 text-teal-600" />
+                  Your Phone Number
+                </h2>
+                <input
+                  type="tel"
+                  placeholder="Enter your phone number"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+            )}
 
             {/* Room Preview */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
