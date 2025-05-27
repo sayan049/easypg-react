@@ -44,16 +44,20 @@ function Settings({ user, loginMethod }) {
     const { name, value } = e.target;
     console.log("Input change:", name, value);
     if (name === "location") return;
-  //  setPersonalInfo({ ...personalInfo, [name]: value });
-    if (value === "") {
-      setPersonalInfo({ ...personalInfo, [name]: "" });
-    }
-    else if (value === null) {
-      setPersonalInfo({ ...personalInfo, [name]: null });
-    }
-    else {
-      setPersonalInfo({ ...personalInfo, [name]: value });
-    }
+    //  setPersonalInfo({ ...personalInfo, [name]: value });
+    setPersonalInfo((prev) => ({
+      ...prev,
+      [name]: value === "" ? "" : value,
+    }));
+    // if (value === "") {
+    //   setPersonalInfo({ ...personalInfo, [name]: "" });
+    // }
+    // else if (value === null) {
+    //   setPersonalInfo({ ...personalInfo, [name]: null });
+    // }
+    // else {
+    //   setPersonalInfo({ ...personalInfo, [name]: value });
+    // }
   };
 
   const handlePasswordChange = (e) => {
@@ -72,14 +76,28 @@ function Settings({ user, loginMethod }) {
     formData.append("userId", user._id);
     formData.append("type", type);
 
+    // Object.keys(personalInfo).forEach((key) => {
+    //   if (personalInfo[key]) {
+    //     formData.append(
+    //       key,
+    //       key === "location"
+    //         ? JSON.stringify(personalInfo[key])
+    //         : personalInfo[key] ?? ""
+    //     );
+    //   }
+    // });
     Object.keys(personalInfo).forEach((key) => {
-      if (personalInfo[key]) {
+      // Explicitly check for null/undefined
+      if (personalInfo[key] !== null && personalInfo[key] !== undefined) {
         formData.append(
           key,
           key === "location"
             ? JSON.stringify(personalInfo[key])
-            : personalInfo[key] ?? ""
+            : personalInfo[key].toString()
         );
+      } else {
+        // Explicitly send null values
+        formData.append(key, "");
       }
     });
 
