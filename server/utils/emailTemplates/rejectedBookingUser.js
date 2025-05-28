@@ -1,14 +1,31 @@
-module.exports = function rejectedBookingUser({
+const nodemailer = require("nodemailer");
+require("dotenv").config();
+
+const USER_EMAIL = process.env.USER_EMAIL;
+const USER_PASSWORD = process.env.USER_PASSWORD;
+const frontendUrl = process.env.CLIENT_URL || "http://localhost:3000";
+
+async function sendMailRejectedBooking(
+  email,
   pg_name,
   request_id,
   host_message,
   browse_link,
   contact_us,
   privacy_policy,
-  terms_of_service,
-}) {
-  return `
-<!DOCTYPE html>
+  terms_of_service
+) {
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: USER_EMAIL,
+      pass: USER_PASSWORD,
+    },
+  });
+  /* The `mailOptions` object is being used to define the details of the email that will be sent. Here's
+   a breakdown of its properties: */
+  const currentYear = new Date().getFullYear();
+  const emailHtml = `<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -91,11 +108,54 @@ module.exports = function rejectedBookingUser({
           <a href="${privacy_policy}" style="color: #2563eb; text-decoration: none; margin: 0 12px">Privacy</a>
           <a href="${terms_of_service}" style="color: #2563eb; text-decoration: none; margin: 0 12px">Terms</a>
         </div>
-        <div>MessMate © ${new Date().getFullYear()} | All Rights Reserved</div>
+        <div>MessMate © ${currentYear} | All Rights Reserved</div>
         <div style="margin-top: 12px; font-size: 12px; color: #94a3b8">This is an automated message</div>
       </div>
     </div>
   </body>
 </html>
 `;
-};
+  const emailText = `Messmate
+❌ BOOKING REJECTED
+
+Request Not Accepted
+Booking Progress:
+
+Request Sent
+
+Owner Approval
+
+❌ Rejected
+
+PG Name: ${pg_name}
+Booking ID: ${request_id}
+
+Rejection Reason:
+"${host_message}"
+
+Browse Other PGs →${browse_link}
+
+Links:
+Contact Us: ${contact_us}
+Privacy Policy: ${privacy_policy}
+Terms of Service: ${terms_of_service}
+
+MessMate © ${new Date().getFullYear()} | All Rights Reserved
+This is an automated message`;
+  const mailOptions = {
+    from: USER_EMAIL,
+    to: email,
+    subject: "Booking rejected – Messmate",
+
+    html: emailHtml,
+    text: emailText,
+  };
+  try {
+    const result = await transporter.sendMail(mailOptions);
+    console.log("email has ben sent succesfully");
+  } catch (error) {
+    console.log("Error: ", error);
+  }
+}
+
+module.exports = sendMailRejectedBooking;

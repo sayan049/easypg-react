@@ -1,20 +1,22 @@
-module.exports = function confirmedBookingUserTemplate({
-  pg_name,
-  checkin_date,
-  total_amount,
-  host_name,
-  host_phone,
-  booking_id,
-  contact_us,
-  privacy_policy,
-  terms_of_service,
-  cancellation_policy,
-  calendar_link,
-  room_no,
-  beds_booked
-}) {
-  return `
-<!DOCTYPE html>
+const nodemailer = require("nodemailer");
+require("dotenv").config();
+
+const USER_EMAIL = process.env.USER_EMAIL;
+const USER_PASSWORD = process.env.USER_PASSWORD;
+const frontendUrl = process.env.CLIENT_URL || "http://localhost:3000";
+
+async function sendMailConfirmedBooking(email,pg_name,checkin_date,total_amount,room_no,beds_booked,booking_id,calendar_link,host_name,host_phone,contact_us,privacy_policy,terms_of_service,cancellation_policy) {
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: USER_EMAIL,
+      pass: USER_PASSWORD,
+    },
+  });
+  /* The `mailOptions` object is being used to define the details of the email that will be sent. Here's
+   a breakdown of its properties: */
+  const currentYear = new Date().getFullYear();
+  const emailHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -115,7 +117,7 @@ module.exports = function confirmedBookingUserTemplate({
                 <a href="${terms_of_service}" style="color:#2563eb;text-decoration:none;display:block;margin:8px 0;">Terms</a>
                 <a href="${cancellation_policy}" style="color:#2563eb;text-decoration:none;display:block;margin:8px 0;">Cancellation</a>
             </div>
-            <div>Messmate © ${new Date().getFullYear()}</div>
+            <div>Messmate © ${currentYear}</div>
             <div style="margin-top:12px;font-size:12px;color:#94a3b8;">
                 This is an automated message
             </div>
@@ -124,4 +126,53 @@ module.exports = function confirmedBookingUserTemplate({
 </body>
 </html>
 `;
-};
+  const emailText = `🎉 Booking Confirmed – Messmate
+
+Hi, your booking at ${pg_name} is confirmed!
+
+🗓 Check-in: ${checkin_date}
+💰 Rent: ₹${total_amount}/month
+🛏 Room No.: ${room_no}
+👥 Beds Booked: ${beds_booked}
+🆔 Booking ID: ${booking_id}
+
+—
+
+📅 Add to your calendar:
+${calendar_link}
+
+—
+
+Host Info
+👤 ${host_name}
+📞 ${host_phone}
+
+—
+
+Need help?
+Contact: ${contact_us}
+Privacy: ${privacy_policy}
+Terms: ${terms_of_service}
+Cancel Policy: ${cancellation_policy}
+
+—
+
+Messmate © ${currentYear}
+(This is an automated message)`;
+  const mailOptions = {
+    from: USER_EMAIL,
+    to: email,
+    subject: "Booking Confirmed – Messmate",
+   
+    html: emailHtml,
+    text: emailText,
+  };
+  try {
+    const result = await transporter.sendMail(mailOptions);
+    console.log("email has ben sent succesfully");
+  } catch (error) {
+    console.log("Error: ", error);
+  }
+}
+
+module.exports = sendMailConfirmedBooking;

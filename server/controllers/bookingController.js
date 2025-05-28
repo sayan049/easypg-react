@@ -470,6 +470,12 @@ const PDFDocument = require("pdfkit");
 const fs = require("fs");
 const { request } = require("http");
 const moment = require("moment-timezone");
+const sendMailForOwnerBookingRequest = require("../utils/emailTemplates/bookingRequestOwner");
+const sendEmailForUserBookingRequest = require("../utils/emailTemplates/bookingRequestUser");
+const sendMailConfirmedBooking = require("../utils/emailTemplates/confirmedbookingUser");
+const sendMailRejectedBooking = require("../utils/emailTemplates/rejectedBookingUser");
+const sendMailCancelUser = require("../utils/emailTemplates/userCancel");
+const sendMailCancelOwner = require("../utils/emailTemplates/ownerCancel");
 const frontendUrl = process.env.CLIENT_URL || "http://localhost:3000";
 
 // Helper functions
@@ -625,66 +631,40 @@ exports.createBookingRequest = async (req, res) => {
     });
 
     setImmediate(async () => {
-      console.log("Post-response processing started");
-      console.log("Owner ID:", owner._id);
       try {
-        console.log("About to send booking email to owner:", owner.email);
+        await sendMailForOwnerBookingRequest(
+          owner.email, // email (assuming you want to send it to the owner)
+          `${user?.firstName || "Unknown"} ${user?.lastName || ""}`.trim(), // guest_name
+          user?.phone || "N/A", // guest_phone
 
-        const notificationPromises = [
-          sendNotification(
-            owner._id,
-            "PgOwner",
-            "New Booking Request",
-            `New booking request from${
-              user.firstName + " " + user.lastName
-            } for ${room} (${bedsBooked} bed${bedsBooked > 1 ? "s" : ""})`,
-            NOTIFICATION_TYPES.BOOKING,
-            booking._id,
-            {
-              guest_name: `${user?.firstName || "Unknown"} ${
-                user?.lastName || ""
-              }`.trim(),
-              guest_phone: user?.phone || "N/A",
-              booking_id: "#" + booking._id.toString().slice(-6).toUpperCase(),
-              checkin_date: moment(booking.period.startDate)
-                .tz("Asia/Kolkata")
-                .format("DD MMM YYYY"),
-              duration: booking.period.durationMonths,
-              requested_price: booking.pricePerHead,
-              pg_name: owner.messName,
-              pg_address: owner.address || "N/A",
-              dashboard_link: `${frontendUrl}/dashboard/owner`,
-              terms_link: `${frontendUrl}/terms`,
-              privacy_link: `${frontendUrl}/privacy`,
-              expiry_date: "24 hours",
-            }
-          ),
-        console.log("About to send booking email to user:", user.email),
-          sendNotification(
-            student,
-            "User",
-            "Booking Request Sent",
-            `Your booking request for ${owner.messName} has been submitted`,
-            NOTIFICATION_TYPES.BOOKING,
-            booking._id,
-            {
-              requestId: "#" + booking._id.toString().slice(-6).toUpperCase(),
-              submissionDate: moment(booking.createdAt)
-                .tz("Asia/Kolkata")
-                .format("DD MMM YYYY"),
-              submissionTime: moment(booking.createdAt)
-                .tz("Asia/Kolkata")
-                .format("hh:mm A"),
-              pgName: owner.messName,
-              hostContact: owner.email || "N/A",
-              responseTime: "24 hours",
-              termsLink: `${frontendUrl}/terms`,
-              privacyLink: `${frontendUrl}/privacy`,
-            }
-          ),
-        ];
+          "#" + booking._id.toString().slice(-6).toUpperCase(), // booking_id
+          moment(booking.period.startDate)
+            .tz("Asia/Kolkata")
+            .format("DD MMM YYYY"), // checkin_date
+          booking.period.durationMonths, // duration
+          booking.pricePerHead, // requested_price
+          owner.messName, // pg_name
+          owner.address || "N/A", // pg_address
 
-        await Promise.all(notificationPromises);
+          `${frontendUrl}/dashboard/owner`, // dashboard_link
+          `${frontendUrl}/terms`, // terms_link
+          `${frontendUrl}/privacy`, // privacy_link
+
+          "24 hours" // expiry_date
+        );
+
+        // Notify student
+        await sendEmailForUserBookingRequest(
+          user.email,
+          "#" + booking._id.toString().slice(-6).toUpperCase(),
+          moment(booking.createdAt).tz("Asia/Kolkata").format("DD MMM YYYY"),
+          moment(booking.createdAt).tz("Asia/Kolkata").format("hh:mm A"),
+          owner.messName,
+          owner.email || "N/A",
+          "24 hours",
+          `${frontendUrl}/terms`,
+          `${frontendUrl}/privacy`
+        );
 
         // Socket notifications
         const bookingPayload = {
@@ -1193,7 +1173,7 @@ exports.handleBookingApproval = async (req, res) => {
         //   booking._id
         // );
         const coords = booking?.student?.location?.coordinates;
-
+        console.log("Coordinates:", coords);
         const browse_link =
           Array.isArray(coords) && coords.length === 2
             ? `https://messmate.co.in/find-mess/you?lat=${coords[1]}&lng=${coords[0]}`
@@ -1213,51 +1193,34 @@ exports.handleBookingApproval = async (req, res) => {
             booking.pgOwner.messName
           }`;
 
-          await sendNotification(
-            booking.student._id,
-            "User",
-            "Booking Confirmed",
-            `Booking Confirmed for ${booking.pgOwner.messName}`,
-            NOTIFICATION_TYPES.BOOKING,
-            booking._id,
-            {
-               status: "confirmed",
-              pg_name: booking.pgOwner.messName,
-              checkin_date: moment(booking.period.startDate)
-                .tz("Asia/Kolkata")
-                .format("DD MMM YYYY"),
-              total_amount: booking.pricePerHead,
-              host_name:
-                booking.pgOwner.firstName + " " + booking.pgOwner.lastName,
-              host_phone: booking.pgOwner.mobileNo,
-              booking_id: "#" + booking._id.toString().slice(-6).toUpperCase(),
-              contact_us: "https://messmate.co.in/#contactus",
-              privacy_policy: "https://messmate.co.in/privacy",
-              terms_of_service: "https://messmate.co.in/terms",
-              cancellation_policy: "https://messmate.co.in/refund",
-              calendar_link: calendarLink,
-              room_no: booking.room,
-              beds_booked: booking.bedsBooked,
-            }
+          await sendMailConfirmedBooking(
+            booking.student.email,
+            booking.pgOwner.messName,
+            moment(booking.period.startDate)
+              .tz("Asia/Kolkata")
+              .format("DD MMM YYYY"),
+            booking.pricePerHead,
+            booking.room,
+            booking.bedsBooked,
+            "#" + booking._id.toString().slice(-6).toUpperCase(),
+            calendarLink,
+            booking.pgOwner.firstName + " " + booking.pgOwner.lastName,
+            booking.pgOwner.mobileNo,
+            "https://messmate.co.in/#contactus",
+            "https://messmate.co.in/privacy",
+            "https://messmate.co.in/terms",
+            "https://messmate.co.in/refund"
           );
         } else {
-          await sendNotification(
-            booking.student._id,
-            "User",
-            "Booking Rejected",
-            `Booking Rejected for ${booking.pgOwner.messName}`,
-            NOTIFICATION_TYPES.BOOKING,
-            booking._id,
-            {
-               status: "rejected",
-              pg_name: booking.pgOwner.messName,
-              request_id: "#" + booking._id.toString().slice(-6).toUpperCase(),
-              host_message: booking.ownerRejectionReason,
-              browse_link: `${browse_link}`,
-              contact_us: "https://messmate.co.in/#contactus",
-              privacy_policy: "https://messmate.co.in/privacy",
-              terms_of_service: "https://messmate.co.in/terms",
-            }
+          await sendMailRejectedBooking(
+            booking.student.email,
+            booking.pgOwner.messName,
+            "#" + booking._id.toString().slice(-6).toUpperCase(),
+            booking.ownerRejectionReason,
+            browse_link,
+            "https://messmate.co.in/#contactus",
+            "https://messmate.co.in/privacy",
+            "https://messmate.co.in/terms"
           );
         }
 
@@ -1692,6 +1655,12 @@ exports.cancelBooking = async (req, res) => {
         .status(404)
         .json({ success: false, message: "User not found" });
     }
+    const owner = await PgOwner.findById(booking.pgOwner);
+    if (!owner) {
+      return res
+        .status(404)
+        .json({ success: false, message: "PG Owner not found" });
+    }
     const fullname = `${userName.firstName} ${userName.lastName}`;
 
     const now = new Date();
@@ -1708,28 +1677,60 @@ exports.cancelBooking = async (req, res) => {
       setImmediate(async () => {
         try {
           // Notifications
-          const msg = cancellationReason
-            ? `You cancelled your booking for ${booking.room}.Reason: ${cancellationReason}`
-            : `You cancelled your booking for ${booking.room}`;
+          // const msg = cancellationReason
+          //   ? `You cancelled your booking for ${booking.room}.Reason: ${cancellationReason}`
+          //   : `You cancelled your booking for ${booking.room}`;
 
-          await Promise.all([
-            sendNotification(
-              booking.student,
-              "User",
-              "Booking Cancelled",
-              msg,
-              NOTIFICATION_TYPES.BOOKING,
-              booking._id
-            ),
-            sendNotification(
-              booking.pgOwner,
-              "PgOwner",
-              "Booking Cancelled",
-              `Booking for ${booking.room} has been cancelled by ${fullname} for reason: ${cancellationReason}`,
-              NOTIFICATION_TYPES.BOOKING,
-              booking._id
-            ),
-          ]);
+          // await Promise.all([
+          //   sendNotification(
+          //     booking.student,
+          //     "User",
+          //     "Booking Cancelled",
+          //     msg,
+          //     NOTIFICATION_TYPES.BOOKING,
+          //     booking._id
+          //   ),
+          //   sendNotification(
+          //     booking.pgOwner,
+          //     "PgOwner",
+          //     "Booking Cancelled",
+          //     `Booking for ${booking.room} has been cancelled by ${fullname} for reason: ${cancellationReason}`,
+          //     NOTIFICATION_TYPES.BOOKING,
+          //     booking._id
+          //   ),
+          // ]);
+          await sendMailCancelUser(
+            userName.email,
+            owner.messName,
+            "#" + booking._id.toString().slice(-6).toUpperCase(),
+            booking.room,
+            moment(booking.updatedAt)
+              .tz("Asia/Kolkata")
+              .format("DD MMM YYYY, hh:mm A"),
+            booking.userCancellationReason,
+            `${frontendUrl}/booking/${booking._id}`,
+            `${frontendUrl}/#contactus`,
+            `${frontendUrl}/privacy`,
+            `${frontendUrl}/terms`,
+            `${frontendUrl}/refund`,
+            `${frontendUrl}/faqs`
+          );
+          await sendMailCancelOwner(
+            owner.email,
+            userName.firstName + " " + userName.lastName,
+            "#" + booking._id.toString().slice(-6).toUpperCase(),
+            booking.room,
+            moment(booking.updatedAt)
+              .tz("Asia/Kolkata")
+              .format("DD MMM YYYY, hh:mm A"),
+            booking.userCancellationReason,
+            userName?.phone || "N/A",
+            userName?.email || "N/A",
+            `${frontendUrl}/#contactus`,
+            `${frontendUrl}/privacy`,
+            `${frontendUrl}/terms`,
+            `${frontendUrl}/refund`
+          );
 
           const bookingPayload = {
             _id: booking._id,
@@ -1829,28 +1830,61 @@ exports.cancelBooking = async (req, res) => {
       // });
       setImmediate(async () => {
         try {
-          const msg = cancellationReason
-            ? `You cancelled your booking for ${booking.room}.Reason: ${cancellationReason}`
-            : `You cancelled your booking for ${booking.room}`;
+          // const msg = cancellationReason
+          //   ? `You cancelled your booking for ${booking.room}.Reason: ${cancellationReason}`
+          //   : `You cancelled your booking for ${booking.room}`;
 
-          await Promise.all([
-            sendNotification(
-              booking.student._id,
-              "User",
-              "Booking Cancelled",
-              msg,
-              NOTIFICATION_TYPES.BOOKING,
-              booking._id
-            ),
-            sendNotification(
-              booking.pgOwner._id,
-              "PgOwner",
-              "Booking Cancelled",
-              `Booking for ${booking.room} has been cancelled by ${fullname}`,
-              NOTIFICATION_TYPES.BOOKING,
-              booking._id
-            ),
-          ]);
+          // await Promise.all([
+          //   sendNotification(
+          //     booking.student._id,
+          //     "User",
+          //     "Booking Cancelled",
+          //     msg,
+          //     NOTIFICATION_TYPES.BOOKING,
+          //     booking._id
+          //   ),
+          //   sendNotification(
+          //     booking.pgOwner._id,
+          //     "PgOwner",
+          //     "Booking Cancelled",
+          //     `Booking for ${booking.room} has been cancelled by ${fullname}`,
+          //     NOTIFICATION_TYPES.BOOKING,
+          //     booking._id
+          //   ),
+          // ]);
+           await sendMailCancelUser(
+            userName.email,
+            owner.messName,
+            "#" + booking._id.toString().slice(-6).toUpperCase(),
+            booking.room,
+            moment(booking.updatedAt)
+              .tz("Asia/Kolkata")
+              .format("DD MMM YYYY, hh:mm A"),
+            booking.userCancellationReason,
+            `${frontendUrl}/booking/${booking._id}`,
+            `${frontendUrl}/#contactus`,
+            `${frontendUrl}/privacy`,
+            `${frontendUrl}/terms`,
+            `${frontendUrl}/refund`,
+            `${frontendUrl}/faqs`
+          );
+          await sendMailCancelOwner(
+            owner.email,
+            userName.firstName + " " + userName.lastName,
+            "#" + booking._id.toString().slice(-6).toUpperCase(),
+            booking.room,
+            moment(booking.updatedAt)
+              .tz("Asia/Kolkata")
+              .format("DD MMM YYYY, hh:mm A"),
+            booking.userCancellationReason,
+            userName?.phone || "N/A",
+            userName?.email || "N/A",
+            `${frontendUrl}/#contactus`,
+            `${frontendUrl}/privacy`,
+            `${frontendUrl}/terms`,
+            `${frontendUrl}/refund`
+          );
+
 
           const bookingPayload = {
             _id: booking._id,
