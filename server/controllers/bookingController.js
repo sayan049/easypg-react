@@ -659,7 +659,7 @@ exports.createBookingRequest = async (req, res) => {
               expiry_date: "24 hours",
             }
           ),
-        console.log("About to send booking email to owner:", user.email),
+        console.log("About to send booking email to user:", user.email),
           sendNotification(
             student,
             "User",
