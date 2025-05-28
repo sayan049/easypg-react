@@ -150,7 +150,7 @@ const sendOtp = async (req, res) => {
       </div>
 
       <div class="otp-box">
-        {{ ${code} }}
+         ${code} 
       </div>
 
       <div class="security-note">

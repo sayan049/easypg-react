@@ -101,7 +101,7 @@ module.exports = function bookingRequestUserTemplate({
     <div style="text-align: center; margin-top: 40px; color: #9ca3af; font-size: 12px;">
       <p style="margin: 8px 0;">
         Messmate © ${new Date().getFullYear()}
-v 
+
         <a href="${termsLink}" style="color: #9ca3af; text-decoration: none;">Terms</a> • 
         <a href="${privacyLink}" style="color: #9ca3af; text-decoration: none;">Privacy</a>
       </p>

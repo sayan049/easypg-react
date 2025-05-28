@@ -625,6 +625,8 @@ exports.createBookingRequest = async (req, res) => {
     });
 
     setImmediate(async () => {
+      console.log("Post-response processing started");
+      console.log("Owner ID:", owner._id);
       try {
         const notificationPromises = [
           sendNotification(
@@ -1231,6 +1233,8 @@ exports.handleBookingApproval = async (req, res) => {
               terms_of_service: "https://messmate.co.in/terms",
               cancellation_policy: "https://messmate.co.in/refund",
               calendar_link: calendarLink,
+              room_no: booking.room,
+              beds_booked: booking.bedsBooked,
             }
           );
         } else {
