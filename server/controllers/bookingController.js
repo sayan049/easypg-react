@@ -1709,7 +1709,7 @@ exports.cancelBooking = async (req, res) => {
               .tz("Asia/Kolkata")
               .format("DD MMM YYYY, hh:mm A"),
             booking.userCancellationReason,
-            `${frontendUrl}/booking/${booking._id}`,
+            `${frontendUrl}/booking/${owner._id}`,
             `${frontendUrl}/#contactus`,
             `${frontendUrl}/privacy`,
             `${frontendUrl}/terms`,
