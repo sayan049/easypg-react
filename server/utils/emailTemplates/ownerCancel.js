@@ -187,13 +187,7 @@ async function sendMailCancelOwner(
           <div style="color: #0284c7">📧 ${user_email}</div>
         </div>
 
-        <!-- CTA Button -->
-        <!-- <div style="text-align:center;margin:32px 0;">
-                <a href="${dashboard_link}" 
-                   style="display:block;background:#2563eb;color:#ffffff;text-decoration:none;padding:14px 20px;border-radius:8px;font-weight:600;max-width:280px;margin:0 auto;font-size:14px;">
-                    View in Dashboard
-                </a>
-            </div> -->
+
       </div>
 
       <!-- Footer -->

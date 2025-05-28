@@ -643,6 +643,7 @@ exports.createBookingRequest = async (req, res) => {
             .format("DD MMM YYYY"), // checkin_date
           booking.period.durationMonths, // duration
           booking.pricePerHead, // requested_price
+          booking.room, // room_number
           owner.messName, // pg_name
           owner.address || "N/A", // pg_address
 

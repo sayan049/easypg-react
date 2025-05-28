@@ -168,11 +168,7 @@ async function sendMailCancelUser(
           </div>
         </div>
 
-        <!-- Refund Details
-            <div style="background:#fffbeb;border-radius:12px;padding:16px;margin:24px 0;border:1px solid #fde68a;">
-                <div style="color:#d97706;font-size:14px;margin-bottom:8px;">Refund Status</div>
-                <div style="color:#92400e;font-size:16px;font-weight:600;">₹${refund_amount} will be refunded within 5-7 working days</div>
-            </div> -->
+
 
         <!-- CTA Button -->
         <div style="text-align: center; margin: 32px 0">
