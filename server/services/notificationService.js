@@ -193,6 +193,7 @@ exports.sendNotification = async (
         .model(recipientType)
         .findById(recipientId)
         .select("email");
+console.log("Sending notification email to:", recipientType, recipientEmail);
 
       if (recipient?.email) {
         const htmlTemplate =

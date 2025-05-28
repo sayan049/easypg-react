@@ -628,6 +628,8 @@ exports.createBookingRequest = async (req, res) => {
       console.log("Post-response processing started");
       console.log("Owner ID:", owner._id);
       try {
+        console.log("About to send booking email to owner:", owner.email);
+
         const notificationPromises = [
           sendNotification(
             owner._id,
@@ -657,6 +659,7 @@ exports.createBookingRequest = async (req, res) => {
               expiry_date: "24 hours",
             }
           ),
+        console.log("About to send booking email to owner:", user.email),
           sendNotification(
             student,
             "User",
