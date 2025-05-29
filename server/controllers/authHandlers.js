@@ -711,7 +711,8 @@ exports.getTopRatedMesses = async (req, res) => {
     ]);
 
     if (!topMesses.length) {
-      return res.status(404).json({ message: "No rated messes found." });
+      return;
+      // res.status(404).json({ message: "No rated messes found." });
     }
 
     res.status(200).json({ data: topMesses });
