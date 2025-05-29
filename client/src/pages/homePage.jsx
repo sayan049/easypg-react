@@ -1774,7 +1774,7 @@ const HomePage = () => {
     const fetchDetails = async () => {
       if (isOwnerAuthenticated) {
         try {
-          const userId = type === "owner" ? owner?.id : null;
+          const userId = owner.type === "owner" ? owner?.id : null;
           if (!userId) return;
 
           const url = new URL(fetchDetailsUrl);
