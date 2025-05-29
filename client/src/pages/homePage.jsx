@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -11,9 +12,19 @@ import "react-toastify/dist/ReactToastify.css";
 import UserProfile from "../components/UserProfile";
 import "../designs/UserProfile.css";
 import { useAuth } from "../contexts/AuthContext";
-import { LocationIqurl } from "../constant/urls";
+import { LocationIqurl, fetchDetailsUrl } from "../constant/urls";
 import Recommendations from "../components/Recommendations";
-import { Home, Info, Phone, LogIn, Briefcase, X } from "lucide-react";
+import {
+  Home,
+  Info,
+  Phone,
+  LogIn,
+  Briefcase,
+  X,
+  AlertTriangle,
+  CheckCircle2,
+  Bell,
+} from "lucide-react";
 import { Helmet } from "react-helmet";
 import { Map, MapPin } from "lucide-react";
 import { useSocket } from "../contexts/socketContext";
@@ -41,6 +52,8 @@ const HomePage = () => {
     logoutSuccess,
     isOwnerAuthenticated,
     ownerName,
+    owner,
+    loginMethod,
   } = useAuth();
   const {
     hasUnread,
@@ -55,20 +68,168 @@ const HomePage = () => {
   const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState(null);
   const searchContainerRef = useRef(null);
+  const [showProfileAlert, setShowProfileAlert] = useState(false);
+  const [userDetails, setUserDetails] = useState(null);
+
+  // Enhanced Alert Component
+  const ProfileAlert = ({ show, onDismiss, type = "warning" }) => {
+    if (!show) return null;
+
+    const alertConfig = {
+      warning: {
+        bgColor: "bg-gradient-to-r from-amber-50 to-orange-50",
+        borderColor: "border-amber-200",
+        iconColor: "text-amber-600",
+        titleColor: "text-amber-800",
+        textColor: "text-amber-700",
+        icon: AlertTriangle,
+        glowColor: "shadow-amber-100",
+      },
+      success: {
+        bgColor: "bg-gradient-to-r from-emerald-50 to-green-50",
+        borderColor: "border-emerald-200",
+        iconColor: "text-emerald-600",
+        titleColor: "text-emerald-800",
+        textColor: "text-emerald-700",
+        icon: CheckCircle2,
+        glowColor: "shadow-emerald-100",
+      },
+      info: {
+        // bgColor: "bg-gradient-to-r from-blue-50 to-indigo-50",
+        // borderColor: "border-blue-200",
+        // iconColor: "text-blue-600",
+        // titleColor: "text-blue-800",
+        // textColor: "text-blue-700",
+        // icon: Bell,
+        // glowColor: "shadow-blue-100",
+        bgColor: "bg-gradient-to-r from-cyan-50 to-teal-50",
+        borderColor: "border-teal-200",
+        iconColor: "text-[#2CA4B5]",
+        titleColor: "text-teal-800",
+        textColor: "text-teal-700",
+        icon: AlertTriangle,
+        glowColor: "shadow-teal-100",
+      },
+    };
+
+    const config = alertConfig[type];
+    const Icon = config.icon;
+
+    return (
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8, y: -20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.8, y: -20 }}
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 25,
+            duration: 0.3,
+          }}
+          className={`absolute -top-4 -left-[27rem] z-50 w-[27rem] ${config.bgColor} ${config.borderColor} border-2 rounded-2xl shadow-2xl ${config.glowColor} backdrop-blur-sm`}
+          style={{
+            filter: "drop-shadow(0 20px 25px rgb(0 0 0 / 0.15))",
+          }}
+        >
+          {/* Decorative top border */}
+          {/* <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent rounded-t-2xl"> */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#2CA4B5] to-transparent rounded-t-2xl"></div>
+
+          {/* Arrow pointing to profile */}
+          {/* <div className="absolute top-6 -right-2 w-4 h-4 bg-white border-r-2 border-b-2 border-amber-200 transform rotate-45"></div> */}
+          <div className="absolute top-6 -right-2 w-4 h-4 bg-white border-r-2 border-b-2 border-[#2CA4B5] transform rotate-45"></div>
+
+          <div className="p-6">
+            <div className="flex items-start space-x-4">
+              {/* Animated Icon */}
+              <motion.div
+                initial={{ rotate: 0 }}
+                animate={{ rotate: [0, -10, 10, -5, 5, 0] }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className={`flex-shrink-0 w-12 h-12 ${config.bgColor} rounded-full flex items-center justify-center border-2 ${config.borderColor}`}
+              >
+                <Icon className={`w-6 h-6 ${config.iconColor}`} />
+              </motion.div>
+
+              <div className="flex-1 min-w-0">
+                {/* Title with gradient */}
+                <motion.h4
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className={`font-bold text-lg ${config.titleColor} mb-2 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent`}
+
+                  // className={`font-bold text-lg ${config.titleColor} mb-2 bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent`}
+                >
+                  Profile Update Required
+                </motion.h4>
+
+                {/* Message */}
+                <motion.p
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className={`text-sm ${config.textColor} leading-relaxed mb-4`}
+                >
+                  Complete your profile details to activate your mess listing
+                  and start receiving bookings.
+                </motion.p>
+              </div>
+
+              {/* Close button */}
+              <motion.button
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={onDismiss}
+                className={`flex-shrink-0 w-8 h-8 ${config.textColor} hover:bg-white/50 rounded-full flex items-center justify-center transition-all duration-200`}
+              >
+                <X className="w-4 h-4" />
+              </motion.button>
+            </div>
+
+            {/* Progress indicator */}
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 2, delay: 0.5 }}
+              className="mt-4 h-1 bg-gradient-to-r from-[#99e2e5] to-[#2CA4B5] rounded-full overflow-hidden"
+
+              //className="mt-4 h-1 bg-gradient-to-r from-amber-200 to-orange-200 rounded-full overflow-hidden"
+            >
+              <motion.div
+                initial={{ x: "-100%" }}
+                animate={{ x: "100%" }}
+                transition={{
+                  duration: 1.5,
+                  delay: 0.5,
+                  repeat: Number.POSITIVE_INFINITY,
+                  repeatDelay: 1,
+                }}
+                className="h-full w-1/3 bg-gradient-to-r from-transparent via-[#2CA4B5] to-transparent"
+
+                //  className="h-full w-1/3 bg-gradient-to-r from-transparent via-amber-400 to-transparent"
+              />
+            </motion.div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    );
+  };
 
   useEffect(() => {
     document.title = "MessMate - Find your nearest PG/Mess easily";
   }, []);
 
   useEffect(() => {
-    console.log(
-      "data:",
-      data,
-      "isConnected:",
-      isConnected,
-      "data?.status:",
-      data?.booking?.status
-    );
+    // console.log(
+    //   "data:",
+    //   data,
+    //   "isConnected:",
+    //   isConnected,
+    //   "data?.status:",
+    //   data?.booking?.status
+    // );
     if (isConnected) {
       if (data?.booking?.status === "rejected" || data?.status === "rejected") {
         toast.info("your booking has been rejected by the owner");
@@ -113,6 +274,63 @@ const HomePage = () => {
     }
   }, [isConnected, data]);
 
+  const requiredFields = [
+    "firstName",
+    "lastName",
+    "email",
+    "address",
+    "pincode",
+    "mobileNo",
+    "messName",
+    "aboutMess",
+    "location",
+    "profilePhoto",
+  ];
+  useEffect(() => {
+    const fetchDetails = async () => {
+      if (isOwnerAuthenticated && loginMethod === "google") {
+        try {
+          const userId = owner.type === "owner" ? owner?.id : null;
+          if (!userId) return;
+
+          const url = new URL(fetchDetailsUrl);
+          url.searchParams.append("userId", userId);
+          url.searchParams.append("type", owner.type);
+
+          const response = await fetch(url);
+          if (!response.ok) throw new Error("Failed to fetch details");
+          const data = await response.json();
+          setUserDetails(data);
+        } catch (error) {
+          console.error("Error fetching details:", error);
+        }
+      }
+    };
+
+    fetchDetails();
+  }, [owner]);
+
+  useEffect(() => {
+    if (loginMethod === "google" && userDetails) {
+      const missingFields = requiredFields.filter(
+        (field) =>
+          !userDetails[field] ||
+          (typeof userDetails[field] === "string" &&
+            userDetails[field].trim() === "")
+      );
+
+      if (missingFields.length > 0) {
+      //  console.log("Missing fields:", missingFields);
+        setShowProfileAlert(true);
+        localStorage.setItem("needToUpdateProfile", "true");
+      }
+      else{
+        setShowProfileAlert(false);
+        localStorage.removeItem("needToUpdateProfile");
+      }
+    }
+  }, [userDetails]);
+
   const debounceTimeout = useRef(null);
 
   const handleInputChange = async (event) => {
@@ -141,27 +359,6 @@ const HomePage = () => {
     navigate("/choose-role");
   };
 
-  // const handleSuggestionClick = (suggestion) => {
-  //   setSearchItem(suggestion.display_name);
-  //   setSelectedLocation({
-  //     lat: suggestion.lat,
-  //     lng: suggestion.lng,
-  //   });
-  //   const coords = { lat: suggestion.lat, lng: suggestion.lon };
-
-  //   setSuggestions([]);
-
-  //   // navigate(
-  //   //   `/MessFind?userLocation=${encodeURIComponent(
-  //   //     JSON.stringify(coords)
-  //   //   )}&item=${encodeURIComponent(suggestion.display_name)}`
-  //   // );
-  //   navigate(
-  //     `/MessFind/${encodeURIComponent(
-  //       suggestion.display_name
-  //     )}/${encodeURIComponent(JSON.stringify(coords))}`
-  //   );
-  // };
   const handleSuggestionClick = (suggestion) => {
     setSearchItem(suggestion.display_name);
     setSelectedLocation({
@@ -192,9 +389,6 @@ const HomePage = () => {
       return;
     }
 
-    // navigate("/MessFind", {
-    //   state: { userLocation: selectedLocation, item: searchItem },
-    // });
     navigate(
       `/find-mess/${encodeURIComponent(searchItem)}/${encodeURIComponent(
         JSON.stringify(selectedLocation)
@@ -207,9 +401,6 @@ const HomePage = () => {
   const handleCityClick = (cityName, coords) => {
     setSearchItem(cityName);
     setSelectedLocation(coords);
-    // navigate("/MessFind", {
-    //   state: { userLocation: coords, item: cityName },
-    // });
     const slug = cityName
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
@@ -343,19 +534,6 @@ const HomePage = () => {
     );
   };
 
-  // const nearMe = () => {
-  //   navigator.geolocation.getCurrentPosition((position) => {
-  //     const { latitude, longitude } = position.coords;
-  //     setPersonalInfo((prev) => ({
-  //       ...prev,
-  //       location: {
-  //         type: "Point",
-  //         coordinates: [longitude, latitude],
-  //       },
-  //     }));
-  //     setIsLocationChanged(true);
-  //   });
-  // };
   useEffect(() => {
     if (location.hash) {
       const id = location.hash.substring(1); // remove #
@@ -486,17 +664,39 @@ const HomePage = () => {
 
               {IsAuthenticated || isOwnerAuthenticated ? (
                 <div className="relative">
+                  {/* Enhanced Profile Alert */}
+                  <ProfileAlert
+                    show={ showProfileAlert}
+                    onDismiss={() => setShowProfileAlert(false)}
+                    type="info"
+                  />
+
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="imageProfile cursor-pointer"
+                    className="imageProfile cursor-pointer relative"
                     onClick={() => setShowDropdown(!showDropdown)}
                   >
                     <UserProfile className="h-12 w-12 ring-2 ring-[#2CA4B5] rounded-full" />
+
+                    {/* Enhanced notification badge */}
+                    {(hasUnread || hasUnreadOwner || hasUnreadOwnerCancel || showProfileAlert) && (
+                      <motion.span
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="absolute -top-1 -right-1 h-4 w-4 bg-gradient-to-r from-red-500 to-red-600 rounded-full border-2 border-white shadow-lg"
+                      >
+                        <motion.span
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{
+                            duration: 2,
+                            repeat: Number.POSITIVE_INFINITY,
+                          }}
+                          className="absolute inset-0 bg-red-400 rounded-full opacity-75"
+                        />
+                      </motion.span>
+                    )}
                   </motion.div>
-                  {(hasUnread || hasUnreadOwner || hasUnreadOwnerCancel) && (
-                    <span className="absolute top-0 right-0 h-3 w-3 bg-red-500 rounded-full " />
-                  )}
 
                   <AnimatePresence>
                     {showDropdown && (
@@ -834,55 +1034,6 @@ const HomePage = () => {
         </div>
 
         {/* Features Section */}
-        {/* <section className="py-10 bg-gradient-to-b from-[#e6f7fa] to-white relative">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true, margin: "-100px" }}
-            className="grid gap-10 md:grid-cols-3 text-center"
-          >
-            {[
-              {
-                img: "./assets/online-booking 1.png",
-                title: "Quick and easy bookings",
-                desc: "Secure your room in no time with hassle-free instant booking",
-              },
-              {
-                img: "./assets/choice 1.png",
-                title: "The widest choice",
-                desc: "Browse verified, affordable student rooms close to university",
-              },
-              {
-                img: "./assets/support 1.png",
-                title: "We're here to help",
-                desc: "Reach out to our friendly team of experts who are always on hand",
-              },
-            ].map((feature, index) => (
-              <motion.div
-                key={index}
-                whileHover={{ y: -5 }}
-                className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
-              >
-                <div className="flex justify-center mb-6">
-                  <motion.img
-                    whileHover={{ rotate: 5, scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                    src={feature.img}
-                    alt={feature.title}
-                    className="h-24 w-auto"
-                  />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600">{feature.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section> */}
         <section className="py-10 bg-gradient-to-b from-[#e6f7fa] to-white relative">
           <div className="container mx-auto px-6">
             <h2 className="text-3xl font-bold text-center mb-12">
@@ -1038,7 +1189,6 @@ const HomePage = () => {
                       <h3 className="text-lg font-semibold text-[#2CA4B5] group-hover:text-teal-700 transition-colors duration-300">
                         {city.name}
                       </h3>
-                      {/* <p className="text-gray-600 text-sm">{city.PGs} PGs</p> */}
                     </div>
                   </div>
                 </motion.div>
@@ -1284,7 +1434,7 @@ const HomePage = () => {
                           aria-label={social}
                         >
                           <img
-                            src={socialIcons[social]}
+                            src={socialIcons[social] || "/placeholder.svg"}
                             alt={social}
                             className="h-5 w-5"
                             loading="lazy"

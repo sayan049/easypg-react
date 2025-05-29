@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const Footer = forwardRef((props, ref) => {
   return (
-    <footer className="bg-black text-white py-10 px-4">
+    <footer ref={ref} className="bg-black text-white py-10 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Logo Section */}
         <div className="flex justify-center md:justify-start mb-8 w-full">
