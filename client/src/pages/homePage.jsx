@@ -276,7 +276,6 @@ const HomePage = () => {
 
   const requiredFields = [
     "firstName",
-    "lastName",
     "email",
     "address",
     "pincode",
