@@ -1535,7 +1535,7 @@ const HomePage = () => {
     isOwnerAuthenticated,
     ownerName,
     owner,
-    loginMethod
+    loginMethod,
   } = useAuth();
   const {
     hasUnread,
@@ -1771,11 +1771,48 @@ const HomePage = () => {
     "profilePhoto",
   ];
 
+  // useEffect(() => {
+  //   console.log("Fetching user details for owner:", owner,loginMethod);
+  //   const fetchDetails = async () => {
+  //     if (isOwnerAuthenticated) {
+  //       try {
+  //         const userId = owner.type === "owner" ? owner?.id : null;
+  //         if (!userId) return;
+
+  //         const url = new URL(fetchDetailsUrl);
+  //         url.searchParams.append("userId", userId);
+  //         url.searchParams.append("type", owner.type);
+
+  //         const response = await fetch(url);
+  //         if (!response.ok) throw new Error("Failed to fetch details");
+  //         const data = await response.json();
+  //         setUserDetails(data);
+  //       } catch (error) {
+  //         console.error("Error fetching details:", error);
+  //       }
+  //     }
+  //   };
+  //   if (loginMethod === "google") {
+  //     fetchDetails();
+  //     console.log("Fetching user details for Google login",userDetails);
+  //     if(!userDetails) return
+  //     const missingFields = requiredFields.filter(
+  //       (field) =>
+  //         !userDetails[field] ||
+  //         (typeof userDetails[field] === "string" &&
+  //           userDetails[field].trim() === "")
+  //     );
+
+  //     if (missingFields.length > 0) {
+  //       console.log("Missing fields:", missingFields);
+  //       setShowProfileAlert(true);
+  //       // Show alert or prevent listing
+  //     }
+  //   }
+  // }, [owner]);
   useEffect(() => {
-    console.log("Fetching user details for owner:", owner,loginMethod);
     const fetchDetails = async () => {
-      if (isOwnerAuthenticated) {
-        console.log("Fetching details for owner:",isOwnerAuthenticated);
+      if (isOwnerAuthenticated && loginMethod === "google") {
         try {
           const userId = owner.type === "owner" ? owner?.id : null;
           if (!userId) return;
@@ -1793,10 +1830,12 @@ const HomePage = () => {
         }
       }
     };
-    if (loginMethod === "google") {
-      fetchDetails();
-      console.log("Fetching user details for Google login",userDetails);
-      if(!userDetails) return
+
+    fetchDetails();
+  }, [owner]);
+
+  useEffect(() => {
+    if (loginMethod === "google" && userDetails) {
       const missingFields = requiredFields.filter(
         (field) =>
           !userDetails[field] ||
@@ -1807,10 +1846,9 @@ const HomePage = () => {
       if (missingFields.length > 0) {
         console.log("Missing fields:", missingFields);
         setShowProfileAlert(true);
-        // Show alert or prevent listing
       }
     }
-  }, [owner]);
+  }, [userDetails]);
 
   const debounceTimeout = useRef(null);
 
