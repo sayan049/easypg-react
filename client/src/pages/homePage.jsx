@@ -2185,7 +2185,7 @@ const HomePage = () => {
                 <div className="relative">
                   {/* Enhanced Profile Alert */}
                   <ProfileAlert
-                    show={needsUpdate && showProfileAlert}
+                    show={ showProfileAlert}
                     onDismiss={() => setShowProfileAlert(false)}
                     type="info"
                   />
