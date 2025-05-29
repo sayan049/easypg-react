@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -44,6 +43,11 @@ const HomePage = () => {
     facebook: "https://api.iconify.design/mdi:facebook.svg?color=white",
     linkedin: "https://api.iconify.design/mdi:linkedin.svg?color=white",
     instagram: "https://api.iconify.design/mdi:instagram.svg?color=white",
+  };
+  const socialLinks = {
+    instagram: "https://www.instagram.com/mes.smate/", // replace with your actual handle
+    facebook: "https://www.facebook.com/share/1a7yy7319h/?mibextid=wwXIfr", // replace with your page link
+    linkedin: "https://www.linkedin.com/company/messmate/", // replace with your profile/page
   };
   const {
     userName,
@@ -320,11 +324,10 @@ const HomePage = () => {
       );
 
       if (missingFields.length > 0) {
-      //  console.log("Missing fields:", missingFields);
+        //  console.log("Missing fields:", missingFields);
         setShowProfileAlert(true);
         localStorage.setItem("needToUpdateProfile", "true");
-      }
-      else{
+      } else {
         setShowProfileAlert(false);
         localStorage.removeItem("needToUpdateProfile");
       }
@@ -666,7 +669,7 @@ const HomePage = () => {
                 <div className="relative">
                   {/* Enhanced Profile Alert */}
                   <ProfileAlert
-                    show={ showProfileAlert}
+                    show={showProfileAlert}
                     onDismiss={() => setShowProfileAlert(false)}
                     type="info"
                   />
@@ -680,7 +683,10 @@ const HomePage = () => {
                     <UserProfile className="h-12 w-12 ring-2 ring-[#2CA4B5] rounded-full" />
 
                     {/* Enhanced notification badge */}
-                    {(hasUnread || hasUnreadOwner || hasUnreadOwnerCancel || showProfileAlert) && (
+                    {(hasUnread ||
+                      hasUnreadOwner ||
+                      hasUnreadOwnerCancel ||
+                      showProfileAlert) && (
                       <motion.span
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
@@ -1428,7 +1434,9 @@ const HomePage = () => {
                       (social, index) => (
                         <motion.a
                           key={index}
-                          href="#"
+                          href={socialLinks[social]} // use dynamic link
+                          target="_blank"
+                          rel="noopener noreferrer"
                           whileHover={{ y: -5 }}
                           className="bg-[#2CA4B5] text-white p-3 rounded-full hover:bg-teal-600 transition-colors duration-300"
                           aria-label={social}
