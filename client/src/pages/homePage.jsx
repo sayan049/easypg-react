@@ -1794,6 +1794,8 @@ const HomePage = () => {
     };
     if (loginMethod === "google") {
       fetchDetails();
+      console.log("Fetching user details for Google login",userDetails);
+      if(!userDetails) return
       const missingFields = requiredFields.filter(
         (field) =>
           !userDetails[field] ||
