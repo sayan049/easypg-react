@@ -13,7 +13,7 @@ import "../designs/UserProfile.css";
 import { useAuth } from "../contexts/AuthContext";
 import { LocationIqurl } from "../constant/urls";
 import Recommendations from "../components/Recommendations";
-import { Home, Info, Phone, LogIn, Briefcase, X } from "lucide-react";
+import { Home, Phone, LogIn, Briefcase} from "lucide-react";
 import { Helmet } from "react-helmet";
 import { Map, MapPin } from "lucide-react";
 import { useSocket } from "../contexts/socketContext";
