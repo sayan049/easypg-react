@@ -1771,8 +1771,8 @@ const HomePage = () => {
   ];
 
   useEffect(() => {
+    console.log("Fetching user details for owner:", owner);
     const fetchDetails = async () => {
-      console.log("Fetching user details for owner:", owner);
       if (isOwnerAuthenticated) {
         try {
           const userId = owner.type === "owner" ? owner?.id : null;
