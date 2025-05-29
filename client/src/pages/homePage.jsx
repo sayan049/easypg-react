@@ -680,7 +680,7 @@ const HomePage = () => {
                     <UserProfile className="h-12 w-12 ring-2 ring-[#2CA4B5] rounded-full" />
 
                     {/* Enhanced notification badge */}
-                    {(hasUnread || hasUnreadOwner || hasUnreadOwnerCancel || localStorage.getItem("needToUpdateProfile")=== true) && (
+                    {(hasUnread || hasUnreadOwner || hasUnreadOwnerCancel || localStorage.getItem("needToUpdateProfile")=== "true") && (
                       <motion.span
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
