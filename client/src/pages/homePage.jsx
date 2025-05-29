@@ -488,9 +488,27 @@ const HomePage = () => {
               {IsAuthenticated || isOwnerAuthenticated ? (
                 <div className="relative">
                   {needsUpdate && (
-                    <div className="absolute -top-2 -left-64 bg-white border border-gray-300 text-gray-800 text-sm px-4 py-2 rounded-md shadow-md max-w-xs w-60 z-50">
-                      <span className="font-medium">Action Required:</span>{" "}
-                      Please update your details to list your mess.
+                    <div className="absolute -top-2 -left-64 bg-white border border-blue-100 text-gray-700 text-sm px-4 py-3 rounded-lg shadow-lg max-w-xs w-64 z-50 flex items-start">
+                      <svg
+                        className="w-4 h-4 text-blue-500 mt-0.5 mr-2 flex-shrink-0"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <div>
+                        <p className="font-semibold text-blue-600">
+                          Profile Update Needed
+                        </p>
+                        <p className="mt-1">
+                          Complete your profile details to activate your mess
+                          listing.
+                        </p>
+                      </div>
                     </div>
                   )}
 
