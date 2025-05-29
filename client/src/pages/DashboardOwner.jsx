@@ -75,7 +75,7 @@ export default function DashboardOwner() {
       icon: (
         <div className="relative">
           <Gear />{" "}
-          {localStorage.getItem("needToUpdateProfile") === true && (
+          {localStorage.getItem("needToUpdateProfile") === "true" && (
             <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full " />
           )}{" "}
         </div>
@@ -159,7 +159,7 @@ export default function DashboardOwner() {
           <Menu className="w-6 h-6" />
           {(hasUnreadOwner === true ||
             hasUnreadOwnerCancel === true ||
-            localStorage.getItem("needToUpdateProfile") === true) && (
+            localStorage.getItem("needToUpdateProfile") === "true") && (
             <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full " />
           )}
         </button>

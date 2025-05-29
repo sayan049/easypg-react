@@ -280,7 +280,6 @@ const HomePage = () => {
 
   const requiredFields = [
     "firstName",
-    "lastName",
     "email",
     "address",
     "pincode",
@@ -289,6 +288,7 @@ const HomePage = () => {
     "aboutMess",
     "location",
     "profilePhoto",
+    "roomInfo"
   ];
   useEffect(() => {
     const fetchDetails = async () => {
@@ -324,7 +324,11 @@ const HomePage = () => {
       );
 
       if (missingFields.length > 0) {
+<<<<<<< HEAD
         //  console.log("Missing fields:", missingFields);
+=======
+       console.log("Missing fields:", missingFields);
+>>>>>>> 8a102402f62e5be8ba8a49be6f888af3c27b085e
         setShowProfileAlert(true);
         localStorage.setItem("needToUpdateProfile", "true");
       } else {
@@ -683,10 +687,14 @@ const HomePage = () => {
                     <UserProfile className="h-12 w-12 ring-2 ring-[#2CA4B5] rounded-full" />
 
                     {/* Enhanced notification badge */}
+<<<<<<< HEAD
                     {(hasUnread ||
                       hasUnreadOwner ||
                       hasUnreadOwnerCancel ||
                       showProfileAlert) && (
+=======
+                    {(hasUnread || hasUnreadOwner || hasUnreadOwnerCancel || localStorage.getItem("needToUpdateProfile")=== "true") && (
+>>>>>>> 8a102402f62e5be8ba8a49be6f888af3c27b085e
                       <motion.span
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
