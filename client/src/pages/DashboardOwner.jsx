@@ -70,7 +70,18 @@ export default function DashboardOwner() {
       key: "booking",
     },
     { name: "Payments", icon: <CreditCard />, key: "payments" },
-    { name: "Settings", icon: <Gear />, key: "settings" },
+    {
+      name: "Settings",
+      icon: (
+        <div className="relative">
+          <Gear />{" "}
+          {localStorage.getItem("needToUpdateProfile") === true && (
+            <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full " />
+          )}{" "}
+        </div>
+      ),
+      key: "settings",
+    },
   ];
 
   useEffect(() => {
@@ -146,7 +157,9 @@ export default function DashboardOwner() {
       <div className="md:hidden flex justify-between items-center p-4 bg-white shadow">
         <button onClick={() => setMobileSidebarOpen(true)} className="relative">
           <Menu className="w-6 h-6" />
-          {(hasUnreadOwner === true || hasUnreadOwnerCancel === true) && (
+          {(hasUnreadOwner === true ||
+            hasUnreadOwnerCancel === true ||
+            localStorage.getItem("needToUpdateProfile") === true) && (
             <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full " />
           )}
         </button>

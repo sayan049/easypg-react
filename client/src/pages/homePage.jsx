@@ -322,6 +322,11 @@ const HomePage = () => {
       if (missingFields.length > 0) {
       //  console.log("Missing fields:", missingFields);
         setShowProfileAlert(true);
+        localStorage.setItem("needToUpdateProfile", "true");
+      }
+      else{
+        setShowProfileAlert(false);
+        localStorage.removeItem("needToUpdateProfile");
       }
     }
   }, [userDetails]);
@@ -675,7 +680,7 @@ const HomePage = () => {
                     <UserProfile className="h-12 w-12 ring-2 ring-[#2CA4B5] rounded-full" />
 
                     {/* Enhanced notification badge */}
-                    {(hasUnread || hasUnreadOwner || hasUnreadOwnerCancel) && (
+                    {(hasUnread || hasUnreadOwner || hasUnreadOwnerCancel || showProfileAlert) && (
                       <motion.span
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
