@@ -324,12 +324,10 @@ const HomePage = () => {
       );
 
       if (missingFields.length > 0) {
-<<<<<<< HEAD
+
         //  console.log("Missing fields:", missingFields);
 
-       console.log("Missing fields:", missingFields);
-=======
->>>>>>> 9d55a62801e77df5e4732162d017716b587d7f0e
+
 
         setShowProfileAlert(true);
         localStorage.setItem("needToUpdateProfile", "true");
@@ -690,13 +688,13 @@ const HomePage = () => {
 
                     {/* Enhanced notification badge */}
 
-<<<<<<< HEAD
+
+
+                 
+
 
                     {(hasUnread || hasUnreadOwner || hasUnreadOwnerCancel || localStorage.getItem("needToUpdateProfile")=== "true") && (
 
-=======
-                    {(hasUnread || hasUnreadOwner || hasUnreadOwnerCancel || localStorage.getItem("needToUpdateProfile")=== "true") && (
->>>>>>> 9d55a62801e77df5e4732162d017716b587d7f0e
                       <motion.span
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
