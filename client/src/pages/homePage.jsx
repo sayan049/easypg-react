@@ -1775,6 +1775,7 @@ const HomePage = () => {
     console.log("Fetching user details for owner:", owner,loginMethod);
     const fetchDetails = async () => {
       if (isOwnerAuthenticated) {
+        console.log("Fetching details for owner:",isOwnerAuthenticated);
         try {
           const userId = owner.type === "owner" ? owner?.id : null;
           if (!userId) return;
