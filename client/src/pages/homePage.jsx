@@ -1494,7 +1494,7 @@ import "react-toastify/dist/ReactToastify.css";
 import UserProfile from "../components/UserProfile";
 import "../designs/UserProfile.css";
 import { useAuth } from "../contexts/AuthContext";
-import { LocationIqurl } from "../constant/urls";
+import { LocationIqurl, fetchDetailsUrl } from "../constant/urls";
 import Recommendations from "../components/Recommendations";
 import {
   Home,
@@ -1534,6 +1534,7 @@ const HomePage = () => {
     logoutSuccess,
     isOwnerAuthenticated,
     ownerName,
+    owner,
   } = useAuth();
   const {
     hasUnread,
@@ -1550,6 +1551,7 @@ const HomePage = () => {
   const searchContainerRef = useRef(null);
   const [needsUpdate, setNeedsUpdate] = useState(true);
   const [showProfileAlert, setShowProfileAlert] = useState(true);
+  const [userDetails, setUserDetails] = useState(null);
 
   // Enhanced Alert Component
   const ProfileAlert = ({ show, onDismiss, type = "warning" }) => {
@@ -1614,13 +1616,11 @@ const HomePage = () => {
         >
           {/* Decorative top border */}
           {/* <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent rounded-t-2xl"> */}
-<div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#2CA4B5] to-transparent rounded-t-2xl">
-
-          </div>
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#2CA4B5] to-transparent rounded-t-2xl"></div>
 
           {/* Arrow pointing to profile */}
           {/* <div className="absolute top-6 -right-2 w-4 h-4 bg-white border-r-2 border-b-2 border-amber-200 transform rotate-45"></div> */}
-<div className="absolute top-6 -right-2 w-4 h-4 bg-white border-r-2 border-b-2 border-[#2CA4B5] transform rotate-45"></div>
+          <div className="absolute top-6 -right-2 w-4 h-4 bg-white border-r-2 border-b-2 border-[#2CA4B5] transform rotate-45"></div>
 
           <div className="p-6">
             <div className="flex items-start space-x-4">
@@ -1642,7 +1642,7 @@ const HomePage = () => {
                   transition={{ delay: 0.1 }}
                   className={`font-bold text-lg ${config.titleColor} mb-2 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent`}
 
-                 // className={`font-bold text-lg ${config.titleColor} mb-2 bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent`}
+                  // className={`font-bold text-lg ${config.titleColor} mb-2 bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent`}
                 >
                   Profile Update Required
                 </motion.h4>
@@ -1690,7 +1690,7 @@ const HomePage = () => {
                 }}
                 className="h-full w-1/3 bg-gradient-to-r from-transparent via-[#2CA4B5] to-transparent"
 
-              //  className="h-full w-1/3 bg-gradient-to-r from-transparent via-amber-400 to-transparent"
+                //  className="h-full w-1/3 bg-gradient-to-r from-transparent via-amber-400 to-transparent"
               />
             </motion.div>
           </div>
@@ -1755,6 +1755,57 @@ const HomePage = () => {
       setIsConnected(false);
     }
   }, [isConnected, data]);
+
+  const requiredFields = [
+    "firstName",
+    "lastName",
+    "email",
+    "address",
+    "password",
+    "pincode",
+    "mobileNo",
+    "messName",
+    "aboutMess",
+    "location",
+    "profilePhoto",
+  ];
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      if (isOwnerAuthenticated) {
+        try {
+          const userId = type === "owner" ? owner?.id : null;
+          if (!userId) return;
+
+          const url = new URL(fetchDetailsUrl);
+          url.searchParams.append("userId", userId);
+          url.searchParams.append("type", type);
+
+          const response = await fetch(url);
+          if (!response.ok) throw new Error("Failed to fetch details");
+          const data = await response.json();
+          setUserDetails(data);
+        } catch (error) {
+          console.error("Error fetching details:", error);
+        }
+      }
+    };
+    if (owner?.loginMethod === "google") {
+      fetchDetails();
+      const missingFields = requiredFields.filter(
+        (field) =>
+          !userDetails[field] ||
+          (typeof userDetails[field] === "string" &&
+            userDetails[field].trim() === "")
+      );
+
+      if (missingFields.length > 0) {
+        console.log("Missing fields:", missingFields);
+        setShowProfileAlert(true);
+        // Show alert or prevent listing
+      }
+    }
+  }, [owner]);
 
   const debounceTimeout = useRef(null);
 
