@@ -1779,7 +1779,7 @@ const HomePage = () => {
 
           const url = new URL(fetchDetailsUrl);
           url.searchParams.append("userId", userId);
-          url.searchParams.append("type", type);
+          url.searchParams.append("type", owner.type);
 
           const response = await fetch(url);
           if (!response.ok) throw new Error("Failed to fetch details");
