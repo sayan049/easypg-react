@@ -401,7 +401,7 @@ exports.signupHandlerOwner = async (req, res) => {
       minimumSecurityDeposit,
       rulesToStay: rules,
       minimumBookingDuration,
-      is_verified_Owner:true, // Set to true for initial registration
+      is_verified_Owner: true, // Set to true for initial registration
     });
 
     // sendmailOwner(firstName, email, newOwner._id);
@@ -500,7 +500,18 @@ exports.resendVerificationEmailOwner = async (req, res) => {
 exports.findMess = async (req, res) => {
   try {
     const { lat, lng, page = 1, limit = 5 } = req.query;
-
+    const requiredFields = [
+      "firstName",
+      "lastName",
+      "email",
+      "address",
+      "pincode",
+      "mobileNo",
+      "messName",
+      "aboutMess",
+      "location",
+      "profilePhoto",
+    ];
     // Validate latitude and longitude
     if (!lat || !lng) {
       return res
@@ -518,7 +529,7 @@ exports.findMess = async (req, res) => {
 
     // Generate 7-character GeoHash for user's location
     const userGeohash = geohash.encode(latitude, longitude, 5);
-   // console.log("🔍 User GeoHash:", userGeohash);
+    // console.log("🔍 User GeoHash:", userGeohash);
 
     // Get 7-character neighboring GeoHashes
     let neighbors = geohash
@@ -526,13 +537,23 @@ exports.findMess = async (req, res) => {
       .map((hash) => hash.substring(0, 5));
     neighbors.push(userGeohash); // Include user's geohash
 
-   // console.log("🗺 Neighboring GeoHashes:", neighbors);
+    // console.log("🗺 Neighboring GeoHashes:", neighbors);
+    const requiredFieldConditions = requiredFields.map((field) => ({
+      [field]: { $exists: true, $ne: "" },
+    }));
+
+    const query = {
+      geoHash: { $in: neighbors },
+      $and: requiredFieldConditions,
+    };
 
     // Query MongoDB using correct geohashes
-    const nearbyPGs = await PgOwner.find({ geoHash: { $in: neighbors } })
-      .skip(skip)
-      .limit(limitNum);
-    const total = await PgOwner.countDocuments({ geoHash: { $in: neighbors } });
+    // const nearbyPGs = await PgOwner.find({ geoHash: { $in: neighbors } })
+    //   .skip(skip)
+    //   .limit(limitNum);
+    // const total = await PgOwner.countDocuments({ geoHash: { $in: neighbors } });
+    const nearbyPGs = await PgOwner.find(query).skip(skip).limit(limitNum);
+    const total = await PgOwner.countDocuments(query);
 
     if (nearbyPGs.length === 0) {
       console.log(" No PGs found near this location.");
@@ -613,7 +634,7 @@ exports.loginHandlerOwner = async (req, res) => {
     });
 
     await pgOwner.save();
-     res.cookie("accessToken", accessToken, {
+    res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true, // true in production (HTTPS)
       sameSite: "None",
@@ -630,11 +651,9 @@ exports.loginHandlerOwner = async (req, res) => {
       path: "/",
       maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
     });
-   
 
     res.status(200).json({
       message: "Login successful.",
-      
     });
 
     console.log("Successfully logged in");
