@@ -13,7 +13,7 @@ import "../designs/UserProfile.css";
 import { useAuth } from "../contexts/AuthContext";
 import { LocationIqurl } from "../constant/urls";
 import Recommendations from "../components/Recommendations";
-import { Home, Phone, LogIn, Briefcase} from "lucide-react";
+import { Home, Phone, LogIn, Briefcase } from "lucide-react";
 import { Helmet } from "react-helmet";
 import { Map, MapPin } from "lucide-react";
 import { useSocket } from "../contexts/socketContext";
@@ -522,7 +522,7 @@ const HomePage = () => {
     `}
                     >
                       <div className="flex items-start gap-3">
-                        <Icon
+                        <Info
                           className={`h-5 w-5 mt-0.5 flex-shrink-0 text-blue-500`}
                         />
 
