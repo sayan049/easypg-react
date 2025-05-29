@@ -1549,8 +1549,8 @@ const HomePage = () => {
   const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState(null);
   const searchContainerRef = useRef(null);
-  const [needsUpdate, setNeedsUpdate] = useState(true);
-  const [showProfileAlert, setShowProfileAlert] = useState(true);
+  const [needsUpdate, setNeedsUpdate] = useState(false);
+  const [showProfileAlert, setShowProfileAlert] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
 
   // Enhanced Alert Component
