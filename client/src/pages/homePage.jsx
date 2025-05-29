@@ -604,9 +604,9 @@ const HomePage = () => {
             description:
               "Student accommodation platform connecting students with verified PGs and mess facilities",
             sameAs: [
-              "https://facebook.com/messmate",
-              "https://twitter.com/messmate",
-              "https://instagram.com/messmate",
+              "https://www.facebook.com/share/1a7yy7319h/?mibextid=wwXIfr",
+              "https://www.linkedin.com/company/messmate/",
+              "https://www.instagram.com/mes.smate/",
             ],
           })}
         </script>
@@ -625,10 +625,10 @@ const HomePage = () => {
               email: "helpmessmate@gmail.com",
               areaServed: "India",
             },
-            sameAs: [
-              "https://facebook.com/messmate",
-              "https://twitter.com/messmate",
-              "https://instagram.com/messmate",
+          sameAs: [
+              "https://www.facebook.com/share/1a7yy7319h/?mibextid=wwXIfr",
+              "https://www.linkedin.com/company/messmate/",
+              "https://www.instagram.com/mes.smate/",
             ],
           })}
         </script>

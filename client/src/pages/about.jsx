@@ -53,7 +53,7 @@ const About = () => {
         />
         <meta
           property="og:image"
-          content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746976366/img-3-6820bdcb4bc46_mxh4ym.webp"
+          content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746794665/main-681df86fe504d_ltnvdn.webp"
         />
         <meta property="og:url" content="https://www.messmate.co.in/about" />
         <meta property="og:type" content="website" />
@@ -70,7 +70,7 @@ const About = () => {
         />
         <meta
           name="twitter:image"
-          content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746976366/img-3-6820bdcb4bc46_mxh4ym.webp"
+          content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746794665/main-681df86fe504d_ltnvdn.webp"
         />
 
         {/* Script Tag Example (e.g., Google Analytics or a chatbot) */}

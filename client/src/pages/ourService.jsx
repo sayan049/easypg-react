@@ -97,7 +97,7 @@ const OurService = () => {
         />
         <meta
           property="og:image"
-          content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629877/og-services.jpg"
+          content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746794665/main-681df86fe504d_ltnvdn.webp"
         />
 
         {/* Twitter */}
@@ -105,7 +105,7 @@ const OurService = () => {
         <meta name="twitter:site" content="@MessMate" />
 
         {/* Schema Markup */}
-        {/* <script type="application/ld+json">
+        <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
@@ -123,7 +123,7 @@ const OurService = () => {
               ratingCount: "200",
             },
           })}
-        </script> */}
+        </script>
       </Helmet>
       <main>
         <div className="min-h-screen font-inter text-gray-800 bg-gray-50">
