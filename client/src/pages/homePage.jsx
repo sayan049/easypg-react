@@ -622,7 +622,7 @@ const HomePage = () => {
               "@type": "ContactPoint",
               telephone: "+91-7479170108",
               contactType: "customer service",
-              email: "messmatecompany@gmail.com.com",
+              email: "helpmessmate@gmail.com",
               areaServed: "India",
             },
             sameAs: [
@@ -1393,7 +1393,7 @@ const HomePage = () => {
                   </p>
                   <div className="space-y-4">
                     {[
-                      { label: "Email", value: "messmatecompany@gmail.com" },
+                      { label: "Email", value: "helpmessmate@gmail.com" },
                       { label: "Phone", value: "+91-7479170108" },
                       {
                         label: "Address",
