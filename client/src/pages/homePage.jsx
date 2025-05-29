@@ -488,8 +488,9 @@ const HomePage = () => {
               {IsAuthenticated || isOwnerAuthenticated ? (
                 <div className="relative">
                   {needsUpdate && (
-                    <div className="absolute -top-2 -left-28 bg-yellow-100 border border-yellow-400 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full shadow-lg animate-bounce max-w-[180px]">
-                      ✨ Please update your details!
+                    <div className="absolute -top-2 -left-64 bg-white border border-gray-300 text-gray-800 text-sm px-4 py-2 rounded-md shadow-md max-w-xs w-60 z-50">
+                      <span className="font-medium">Action Required:</span>{" "}
+                      Please update your details to list your mess.
                     </div>
                   )}
 
