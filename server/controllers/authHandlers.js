@@ -502,7 +502,6 @@ exports.findMess = async (req, res) => {
     const { lat, lng, page = 1, limit = 5 } = req.query;
     const requiredFields = [
       "firstName",
-      "lastName",
       "email",
       "address",
       "pincode",
