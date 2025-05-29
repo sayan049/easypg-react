@@ -55,6 +55,7 @@ const HomePage = () => {
   const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState(null);
   const searchContainerRef = useRef(null);
+  const [needsUpdate, setNeedsUpdate] = useState(true);
 
   useEffect(() => {
     document.title = "MessMate - Find your nearest PG/Mess easily";
@@ -486,6 +487,12 @@ const HomePage = () => {
 
               {IsAuthenticated || isOwnerAuthenticated ? (
                 <div className="relative">
+                  {needsUpdate && (
+                    <div className="absolute -top-2 -left-28 bg-yellow-100 border border-yellow-400 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full shadow-lg animate-bounce max-w-[180px]">
+                      ✨ Please update your details!
+                    </div>
+                  )}
+
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
