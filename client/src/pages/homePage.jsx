@@ -325,9 +325,6 @@ const HomePage = () => {
 
       if (missingFields.length > 0) {
 
-        //  console.log("Missing fields:", missingFields);
-
-
 
         setShowProfileAlert(true);
         localStorage.setItem("needToUpdateProfile", "true");
@@ -690,7 +687,6 @@ const HomePage = () => {
 
 
 
-                 
 
 
                     {(hasUnread || hasUnreadOwner || hasUnreadOwnerCancel || localStorage.getItem("needToUpdateProfile")=== "true") && (
