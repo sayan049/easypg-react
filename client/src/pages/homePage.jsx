@@ -61,7 +61,6 @@ const HomePage = () => {
 
   const handleDismiss = () => {
     setIsVisible(false);
-    onDismiss?.();
   };
   useEffect(() => {
     document.title = "MessMate - Find your nearest PG/Mess easily";
