@@ -405,7 +405,7 @@ const About = () => {
           <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center">
             Meet Our Team
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="flex overflow-x-auto space-x-8">
             {[
               {
                 name: "Sayan Patra",
@@ -427,14 +427,21 @@ const About = () => {
               },
               {
                 name: "Tanmoy Sarkar",
-                title: " Co-founder & COO",
+                title: "Co-founder & COO",
                 description: "Android Developer",
                 img: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1748291252/aaaa_evhrhz.webp",
+              },
+              {
+                name: "Achintya Barman",
+                title: "Marketing Specialist",
+                description:
+                  "Focuses on digital and physical marketing campaigns",
+                img: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1748508974/whatsapp-image-2024-08-16-at-104043-3e17a943-photoroom-683820dddce06_bhvku7.webp",
               },
             ].map((member, index) => (
               <div
                 key={index}
-                className="flex flex-col items-center text-center"
+                className="flex flex-col items-center text-center min-w-[200px]"
               >
                 <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-primary-light mb-4 hover:border-primary-dark transition-colors duration-200">
                   <img

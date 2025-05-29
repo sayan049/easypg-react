@@ -119,7 +119,7 @@ const Footer = forwardRef((props, ref) => {
             <h2 className="font-semibold mb-3">Connect</h2>
             <div className="flex space-x-3 mb-4">
               <a
-                href="#"
+                href="https://www.instagram.com/mes.smate/"
                 aria-label="Instagram"
                 className="text-white hover:text-[#E1306C]"
               >
@@ -130,7 +130,7 @@ const Footer = forwardRef((props, ref) => {
                 />
               </a>
               <a
-                href="#"
+                href="https://www.facebook.com/share/1a7yy7319h/?mibextid=wwXIfr"
                 aria-label="Facebook"
                 className="text-white hover:text-[#1877F2]"
               >
@@ -141,7 +141,7 @@ const Footer = forwardRef((props, ref) => {
                 />
               </a>
               <a
-                href="#"
+                href="https://www.linkedin.com/company/messmate/"
                 aria-label="LinkedIn"
                 className="text-white hover:text-[#0A66C2]"
               >
