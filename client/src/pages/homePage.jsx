@@ -1535,6 +1535,7 @@ const HomePage = () => {
     isOwnerAuthenticated,
     ownerName,
     owner,
+    loginMethod
   } = useAuth();
   const {
     hasUnread,
@@ -1771,7 +1772,7 @@ const HomePage = () => {
   ];
 
   useEffect(() => {
-    console.log("Fetching user details for owner:", owner);
+    console.log("Fetching user details for owner:", owner,loginMethod);
     const fetchDetails = async () => {
       if (isOwnerAuthenticated) {
         try {
@@ -1791,7 +1792,7 @@ const HomePage = () => {
         }
       }
     };
-    if (owner?.loginMethod === "google") {
+    if (loginMethod === "google") {
       fetchDetails();
       const missingFields = requiredFields.filter(
         (field) =>
