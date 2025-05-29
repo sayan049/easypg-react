@@ -17,6 +17,7 @@ import { Home, Info, Phone, LogIn, Briefcase, X } from "lucide-react";
 import { Helmet } from "react-helmet";
 import { Map, MapPin } from "lucide-react";
 import { useSocket } from "../contexts/socketContext";
+import { AlertTriangle, CheckCircle, Info, X, XCircle } from "lucide-react";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ const HomePage = () => {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isLocationChanged, setIsLocationChanged] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const socialIcons = {
     facebook: "https://api.iconify.design/mdi:facebook.svg?color=white",
     linkedin: "https://api.iconify.design/mdi:linkedin.svg?color=white",
@@ -57,6 +59,10 @@ const HomePage = () => {
   const searchContainerRef = useRef(null);
   const [needsUpdate, setNeedsUpdate] = useState(true);
 
+  const handleDismiss = () => {
+    setIsVisible(false);
+    onDismiss?.();
+  };
   useEffect(() => {
     document.title = "MessMate - Find your nearest PG/Mess easily";
   }, []);
@@ -488,26 +494,56 @@ const HomePage = () => {
               {IsAuthenticated || isOwnerAuthenticated ? (
                 <div className="relative">
                   {needsUpdate && (
-                    <div className="absolute -top-2 -left-64 bg-white border border-blue-100 text-gray-700 text-sm px-4 py-3 rounded-lg shadow-lg max-w-xs w-64 z-50 flex items-start">
-                      <svg
-                        className="w-4 h-4 text-blue-500 mt-0.5 mr-2 flex-shrink-0"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z"
-                          clipRule="evenodd"
+                    // <div className="absolute -top-2 -left-64 bg-white border border-blue-100 text-gray-700 text-sm px-4 py-3 rounded-lg shadow-lg max-w-xs w-64 z-50 flex items-start">
+                    //   <svg
+                    //     className="w-4 h-4 text-blue-500 mt-0.5 mr-2 flex-shrink-0"
+                    //     fill="currentColor"
+                    //     viewBox="0 0 20 20"
+                    //   >
+                    //     <path
+                    //       fillRule="evenodd"
+                    //       d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z"
+                    //       clipRule="evenodd"
+                    //     />
+                    //   </svg>
+                    //   <div>
+                    //     <p className="font-semibold text-blue-600">
+                    //       Profile Update Needed
+                    //     </p>
+                    //     <p className="mt-1">
+                    //       Complete your profile details to activate your mess
+                    //       listing.
+                    //     </p>
+                    //   </div>
+                    // </div>
+                    <div
+                      className={`
+      absolute z-50 w-72 p-4 bg-white border rounded-lg shadow-lg bg-white border-blue-200 text-blue-800 shadow-blue-100
+      top-right": "top-0 right-0 translate-x-full -translate-y-2 
+    `}
+                    >
+                      <div className="flex items-start gap-3">
+                        <Icon
+                          className={`h-5 w-5 mt-0.5 flex-shrink-0 text-blue-500`}
                         />
-                      </svg>
-                      <div>
-                        <p className="font-semibold text-blue-600">
-                          Profile Update Needed
-                        </p>
-                        <p className="mt-1">
-                          Complete your profile details to activate your mess
-                          listing.
-                        </p>
+
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-semibold text-sm mb-1">
+                            Action Required
+                          </h4>
+
+                          <p className="text-sm leading-relaxed">
+                            Please update your details to list your mess.
+                          </p>
+                        </div>
+
+                        <button
+                          onClick={handleDismiss}
+                          className="flex-shrink-0 p-1 rounded-md transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                          aria-label="Dismiss alert"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
                       </div>
                     </div>
                   )}
