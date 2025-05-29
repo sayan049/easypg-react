@@ -111,7 +111,7 @@ const BusinessModel = () => {
         />
         <meta
           property="og:image"
-          content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629877/og-business.jpg"
+          content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746794665/main-681df86fe504d_ltnvdn.webp"
         />
         <meta
           property="og:url"
@@ -123,7 +123,7 @@ const BusinessModel = () => {
         <meta name="twitter:site" content="@MessMate" />
 
         {/* Schema Markup */}
-        {/* <script type="application/ld+json">
+        <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebPage",
@@ -134,11 +134,11 @@ const BusinessModel = () => {
               name: "MessMate",
               logo: {
                 "@type": "ImageObject",
-                url: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629877/companylogo_qz2ufw.png",
+                url: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp",
               },
               sameAs: [
-                "https://facebook.com/messmate",
-                "https://linkedin.com/company/messmate",
+                "https://www.facebook.com/share/1a7yy7319h/?mibextid=wwXIfr",
+                "https://www.linkedin.com/company/messmate/",
               ],
             },
             mainEntityOfPage: {
@@ -146,14 +146,14 @@ const BusinessModel = () => {
               name: "MessMate Platform Demo",
               description: "See how MessMate transforms PG management",
               thumbnailUrl:
-                "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629877/video-thumbnail.jpg",
+                "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1748539076/Screenshot_2025-05-29_224734_zddofl.png",
               uploadDate: "2024-05-01",
               duration: "PT3M22S",
               contentUrl:
-                "https://res.cloudinary.com/dlfwb6sqd/video/upload/v1746537432/720p_gn4q9l.mp4",
+                "https://res.cloudinary.com/dlfwb6sqd/video/upload/v1747574930/720p_u27qmw.mp4",
             },
           })}
-        </script> */}
+        </script>
       </Helmet>
       <main className=" text-gray-800 overflow-x-hidden">
         {/* Hero Section */}

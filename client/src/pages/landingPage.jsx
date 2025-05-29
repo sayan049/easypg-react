@@ -30,7 +30,7 @@ function LandingPage() {
         <meta property="og:url" content="https://www.messmate.co.in/owner/partner" />
         <meta
           property="og:image"
-          content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629877/og-business.jpg"
+          content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746794665/main-681df86fe504d_ltnvdn.webp"
         />
 
         {/* Twitter Meta */}
@@ -40,7 +40,7 @@ function LandingPage() {
           name="twitter:description"
           content="Verified leads, real-time booking, and simplified management for PG owners."
         />
-        <meta name="twitter:image" content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746629877/og-business.jpg" />
+        <meta name="twitter:image" content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746794665/main-681df86fe504d_ltnvdn.webp" />
         <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
       </Helmet>
