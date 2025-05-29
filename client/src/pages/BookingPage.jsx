@@ -145,7 +145,7 @@ const TermsAndConditionsPopup = ({ onAccept, onClose, isOpen }) => {
             Terms & Conditions
           </Dialog.Title>
 
-          <div className="prose prose-sm text-gray-700 mb-6">
+          {/* <div className="prose prose-sm text-gray-700 mb-6">
             <h3 className="font-semibold">1. Platform Usage</h3>
             <p>
               By using MessMate, you agree to pay a non-refundable platform fee
@@ -187,6 +187,53 @@ const TermsAndConditionsPopup = ({ onAccept, onClose, isOpen }) => {
               For any disputes, please contact our support team. Unresolved
               disputes may be referred to local consumer forums in accordance
               with Indian law.
+            </p>
+          </div> */}
+          <div className="prose prose-sm text-gray-700 mb-6">
+            <h3 className="font-semibold">1. Platform Usage</h3>
+            <p>
+              By using MessMate, you acknowledge that we are a platform that
+              helps users discover nearby mess accommodations. We do not charge
+              any fees for using the service and do not facilitate bookings or
+              transactions.
+            </p>
+
+            <h3 className="font-semibold mt-4">2. Payment Terms</h3>
+            <p>
+              MessMate does not handle payments or deposits. All financial
+              transactions are to be made directly between users and property
+              owners. We do not charge any service or gateway fees.
+            </p>
+
+            <h3 className="font-semibold mt-4">3. Rental Agreement</h3>
+            <p>
+              Users are advised to enter into a written rental agreement with
+              the mess owner before making any payments. MessMate is not a party
+              to such agreements and does not mediate or enforce any terms.
+            </p>
+
+            <h3 className="font-semibold mt-4">4. Refund Policy</h3>
+            <p>
+              As MessMate does not process payments, we do not offer or handle
+              refunds. Any security deposit or payment-related refunds must be
+              addressed with the mess owner directly.
+            </p>
+
+            <h3 className="font-semibold mt-4">5. Legal Compliance</h3>
+            <p>
+              MessMate is a location discovery service. All legal and financial
+              responsibilities rest with the tenant and the property owner.
+              Users are encouraged to verify property documents and meet owners
+              in person before making commitments.
+            </p>
+
+            <h3 className="font-semibold mt-4">6. Dispute Resolution</h3>
+            <p>
+              For disputes involving mess listings or agreements, users must
+              resolve issues directly with the property owner. MessMate may
+              assist with contact details but is not liable for any outcomes.
+              Legal recourse may be pursued under applicable Indian consumer
+              protection laws.
             </p>
           </div>
 
@@ -308,7 +355,7 @@ export default function BookingPage() {
     }
 
     try {
-    //  console.log("Updating phone number for user:", user.id, updateDetailsUrl);
+      //  console.log("Updating phone number for user:", user.id, updateDetailsUrl);
       const payload = {
         userId: user.id,
         type: user.type || "student", // Default to "student" if type is not set
