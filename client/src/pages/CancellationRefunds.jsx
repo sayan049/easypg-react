@@ -64,9 +64,10 @@ const CancellationRefunds = () => {
 
       <h2 className="text-2xl mt-6 mb-2">2. Rejection by Owner</h2>
       <p>
-        Property owners reserve the right to reject any booking request before
-        confirmation if they encounter any concerns or discrepancies. Users will
-        be notified promptly in such cases.
+        Property owners must accept or reject any booking request within 24
+        hours of its submission. If there are any concerns or discrepancies,
+        they reserve the right to decline the request, and users will be
+        notified accordingly.
       </p>
 
       <h2 className="text-2xl mt-6 mb-2">3. Refund Process</h2>
@@ -93,10 +94,10 @@ const CancellationRefunds = () => {
       <p>
         For general inquiries, please reach out to us at{" "}
         <a
-          href="mailto:messmatecompany@gmail.com"
+          href="mailto:helpmessmate@gmail.com"
           className="text-blue-600 underline"
         >
-          messmatecompany@gmail.com
+         helpmessmate@gmail.com
         </a>
         .
       </p>
