@@ -110,7 +110,7 @@ function GoogleCallbackPage() {
         <div>
           <h1>Authentication Error</h1>
           <p>{error}</p>
-          <button onClick={() => navigate("/login")}>Go to Login</button>
+          <button onClick={() => navigate("/signup/choose-role")}>Go to Sign Up</button>
         </div>
       ) : null}
     </div>
