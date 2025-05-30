@@ -1090,20 +1090,35 @@ exports.downloadInvoice = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id)
       .select(
-        "room bedsBooked pricePerHead period.startDate period.durationMonths payment.totalAmount pgOwner student"
+        "room bedsBooked pricePerHead period.startDate period.durationMonths payment.totalAmount pgOwner student items invoiceNo orderNo date"
       )
       .populate("pgOwner", "messName address")
-      .populate("student", "firstName lastName email")
+      .populate("student", "firstName lastName email mobile")
       .lean();
 
     if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
     }
 
-    const endDate = new Date(booking.period.startDate);
-    endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getDate()}-${
+      [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ][currentDate.getMonth()]
+    }-${currentDate.getFullYear()}`;
 
-    const doc = new PDFDocument({ margin: 50 });
+    const doc = new PDFDocument({ margin: 50, size: "A4" });
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
@@ -1122,57 +1137,74 @@ exports.downloadInvoice = async (req, res) => {
       .text("Email: helpmessmate@gmail.com | Phone: +91-7479170108")
       .moveDown();
 
-    doc.fontSize(14).text("Receipt", { align: "left" }).moveDown();
+    doc.fontSize(14).font("Helvetica-Bold").text("Receipt").moveDown();
+
+    // ==== Invoice Info ====
+    doc
+      .font("Helvetica")
+      .fontSize(12)
+      .text(`Invoice No: ${booking.invoiceNo || booking._id}`, {
+        align: "right",
+      })
+      .text(`Date: ${booking.date || formattedDate}`, { align: "right" })
+      .text(`Order No: ${booking.orderNo || booking._id}`, { align: "right" })
+      .moveDown();
 
     // ==== Customer Info ====
     doc
-      .fontSize(12)
-      .text(`Invoice No: ${booking._id}`)
-      .text(`Date: ${new Date().toLocaleDateString()}`)
-      .moveDown();
-
-    doc
-      .text("Bill And Ship to:")
+      .font("Helvetica-Bold")
+      .text("Bill And Ship to")
+      .font("Helvetica")
       .text(`Name: ${booking.student.firstName} ${booking.student.lastName}`)
+      .text("Address:")
       .text(`Email: ${booking.student.email}`)
-      .text(`Mobile: (not provided)`)
+      .text(`Mobile: ${booking.student.mobile || "Not provided"}`)
       .moveDown();
 
     // ==== Table Header ====
-    doc.font("Helvetica-Bold");
+    const tableLeft = 50;
+    const yStart = doc.y + 10;
+
     doc
-      .text("Sr.No", 50, doc.y, { continued: true, width: 40 })
-      .text("Description", 90, doc.y, { continued: true, width: 150 })
-      .text("HSN Code", 240, doc.y, { continued: true, width: 70 })
-      .text("Qty", 310, doc.y, { continued: true, width: 40 })
-      .text("Unit", 350, doc.y, { continued: true, width: 50 })
-      .text("Rate", 400, doc.y, { continued: true, width: 70 })
-      .text("Amount", 470, doc.y)
-      .moveDown();
+      .font("Helvetica-Bold")
+      .text("Sr.No", tableLeft, yStart)
+      .text("Description", tableLeft + 50, yStart)
+      .text("HSN Code", tableLeft + 250, yStart)
+      .text("Qty", tableLeft + 310, yStart)
+      .text("Unit", tableLeft + 340, yStart)
+      .text("Rate", tableLeft + 390, yStart)
+      .text("Amount", tableLeft + 450, yStart);
 
-    doc.font("Helvetica");
+    doc.moveDown();
 
-    const items = [
-      {
-        description: "Room Rent",
-        hsn: "9963",
-        qty: booking.period.durationMonths,
-        unit: "Month",
-        rate: booking.pricePerHead,
-        amount: booking.pricePerHead * booking.period.durationMonths,
-      },
-    ];
+    // ==== Table Rows ====
+    let y = doc.y;
+
+    const items = booking.items?.length
+      ? booking.items
+      : [
+          {
+            description: "Room Rent",
+            hsnCode: "9963",
+            qty: booking.period.durationMonths,
+            unit: "Month",
+            rate: booking.pricePerHead,
+            amount: booking.pricePerHead * booking.period.durationMonths,
+          },
+        ];
 
     items.forEach((item, index) => {
       doc
-        .text(`${index + 1}`, 50, doc.y, { continued: true, width: 40 })
-        .text(item.description, 90, doc.y, { continued: true, width: 150 })
-        .text(item.hsn, 240, doc.y, { continued: true, width: 70 })
-        .text(`${item.qty}`, 310, doc.y, { continued: true, width: 40 })
-        .text(item.unit, 350, doc.y, { continued: true, width: 50 })
-        .text(`Rs. ${item.rate}`, 400, doc.y, { continued: true, width: 70 })
-        .text(`Rs. ${item.amount}`, 470, doc.y)
-        .moveDown();
+        .font("Helvetica")
+        .text(`${index + 1}`, tableLeft, y)
+        .text(item.description, tableLeft + 50, y, { width: 190 })
+        .text(item.hsnCode || "", tableLeft + 250, y)
+        .text(`${item.qty}`, tableLeft + 310, y)
+        .text(item.unit, tableLeft + 340, y)
+        .text(`Rs. ${item.rate.toFixed(2)}`, tableLeft + 390, y)
+        .text(`Rs. ${item.amount.toFixed(2)}`, tableLeft + 450, y);
+
+      y += 20;
     });
 
     // ==== Totals ====
@@ -1180,15 +1212,23 @@ exports.downloadInvoice = async (req, res) => {
     const discount = 0;
     const total = subtotal;
 
-    doc.moveDown();
+    y += 10;
     doc
       .font("Helvetica")
-      .text(`Subtotal: Rs. ${subtotal}`, { align: "right" })
-      .text(`Discount: Rs. ${discount}`, { align: "right" })
+      .text("Subtotal:", tableLeft + 390, y)
+      .text(`Rs. ${subtotal.toFixed(2)}`, tableLeft + 450, y);
+    y += 20;
+    doc
+      .text("Discount:", tableLeft + 390, y)
+      .text(`Rs. ${discount.toFixed(2)}`, tableLeft + 450, y);
+    y += 20;
+    doc
       .font("Helvetica-Bold")
-      .text(`Total: Rs. ${total}`, { align: "right" })
-      .moveDown();
+      .text("Total:", tableLeft + 390, y)
+      .text(`Rs. ${total.toFixed(2)}`, tableLeft + 450, y);
 
+    // ==== Footer ====
+    doc.moveDown(2);
     doc
       .font("Helvetica-Oblique")
       .text("Thank you for choosing Messmate!", { align: "center" });
