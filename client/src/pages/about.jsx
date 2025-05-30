@@ -433,7 +433,7 @@ const About = () => {
               },
               {
                 name: "Achintya Barman",
-                title: "Marketing Specialist",
+                title: "Product Manager",
                 description:
                   "Focuses on digital and physical marketing campaigns",
                 img: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1748508974/whatsapp-image-2024-08-16-at-104043-3e17a943-photoroom-683820dddce06_bhvku7.webp",
