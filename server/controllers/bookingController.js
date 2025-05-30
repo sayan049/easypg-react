@@ -1468,14 +1468,13 @@ exports.downloadInvoice = async (req, res) => {
     drawHorizontalLine(doc.y + 10);
     doc.moveDown(1);
 
-  // RECEIPT TITLE
-doc
-  .fontSize(16)
-  .font("Helvetica-Bold")
-  .fillColor(primaryColor)
-  .text("RECEIPT", { align: "center" })
-  .moveDown(1);
-
+    // RECEIPT TITLE
+    doc
+      .fontSize(16)
+      .font("Helvetica-Bold")
+      .fillColor(primaryColor)
+      .text("RECEIPT", { align: "center" })
+      .moveDown(1);
 
     // CUSTOMER & INVOICE INFO
     const customerStartY = doc.y;
@@ -1516,7 +1515,10 @@ doc
       .font("Helvetica")
       .fontSize(10)
       .fillColor(secondaryColor)
-      .text(`Booking ID: #${booking._id.toString().slice(-6).toUpperCase()}`, 350)
+      .text(
+        `Booking ID: #${booking._id.toString().slice(-6).toUpperCase()}`,
+        350
+      )
       .text(`Date: ${booking.date || formattedDate}`, 350);
 
     doc.y = Math.max(doc.y, customerStartY + 100);
@@ -1598,23 +1600,21 @@ doc
     //   },
     // ];
     const items = [
-  {
-    description: "Monthly Rent",
-    qty: 1,
-    unit: "Months",
-    rate: booking.period.durationMonths,
-    amount: booking.pricePerHead,
-  },
-  {
-    description: "Security Deposit",
-    qty: 1,
-    unit: "Nos",
-    rate: 1,
-    amount:
-      booking.payment.deposit,
-  },
-];
-
+      {
+        description: "Monthly Rent",
+        qty: 1,
+        unit: "Months",
+        rate: booking.period.durationMonths,
+        amount: booking.pricePerHead,
+      },
+      {
+        description: "Security Deposit",
+        qty: 1,
+        unit: "Nos",
+        rate: 1,
+        amount: booking.payment.deposit,
+      },
+    ];
 
     let y = tableTop + 20;
     items.forEach((item, index) => {
@@ -1636,12 +1636,24 @@ doc
         .text(booking.room || "N/A", colPos.roomId + 5, y + 6)
         .text(`${item.qty}`, colPos.qty + 5, y + 6, { align: "center" })
         .text(item.unit, colPos.unit + 5, y + 6)
-        .text(`₹ ${item.rate.toFixed(2)}`, colPos.rate + 5, y + 6, {
-          align: "right",
-        })
-        .text(`₹ ${item.amount.toFixed(2)}`, colPos.amount + 5, y + 6, {
-          align: "right",
-        });
+        .text(
+          `₹ ${
+            typeof item.rate === "number" ? item.rate.toFixed(2) : item.rate
+          }`,
+          colPos.rate + 5,
+          y + 6,
+          { align: "right" }
+        )
+        .text(
+          `₹ ${
+            typeof item.amount === "number"
+              ? item.amount.toFixed(2)
+              : item.amount
+          }`,
+          colPos.amount + 5,
+          y + 6,
+          { align: "right" }
+        );
 
       y += 20;
     });
