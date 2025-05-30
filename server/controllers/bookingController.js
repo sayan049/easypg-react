@@ -1118,8 +1118,14 @@ exports.downloadInvoice = async (req, res) => {
       ][currentDate.getMonth()]
     }-${currentDate.getFullYear()}`;
 
-    const doc = new PDFDocument({ margin: 50, size: "A4" });
+    // Create a new PDF document with better margins
+    const doc = new PDFDocument({
+      margin: 50,
+      size: "A4",
+      bufferPages: true, // Enable page buffering for footer
+    });
 
+    // Set response headers
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
@@ -1128,58 +1134,166 @@ exports.downloadInvoice = async (req, res) => {
 
     doc.pipe(res);
 
-    // ==== Header ====
+    // Define colors for professional look
+    const primaryColor = "#333333";
+    const secondaryColor = "#555555";
+    const highlightColor = "#4a86e8";
+    const lightGray = "#f5f5f5";
+    const borderColor = "#e0e0e0";
+
+    // Helper function to draw a line
+    const drawHorizontalLine = (y) => {
+      doc
+        .strokeColor(borderColor)
+        .lineWidth(1)
+        .moveTo(50, y)
+        .lineTo(550, y)
+        .stroke();
+    };
+
+    // ===== HEADER SECTION =====
+    doc
+      .fillColor(primaryColor)
+      .fontSize(22)
+      .font("Helvetica-Bold")
+      .text("Messmate Services", { align: "left" })
+      .moveDown(0.2);
+
+    doc
+      .fontSize(10)
+      .font("Helvetica")
+      .fillColor(secondaryColor)
+      .text("Messmate, Haringhata, Kalyani, West Bengal, India")
+      .text("Email: helpmessmate@gmail.com | Phone: +91-7479170108");
+
+    // Draw a line under the header
+    drawHorizontalLine(doc.y + 10);
+    doc.moveDown(1);
+
+    // ===== INVOICE TITLE =====
     doc
       .fontSize(16)
-      .text("Messmate Services", { align: "left" })
-      .fontSize(12)
-      .text("Messmate, Haringhata, Kalyani, West Bengal, India")
-      .text("Email: helpmessmate@gmail.com | Phone: +91-7479170108")
-      .moveDown();
+      .font("Helvetica-Bold")
+      .fillColor(primaryColor)
+      .text("RECEIPT", { align: "center" })
+      .moveDown(1);
 
-    doc.fontSize(14).font("Helvetica-Bold").text("Receipt").moveDown();
+    // ===== INVOICE INFO & CUSTOMER INFO - TWO COLUMN LAYOUT =====
+    const customerStartY = doc.y;
 
-    // ==== Invoice Info ====
-    doc
-      .font("Helvetica")
-      .fontSize(12)
-      .text(`Invoice No: ${booking.invoiceNo || booking._id}`, {
-        align: "right",
-      })
-      .text(`Date: ${booking.date || formattedDate}`, { align: "right" })
-      .text(`Order No: ${booking.orderNo || booking._id}`, { align: "right" })
-      .moveDown();
-
-    // ==== Customer Info ====
+    // Left column - Customer Info
     doc
       .font("Helvetica-Bold")
-      .text("Bill And Ship to")
-      .font("Helvetica")
-      .text(`Name: ${booking.student.firstName} ${booking.student.lastName}`)
-      .text("Address:")
-      .text(`Email: ${booking.student.email}`)
-      .text(`Mobile: ${booking.student.mobile || "Not provided"}`)
-      .moveDown();
+      .fontSize(11)
+      .fillColor(primaryColor)
+      .text("Bill And Ship to:", 50, customerStartY)
+      .moveDown(0.5);
 
-    // ==== Table Header ====
+    doc
+      .font("Helvetica")
+      .fontSize(10)
+      .fillColor(secondaryColor)
+      .text(
+        `Name: ${booking.student.firstName} ${booking.student.lastName}`,
+        50
+      )
+      .text("Address:", 50)
+      .text(`Email: ${booking.student.email}`, 50)
+      .text(`Mobile: ${booking.student.mobile || "Not provided"}`, 50);
+
+    // Right column - Invoice Info
+    doc
+      .font("Helvetica-Bold")
+      .fontSize(10)
+      .fillColor(primaryColor)
+      .text("Invoice Details:", 350, customerStartY)
+      .moveDown(0.5);
+
+    doc
+      .font("Helvetica")
+      .fontSize(10)
+      .fillColor(secondaryColor)
+      .text(`Invoice No: ${booking.invoiceNo || booking._id}`, 350)
+      .text(`Date: ${booking.date || formattedDate}`, 350)
+      .text(`Order No: ${booking.orderNo || booking._id}`, 350);
+
+    // Move to the bottom of the tallest column
+    doc.y = Math.max(doc.y, customerStartY + 100);
+    doc.moveDown(1);
+
+    // ===== TABLE SECTION =====
+    // Define table dimensions and positions
+    const tableTop = doc.y;
     const tableLeft = 50;
-    const yStart = doc.y + 10;
+    const colWidths = {
+      srNo: 30,
+      description: 190,
+      hsnCode: 60,
+      qty: 30,
+      unit: 50,
+      rate: 70,
+      amount: 70,
+    };
 
+    // Calculate column positions
+    const colPos = {
+      srNo: tableLeft,
+      description: tableLeft + colWidths.srNo,
+      hsnCode: tableLeft + colWidths.srNo + colWidths.description,
+      qty:
+        tableLeft + colWidths.srNo + colWidths.description + colWidths.hsnCode,
+      unit:
+        tableLeft +
+        colWidths.srNo +
+        colWidths.description +
+        colWidths.hsnCode +
+        colWidths.qty,
+      rate:
+        tableLeft +
+        colWidths.srNo +
+        colWidths.description +
+        colWidths.hsnCode +
+        colWidths.qty +
+        colWidths.unit,
+      amount:
+        tableLeft +
+        colWidths.srNo +
+        colWidths.description +
+        colWidths.hsnCode +
+        colWidths.qty +
+        colWidths.unit +
+        colWidths.rate,
+    };
+
+    // Draw table header background
+    doc.fillColor(highlightColor).rect(tableLeft, tableTop, 500, 20).fill();
+
+    // Draw table header text
     doc
+      .fillColor("white")
       .font("Helvetica-Bold")
-      .text("Sr.No", tableLeft, yStart)
-      .text("Description", tableLeft + 50, yStart)
-      .text("HSN Code", tableLeft + 250, yStart)
-      .text("Qty", tableLeft + 310, yStart)
-      .text("Unit", tableLeft + 340, yStart)
-      .text("Rate", tableLeft + 390, yStart)
-      .text("Amount", tableLeft + 450, yStart);
+      .fontSize(10)
+      .text("Sr.No", colPos.srNo + 5, tableTop + 6, {
+        width: colWidths.srNo - 10,
+      })
+      .text("Description", colPos.description + 5, tableTop + 6, {
+        width: colWidths.description - 10,
+      })
+      .text("HSN Code", colPos.hsnCode + 5, tableTop + 6, {
+        width: colWidths.hsnCode - 10,
+      })
+      .text("Qty", colPos.qty + 5, tableTop + 6, { width: colWidths.qty - 10 })
+      .text("Unit", colPos.unit + 5, tableTop + 6, {
+        width: colWidths.unit - 10,
+      })
+      .text("Rate", colPos.rate + 5, tableTop + 6, {
+        width: colWidths.rate - 10,
+      })
+      .text("Amount", colPos.amount + 5, tableTop + 6, {
+        width: colWidths.amount - 10,
+      });
 
-    doc.moveDown();
-
-    // ==== Table Rows ====
-    let y = doc.y;
-
+    // Prepare items data
     const items = booking.items?.length
       ? booking.items
       : [
@@ -1193,46 +1307,142 @@ exports.downloadInvoice = async (req, res) => {
           },
         ];
 
+    // Draw table rows
+    let y = tableTop + 20;
+
     items.forEach((item, index) => {
+      // Draw alternating row backgrounds
+      if (index % 2 === 0) {
+        doc.fillColor(lightGray).rect(tableLeft, y, 500, 20).fill();
+      }
+
+      // Draw row borders
       doc
+        .strokeColor(borderColor)
+        .lineWidth(0.5)
+        .rect(tableLeft, y, 500, 20)
+        .stroke();
+
+      // Draw row text
+      doc
+        .fillColor(secondaryColor)
         .font("Helvetica")
-        .text(`${index + 1}`, tableLeft, y)
-        .text(item.description, tableLeft + 50, y, { width: 190 })
-        .text(item.hsnCode || "", tableLeft + 250, y)
-        .text(`${item.qty}`, tableLeft + 310, y)
-        .text(item.unit, tableLeft + 340, y)
-        .text(`Rs. ${item.rate.toFixed(2)}`, tableLeft + 390, y)
-        .text(`Rs. ${item.amount.toFixed(2)}`, tableLeft + 450, y);
+        .fontSize(9)
+        .text(`${index + 1}`, colPos.srNo + 5, y + 6, {
+          width: colWidths.srNo - 10,
+        })
+        .text(item.description, colPos.description + 5, y + 6, {
+          width: colWidths.description - 10,
+        })
+        .text(item.hsnCode || "", colPos.hsnCode + 5, y + 6, {
+          width: colWidths.hsnCode - 10,
+        })
+        .text(`${item.qty}`, colPos.qty + 5, y + 6, {
+          width: colWidths.qty - 10,
+          align: "center",
+        })
+        .text(item.unit, colPos.unit + 5, y + 6, { width: colWidths.unit - 10 })
+        .text(`₹ ${item.rate.toFixed(2)}`, colPos.rate + 5, y + 6, {
+          width: colWidths.rate - 10,
+          align: "right",
+        })
+        .text(`₹ ${item.amount.toFixed(2)}`, colPos.amount + 5, y + 6, {
+          width: colWidths.amount - 10,
+          align: "right",
+        });
 
       y += 20;
     });
 
-    // ==== Totals ====
+    // ===== TOTALS SECTION =====
     const subtotal = booking.payment.totalAmount;
     const discount = 0;
     const total = subtotal;
 
-    y += 10;
+    // Draw totals background
     doc
-      .font("Helvetica")
-      .text("Subtotal:", tableLeft + 390, y)
-      .text(`Rs. ${subtotal.toFixed(2)}`, tableLeft + 450, y);
-    y += 20;
-    doc
-      .text("Discount:", tableLeft + 390, y)
-      .text(`Rs. ${discount.toFixed(2)}`, tableLeft + 450, y);
-    y += 20;
-    doc
-      .font("Helvetica-Bold")
-      .text("Total:", tableLeft + 390, y)
-      .text(`Rs. ${total.toFixed(2)}`, tableLeft + 450, y);
+      .fillColor(lightGray)
+      .rect(colPos.rate - 5, y + 10, colWidths.rate + colWidths.amount + 10, 60)
+      .fill();
 
-    // ==== Footer ====
-    doc.moveDown(2);
+    // Draw totals border
     doc
-      .font("Helvetica-Oblique")
+      .strokeColor(borderColor)
+      .lineWidth(0.5)
+      .rect(colPos.rate - 5, y + 10, colWidths.rate + colWidths.amount + 10, 60)
+      .stroke();
+
+    // Draw totals text
+    doc
+      .fillColor(secondaryColor)
+      .font("Helvetica")
+      .fontSize(10)
+      .text("Subtotal:", colPos.rate, y + 20, {
+        width: colWidths.rate - 5,
+        align: "right",
+      })
+      .text("Discount:", colPos.rate, y + 35, {
+        width: colWidths.rate - 5,
+        align: "right",
+      })
+      .font("Helvetica-Bold")
+      .fillColor(primaryColor)
+      .text("Total:", colPos.rate, y + 50, {
+        width: colWidths.rate - 5,
+        align: "right",
+      });
+
+    doc
+      .fillColor(secondaryColor)
+      .font("Helvetica")
+      .fontSize(10)
+      .text(`₹ ${subtotal.toFixed(2)}`, colPos.amount, y + 20, {
+        width: colWidths.amount - 5,
+        align: "right",
+      })
+      .text(`₹ ${discount.toFixed(2)}`, colPos.amount, y + 35, {
+        width: colWidths.amount - 5,
+        align: "right",
+      })
+      .font("Helvetica-Bold")
+      .fillColor(primaryColor)
+      .text(`₹ ${total.toFixed(2)}`, colPos.amount, y + 50, {
+        width: colWidths.amount - 5,
+        align: "right",
+      });
+
+    // ===== FOOTER =====
+    // Add a thank you note
+    doc.moveDown(3);
+    doc
+      .font("Helvetica-Italic")
+      .fontSize(10)
+      .fillColor(highlightColor)
       .text("Thank you for choosing Messmate!", { align: "center" });
 
+    // Add a footer on each page
+    const pageCount = doc.bufferedPageRange().count;
+    for (let i = 0; i < pageCount; i++) {
+      doc.switchToPage(i);
+
+      // Draw footer line
+      doc
+        .strokeColor(borderColor)
+        .lineWidth(1)
+        .moveTo(50, 780)
+        .lineTo(550, 780)
+        .stroke();
+
+      // Add page number and website
+      doc
+        .fillColor(secondaryColor)
+        .fontSize(8)
+        .text(`Page ${i + 1} of ${pageCount} | www.messmate.com`, 50, 790, {
+          align: "center",
+        });
+    }
+
+    // Finalize the PDF
     doc.end();
   } catch (error) {
     console.error("Invoice generation error:", error);
