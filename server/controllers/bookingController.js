@@ -1602,19 +1602,22 @@ exports.downloadInvoice = async (req, res) => {
     const items = [
       {
         description: "Monthly Rent",
-        qty: 1,
-        unit: "Months",
-        rate: booking.period.durationMonths,
-        amount: booking.pricePerHead,
+        qty: booking.period.durationMonths,
+        unit: "Month",
+        rate: Number(booking.pricePerHead), // convert string to number
+        amount: Number(booking.pricePerHead) * booking.period.durationMonths,
       },
-      {
+    ];
+
+    if (booking.payment?.deposit) {
+      items.push({
         description: "Security Deposit",
         qty: 1,
         unit: "Nos",
-        rate: 1,
-        amount: booking.payment.deposit,
-      },
-    ];
+        rate: Number(booking.payment.deposit),
+        amount: Number(booking.payment.deposit),
+      });
+    }
 
     let y = tableTop + 20;
     items.forEach((item, index) => {
@@ -1654,6 +1657,25 @@ exports.downloadInvoice = async (req, res) => {
           y + 6,
           { align: "right" }
         );
+
+      // .text(
+      //   `₹ ${
+      //     typeof item.rate === "number" ? item.rate.toFixed(2) : item.rate
+      //   }`,
+      //   colPos.rate + 5,
+      //   y + 6,
+      //   { align: "right" }
+      // )
+      // .text(
+      //   `₹ ${
+      //     typeof item.amount === "number"
+      //       ? item.amount.toFixed(2)
+      //       : item.amount
+      //   }`,
+      //   colPos.amount + 5,
+      //   y + 6,
+      //   { align: "right" }
+      // );
 
       y += 20;
     });
