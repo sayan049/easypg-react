@@ -15,7 +15,7 @@ const LoadingSpinner = () => (
         width: 50px;
         height: 50px;
         border: 5px solid rgba(0, 0, 0, 0.1);
-        border-top: 5px solid #3498db;
+        border-top: 5px solid #2ca4b5;
         border-radius: 50%;
         animation: spin 1s linear infinite;
       }
@@ -26,6 +26,7 @@ const LoadingSpinner = () => (
     `}</style>
   </div>
 );
+
 
 const AuthContext = createContext();
 

@@ -56,7 +56,7 @@ function ProviderSeeker() {
         />
         <meta
           property="og:image"
-          content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746627457/image_uwpgxm.png"
+          content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746794665/main-681df86fe504d_ltnvdn.webp"
         />
 
         {/* Twitter Card */}
@@ -68,7 +68,7 @@ function ProviderSeeker() {
         />
         <meta
           name="twitter:image"
-          content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746627457/image_uwpgxm.png"
+          content="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746794665/main-681df86fe504d_ltnvdn.webp"
         />
         {/* Performance Hints */}
         <link rel="preconnect" href="https://res.cloudinary.com" />
@@ -96,7 +96,7 @@ function ProviderSeeker() {
               Mess Seeker
             </Link>
             <Link
-              to="/owner/partner"
+              to="/login/owner"
               onClick={() => handleButtonClick("messOwner")}
               className={`border-[3px] px-6 py-3 rounded-full ${
                 selectedButton === "messOwner"
@@ -112,7 +112,7 @@ function ProviderSeeker() {
         {/* Right Section */}
         <div className="w-full lg:w-1/2 flex justify-center mt-10 lg:mt-0">
           <img
-            src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746717996/image-681ccd1742ac5_auddid.webp"
+            src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1748606537/ChatGPT_Image_May_30__2025__05_23_25_PM-removebg-preview_yhd5hj.png"
             alt="Illustration of students choosing between mess and PG roles"
             className="max-w-full h-auto"
             loading="lazy"

@@ -148,7 +148,9 @@ function SignupOwner() {
 
       toast.success("OTP sent to your email");
     } catch (error) {
-      toast.error(error.response?.data?.message||"Failed to send OTP. Please try again.");
+      toast.error(
+        error.response?.data?.message || "Failed to send OTP. Please try again."
+      );
     } finally {
       setIsSendingOtp(false);
     }
@@ -182,8 +184,10 @@ function SignupOwner() {
       setOtp(["", "", "", ""]); // Clear OTP fields
       toast.success("Email verified successfully");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Invalid OTP. Please try again.");
-    //  setOtpError("Invalid OTP. Please try again.");
+      toast.error(
+        error.response?.data?.message || "Invalid OTP. Please try again."
+      );
+      //  setOtpError("Invalid OTP. Please try again.");
     } finally {
       setIsVerifyingOtp(false);
     }
@@ -1476,7 +1480,7 @@ function SignupOwner() {
               </button>
             </div>
           </div>
-          <div className="flex justify-center mt-4">
+          <div className="flex flex-col items-center mt-4 space-y-2">
             <p className="text-sm font-medium text-gray-700">
               Already have an account?{" "}
               <Link
@@ -1485,6 +1489,31 @@ function SignupOwner() {
               >
                 Login
               </Link>
+            </p>
+
+            <p className="text-center text-sm text-gray-600 max-w-sm">
+              Visit our{" "}
+              <Link
+                to="/owner/partner"
+                className="text-[#2ca4b5] hover:underline"
+              >
+                Partners
+              </Link>
+              ,{" "}
+              <Link
+                to="/business-model"
+                className="text-[#2ca4b5] hover:underline"
+              >
+                Business Model
+              </Link>
+              ,{" "}
+              <Link
+                to="/our-services"
+                className="text-[#2ca4b5] hover:underline"
+              >
+                Services
+              </Link>
+              <span> page</span>
             </p>
           </div>
         </form>

@@ -9,7 +9,7 @@ const faqData = [
   {
     question: "Is it free to use?",
     answer:
-      "Yes, searching and browsing PGs is completely free. We charge a small service fee only when you confirm a booking.",
+      "Yes, it's completely free.",
   },
   {
     question: "Can working professionals use MessMate?",

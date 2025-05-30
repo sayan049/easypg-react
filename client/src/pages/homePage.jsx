@@ -39,6 +39,32 @@ const HomePage = () => {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isLocationChanged, setIsLocationChanged] = useState(false);
+  const [placeholder, setPlaceholder] = useState("");
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
+  const phrases = [
+    "Search for cities",
+    "e.g., AIIMS kalyani",
+    "Search for universities",
+    "e.g., West Bengal University of Technology",
+  ];
+  useEffect(() => {
+    const currentPhrase = phrases[phraseIndex];
+    if (charIndex <= currentPhrase.length) {
+      const timeout = setTimeout(() => {
+        setPlaceholder(currentPhrase.slice(0, charIndex));
+        setCharIndex(charIndex + 1);
+      }, 60); // faster typing speed
+      return () => clearTimeout(timeout);
+    } else {
+      const timeout = setTimeout(() => {
+        setCharIndex(0);
+        setPhraseIndex((prev) => (prev + 1) % phrases.length);
+      }, 1500); // slightly shorter pause before next phrase
+      return () => clearTimeout(timeout);
+    }
+  }, [charIndex, phraseIndex]);
+
   const socialIcons = {
     facebook: "https://api.iconify.design/mdi:facebook.svg?color=white",
     linkedin: "https://api.iconify.design/mdi:linkedin.svg?color=white",
@@ -288,7 +314,7 @@ const HomePage = () => {
     "aboutMess",
     "location",
     "profilePhoto",
-    "roomInfo"
+    "roomInfo",
   ];
   useEffect(() => {
     const fetchDetails = async () => {
@@ -324,8 +350,6 @@ const HomePage = () => {
       );
 
       if (missingFields.length > 0) {
-
-
         setShowProfileAlert(true);
         localStorage.setItem("needToUpdateProfile", "true");
       } else {
@@ -625,7 +649,7 @@ const HomePage = () => {
               email: "helpmessmate@gmail.com",
               areaServed: "India",
             },
-          sameAs: [
+            sameAs: [
               "https://www.facebook.com/share/1a7yy7319h/?mibextid=wwXIfr",
               "https://www.linkedin.com/company/messmate/",
               "https://www.instagram.com/mes.smate/",
@@ -639,11 +663,11 @@ const HomePage = () => {
           {/* Header Section */}
           <header className="sticky top-0 w-full z-50 bg-white shadow-md">
             <div className="container mx-auto px-4 py-3 flex justify-between items-center max-w-[100vw]">
-              <div className="flex items-center space-x-1">
+              <div className="flex items-center ">
                 <img
                   src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
                   alt="MessMate - Company Logo"
-                  className="h-10 w-auto"
+                  className="h-10 w-auto mb-[5px]"
                   loading="lazy"
                 />
                 <div
@@ -685,12 +709,11 @@ const HomePage = () => {
 
                     {/* Enhanced notification badge */}
 
-
-
-
-
-                    {(hasUnread || hasUnreadOwner || hasUnreadOwnerCancel || localStorage.getItem("needToUpdateProfile")=== "true") && (
-
+                    {(hasUnread ||
+                      hasUnreadOwner ||
+                      hasUnreadOwnerCancel ||
+                      localStorage.getItem("needToUpdateProfile") ===
+                        "true") && (
                       <motion.span
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
@@ -869,7 +892,7 @@ const HomePage = () => {
                     The ultimate platform for students to find their ideal
                     accommodation
                   </p>
-                  <div className="w-full px-0 sm:px-4" ref={searchContainerRef}>
+                  <div className="w-full px-0 " ref={searchContainerRef}>
                     <div className="max-w-full mx-auto rounded-2xl shadow-2xl overflow-hidden bg-white">
                       {/* Search Box */}
                       <div
@@ -882,7 +905,7 @@ const HomePage = () => {
                         </div>
                         <input
                           type="text"
-                          placeholder="Search city or University"
+                          placeholder={placeholder}
                           className="w-full py-3 pl-10 pr-8 sm:pr-12 text-sm sm:text-base bg-white text-gray-800 placeholder-gray-400 focus:outline-none min-h-[48px]"
                           value={searchItem}
                           onChange={handleInputChange}
@@ -1221,9 +1244,17 @@ const HomePage = () => {
             >
               <h2 className="text-3xl font-bold text-gray-800 mb-8">About</h2>
               <div className="bg-white p-4 rounded-xl shadow-sm">
-                <p className="text-2xl font-bold mb-6 text-gray-800">
-                  Welcome to <span className="text-[#2CA4B5]">MessMate!</span>
+                <p className="text-2xl font-semibold mb-6 text-gray-800 flex items-center">
+                  Welcome to
+                  <img
+                    src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
+                    alt="MessMate - company Logo"
+                    className="ml-2 mr-[-4px] h-8 w-8 mb-[12px]"
+                    loading="lazy"
+                  />
+                  <span className="text-[#2CA4B5] ml-1">essMate!</span>
                 </p>
+
                 <p className="text-gray-700 leading-relaxed mb-6">
                   We are more than just an app—we are a community committed to
                   simplifying the lives of students and working professionals.
@@ -1281,9 +1312,19 @@ const HomePage = () => {
                 viewport={{ once: true, margin: "-100px" }}
                 className="flex-1"
               >
-                <h3 className="text-2xl font-semibold text-gray-800 mb-4">
-                  Why MessMate?
+                <h3 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center space-x-1">
+                  Why{" "}
+                  <img
+                    src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
+                    alt="MessMate - company Logo"
+                    className="ml-4 mr-[-4px] h-8 w-8"
+                    loading="lazy"
+                  />
+                  <span className="text-2xl text-[#2CA4B5] mt-[8px]">
+                    essMate <span className="text-gray-800">?</span>
+                  </span>
                 </h3>
+
                 <p className="text-3xl text-[#2CA4B5] font-semibold mb-6 flex items-baseline">
                   1000+
                   <span className="text-gray-700 text-xl ml-2">
@@ -1356,8 +1397,16 @@ const HomePage = () => {
               viewport={{ once: true, margin: "-100px" }}
               className="text-3xl font-bold text-gray-800 mb-12"
             >
-              <span>Contact Us - </span>
-              <span className="text-[#2CA4B5]">MessMate</span>
+              <p className="flex items-center text-3xl font-semibold text-gray-800 mb-6">
+                <span>Contact Us - </span>
+                <img
+                  src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
+                  alt="MessMate - company Logo"
+                  className="ml-1 mr-[-4px] h-10 w-10 mb-[10px]"
+                  loading="lazy"
+                />
+                <span className="text-[#2CA4B5] ml-1">essMate</span>
+              </p>
             </motion.h2>
 
             <div className="flex flex-col md:flex-row items-center gap-8">
