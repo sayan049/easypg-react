@@ -1578,25 +1578,43 @@ doc
       .text("Amount", colPos.amount + 5, tableTop + 6);
 
     // ITEMS
+    // const items = [
+    //   {
+    //     description: "Monthly Rent",
+    //     qty: booking.period.durationMonths,
+    //     unit: "Month",
+    //     rate: booking.period.durationMonths ,
+    //     amount: `${booking.pricePerHead}/month` ,
+    //   },
+    //   {
+    //     description: "Security Deposit",
+    //     qty: 1,
+    //     unit: "Nos",
+    //     rate:
+    //       `${booking.payment.totalAmount -
+    //       booking.pricePerHead * booking.period.durationMonths}months`,
+    //     amount:
+    //       booking.pricePerHead,
+    //   },
+    // ];
     const items = [
-      {
-        description: "Monthly Rent",
-        qty: booking.period.durationMonths,
-        unit: "Month",
-        rate: booking.period.durationMonths ,
-        amount: `${booking.pricePerHead}/month` ,
-      },
-      {
-        description: "Security Deposit",
-        qty: 1,
-        unit: "Nos",
-        rate:
-          `${booking.payment.totalAmount -
-          booking.pricePerHead * booking.period.durationMonths}months`,
-        amount:
-          booking.pricePerHead,
-      },
-    ];
+  {
+    description: "Monthly Rent",
+    qty: 1,
+    unit: "Months",
+    rate: booking.period.durationMonths,
+    amount: booking.pricePerHead,
+  },
+  {
+    description: "Security Deposit",
+    qty: 1,
+    unit: "Nos",
+    rate: "-",
+    amount:
+      booking.payment.deposit,
+  },
+];
+
 
     let y = tableTop + 20;
     items.forEach((item, index) => {
