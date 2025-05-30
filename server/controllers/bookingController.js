@@ -1554,9 +1554,8 @@ exports.downloadInvoice = async (req, res) => {
       .font("Helvetica")
       .fontSize(10)
       .fillColor(secondaryColor)
-      .text(`Invoice No: ${booking.invoiceNo || booking._id}`, 350)
+      .text(`BookingId: ${booking._id.slice(-6)}`, 350)
       .text(`Date: ${booking.date || formattedDate}`, 350)
-      .text(`Order No: ${booking.orderNo || booking._id}`, 350);
 
     doc.y = Math.max(doc.y, customerStartY + 100);
     doc.moveDown(1);
