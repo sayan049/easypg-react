@@ -1605,17 +1605,17 @@ exports.downloadInvoice = async (req, res) => {
         qty: booking.period.durationMonths,
         unit: "Month",
         rate: Number(booking.pricePerHead), // convert string to number
-        amount: Number(booking.pricePerHead) * booking.period.durationMonths,
+        amount: Number(booking.pricePerHead),
       },
     ];
 
-    if (booking.payment?.deposit) {
+    if (booking.pgOwner?.minimumSecurityDeposit>0) {
       items.push({
         description: "Security Deposit",
         qty: 1,
         unit: "Nos",
-        rate: Number(booking.payment.deposit),
-        amount: Number(booking.payment.deposit),
+        rate: Number(booking.pgOwner.minimumSecurityDeposit),
+        amount: Number(booking.pgOwner.minimumSecurityDeposit) * booking.pricePerHead,
       });
     }
 
