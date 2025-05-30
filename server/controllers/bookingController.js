@@ -1515,7 +1515,7 @@ exports.downloadInvoice = async (req, res) => {
       .font("Helvetica")
       .fontSize(10)
       .fillColor(secondaryColor)
-      .text(`Booking ID: ${booking._id.toString().slice(-6)}`, 350)
+      .text(`Booking ID: #${booking._id.toString().slice(-6).toUpperCase()}`, 350)
       .text(`Date: ${booking.date || formattedDate}`, 350);
 
     doc.y = Math.max(doc.y, customerStartY + 100);
@@ -1643,28 +1643,28 @@ exports.downloadInvoice = async (req, res) => {
       .rect(colPos.rate - 5, y + 10, colWidths.rate + colWidths.amount + 10, 60)
       .stroke();
 
-    doc
-      .fillColor(secondaryColor)
-      .font("Helvetica")
-      .fontSize(10)
-      .text("Subtotal:", colPos.rate, y + 20, { align: "right" })
-      .text("Discount:", colPos.rate, y + 35, { align: "right" })
-      .font("Helvetica-Bold")
-      .fillColor(primaryColor)
-      .text("Total:", colPos.rate, y + 50, { align: "right" });
+    // doc
+    //   .fillColor(secondaryColor)
+    //   .font("Helvetica")
+    //   .fontSize(10)
+    //   .text("Subtotal:", colPos.rate, y + 20, { align: "right" })
+    //   .text("Discount:", colPos.rate, y + 35, { align: "right" })
+    //   .font("Helvetica-Bold")
+    //   .fillColor(primaryColor)
+    //   .text("Total:", colPos.rate, y + 50, { align: "right" });
 
-    doc
-      .fillColor(secondaryColor)
-      .font("Helvetica")
-      .text(`₹ ${subtotal.toFixed(2)}`, colPos.amount, y + 20, {
-        align: "right",
-      })
-      .text(`₹ ${discount.toFixed(2)}`, colPos.amount, y + 35, {
-        align: "right",
-      })
-      .font("Helvetica-Bold")
-      .fillColor(primaryColor)
-      .text(`₹ ${total.toFixed(2)}`, colPos.amount, y + 50, { align: "right" });
+    // doc
+    //   .fillColor(secondaryColor)
+    //   .font("Helvetica")
+    //   .text(`₹ ${subtotal.toFixed(2)}`, colPos.amount, y + 20, {
+    //     align: "right",
+    //   })
+    //   .text(`₹ ${discount.toFixed(2)}`, colPos.amount, y + 35, {
+    //     align: "right",
+    //   })
+    //   .font("Helvetica-Bold")
+    //   .fillColor(primaryColor)
+    //   .text(`₹ ${total.toFixed(2)}`, colPos.amount, y + 50, { align: "right" });
 
     // FOOTER
     doc.moveDown(3);
