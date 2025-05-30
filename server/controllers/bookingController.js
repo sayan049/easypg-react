@@ -1608,6 +1608,7 @@ exports.downloadInvoice = async (req, res) => {
         amount: Number(booking.pricePerHead),
       },
     ];
+    console.log("Booking PG Owner:", booking.pgOwner.minimumSecurityDeposit);
 
     if (booking.pgOwner?.minimumSecurityDeposit>0) {
       items.push({
