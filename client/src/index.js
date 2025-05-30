@@ -36,6 +36,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import CancellationRefunds from "./pages/CancellationRefunds";
 import ShippingPolicy from "./pages/ShippingPolicy";
 import Faqs from "./pages/Faqs";
+import ProviderSeekerLogin from "./pages/ProviderLogin";
 // Create the root once and specify the container
 const root = createRoot(document.getElementById("root")); // Using createRoot directly
 
@@ -51,7 +52,7 @@ root.render(
             <Route path="/about" element={<About />} />
             {/* <Route path="/newHome" element={<NewHomePage />} /> */}
             {/* Public Pages */}
-            <Route path="/choose-role" element={<ProviderSeeker />} />
+            <Route path="/signup/choose-role" element={<ProviderSeeker />} />
             {/* <Route path="/NewDashBoard" element={<NewDashboard />} /> */}
             <Route path="/business-model" element={<BusinessModel />} />
             <Route path="/our-services" element={<OurService />} />
@@ -60,6 +61,7 @@ root.render(
             <Route path="/refund" element={<CancellationRefunds />} />
             <Route path="/s&d" element={<ShippingPolicy />} />
             <Route path="/faqs" element={<Faqs />} />
+            <Route path="/login/choose-role" element={<ProviderSeekerLogin />} />
             <Route
               path="/signup/user"
               element={

@@ -384,7 +384,7 @@ const HomePage = () => {
   };
 
   const clickLogin = () => {
-    navigate("/choose-role");
+    navigate("/signup/choose-role");
   };
 
   const handleSuggestionClick = (suggestion) => {
@@ -408,7 +408,8 @@ const HomePage = () => {
     { name: "About", icon: Info, path: "/about" },
     { name: "Services", icon: Briefcase, path: "/services" },
     { name: "Contact Us", icon: Phone, path: "/contact" },
-    { name: "Login", icon: LogIn, path: "/choose-role" },
+    { name: "Log In", icon: LogIn, path: "/login/choose-role" },
+    { name: "Sign Up", icon: LogIn, path: "/signup/choose-role" },
   ];
 
   const performSearch = () => {
@@ -768,14 +769,23 @@ const HomePage = () => {
                   </AnimatePresence>
                 </div>
               ) : (
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="hidden lg:block rounded-full bg-white text-gray-800 px-6 py-2 border-2 border-[#2CA4B5] font-semibold text-sm hover:bg-[#2CA4B5] hover:text-white transition-colors duration-300"
-                  onClick={clickLogin}
-                >
-                  <Link to="/choose-role">Login</Link>
-                </motion.button>
+                <div className="hidden lg:flex items-center space-x-4">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="rounded-full bg-white text-gray-800 px-6 py-2 border-2 border-[#2CA4B5] font-semibold text-sm hover:bg-[#2CA4B5] hover:text-white transition-colors duration-300"
+                  >
+                    <Link to="/login/choose-role">Log In</Link>
+                  </motion.button>
+
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="rounded-full bg-[#2CA4B5] text-white px-6 py-2 font-semibold text-sm hover:bg-[#238494] transition-colors duration-300"
+                  >
+                    <Link to="/signup/choose-role">Sign Up</Link>
+                  </motion.button>
+                </div>
               )}
 
               {!isOwnerAuthenticated && !IsAuthenticated && (
@@ -829,21 +839,25 @@ const HomePage = () => {
 
                 <nav className="flex-1 px-4 py-6">
                   <div className="space-y-1">
-                    {menuItems.map(({ name, path, icon: Icon }) => (
-                      <a
-                        key={name}
-                        href={`#${name.toLowerCase().replace(/\s+/g, "")}`}
-                        onClick={
-                          name === "Login"
-                            ? clickLogin
-                            : () => setMenuOpen(false)
-                        }
-                        className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-md"
-                      >
-                        <Icon className="h-5 w-5 mr-4 text-[#2CA4B5]" />
-                        {name}
-                      </a>
-                    ))}
+                    {menuItems.map(({ name, path, icon: Icon }) => {
+                      const isAuthLink =
+                        name === "Log In" || name === "Sign Up";
+                      const href = isAuthLink
+                        ? path
+                        : `#${name.toLowerCase().replace(/\s+/g, "")}`;
+
+                      return (
+                        <a
+                          key={name}
+                          href={href}
+                          onClick={() => setMenuOpen(false)}
+                          className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-md"
+                        >
+                          <Icon className="h-5 w-5 mr-4 text-[#2CA4B5]" />
+                          {name}
+                        </a>
+                      );
+                    })}
                   </div>
                 </nav>
               </motion.div>

@@ -1490,6 +1490,16 @@ function SignupOwner() {
                 Login
               </Link>
             </p>
+            <p className="text-center text-sm text-gray-600 mt-4">
+              Sign Up as a Mess Seeker?{" "}
+              <Link
+                to="/signup/choose-role"
+                className="text-[#2ca4b5] hover:underline"
+                aria-label="Login to existing account"
+              >
+                Choose Role
+              </Link>
+            </p>
 
             <p className="text-center text-sm text-gray-600 max-w-sm">
               Visit our{" "}

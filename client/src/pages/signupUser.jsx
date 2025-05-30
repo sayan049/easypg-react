@@ -347,6 +347,16 @@ function SignUpForm() {
                 Log in
               </Link>
             </p>
+            <p className="text-center text-sm text-gray-600 mt-4">
+              Sign Up as a Mess Owner?{" "}
+              <Link
+                to="/signup/choose-role"
+                className="text-[#2ca4b5] hover:underline"
+                aria-label="Login to existing account"
+              >
+                Choose Role
+              </Link>
+            </p>
           </article>
         </section>
       </main>

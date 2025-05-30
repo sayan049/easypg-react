@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Footer from "../components/footer";
 
-function ProviderSeeker() {
+function ProviderSeekerLogin() {
     useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -40,7 +40,7 @@ function ProviderSeeker() {
           name="description"
           content="Choose your role to get started with Messmate — India's smart platform for students to find PG/Mess and owners to list accommodations easily."
         />
-        <link rel="canonical" href="https://www.messmate.co.in/signup/choose-role" />
+        <link rel="canonical" href="https://www.messmate.co.in/login/choose-role" />
 
         {/* Open Graph (Facebook, LinkedIn, etc.) */}
         <meta property="og:type" content="website" />
@@ -55,7 +55,7 @@ function ProviderSeeker() {
         />
         <meta
           property="og:url"
-          content="https://www.messmate.co.in/signup/choose-role"
+          content="https://www.messmate.co.in/login/choose-role"
         />
         <meta
           property="og:image"
@@ -82,13 +82,13 @@ function ProviderSeeker() {
       <div className="bg-custom-gradient flex flex-col lg:flex-row items-center justify-center min-h-screen px-4 md:px-8 lg:px-20">
         {/* Left Section */}
         <div className="w-full lg:w-1/2 text-center flex flex-col items-center justify-center">
-          <h2 className="text-4xl font-bold text-[#2CA4B5] mb-4">Sign Up</h2>
+          <h2 className="text-4xl font-bold text-[#2CA4B5] mb-4">Log In</h2>
           <h3 className="text-xl mb-6 text-gray-500">
             Please choose your role to proceed:
           </h3>
           <div className="flex flex-row items-center space-x-4">
             <Link
-              to="/signup/user"
+              to="/login/user"
               onClick={() => handleButtonClick("messSeeker")}
               className={`border-[3px] px-6 py-3 rounded-full ${
                 selectedButton === "messSeeker"
@@ -99,7 +99,7 @@ function ProviderSeeker() {
               Mess Seeker
             </Link>
             <Link
-              to="/signup/owner"
+              to="/login/owner"
               onClick={() => handleButtonClick("messOwner")}
               className={`border-[3px] px-6 py-3 rounded-full ${
                 selectedButton === "messOwner"
@@ -129,4 +129,4 @@ function ProviderSeeker() {
   );
 }
 
-export default ProviderSeeker;
+export default ProviderSeekerLogin;
