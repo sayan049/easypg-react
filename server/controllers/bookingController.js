@@ -1415,7 +1415,7 @@ exports.downloadInvoice = async (req, res) => {
     // Add a thank you note
     doc.moveDown(3);
     doc
-      .font("Helvetica-Italic")
+      .font("Helvetica-Oblique")
       .fontSize(10)
       .fillColor(highlightColor)
       .text("Thank you for choosing Messmate!", { align: "center" });
