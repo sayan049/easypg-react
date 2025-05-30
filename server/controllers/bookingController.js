@@ -1085,7 +1085,6 @@ exports.getUserBookings = async (req, res) => {
 //     });
 //   }
 // };
-const PDFDocument = require("pdfkit");
 
 exports.downloadInvoice = async (req, res) => {
   try {
