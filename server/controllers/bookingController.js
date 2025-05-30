@@ -1468,13 +1468,14 @@ exports.downloadInvoice = async (req, res) => {
     drawHorizontalLine(doc.y + 10);
     doc.moveDown(1);
 
-    // RECEIPT TITLE
-    doc
-      .fontSize(16)
-      .font("Helvetica-Bold")
-      .fillColor(primaryColor)
-      .text("RECEIPT", { align: "center" })
-      .moveDown(1);
+  // RECEIPT TITLE
+doc
+  .fontSize(16)
+  .font("Helvetica-Bold")
+  .fillColor(primaryColor)
+  .text("RECEIPT", { align: "center" })
+  .moveDown(1);
+
 
     // CUSTOMER & INVOICE INFO
     const customerStartY = doc.y;
@@ -1515,10 +1516,7 @@ exports.downloadInvoice = async (req, res) => {
       .font("Helvetica")
       .fontSize(10)
       .fillColor(secondaryColor)
-      .text(
-        `Booking ID: #${booking._id.toString().slice(-6).toUpperCase()}`,
-        350
-      )
+      .text(`Booking ID: #${booking._id.toString().slice(-6).toUpperCase()}`, 350)
       .text(`Date: ${booking.date || formattedDate}`, 350);
 
     doc.y = Math.max(doc.y, customerStartY + 100);
@@ -1585,19 +1583,18 @@ exports.downloadInvoice = async (req, res) => {
         description: "Monthly Rent",
         qty: booking.period.durationMonths,
         unit: "Month",
-        rate: booking.pricePerHead,
-        amount: booking.pricePerHead * booking.period.durationMonths,
+        rate: booking.period.durationMonths ,
+        amount: `${booking.pricePerHead}/month` ,
       },
       {
         description: "Security Deposit",
         qty: 1,
         unit: "Nos",
         rate:
-          booking.payment.totalAmount -
-          booking.pricePerHead * booking.period.durationMonths,
+          `${booking.payment.totalAmount -
+          booking.pricePerHead * booking.period.durationMonths}months`,
         amount:
-          booking.payment.totalAmount -
-          booking.pricePerHead * booking.period.durationMonths,
+          booking.pricePerHead,
       },
     ];
 
