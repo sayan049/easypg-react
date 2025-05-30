@@ -1005,6 +1005,75 @@ exports.getUserBookings = async (req, res) => {
 
 // Generate invoice
 
+// exports.downloadInvoice = async (req, res) => {
+//   try {
+//     const booking = await Booking.findById(req.params.id)
+//       .select(
+//         "room bedsBooked pricePerHead period.startDate period.durationMonths payment.totalAmount pgOwner student"
+//       )
+//       .populate("pgOwner", "messName address")
+//       .populate("student", "firstName lastName email")
+//       .lean();
+
+//     if (!booking) {
+//       return res.status(404).json({ message: "Booking not found" });
+//     }
+
+//     // Calculate end date
+//     const endDate = new Date(booking.period.startDate);
+//     endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
+
+//     // Generate PDF invoice (example using pdfkit)
+//     const PDFDocument = require("pdfkit");
+//     const doc = new PDFDocument();
+
+//     // Set response headers
+//     res.setHeader("Content-Type", "application/pdf");
+//     res.setHeader(
+//       "Content-Disposition",
+//       `attachment; filename=invoice-${booking._id}.pdf`
+//     );
+
+//     // Pipe the PDF to the response
+//     doc.pipe(res);
+
+//     // Add invoice content
+//     doc.fontSize(20).text("Booking Invoice", { align: "center" });
+//     doc.moveDown();
+//     doc.fontSize(14).text(`Booking ID: ${booking._id}`);
+//     doc.moveDown();
+//     doc.text(`PG Name: ${booking.pgOwner.messName}`);
+//     doc.text(`Address: ${booking.pgOwner.address}`);
+//     doc.moveDown();
+//     doc.text(
+//       `Student: ${booking.student.firstName} ${booking.student.lastName}`
+//     );
+//     doc.text(`Email: ${booking.student.email}`);
+//     doc.moveDown();
+//     doc.text(`Room: ${booking.room}`);
+//     doc.text(`Beds Booked: ${booking.bedsBooked}`);
+//     doc.moveDown();
+//     doc.text(
+//       `Period: ${new Date(
+//         booking.period.startDate
+//       ).toLocaleDateString()} - ${endDate.toLocaleDateString()}`
+//     );
+//     doc.moveDown();
+//     doc.text(`Amount: ₹${booking.payment.totalAmount}`);
+//     doc.moveDown();
+//     doc.text(`Payment Status: Paid`);
+//     doc.moveDown();
+//     doc.text("Thank you for your booking!");
+
+//     doc.end();
+//   } catch (error) {
+//     console.error("Invoice generation error:", error);
+//     res.status(500).json({
+//       message: "Failed to generate invoice",
+//       ...(process.env.NODE_ENV === "development" && { error: error.message }),
+//     });
+//   }
+// };
 exports.downloadInvoice = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id)
@@ -1023,7 +1092,7 @@ exports.downloadInvoice = async (req, res) => {
     const endDate = new Date(booking.period.startDate);
     endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
 
-    // Generate PDF invoice (example using pdfkit)
+    // Generate PDF invoice using pdfkit
     const PDFDocument = require("pdfkit");
     const doc = new PDFDocument();
 
@@ -1034,37 +1103,48 @@ exports.downloadInvoice = async (req, res) => {
       `attachment; filename=invoice-${booking._id}.pdf`
     );
 
-    // Pipe the PDF to the response
+    // Pipe PDF to response
     doc.pipe(res);
 
-    // Add invoice content
-    doc.fontSize(20).text("Booking Invoice", { align: "center" });
-    doc.moveDown();
-    doc.fontSize(14).text(`Booking ID: ${booking._id}`);
-    doc.moveDown();
+    // ===== Business Info Header =====
+    doc
+      .fontSize(16)
+      .text("Messmate Services", { align: "left" })
+      .fontSize(12)
+      .text("Email: helpmessmate@gmail.com")
+      .text("Phone: +91-7479170108")
+      .text("Address: Messmate, Haringhata, Kalyani, West Bengal, India")
+      .moveDown();
+
+    // ===== Invoice Content =====
+    doc.fontSize(20).text("Booking Invoice", { align: "center" }).moveDown();
+
+    doc.fontSize(14).text(`Booking ID: ${booking._id}`).moveDown();
     doc.text(`PG Name: ${booking.pgOwner.messName}`);
-    doc.text(`Address: ${booking.pgOwner.address}`);
-    doc.moveDown();
+    doc.text(`Address: ${booking.pgOwner.address}`).moveDown();
+
     doc.text(
       `Student: ${booking.student.firstName} ${booking.student.lastName}`
     );
-    doc.text(`Email: ${booking.student.email}`);
-    doc.moveDown();
+    doc.text(`Email: ${booking.student.email}`).moveDown();
+
     doc.text(`Room: ${booking.room}`);
-    doc.text(`Beds Booked: ${booking.bedsBooked}`);
-    doc.moveDown();
-    doc.text(
-      `Period: ${new Date(
-        booking.period.startDate
-      ).toLocaleDateString()} - ${endDate.toLocaleDateString()}`
-    );
-    doc.moveDown();
+    doc.text(`Beds Booked: ${booking.bedsBooked}`).moveDown();
+
+    doc
+      .text(
+        `Period: ${new Date(
+          booking.period.startDate
+        ).toLocaleDateString()} - ${endDate.toLocaleDateString()}`
+      )
+      .moveDown();
+
     doc.text(`Amount: ₹${booking.payment.totalAmount}`);
-    doc.moveDown();
-    doc.text(`Payment Status: Paid`);
-    doc.moveDown();
+    doc.text(`Payment Status: Paid`).moveDown();
+
     doc.text("Thank you for your booking!");
 
+    // End and send PDF
     doc.end();
   } catch (error) {
     console.error("Invoice generation error:", error);
@@ -1074,6 +1154,7 @@ exports.downloadInvoice = async (req, res) => {
     });
   }
 };
+
 // Handle booking approval/rejection (BED DEDUCTION ONLY ON CONFIRMATION)
 exports.handleBookingApproval = async (req, res) => {
   try {
@@ -1853,7 +1934,7 @@ exports.cancelBooking = async (req, res) => {
           //     booking._id
           //   ),
           // ]);
-           await sendMailCancelUser(
+          await sendMailCancelUser(
             userName.email,
             owner.messName,
             "#" + booking._id.toString().slice(-6).toUpperCase(),
@@ -1885,7 +1966,6 @@ exports.cancelBooking = async (req, res) => {
             `${frontendUrl}/terms`,
             `${frontendUrl}/refund`
           );
-
 
           const bookingPayload = {
             _id: booking._id,
