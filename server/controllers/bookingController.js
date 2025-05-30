@@ -1641,15 +1641,15 @@ exports.downloadInvoice = async (req, res) => {
     doc.fillColor(lightGray).rect(colPos.rate - 5, y + 10, colWidths.rate + colWidths.amount + 10, 60).fill();
     doc.strokeColor(borderColor).lineWidth(0.5).rect(colPos.rate - 5, y + 10, colWidths.rate + colWidths.amount + 10, 60).stroke();
 
-    doc
-      .fillColor(secondaryColor)
-      .font("Helvetica")
-      .fontSize(10)
-      .text("Subtotal:", colPos.rate, y + 20, { align: "right" })
-      .text("Discount:", colPos.rate, y + 35, { align: "right" })
-      .font("Helvetica-Bold")
-      .fillColor(primaryColor)
-      .text("Total:", colPos.rate, y + 50, { align: "right" });
+    // doc
+    //   .fillColor(secondaryColor)
+    //   .font("Helvetica")
+    //   .fontSize(10)
+    //   .text("Subtotal:", colPos.rate, y + 20, { align: "right" })
+    //   .text("Discount:", colPos.rate, y + 35, { align: "right" })
+    //   .font("Helvetica-Bold")
+    //   .fillColor(primaryColor)
+    //   .text("Total:", colPos.rate, y + 50, { align: "right" });
 
     doc
       .fillColor(secondaryColor)
