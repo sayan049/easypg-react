@@ -8,7 +8,12 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.messmate.co.in/choose-role</loc>
+    <loc>https://www.messmate.co.in/signup/choose-role</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+    <url>
+    <loc>https://www.messmate.co.in/login/choose-role</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
