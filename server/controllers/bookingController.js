@@ -1023,7 +1023,7 @@ exports.getUserBookings = async (req, res) => {
 //     const endDate = new Date(booking.period.startDate);
 //     endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
 
-//     // Generate PDF invoice (example using pdfkit)
+//     // Generate PDF invoice using pdfkit
 //     const PDFDocument = require("pdfkit");
 //     const doc = new PDFDocument();
 
@@ -1034,37 +1034,48 @@ exports.getUserBookings = async (req, res) => {
 //       `attachment; filename=invoice-${booking._id}.pdf`
 //     );
 
-//     // Pipe the PDF to the response
+//     // Pipe PDF to response
 //     doc.pipe(res);
 
-//     // Add invoice content
-//     doc.fontSize(20).text("Booking Invoice", { align: "center" });
-//     doc.moveDown();
-//     doc.fontSize(14).text(`Booking ID: ${booking._id}`);
-//     doc.moveDown();
+//     // ===== Business Info Header =====
+//     doc
+//       .fontSize(16)
+//       .text("Messmate Services", { align: "left" })
+//       .fontSize(12)
+//       .text("Email: helpmessmate@gmail.com")
+//       .text("Phone: +91-7479170108")
+//       .text("Address: Messmate, Haringhata, Kalyani, West Bengal, India")
+//       .moveDown();
+
+//     // ===== Invoice Content =====
+//     doc.fontSize(20).text("Booking Invoice", { align: "center" }).moveDown();
+
+//     doc.fontSize(14).text(`Booking ID: ${booking._id}`).moveDown();
 //     doc.text(`PG Name: ${booking.pgOwner.messName}`);
-//     doc.text(`Address: ${booking.pgOwner.address}`);
-//     doc.moveDown();
+//     doc.text(`Address: ${booking.pgOwner.address}`).moveDown();
+
 //     doc.text(
 //       `Student: ${booking.student.firstName} ${booking.student.lastName}`
 //     );
-//     doc.text(`Email: ${booking.student.email}`);
-//     doc.moveDown();
+//     doc.text(`Email: ${booking.student.email}`).moveDown();
+
 //     doc.text(`Room: ${booking.room}`);
-//     doc.text(`Beds Booked: ${booking.bedsBooked}`);
-//     doc.moveDown();
-//     doc.text(
-//       `Period: ${new Date(
-//         booking.period.startDate
-//       ).toLocaleDateString()} - ${endDate.toLocaleDateString()}`
-//     );
-//     doc.moveDown();
+//     doc.text(`Beds Booked: ${booking.bedsBooked}`).moveDown();
+
+//     doc
+//       .text(
+//         `Period: ${new Date(
+//           booking.period.startDate
+//         ).toLocaleDateString()} - ${endDate.toLocaleDateString()}`
+//       )
+//       .moveDown();
+
 //     doc.text(`Amount: ₹${booking.payment.totalAmount}`);
-//     doc.moveDown();
-//     doc.text(`Payment Status: Paid`);
-//     doc.moveDown();
+//     doc.text(`Payment Status: Paid`).moveDown();
+
 //     doc.text("Thank you for your booking!");
 
+//     // End and send PDF
 //     doc.end();
 //   } catch (error) {
 //     console.error("Invoice generation error:", error);
@@ -1074,6 +1085,8 @@ exports.getUserBookings = async (req, res) => {
 //     });
 //   }
 // };
+const PDFDocument = require("pdfkit");
+
 exports.downloadInvoice = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id)
@@ -1088,63 +1101,99 @@ exports.downloadInvoice = async (req, res) => {
       return res.status(404).json({ message: "Booking not found" });
     }
 
-    // Calculate end date
     const endDate = new Date(booking.period.startDate);
     endDate.setMonth(endDate.getMonth() + booking.period.durationMonths);
 
-    // Generate PDF invoice using pdfkit
-    const PDFDocument = require("pdfkit");
-    const doc = new PDFDocument();
+    const doc = new PDFDocument({ margin: 50 });
 
-    // Set response headers
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
       `attachment; filename=invoice-${booking._id}.pdf`
     );
 
-    // Pipe PDF to response
     doc.pipe(res);
 
-    // ===== Business Info Header =====
+    // ==== Header ====
     doc
       .fontSize(16)
       .text("Messmate Services", { align: "left" })
       .fontSize(12)
-      .text("Email: helpmessmate@gmail.com")
-      .text("Phone: +91-7479170108")
-      .text("Address: Messmate, Haringhata, Kalyani, West Bengal, India")
+      .text("Messmate, Haringhata, Kalyani, West Bengal, India")
+      .text("Email: helpmessmate@gmail.com | Phone: +91-7479170108")
       .moveDown();
 
-    // ===== Invoice Content =====
-    doc.fontSize(20).text("Booking Invoice", { align: "center" }).moveDown();
+    doc.fontSize(14).text("Receipt", { align: "left" }).moveDown();
 
-    doc.fontSize(14).text(`Booking ID: ${booking._id}`).moveDown();
-    doc.text(`PG Name: ${booking.pgOwner.messName}`);
-    doc.text(`Address: ${booking.pgOwner.address}`).moveDown();
-
-    doc.text(
-      `Student: ${booking.student.firstName} ${booking.student.lastName}`
-    );
-    doc.text(`Email: ${booking.student.email}`).moveDown();
-
-    doc.text(`Room: ${booking.room}`);
-    doc.text(`Beds Booked: ${booking.bedsBooked}`).moveDown();
+    // ==== Customer Info ====
+    doc
+      .fontSize(12)
+      .text(`Invoice No: ${booking._id}`)
+      .text(`Date: ${new Date().toLocaleDateString()}`)
+      .moveDown();
 
     doc
-      .text(
-        `Period: ${new Date(
-          booking.period.startDate
-        ).toLocaleDateString()} - ${endDate.toLocaleDateString()}`
-      )
+      .text("Bill And Ship to:")
+      .text(`Name: ${booking.student.firstName} ${booking.student.lastName}`)
+      .text(`Email: ${booking.student.email}`)
+      .text(`Mobile: (not provided)`)
       .moveDown();
 
-    doc.text(`Amount: ₹${booking.payment.totalAmount}`);
-    doc.text(`Payment Status: Paid`).moveDown();
+    // ==== Table Header ====
+    doc.font("Helvetica-Bold");
+    doc
+      .text("Sr.No", 50, doc.y, { continued: true, width: 40 })
+      .text("Description", 90, doc.y, { continued: true, width: 150 })
+      .text("HSN Code", 240, doc.y, { continued: true, width: 70 })
+      .text("Qty", 310, doc.y, { continued: true, width: 40 })
+      .text("Unit", 350, doc.y, { continued: true, width: 50 })
+      .text("Rate", 400, doc.y, { continued: true, width: 70 })
+      .text("Amount", 470, doc.y)
+      .moveDown();
 
-    doc.text("Thank you for your booking!");
+    doc.font("Helvetica");
 
-    // End and send PDF
+    const items = [
+      {
+        description: "Room Rent",
+        hsn: "9963",
+        qty: booking.period.durationMonths,
+        unit: "Month",
+        rate: booking.pricePerHead,
+        amount: booking.pricePerHead * booking.period.durationMonths,
+      },
+    ];
+
+    items.forEach((item, index) => {
+      doc
+        .text(`${index + 1}`, 50, doc.y, { continued: true, width: 40 })
+        .text(item.description, 90, doc.y, { continued: true, width: 150 })
+        .text(item.hsn, 240, doc.y, { continued: true, width: 70 })
+        .text(`${item.qty}`, 310, doc.y, { continued: true, width: 40 })
+        .text(item.unit, 350, doc.y, { continued: true, width: 50 })
+        .text(`Rs. ${item.rate}`, 400, doc.y, { continued: true, width: 70 })
+        .text(`Rs. ${item.amount}`, 470, doc.y)
+        .moveDown();
+    });
+
+    // ==== Totals ====
+    const subtotal = booking.payment.totalAmount;
+    const discount = 0;
+    const total = subtotal;
+
+    doc.moveDown();
+    doc
+      .font("Helvetica")
+      .text(`Subtotal: Rs. ${subtotal}`, { align: "right" })
+      .text(`Discount: Rs. ${discount}`, { align: "right" })
+      .font("Helvetica-Bold")
+      .text(`Total: Rs. ${total}`, { align: "right" })
+      .moveDown();
+
+    doc
+      .font("Helvetica-Oblique")
+      .text("Thank you for choosing Messmate!", { align: "center" });
+
     doc.end();
   } catch (error) {
     console.error("Invoice generation error:", error);
