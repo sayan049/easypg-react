@@ -1609,7 +1609,7 @@ doc
     description: "Security Deposit",
     qty: 1,
     unit: "Nos",
-    rate: "-",
+    rate: 1,
     amount:
       booking.payment.deposit,
   },
