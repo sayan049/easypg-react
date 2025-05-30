@@ -129,7 +129,7 @@ function LoginOwner() {
         headers: {
           "Content-Type": "application/json",
           "X-Device-Info": deviceInfo,
-          "X-Requested-With": "XMLHttpRequest" // Bypass tracking prevention
+          "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
         },
       });
       if (response.status === 200) {
@@ -138,7 +138,6 @@ function LoginOwner() {
         // Store tokens in localStorage
         // localStorage.setItem("accessToken", accessToken);
         // localStorage.setItem("refreshToken", refreshToken);
-
 
         // const message = `Welcome ${userData.name}!`;
         // localStorage.setItem("sId_message", message);
@@ -602,6 +601,31 @@ function LoginOwner() {
                     Sign up
                   </Link>
                 </p>
+                <p className="text-center text-sm text-gray-600 ">
+                  Visit our{" "}
+                  <Link
+                    to="/owner/partner"
+                    className="text-[#2ca4b5] hover:underline"
+                  >
+                    Partners
+                  </Link>
+                  ,{" "}
+                   <Link
+                    to="/business-model"
+                    className="text-[#2ca4b5] hover:underline"
+                  >
+                    Business Model
+                  </Link>
+                  ,{" "}
+                   <Link
+                    to="/our-services"
+                    className="text-[#2ca4b5] hover:underline"
+                  >
+                    Services
+                  </Link>
+                  <span> page</span>
+                </p>
+               
               </form>
             </div>
           </div>

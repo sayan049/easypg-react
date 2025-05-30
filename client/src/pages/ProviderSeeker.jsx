@@ -96,7 +96,7 @@ function ProviderSeeker() {
               Mess Seeker
             </Link>
             <Link
-              to="/owner/partner"
+              to="/login/owner"
               onClick={() => handleButtonClick("messOwner")}
               className={`border-[3px] px-6 py-3 rounded-full ${
                 selectedButton === "messOwner"
