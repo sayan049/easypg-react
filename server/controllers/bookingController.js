@@ -1118,14 +1118,9 @@ exports.getUserBookings = async (req, res) => {
 //       ][currentDate.getMonth()]
 //     }-${currentDate.getFullYear()}`;
 
-//     // Create a new PDF document with better margins
-//     const doc = new PDFDocument({
-//       margin: 50,
-//       size: "A4",
-//       bufferPages: true, // Enable page buffering for footer
-//     });
+//     const PDFDocument = require("pdfkit");
+//     const doc = new PDFDocument({ margin: 50, size: "A4", bufferPages: true });
 
-//     // Set response headers
 //     res.setHeader("Content-Type", "application/pdf");
 //     res.setHeader(
 //       "Content-Disposition",
@@ -1134,14 +1129,13 @@ exports.getUserBookings = async (req, res) => {
 
 //     doc.pipe(res);
 
-//     // Define colors for professional look
+//     // Basic colors
 //     const primaryColor = "#333333";
 //     const secondaryColor = "#555555";
 //     const highlightColor = "#4a86e8";
 //     const lightGray = "#f5f5f5";
 //     const borderColor = "#e0e0e0";
 
-//     // Helper function to draw a line
 //     const drawHorizontalLine = (y) => {
 //       doc
 //         .strokeColor(borderColor)
@@ -1151,7 +1145,7 @@ exports.getUserBookings = async (req, res) => {
 //         .stroke();
 //     };
 
-//     // ===== HEADER SECTION =====
+//     // HEADER
 //     doc
 //       .fillColor(primaryColor)
 //       .fontSize(22)
@@ -1166,11 +1160,10 @@ exports.getUserBookings = async (req, res) => {
 //       .text("Messmate, Haringhata, Kalyani, West Bengal, India")
 //       .text("Email: helpmessmate@gmail.com | Phone: +91-7479170108");
 
-//     // Draw a line under the header
 //     drawHorizontalLine(doc.y + 10);
 //     doc.moveDown(1);
 
-//     // ===== INVOICE TITLE =====
+//     // RECEIPT TITLE
 //     doc
 //       .fontSize(16)
 //       .font("Helvetica-Bold")
@@ -1178,18 +1171,16 @@ exports.getUserBookings = async (req, res) => {
 //       .text("RECEIPT", { align: "center" })
 //       .moveDown(1);
 
-//     // ===== INVOICE INFO & CUSTOMER INFO - TWO COLUMN LAYOUT =====
+//     // CUSTOMER + INVOICE INFO
 //     const customerStartY = doc.y;
 
-//     // Left column - Customer Info
+//     // Left: Student Info
 //     doc
 //       .font("Helvetica-Bold")
 //       .fontSize(11)
 //       .fillColor(primaryColor)
 //       .text("Bill And Ship to:", 50, customerStartY)
-//       .moveDown(0.5);
-
-//     doc
+//       .moveDown(0.5)
 //       .font("Helvetica")
 //       .fontSize(10)
 //       .fillColor(secondaryColor)
@@ -1197,32 +1188,35 @@ exports.getUserBookings = async (req, res) => {
 //         `Name: ${booking.student.firstName} ${booking.student.lastName}`,
 //         50
 //       )
-//       .text("Address:", 50)
 //       .text(`Email: ${booking.student.email}`, 50)
-//       .text(`Mobile: ${booking.student.mobile || "Not provided"}`, 50);
+//       .text(`Mobile: ${booking.student.mobile || "Not provided"}`, 50)
+//       .moveDown(0.5)
+//       .font("Helvetica-Bold")
+//       .fillColor(primaryColor)
+//       .text(`Mess Name: ${booking.pgOwner.messName}`, 50)
+//       .font("Helvetica")
+//       .fillColor(secondaryColor)
+//       .text(`Mess Address: ${booking.pgOwner.address}`, 50)
+//       .text(`Mess Owner Name: ${booking.pgOwner.firstName || "N/A"}`, 50)
+//       .text(`Owner Phone No: ${booking.pgOwner.mobileNo || "N/A"}`, 50);
 
-//     // Right column - Invoice Info
+//     // Right: Invoice Info
 //     doc
 //       .font("Helvetica-Bold")
 //       .fontSize(10)
 //       .fillColor(primaryColor)
 //       .text("Invoice Details:", 350, customerStartY)
-//       .moveDown(0.5);
-
-//     doc
+//       .moveDown(0.5)
 //       .font("Helvetica")
 //       .fontSize(10)
 //       .fillColor(secondaryColor)
-//       .text(`Invoice No: ${booking.invoiceNo || booking._id}`, 350)
-//       .text(`Date: ${booking.date || formattedDate}`, 350)
-//       .text(`Order No: ${booking.orderNo || booking._id}`, 350);
+//       .text(`BookingId: ${booking._id.slice(-6)}`, 350)
+//       .text(`Date: ${booking.date || formattedDate}`, 350);
 
-//     // Move to the bottom of the tallest column
 //     doc.y = Math.max(doc.y, customerStartY + 100);
 //     doc.moveDown(1);
 
-//     // ===== TABLE SECTION =====
-//     // Define table dimensions and positions
+//     // ITEMS TABLE
 //     const tableTop = doc.y;
 //     const tableLeft = 50;
 //     const colWidths = {
@@ -1234,8 +1228,6 @@ exports.getUserBookings = async (req, res) => {
 //       rate: 70,
 //       amount: 70,
 //     };
-
-//     // Calculate column positions
 //     const colPos = {
 //       srNo: tableLeft,
 //       description: tableLeft + colWidths.srNo,
@@ -1265,154 +1257,108 @@ exports.getUserBookings = async (req, res) => {
 //         colWidths.rate,
 //     };
 
-//     // Draw table header background
 //     doc.fillColor(highlightColor).rect(tableLeft, tableTop, 500, 20).fill();
-
-//     // Draw table header text
 //     doc
 //       .fillColor("white")
 //       .font("Helvetica-Bold")
 //       .fontSize(10)
-//       .text("Sr.No", colPos.srNo + 5, tableTop + 6, {
-//         width: colWidths.srNo - 10,
-//       })
-//       .text("Description", colPos.description + 5, tableTop + 6, {
-//         width: colWidths.description - 10,
-//       })
-//       .text("HSN Code", colPos.hsnCode + 5, tableTop + 6, {
-//         width: colWidths.hsnCode - 10,
-//       })
-//       .text("Qty", colPos.qty + 5, tableTop + 6, { width: colWidths.qty - 10 })
-//       .text("Unit", colPos.unit + 5, tableTop + 6, {
-//         width: colWidths.unit - 10,
-//       })
-//       .text("Rate", colPos.rate + 5, tableTop + 6, {
-//         width: colWidths.rate - 10,
-//       })
-//       .text("Amount", colPos.amount + 5, tableTop + 6, {
-//         width: colWidths.amount - 10,
-//       });
+//       .text("Sr.No", colPos.srNo + 5, tableTop + 6)
+//       .text("Description", colPos.description + 5, tableTop + 6)
+//       .text("RoomId", booking.room)
+//       // .text("Qty", colPos.qty + 5, tableTop + 6)
+//       .text("Unit", colPos.unit + 5, tableTop + 6)
+//       .text("Rate", colPos.rate + 5, tableTop + 6)
+//       .text("Amount", colPos.amount + 5, tableTop + 6);
 
-//     // Prepare items data
-//     const items = booking.items?.length
-//       ? booking.items
-//       : [
-//           {
-//             description: "Room Rent",
-//             hsnCode: "9963",
-//             qty: booking.period.durationMonths,
-//             unit: "Month",
-//             rate: booking.pricePerHead,
-//             amount: booking.pricePerHead * booking.period.durationMonths,
-//           },
-//         ];
+//     // Items
+//     const items = [
+//       {
+//         description: "Monthly Rent",
+//         hsnCode: "9963",
+//         qty: booking.period.durationMonths,
+//         unit: "Month",
+//         rate: booking.pricePerHead,
+//         amount: booking.pricePerHead * booking.period.durationMonths,
+//       },
+//       {
+//         description: "Security Deposit",
+//         hsnCode: "9963",
+//         qty: 1,
+//         unit: "Nos",
+//         rate:
+//           booking.payment.totalAmount -
+//           booking.pricePerHead * booking.period.durationMonths,
+//         amount:
+//           booking.payment.totalAmount -
+//           booking.pricePerHead * booking.period.durationMonths,
+//       },
+//     ];
 
-//     // Draw table rows
 //     let y = tableTop + 20;
-
 //     items.forEach((item, index) => {
-//       // Draw alternating row backgrounds
-//       if (index % 2 === 0) {
+//       if (index % 2 === 0)
 //         doc.fillColor(lightGray).rect(tableLeft, y, 500, 20).fill();
-//       }
 
-//       // Draw row borders
 //       doc
 //         .strokeColor(borderColor)
 //         .lineWidth(0.5)
 //         .rect(tableLeft, y, 500, 20)
 //         .stroke();
 
-//       // Draw row text
 //       doc
 //         .fillColor(secondaryColor)
 //         .font("Helvetica")
 //         .fontSize(9)
-//         .text(`${index + 1}`, colPos.srNo + 5, y + 6, {
-//           width: colWidths.srNo - 10,
-//         })
-//         .text(item.description, colPos.description + 5, y + 6, {
-//           width: colWidths.description - 10,
-//         })
-//         .text(item.hsnCode || "", colPos.hsnCode + 5, y + 6, {
-//           width: colWidths.hsnCode - 10,
-//         })
-//         .text(`${item.qty}`, colPos.qty + 5, y + 6, {
-//           width: colWidths.qty - 10,
-//           align: "center",
-//         })
-//         .text(item.unit, colPos.unit + 5, y + 6, { width: colWidths.unit - 10 })
+//         .text(`${index + 1}`, colPos.srNo + 5, y + 6)
+//         .text(item.description, colPos.description + 5, y + 6)
+//         .text(item.hsnCode, colPos.hsnCode + 5, y + 6)
+//         .text(`${item.qty}`, colPos.qty + 5, y + 6, { align: "center" })
+//         .text(item.unit, colPos.unit + 5, y + 6)
 //         .text(`₹ ${item.rate.toFixed(2)}`, colPos.rate + 5, y + 6, {
-//           width: colWidths.rate - 10,
 //           align: "right",
 //         })
 //         .text(`₹ ${item.amount.toFixed(2)}`, colPos.amount + 5, y + 6, {
-//           width: colWidths.amount - 10,
 //           align: "right",
 //         });
 
 //       y += 20;
 //     });
 
-//     // ===== TOTALS SECTION =====
+//     // TOTALS
 //     const subtotal = booking.payment.totalAmount;
 //     const discount = 0;
 //     const total = subtotal;
 
-//     // Draw totals background
 //     doc
 //       .fillColor(lightGray)
 //       .rect(colPos.rate - 5, y + 10, colWidths.rate + colWidths.amount + 10, 60)
 //       .fill();
-
-//     // Draw totals border
 //     doc
 //       .strokeColor(borderColor)
 //       .lineWidth(0.5)
 //       .rect(colPos.rate - 5, y + 10, colWidths.rate + colWidths.amount + 10, 60)
 //       .stroke();
 
-//     // Draw totals text
-//     doc
-//       .fillColor(secondaryColor)
-//       .font("Helvetica")
-//       .fontSize(10)
-//       .text("Subtotal:", colPos.rate, y + 20, {
-//         width: colWidths.rate - 5,
-//         align: "right",
-//       })
-//       .text("Discount:", colPos.rate, y + 35, {
-//         width: colWidths.rate - 5,
-//         align: "right",
-//       })
-//       .font("Helvetica-Bold")
-//       .fillColor(primaryColor)
-//       .text("Total:", colPos.rate, y + 50, {
-//         width: colWidths.rate - 5,
-//         align: "right",
-//       });
+//     // doc
+//     //   .fillColor(secondaryColor)
+//     //   .font("Helvetica")
+//     //   .fontSize(10)
+//     //   .text("Subtotal:", colPos.rate, y + 20, { align: "right" })
+//     //   .text("Discount:", colPos.rate, y + 35, { align: "right" })
+//     //   .font("Helvetica-Bold")
+//     //   .fillColor(primaryColor)
+//     //   .text("Total:", colPos.rate, y + 50, { align: "right" });
 
-//     doc
-//       .fillColor(secondaryColor)
-//       .font("Helvetica")
-//       .fontSize(10)
-//       .text(`₹ ${subtotal.toFixed(2)}`, colPos.amount, y + 20, {
-//         width: colWidths.amount - 5,
-//         align: "right",
-//       })
-//       .text(`₹ ${discount.toFixed(2)}`, colPos.amount, y + 35, {
-//         width: colWidths.amount - 5,
-//         align: "right",
-//       })
-//       .font("Helvetica-Bold")
-//       .fillColor(primaryColor)
-//       .text(`₹ ${total.toFixed(2)}`, colPos.amount, y + 50, {
-//         width: colWidths.amount - 5,
-//         align: "right",
-//       });
+//     // doc
+//     //   .fillColor(secondaryColor)
+//     //   .font("Helvetica")
+//     //   .text(`₹ ${subtotal.toFixed(2)}`, colPos.amount, y + 20, { align: "right" })
+//     //   .text(`₹ ${discount.toFixed(2)}`, colPos.amount, y + 35, { align: "right" })
+//     //   .font("Helvetica-Bold")
+//     //   .fillColor(primaryColor)
+//     //   .text(`₹ ${total.toFixed(2)}`, colPos.amount, y + 50, { align: "right" });
 
-//     // ===== FOOTER =====
-//     // Add a thank you note
+//     // FOOTER
 //     doc.moveDown(3);
 //     doc
 //       .font("Helvetica")
@@ -1420,20 +1366,15 @@ exports.getUserBookings = async (req, res) => {
 //       .fillColor(highlightColor)
 //       .text("Thank you for choosing Messmate!", { align: "center" });
 
-//     // Add a footer on each page
 //     const pageCount = doc.bufferedPageRange().count;
 //     for (let i = 0; i < pageCount; i++) {
 //       doc.switchToPage(i);
-
-//       // Draw footer line
 //       doc
 //         .strokeColor(borderColor)
 //         .lineWidth(1)
 //         .moveTo(50, 780)
 //         .lineTo(550, 780)
 //         .stroke();
-
-//       // Add page number and website
 //       doc
 //         .fillColor(secondaryColor)
 //         .fontSize(8)
@@ -1442,7 +1383,6 @@ exports.getUserBookings = async (req, res) => {
 //         });
 //     }
 
-//     // Finalize the PDF
 //     doc.end();
 //   } catch (error) {
 //     console.error("Invoice generation error:", error);
@@ -1458,7 +1398,7 @@ exports.downloadInvoice = async (req, res) => {
       .select(
         "room bedsBooked pricePerHead period.startDate period.durationMonths payment.totalAmount pgOwner student items invoiceNo orderNo date"
       )
-      .populate("pgOwner", "messName address")
+      .populate("pgOwner", "messName address firstName mobileNo")
       .populate("student", "firstName lastName email mobile")
       .lean();
 
@@ -1468,11 +1408,22 @@ exports.downloadInvoice = async (req, res) => {
 
     const currentDate = new Date();
     const formattedDate = `${currentDate.getDate()}-${
-      ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-        [currentDate.getMonth()]
+      [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ][currentDate.getMonth()]
     }-${currentDate.getFullYear()}`;
 
-    const PDFDocument = require("pdfkit");
     const doc = new PDFDocument({ margin: 50, size: "A4", bufferPages: true });
 
     res.setHeader("Content-Type", "application/pdf");
@@ -1483,7 +1434,7 @@ exports.downloadInvoice = async (req, res) => {
 
     doc.pipe(res);
 
-    // Basic colors
+    // Colors
     const primaryColor = "#333333";
     const secondaryColor = "#555555";
     const highlightColor = "#4a86e8";
@@ -1491,7 +1442,12 @@ exports.downloadInvoice = async (req, res) => {
     const borderColor = "#e0e0e0";
 
     const drawHorizontalLine = (y) => {
-      doc.strokeColor(borderColor).lineWidth(1).moveTo(50, y).lineTo(550, y).stroke();
+      doc
+        .strokeColor(borderColor)
+        .lineWidth(1)
+        .moveTo(50, y)
+        .lineTo(550, y)
+        .stroke();
     };
 
     // HEADER
@@ -1520,10 +1476,10 @@ exports.downloadInvoice = async (req, res) => {
       .text("RECEIPT", { align: "center" })
       .moveDown(1);
 
-    // CUSTOMER + INVOICE INFO
+    // CUSTOMER & INVOICE INFO
     const customerStartY = doc.y;
 
-    // Left: Student Info
+    // Student + PG Owner Info
     doc
       .font("Helvetica-Bold")
       .fontSize(11)
@@ -1533,7 +1489,10 @@ exports.downloadInvoice = async (req, res) => {
       .font("Helvetica")
       .fontSize(10)
       .fillColor(secondaryColor)
-      .text(`Name: ${booking.student.firstName} ${booking.student.lastName}`, 50)
+      .text(
+        `Name: ${booking.student.firstName} ${booking.student.lastName}`,
+        50
+      )
       .text(`Email: ${booking.student.email}`, 50)
       .text(`Mobile: ${booking.student.mobile || "Not provided"}`, 50)
       .moveDown(0.5)
@@ -1542,9 +1501,11 @@ exports.downloadInvoice = async (req, res) => {
       .text(`Mess Name: ${booking.pgOwner.messName}`, 50)
       .font("Helvetica")
       .fillColor(secondaryColor)
-      .text(`Mess Address: ${booking.pgOwner.address}`, 50);
+      .text(`Mess Address: ${booking.pgOwner.address}`, 50)
+      .text(`Mess Owner Name: ${booking.pgOwner.firstName || "N/A"}`, 50)
+      .text(`Owner Phone No: ${booking.pgOwner.mobileNo || "N/A"}`, 50);
 
-    // Right: Invoice Info
+    // Invoice Info (Right side)
     doc
       .font("Helvetica-Bold")
       .fontSize(10)
@@ -1554,45 +1515,71 @@ exports.downloadInvoice = async (req, res) => {
       .font("Helvetica")
       .fontSize(10)
       .fillColor(secondaryColor)
-      .text(`Invoice No: ${booking.invoiceNo || booking._id}`, 350)
-      .text(`Date: ${booking.date || formattedDate}`, 350)
-      .text(`Order No: ${booking.orderNo || booking._id}`, 350);
+      .text(`Booking ID: #${booking._id.toString().slice(-6).toUpperCase()}`, 350)
+      .text(`Date: ${booking.date || formattedDate}`, 350);
 
     doc.y = Math.max(doc.y, customerStartY + 100);
     doc.moveDown(1);
 
-    // ITEMS TABLE
+    // TABLE HEADERS
     const tableTop = doc.y;
     const tableLeft = 50;
-    const colWidths = { srNo: 30, description: 190, hsnCode: 60, qty: 30, unit: 50, rate: 70, amount: 70 };
+    const colWidths = {
+      srNo: 30,
+      description: 190,
+      roomId: 60,
+      qty: 30,
+      unit: 50,
+      rate: 70,
+      amount: 70,
+    };
     const colPos = {
       srNo: tableLeft,
       description: tableLeft + colWidths.srNo,
-      hsnCode: tableLeft + colWidths.srNo + colWidths.description,
-      qty: tableLeft + colWidths.srNo + colWidths.description + colWidths.hsnCode,
-      unit: tableLeft + colWidths.srNo + colWidths.description + colWidths.hsnCode + colWidths.qty,
-      rate: tableLeft + colWidths.srNo + colWidths.description + colWidths.hsnCode + colWidths.qty + colWidths.unit,
-      amount: tableLeft + colWidths.srNo + colWidths.description + colWidths.hsnCode + colWidths.qty + colWidths.unit + colWidths.rate,
+      roomId: tableLeft + colWidths.srNo + colWidths.description,
+      qty:
+        tableLeft + colWidths.srNo + colWidths.description + colWidths.roomId,
+      unit:
+        tableLeft +
+        colWidths.srNo +
+        colWidths.description +
+        colWidths.roomId +
+        colWidths.qty,
+      rate:
+        tableLeft +
+        colWidths.srNo +
+        colWidths.description +
+        colWidths.roomId +
+        colWidths.qty +
+        colWidths.unit,
+      amount:
+        tableLeft +
+        colWidths.srNo +
+        colWidths.description +
+        colWidths.roomId +
+        colWidths.qty +
+        colWidths.unit +
+        colWidths.rate,
     };
 
     doc.fillColor(highlightColor).rect(tableLeft, tableTop, 500, 20).fill();
+
     doc
       .fillColor("white")
       .font("Helvetica-Bold")
       .fontSize(10)
       .text("Sr.No", colPos.srNo + 5, tableTop + 6)
       .text("Description", colPos.description + 5, tableTop + 6)
-      .text("HSN Code", colPos.hsnCode + 5, tableTop + 6)
+      .text("Room ID", colPos.roomId + 5, tableTop + 6)
       .text("Qty", colPos.qty + 5, tableTop + 6)
       .text("Unit", colPos.unit + 5, tableTop + 6)
       .text("Rate", colPos.rate + 5, tableTop + 6)
       .text("Amount", colPos.amount + 5, tableTop + 6);
 
-    // Items
+    // ITEMS
     const items = [
       {
         description: "Monthly Rent",
-        hsnCode: "9963",
         qty: booking.period.durationMonths,
         unit: "Month",
         rate: booking.pricePerHead,
@@ -1600,17 +1587,21 @@ exports.downloadInvoice = async (req, res) => {
       },
       {
         description: "Security Deposit",
-        hsnCode: "9963",
         qty: 1,
         unit: "Nos",
-        rate: booking.payment.totalAmount - booking.pricePerHead * booking.period.durationMonths,
-        amount: booking.payment.totalAmount - booking.pricePerHead * booking.period.durationMonths,
+        rate:
+          booking.payment.totalAmount -
+          booking.pricePerHead * booking.period.durationMonths,
+        amount:
+          booking.payment.totalAmount -
+          booking.pricePerHead * booking.period.durationMonths,
       },
     ];
 
     let y = tableTop + 20;
     items.forEach((item, index) => {
-      if (index % 2 === 0) doc.fillColor(lightGray).rect(tableLeft, y, 500, 20).fill();
+      if (index % 2 === 0)
+        doc.fillColor(lightGray).rect(tableLeft, y, 500, 20).fill();
 
       doc
         .strokeColor(borderColor)
@@ -1624,11 +1615,15 @@ exports.downloadInvoice = async (req, res) => {
         .fontSize(9)
         .text(`${index + 1}`, colPos.srNo + 5, y + 6)
         .text(item.description, colPos.description + 5, y + 6)
-        .text(item.hsnCode, colPos.hsnCode + 5, y + 6)
+        .text(booking.room || "N/A", colPos.roomId + 5, y + 6)
         .text(`${item.qty}`, colPos.qty + 5, y + 6, { align: "center" })
         .text(item.unit, colPos.unit + 5, y + 6)
-        .text(`₹ ${item.rate.toFixed(2)}`, colPos.rate + 5, y + 6, { align: "right" })
-        .text(`₹ ${item.amount.toFixed(2)}`, colPos.amount + 5, y + 6, { align: "right" });
+        .text(`₹ ${item.rate.toFixed(2)}`, colPos.rate + 5, y + 6, {
+          align: "right",
+        })
+        .text(`₹ ${item.amount.toFixed(2)}`, colPos.amount + 5, y + 6, {
+          align: "right",
+        });
 
       y += 20;
     });
@@ -1638,8 +1633,15 @@ exports.downloadInvoice = async (req, res) => {
     const discount = 0;
     const total = subtotal;
 
-    doc.fillColor(lightGray).rect(colPos.rate - 5, y + 10, colWidths.rate + colWidths.amount + 10, 60).fill();
-    doc.strokeColor(borderColor).lineWidth(0.5).rect(colPos.rate - 5, y + 10, colWidths.rate + colWidths.amount + 10, 60).stroke();
+    doc
+      .fillColor(lightGray)
+      .rect(colPos.rate - 5, y + 10, colWidths.rate + colWidths.amount + 10, 60)
+      .fill();
+    doc
+      .strokeColor(borderColor)
+      .lineWidth(0.5)
+      .rect(colPos.rate - 5, y + 10, colWidths.rate + colWidths.amount + 10, 60)
+      .stroke();
 
     // doc
     //   .fillColor(secondaryColor)
@@ -1654,8 +1656,12 @@ exports.downloadInvoice = async (req, res) => {
     // doc
     //   .fillColor(secondaryColor)
     //   .font("Helvetica")
-    //   .text(`₹ ${subtotal.toFixed(2)}`, colPos.amount, y + 20, { align: "right" })
-    //   .text(`₹ ${discount.toFixed(2)}`, colPos.amount, y + 35, { align: "right" })
+    //   .text(`₹ ${subtotal.toFixed(2)}`, colPos.amount, y + 20, {
+    //     align: "right",
+    //   })
+    //   .text(`₹ ${discount.toFixed(2)}`, colPos.amount, y + 35, {
+    //     align: "right",
+    //   })
     //   .font("Helvetica-Bold")
     //   .fillColor(primaryColor)
     //   .text(`₹ ${total.toFixed(2)}`, colPos.amount, y + 50, { align: "right" });
@@ -1671,8 +1677,18 @@ exports.downloadInvoice = async (req, res) => {
     const pageCount = doc.bufferedPageRange().count;
     for (let i = 0; i < pageCount; i++) {
       doc.switchToPage(i);
-      doc.strokeColor(borderColor).lineWidth(1).moveTo(50, 780).lineTo(550, 780).stroke();
-      doc.fillColor(secondaryColor).fontSize(8).text(`Page ${i + 1} of ${pageCount} | www.messmate.com`, 50, 790, { align: "center" });
+      doc
+        .strokeColor(borderColor)
+        .lineWidth(1)
+        .moveTo(50, 780)
+        .lineTo(550, 780)
+        .stroke();
+      doc
+        .fillColor(secondaryColor)
+        .fontSize(8)
+        .text(`Page ${i + 1} of ${pageCount} | www.messmate.com`, 50, 790, {
+          align: "center",
+        });
     }
 
     doc.end();
@@ -1684,7 +1700,6 @@ exports.downloadInvoice = async (req, res) => {
     });
   }
 };
-
 
 // Handle booking approval/rejection (BED DEDUCTION ONLY ON CONFIRMATION)
 exports.handleBookingApproval = async (req, res) => {
