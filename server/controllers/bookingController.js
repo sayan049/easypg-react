@@ -1651,14 +1651,14 @@ exports.downloadInvoice = async (req, res) => {
     //   .fillColor(primaryColor)
     //   .text("Total:", colPos.rate, y + 50, { align: "right" });
 
-    doc
-      .fillColor(secondaryColor)
-      .font("Helvetica")
-      .text(`₹ ${subtotal.toFixed(2)}`, colPos.amount, y + 20, { align: "right" })
-      .text(`₹ ${discount.toFixed(2)}`, colPos.amount, y + 35, { align: "right" })
-      .font("Helvetica-Bold")
-      .fillColor(primaryColor)
-      .text(`₹ ${total.toFixed(2)}`, colPos.amount, y + 50, { align: "right" });
+    // doc
+    //   .fillColor(secondaryColor)
+    //   .font("Helvetica")
+    //   .text(`₹ ${subtotal.toFixed(2)}`, colPos.amount, y + 20, { align: "right" })
+    //   .text(`₹ ${discount.toFixed(2)}`, colPos.amount, y + 35, { align: "right" })
+    //   .font("Helvetica-Bold")
+    //   .fillColor(primaryColor)
+    //   .text(`₹ ${total.toFixed(2)}`, colPos.amount, y + 50, { align: "right" });
 
     // FOOTER
     doc.moveDown(3);
