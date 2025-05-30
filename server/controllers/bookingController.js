@@ -1086,7 +1086,6 @@ exports.getUserBookings = async (req, res) => {
 //   }
 // };
 
-
 // exports.downloadInvoice = async (req, res) => {
 //   try {
 //     const booking = await Booking.findById(req.params.id)
@@ -1409,9 +1408,20 @@ exports.downloadInvoice = async (req, res) => {
 
     const currentDate = new Date();
     const formattedDate = `${currentDate.getDate()}-${
-      ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][
-        currentDate.getMonth()
-      ]
+      [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ][currentDate.getMonth()]
     }-${currentDate.getFullYear()}`;
 
     const doc = new PDFDocument({ margin: 50, size: "A4", bufferPages: true });
@@ -1432,7 +1442,12 @@ exports.downloadInvoice = async (req, res) => {
     const borderColor = "#e0e0e0";
 
     const drawHorizontalLine = (y) => {
-      doc.strokeColor(borderColor).lineWidth(1).moveTo(50, y).lineTo(550, y).stroke();
+      doc
+        .strokeColor(borderColor)
+        .lineWidth(1)
+        .moveTo(50, y)
+        .lineTo(550, y)
+        .stroke();
     };
 
     // HEADER
@@ -1474,7 +1489,10 @@ exports.downloadInvoice = async (req, res) => {
       .font("Helvetica")
       .fontSize(10)
       .fillColor(secondaryColor)
-      .text(`Name: ${booking.student.firstName} ${booking.student.lastName}`, 50)
+      .text(
+        `Name: ${booking.student.firstName} ${booking.student.lastName}`,
+        50
+      )
       .text(`Email: ${booking.student.email}`, 50)
       .text(`Mobile: ${booking.student.mobile || "Not provided"}`, 50)
       .moveDown(0.5)
@@ -1497,7 +1515,7 @@ exports.downloadInvoice = async (req, res) => {
       .font("Helvetica")
       .fontSize(10)
       .fillColor(secondaryColor)
-      .text(`Booking ID: ${booking._id.slice(-6)}`, 350)
+      .text(`Booking ID: ${booking._id.toString().slice(-6)}`, 350)
       .text(`Date: ${booking.date || formattedDate}`, 350);
 
     doc.y = Math.max(doc.y, customerStartY + 100);
@@ -1519,10 +1537,29 @@ exports.downloadInvoice = async (req, res) => {
       srNo: tableLeft,
       description: tableLeft + colWidths.srNo,
       roomId: tableLeft + colWidths.srNo + colWidths.description,
-      qty: tableLeft + colWidths.srNo + colWidths.description + colWidths.roomId,
-      unit: tableLeft + colWidths.srNo + colWidths.description + colWidths.roomId + colWidths.qty,
-      rate: tableLeft + colWidths.srNo + colWidths.description + colWidths.roomId + colWidths.qty + colWidths.unit,
-      amount: tableLeft + colWidths.srNo + colWidths.description + colWidths.roomId + colWidths.qty + colWidths.unit + colWidths.rate,
+      qty:
+        tableLeft + colWidths.srNo + colWidths.description + colWidths.roomId,
+      unit:
+        tableLeft +
+        colWidths.srNo +
+        colWidths.description +
+        colWidths.roomId +
+        colWidths.qty,
+      rate:
+        tableLeft +
+        colWidths.srNo +
+        colWidths.description +
+        colWidths.roomId +
+        colWidths.qty +
+        colWidths.unit,
+      amount:
+        tableLeft +
+        colWidths.srNo +
+        colWidths.description +
+        colWidths.roomId +
+        colWidths.qty +
+        colWidths.unit +
+        colWidths.rate,
     };
 
     doc.fillColor(highlightColor).rect(tableLeft, tableTop, 500, 20).fill();
@@ -1552,8 +1589,12 @@ exports.downloadInvoice = async (req, res) => {
         description: "Security Deposit",
         qty: 1,
         unit: "Nos",
-        rate: booking.payment.totalAmount - (booking.pricePerHead * booking.period.durationMonths),
-        amount: booking.payment.totalAmount - (booking.pricePerHead * booking.period.durationMonths),
+        rate:
+          booking.payment.totalAmount -
+          booking.pricePerHead * booking.period.durationMonths,
+        amount:
+          booking.payment.totalAmount -
+          booking.pricePerHead * booking.period.durationMonths,
       },
     ];
 
@@ -1577,8 +1618,12 @@ exports.downloadInvoice = async (req, res) => {
         .text(booking.room || "N/A", colPos.roomId + 5, y + 6)
         .text(`${item.qty}`, colPos.qty + 5, y + 6, { align: "center" })
         .text(item.unit, colPos.unit + 5, y + 6)
-        .text(`₹ ${item.rate.toFixed(2)}`, colPos.rate + 5, y + 6, { align: "right" })
-        .text(`₹ ${item.amount.toFixed(2)}`, colPos.amount + 5, y + 6, { align: "right" });
+        .text(`₹ ${item.rate.toFixed(2)}`, colPos.rate + 5, y + 6, {
+          align: "right",
+        })
+        .text(`₹ ${item.amount.toFixed(2)}`, colPos.amount + 5, y + 6, {
+          align: "right",
+        });
 
       y += 20;
     });
@@ -1611,8 +1656,12 @@ exports.downloadInvoice = async (req, res) => {
     doc
       .fillColor(secondaryColor)
       .font("Helvetica")
-      .text(`₹ ${subtotal.toFixed(2)}`, colPos.amount, y + 20, { align: "right" })
-      .text(`₹ ${discount.toFixed(2)}`, colPos.amount, y + 35, { align: "right" })
+      .text(`₹ ${subtotal.toFixed(2)}`, colPos.amount, y + 20, {
+        align: "right",
+      })
+      .text(`₹ ${discount.toFixed(2)}`, colPos.amount, y + 35, {
+        align: "right",
+      })
       .font("Helvetica-Bold")
       .fillColor(primaryColor)
       .text(`₹ ${total.toFixed(2)}`, colPos.amount, y + 50, { align: "right" });
@@ -1628,7 +1677,12 @@ exports.downloadInvoice = async (req, res) => {
     const pageCount = doc.bufferedPageRange().count;
     for (let i = 0; i < pageCount; i++) {
       doc.switchToPage(i);
-      doc.strokeColor(borderColor).lineWidth(1).moveTo(50, 780).lineTo(550, 780).stroke();
+      doc
+        .strokeColor(borderColor)
+        .lineWidth(1)
+        .moveTo(50, 780)
+        .lineTo(550, 780)
+        .stroke();
       doc
         .fillColor(secondaryColor)
         .fontSize(8)
