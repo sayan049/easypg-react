@@ -249,7 +249,7 @@ const HomePage = () => {
 
       <div
         // className={`absolute -top-4 -left-[27rem] z-50 w-[27rem]   ${config.bgColor} ${config.borderColor} border-2 rounded-2xl shadow-2xl ${config.glowColor} backdrop-blur-sm`}
-         className={`absolute -top-4 -left-[60vw]  z-50 w-[60vw]   ${config.bgColor} ${config.borderColor} border-2 rounded-2xl shadow-2xl ${config.glowColor} backdrop-blur-sm`}
+         className={`absolute -top-4 -left-[80vw]  z-50 w-[80vw] md:-left-[20rem] md:w-[20rem]   ${config.bgColor} ${config.borderColor} border-2 rounded-2xl shadow-2xl ${config.glowColor} backdrop-blur-sm`}
         style={{
           filter: "drop-shadow(0 20px 25px rgb(0 0 0 / 0.15))",
         }}
