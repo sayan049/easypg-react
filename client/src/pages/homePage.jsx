@@ -786,7 +786,7 @@ const HomePage = () => {
               {IsAuthenticated || isOwnerAuthenticated ? (
                 <div className="relative">
                   {/* Enhanced Profile Alert */}
-                  {true && (
+                  {showProfileAlert && (
                     <ProfileAlert
                       // show={showProfileAlert}
                       onDismiss={() => setShowProfileAlert(false)}
