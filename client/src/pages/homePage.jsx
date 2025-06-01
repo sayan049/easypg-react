@@ -150,15 +150,15 @@ const HomePage = () => {
     return (
       <AnimatePresence>
         <motion.div
-          initial={{ opacity: 0, scale: 0.8, y: -20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.8, y: -20 }}
-          transition={{
-            type: "spring",
-            stiffness: 300,
-            damping: 25,
-            duration: 0.3,
-          }}
+          // initial={{ opacity: 0, scale: 0.8, y: -20 }}
+          // animate={{ opacity: 1, scale: 1, y: 0 }}
+          // exit={{ opacity: 0, scale: 0.8, y: -20 }}
+          // transition={{
+          //   type: "spring",
+          //   stiffness: 300,
+          //   damping: 25,
+          //   duration: 0.3,
+          // }}
           className={`absolute -top-4 -left-[27rem] z-50 w-[27rem] ${config.bgColor} ${config.borderColor} border-2 rounded-2xl shadow-2xl ${config.glowColor} backdrop-blur-sm`}
           style={{
             filter: "drop-shadow(0 20px 25px rgb(0 0 0 / 0.15))",
