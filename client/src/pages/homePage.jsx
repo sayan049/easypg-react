@@ -341,6 +341,7 @@ const HomePage = () => {
   }, [owner]);
 
   useEffect(() => {
+    if (!userDetails) return;
     if (loginMethod === "google" && userDetails) {
       const missingFields = requiredFields.filter(
         (field) =>
@@ -818,75 +819,76 @@ const HomePage = () => {
           </header>
 
           {/* Mobile Sidebar */}
-<AnimatePresence>
-  {menuOpen && (
-    <>
-      {/* Dimmed background overlay with blur */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.5, ease: [0.25, 0.8, 0.25, 1] }}
-        className="fixed inset-0 bg-white/40 backdrop-blur-sm z-40"
-        onClick={() => setMenuOpen(false)}
-      />
-
-      {/* Glossy Sidebar Panel */}
-      <motion.div
-        initial={{ x: "100%", opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        exit={{ x: "100%", opacity: 0 }}
-        transition={{ duration: 0.6, ease: [0.25, 0.8, 0.25, 1] }}
-        className="fixed top-0 right-0 w-1/2 md:w-64 h-full bg-white/60 backdrop-blur-2xl border-l border-white/20 shadow-2xl z-50 rounded-l-2xl flex flex-col"
-      >
-        {/* Close Button */}
-        <div className="flex justify-end p-4">
-          <button
-            onClick={() => setMenuOpen(false)}
-            className="text-gray-600 hover:text-gray-800 transition duration-200"
-            aria-label="Close menu"
-          >
-            <X className="h-6 w-6" />
-          </button>
-        </div>
-
-        {/* Navigation Links */}
-        <nav className="flex-1 px-4 py-6">
-          <div className="space-y-2">
-            {menuItems.map(({ name, path, icon: Icon }) => {
-              const isAuthLink = name === "Log In" || name === "Sign Up";
-              const href = `#${name.toLowerCase().replace(/\s+/g, "")}`;
-
-              return isAuthLink ? (
-                <Link
-                  key={name}
-                  to={path}
+          <AnimatePresence>
+            {menuOpen && (
+              <>
+                {/* Dimmed background overlay with blur */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5, ease: [0.25, 0.8, 0.25, 1] }}
+                  className="fixed inset-0 bg-white/40 backdrop-blur-sm z-40"
                   onClick={() => setMenuOpen(false)}
-                  className="flex items-center px-4 py-3 text-gray-800 hover:bg-white/30 rounded-xl transition duration-300 hover:shadow-lg"
-                >
-                  <Icon className="h-5 w-5 mr-4 text-[#2CA4B5]" />
-                  {name}
-                </Link>
-              ) : (
-                <a
-                  key={name}
-                  href={href}
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center px-4 py-3 text-gray-800 hover:bg-white/30 rounded-xl transition duration-300 hover:shadow-lg"
-                >
-                  <Icon className="h-5 w-5 mr-4 text-[#2CA4B5]" />
-                  {name}
-                </a>
-              );
-            })}
-          </div>
-        </nav>
-      </motion.div>
-    </>
-  )}
-</AnimatePresence>
+                />
 
+                {/* Glossy Sidebar Panel */}
+                <motion.div
+                  initial={{ x: "100%", opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: "100%", opacity: 0 }}
+                  transition={{ duration: 0.6, ease: [0.25, 0.8, 0.25, 1] }}
+                  className="fixed top-0 right-0 w-1/2 md:w-64 h-full bg-white/60 backdrop-blur-2xl border-l border-white/20 shadow-2xl z-50 rounded-l-2xl flex flex-col"
+                >
+                  {/* Close Button */}
+                  <div className="flex justify-end p-4">
+                    <button
+                      onClick={() => setMenuOpen(false)}
+                      className="text-gray-600 hover:text-gray-800 transition duration-200"
+                      aria-label="Close menu"
+                    >
+                      <X className="h-6 w-6" />
+                    </button>
+                  </div>
 
+                  {/* Navigation Links */}
+                  <nav className="flex-1 px-4 py-6">
+                    <div className="space-y-2">
+                      {menuItems.map(({ name, path, icon: Icon }) => {
+                        const isAuthLink =
+                          name === "Log In" || name === "Sign Up";
+                        const href = `#${name
+                          .toLowerCase()
+                          .replace(/\s+/g, "")}`;
+
+                        return isAuthLink ? (
+                          <Link
+                            key={name}
+                            to={path}
+                            onClick={() => setMenuOpen(false)}
+                            className="flex items-center px-4 py-3 text-gray-800 hover:bg-white/30 rounded-xl transition duration-300 hover:shadow-lg"
+                          >
+                            <Icon className="h-5 w-5 mr-4 text-[#2CA4B5]" />
+                            {name}
+                          </Link>
+                        ) : (
+                          <a
+                            key={name}
+                            href={href}
+                            onClick={() => setMenuOpen(false)}
+                            className="flex items-center px-4 py-3 text-gray-800 hover:bg-white/30 rounded-xl transition duration-300 hover:shadow-lg"
+                          >
+                            <Icon className="h-5 w-5 mr-4 text-[#2CA4B5]" />
+                            {name}
+                          </a>
+                        );
+                      })}
+                    </div>
+                  </nav>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
 
           <ToastContainer
             position="top-center"
@@ -1429,23 +1431,23 @@ const HomePage = () => {
         <section className="py-10 bg-gray-50" id="contactus">
           <div className="container mx-auto px-6">
             <motion.h2
-  initial={{ opacity: 0, y: 20 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.6 }}
-  viewport={{ once: true, margin: "-100px" }}
-  className="text-2xl sm:text-3xl font-bold text-gray-800 mb-12"
->
-  <p className="flex items-center text-2xl sm:text-3xl font-semibold text-gray-800 mb-6">
-    <span>Contact Us - </span>
-    <img
-      src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
-      alt="MessMate - company Logo"
-      className="ml-1 mr-[-4px] h-10 w-10 mb-[10px]"
-      loading="lazy"
-    />
-    <span className="text-[#2CA4B5] ml-1">essMate</span>
-  </p>
-</motion.h2>
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true, margin: "-100px" }}
+              className="text-2xl sm:text-3xl font-bold text-gray-800 mb-12"
+            >
+              <p className="flex items-center text-2xl sm:text-3xl font-semibold text-gray-800 mb-6">
+                <span>Contact Us - </span>
+                <img
+                  src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
+                  alt="MessMate - company Logo"
+                  className="ml-1 mr-[-4px] h-10 w-10 mb-[10px]"
+                  loading="lazy"
+                />
+                <span className="text-[#2CA4B5] ml-1">essMate</span>
+              </p>
+            </motion.h2>
 
             <div className="flex flex-col md:flex-row items-center gap-8">
               {/* Left Image Section */}
