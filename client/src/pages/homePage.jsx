@@ -354,6 +354,7 @@ const HomePage = () => {
 
       if (missingFields.length > 0) {
         setShowProfileAlert(true);
+
         localStorage.setItem("needToUpdateProfile", "true");
       } else {
         setShowProfileAlert(false);
@@ -361,6 +362,9 @@ const HomePage = () => {
       }
     }
   }, [userDetails]);
+  useEffect(() => {
+    console.log("hit ", showProfileAlert);
+  }, [showProfileAlert]);
 
   const debounceTimeout = useRef(null);
 
