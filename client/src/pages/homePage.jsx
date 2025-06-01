@@ -98,7 +98,9 @@ const HomePage = () => {
   const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState(null);
   const searchContainerRef = useRef(null);
-  const [showProfileAlert, setShowProfileAlert] = useState(false);
+  const [showProfileAlert, setShowProfileAlert] = useState(
+    localStorage.getItem("needToUpdateProfile") === "true"
+  );
   const [userDetails, setUserDetails] = useState(null);
 
   // Enhanced Alert Component
