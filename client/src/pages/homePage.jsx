@@ -148,104 +148,148 @@ const HomePage = () => {
     const Icon = config.icon;
 
     return (
-      <AnimatePresence>
-        <motion.div
-          // initial={{ opacity: 0, scale: 0.8, y: -20 }}
-          // animate={{ opacity: 1, scale: 1, y: 0 }}
-          // exit={{ opacity: 0, scale: 0.8, y: -20 }}
-          // transition={{
-          //   type: "spring",
-          //   stiffness: 300,
-          //   damping: 25,
-          //   duration: 0.3,
-          // }}
-          className={`absolute -top-4 -left-[27rem] z-50 w-[27rem] ${config.bgColor} ${config.borderColor} border-2 rounded-2xl shadow-2xl ${config.glowColor} backdrop-blur-sm`}
-          style={{
-            filter: "drop-shadow(0 20px 25px rgb(0 0 0 / 0.15))",
-          }}
-        >
-          {/* Decorative top border */}
-          {/* <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent rounded-t-2xl"> */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#2CA4B5] to-transparent rounded-t-2xl"></div>
+      // <AnimatePresence>
+      //   <motion.div
+      //     // initial={{ opacity: 0, scale: 0.8, y: -20 }}
+      //     // animate={{ opacity: 1, scale: 1, y: 0 }}
+      //     // exit={{ opacity: 0, scale: 0.8, y: -20 }}
+      //     // transition={{
+      //     //   type: "spring",
+      //     //   stiffness: 300,
+      //     //   damping: 25,
+      //     //   duration: 0.3,
+      //     // }}
+      //     className={`absolute -top-4 -left-[27rem] z-50 w-[27rem] ${config.bgColor} ${config.borderColor} border-2 rounded-2xl shadow-2xl ${config.glowColor} backdrop-blur-sm`}
+      //     style={{
+      //       filter: "drop-shadow(0 20px 25px rgb(0 0 0 / 0.15))",
+      //     }}
+      //   >
+      //     {/* Decorative top border */}
+      //     {/* <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent rounded-t-2xl"> */}
+      //     <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#2CA4B5] to-transparent rounded-t-2xl"></div>
 
-          {/* Arrow pointing to profile */}
-          {/* <div className="absolute top-6 -right-2 w-4 h-4 bg-white border-r-2 border-b-2 border-amber-200 transform rotate-45"></div> */}
-          <div className="absolute top-6 -right-2 w-4 h-4 bg-white border-r-2 border-b-2 border-[#2CA4B5] transform rotate-45"></div>
+      //     {/* Arrow pointing to profile */}
+      //     {/* <div className="absolute top-6 -right-2 w-4 h-4 bg-white border-r-2 border-b-2 border-amber-200 transform rotate-45"></div> */}
+      //     <div className="absolute top-6 -right-2 w-4 h-4 bg-white border-r-2 border-b-2 border-[#2CA4B5] transform rotate-45"></div>
 
-          <div className="p-6">
-            <div className="flex items-start space-x-4">
-              {/* Animated Icon */}
-              <motion.div
-                initial={{ rotate: 0 }}
-                animate={{ rotate: [0, -10, 10, -5, 5, 0] }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className={`flex-shrink-0 w-12 h-12 ${config.bgColor} rounded-full flex items-center justify-center border-2 ${config.borderColor}`}
-              >
-                <Icon className={`w-6 h-6 ${config.iconColor}`} />
-              </motion.div>
+      //     <div className="p-6">
+      //       <div className="flex items-start space-x-4">
+      //         {/* Animated Icon */}
+      //         <motion.div
+      //           initial={{ rotate: 0 }}
+      //           animate={{ rotate: [0, -10, 10, -5, 5, 0] }}
+      //           transition={{ duration: 0.6, delay: 0.2 }}
+      //           className={`flex-shrink-0 w-12 h-12 ${config.bgColor} rounded-full flex items-center justify-center border-2 ${config.borderColor}`}
+      //         >
+      //           <Icon className={`w-6 h-6 ${config.iconColor}`} />
+      //         </motion.div>
 
-              <div className="flex-1 min-w-0">
-                {/* Title with gradient */}
-                <motion.h4
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 }}
-                  className={`font-bold text-lg ${config.titleColor} mb-2 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent`}
+      //         <div className="flex-1 min-w-0">
+      //           {/* Title with gradient */}
+      //           <motion.h4
+      //             initial={{ opacity: 0, x: -10 }}
+      //             animate={{ opacity: 1, x: 0 }}
+      //             transition={{ delay: 0.1 }}
+      //             className={`font-bold text-lg ${config.titleColor} mb-2 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent`}
 
-                  // className={`font-bold text-lg ${config.titleColor} mb-2 bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent`}
-                >
-                  Profile Update Required
-                </motion.h4>
+      //             // className={`font-bold text-lg ${config.titleColor} mb-2 bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent`}
+      //           >
+      //             Profile Update Required
+      //           </motion.h4>
 
-                {/* Message */}
-                <motion.p
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className={`text-sm ${config.textColor} leading-relaxed mb-4`}
-                >
-                  Complete your profile details to activate your mess listing
-                  and start receiving bookings.
-                </motion.p>
-              </div>
+      //           {/* Message */}
+      //           <motion.p
+      //             initial={{ opacity: 0, x: -10 }}
+      //             animate={{ opacity: 1, x: 0 }}
+      //             transition={{ delay: 0.2 }}
+      //             className={`text-sm ${config.textColor} leading-relaxed mb-4`}
+      //           >
+      //             Complete your profile details to activate your mess listing
+      //             and start receiving bookings.
+      //           </motion.p>
+      //         </div>
 
-              {/* Close button */}
-              <motion.button
-                whileHover={{ scale: 1.1, rotate: 90 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={onDismiss}
-                className={`flex-shrink-0 w-8 h-8 ${config.textColor} hover:bg-white/50 rounded-full flex items-center justify-center transition-all duration-200`}
-              >
-                <X className="w-4 h-4" />
-              </motion.button>
+      //         {/* Close button */}
+      //         <motion.button
+      //           whileHover={{ scale: 1.1, rotate: 90 }}
+      //           whileTap={{ scale: 0.9 }}
+      //           onClick={onDismiss}
+      //           className={`flex-shrink-0 w-8 h-8 ${config.textColor} hover:bg-white/50 rounded-full flex items-center justify-center transition-all duration-200`}
+      //         >
+      //           <X className="w-4 h-4" />
+      //         </motion.button>
+      //       </div>
+
+      //       {/* Progress indicator */}
+      //       <motion.div
+      //         initial={{ width: 0 }}
+      //         animate={{ width: "100%" }}
+      //         transition={{ duration: 2, delay: 0.5 }}
+      //         className="mt-4 h-1 bg-gradient-to-r from-[#99e2e5] to-[#2CA4B5] rounded-full overflow-hidden"
+
+      //         //className="mt-4 h-1 bg-gradient-to-r from-amber-200 to-orange-200 rounded-full overflow-hidden"
+      //       >
+      //         <motion.div
+      //           initial={{ x: "-100%" }}
+      //           animate={{ x: "100%" }}
+      //           transition={{
+      //             duration: 1.5,
+      //             delay: 0.5,
+      //             repeat: Number.POSITIVE_INFINITY,
+      //             repeatDelay: 1,
+      //           }}
+      //           className="h-full w-1/3 bg-gradient-to-r from-transparent via-[#2CA4B5] to-transparent"
+
+      //           //  className="h-full w-1/3 bg-gradient-to-r from-transparent via-amber-400 to-transparent"
+      //         />
+      //       </motion.div>
+      //     </div>
+      //   </motion.div>
+      // </AnimatePresence>
+
+      <div
+        className={`absolute -top-4 -left-[27rem] z-50 w-[27rem] ${config.bgColor} ${config.borderColor} border-2 rounded-2xl shadow-2xl ${config.glowColor} backdrop-blur-sm`}
+        style={{
+          filter: "drop-shadow(0 20px 25px rgb(0 0 0 / 0.15))",
+        }}
+      >
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#2CA4B5] to-transparent rounded-t-2xl"></div>
+        <div className="absolute top-6 -right-2 w-4 h-4 bg-white border-r-2 border-b-2 border-[#2CA4B5] transform rotate-45"></div>
+
+        <div className="p-6">
+          <div className="flex items-start space-x-4">
+            <div
+              className={`flex-shrink-0 w-12 h-12 ${config.bgColor} rounded-full flex items-center justify-center border-2 ${config.borderColor}`}
+            >
+              <Icon className={`w-6 h-6 ${config.iconColor}`} />
             </div>
 
-            {/* Progress indicator */}
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: "100%" }}
-              transition={{ duration: 2, delay: 0.5 }}
-              className="mt-4 h-1 bg-gradient-to-r from-[#99e2e5] to-[#2CA4B5] rounded-full overflow-hidden"
+            <div className="flex-1 min-w-0">
+              <h4
+                className={`font-bold text-lg ${config.titleColor} mb-2 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent`}
+              >
+                Profile Update Required
+              </h4>
 
-              //className="mt-4 h-1 bg-gradient-to-r from-amber-200 to-orange-200 rounded-full overflow-hidden"
+              <p className={`text-sm ${config.textColor} leading-relaxed mb-4`}>
+                Complete your profile details to activate your mess listing and
+                start receiving bookings.
+              </p>
+            </div>
+
+            <button
+              onClick={onDismiss}
+              className={`flex-shrink-0 w-8 h-8 ${config.textColor} hover:bg-white/50 rounded-full flex items-center justify-center transition-all duration-200`}
             >
-              <motion.div
-                initial={{ x: "-100%" }}
-                animate={{ x: "100%" }}
-                transition={{
-                  duration: 1.5,
-                  delay: 0.5,
-                  repeat: Number.POSITIVE_INFINITY,
-                  repeatDelay: 1,
-                }}
-                className="h-full w-1/3 bg-gradient-to-r from-transparent via-[#2CA4B5] to-transparent"
-
-                //  className="h-full w-1/3 bg-gradient-to-r from-transparent via-amber-400 to-transparent"
-              />
-            </motion.div>
+              <X className="w-4 h-4" />
+            </button>
           </div>
-        </motion.div>
-      </AnimatePresence>
+
+          <div className="mt-4 h-1 bg-gradient-to-r from-[#99e2e5] to-[#2CA4B5] rounded-full overflow-hidden">
+            <div className="h-full w-full bg-[#2CA4B5]" />
+          </div>
+        </div>
+      </div>
     );
   };
 
