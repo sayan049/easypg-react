@@ -105,7 +105,7 @@ const HomePage = () => {
 
   // Enhanced Alert Component
   const ProfileAlert = ({ show, onDismiss, type = "warning" }) => {
-    if (!show) return null;
+    // if (!show) return null;
 
     const alertConfig = {
       warning: {
