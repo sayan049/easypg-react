@@ -247,45 +247,85 @@ const HomePage = () => {
       //   </motion.div>
       // </AnimatePresence>
 
+      // <div
+      //   className={`absolute -top-4 -left-[27rem] z-50 w-[27rem] ${config.bgColor} ${config.borderColor} border-2 rounded-2xl shadow-2xl ${config.glowColor} backdrop-blur-sm`}
+      //   style={{
+      //     filter: "drop-shadow(0 20px 25px rgb(0 0 0 / 0.15))",
+      //   }}
+      // >
+      //   <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#2CA4B5] to-transparent rounded-t-2xl"></div>
+      //   <div className="absolute top-6 -right-2 w-4 h-4 bg-white border-r-2 border-b-2 border-[#2CA4B5] transform rotate-45"></div>
+
+      //   <div className="p-6">
+      //     <div className="flex items-start space-x-4">
+      //       <div
+      //         className={`flex-shrink-0 w-12 h-12 ${config.bgColor} rounded-full flex items-center justify-center border-2 ${config.borderColor}`}
+      //       >
+      //         <Icon className={`w-6 h-6 ${config.iconColor}`} />
+      //       </div>
+
+      //       <div className="flex-1 min-w-0">
+      //         <h4
+      //           className={`font-bold text-lg ${config.titleColor} mb-2 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent`}
+      //         >
+      //           Profile Update Required
+      //         </h4>
+
+      //         <p className={`text-sm ${config.textColor} leading-relaxed mb-4`}>
+      //           Complete your profile details to activate your mess listing and
+      //           start receiving bookings.
+      //         </p>
+      //       </div>
+
+      //       <button
+      //         onClick={onDismiss}
+      //         className={`flex-shrink-0 w-8 h-8 ${config.textColor} hover:bg-white/50 rounded-full flex items-center justify-center transition-all duration-200`}
+      //       >
+      //         <X className="w-4 h-4" />
+      //       </button>
+      //     </div>
+
+      //     <div className="mt-4 h-1 bg-gradient-to-r from-[#99e2e5] to-[#2CA4B5] rounded-full overflow-hidden">
+      //       <div className="h-full w-full bg-[#2CA4B5]" />
+      //     </div>
+      //   </div>
+      // </div>
+
       <div
-        className={`absolute -top-4 -left-[27rem] z-50 w-[27rem] ${config.bgColor} ${config.borderColor} border-2 rounded-2xl shadow-2xl ${config.glowColor} backdrop-blur-sm`}
+        className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[90%] max-w-sm ${config.bgColor} ${config.borderColor} border rounded-xl shadow-lg ${config.glowColor} backdrop-blur-sm`}
         style={{
-          filter: "drop-shadow(0 20px 25px rgb(0 0 0 / 0.15))",
+          filter: "drop-shadow(0 10px 15px rgb(0 0 0 / 0.1))",
         }}
       >
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#2CA4B5] to-transparent rounded-t-2xl"></div>
-        <div className="absolute top-6 -right-2 w-4 h-4 bg-white border-r-2 border-b-2 border-[#2CA4B5] transform rotate-45"></div>
-
-        <div className="p-6">
-          <div className="flex items-start space-x-4">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#2CA4B5] to-transparent rounded-t-xl"></div>
+        <div className="p-4">
+          <div className="flex items-start space-x-3">
             <div
-              className={`flex-shrink-0 w-12 h-12 ${config.bgColor} rounded-full flex items-center justify-center border-2 ${config.borderColor}`}
+              className={`w-10 h-10 ${config.bgColor} rounded-full flex items-center justify-center border ${config.borderColor}`}
             >
-              <Icon className={`w-6 h-6 ${config.iconColor}`} />
+              <Icon className={`w-5 h-5 ${config.iconColor}`} />
             </div>
 
             <div className="flex-1 min-w-0">
               <h4
-                className={`font-bold text-lg ${config.titleColor} mb-2 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent`}
+                className={`font-semibold text-base ${config.titleColor} mb-1 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent`}
               >
                 Profile Update Required
               </h4>
-
-              <p className={`text-sm ${config.textColor} leading-relaxed mb-4`}>
-                Complete your profile details to activate your mess listing and
-                start receiving bookings.
+              <p className={`text-xs ${config.textColor} leading-snug`}>
+                Complete your profile to activate your mess and get bookings.
               </p>
             </div>
 
             <button
               onClick={onDismiss}
-              className={`flex-shrink-0 w-8 h-8 ${config.textColor} hover:bg-white/50 rounded-full flex items-center justify-center transition-all duration-200`}
+              className={`w-6 h-6 ${config.textColor} hover:bg-white/50 rounded-full flex items-center justify-center transition-all duration-200`}
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="mt-4 h-1 bg-gradient-to-r from-[#99e2e5] to-[#2CA4B5] rounded-full overflow-hidden">
+          <div className="mt-3 h-1 bg-gradient-to-r from-[#99e2e5] to-[#2CA4B5] rounded-full overflow-hidden">
             <div className="h-full w-full bg-[#2CA4B5]" />
           </div>
         </div>
