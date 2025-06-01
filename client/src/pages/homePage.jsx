@@ -267,7 +267,7 @@ const HomePage = () => {
 
             <div className="flex-1 min-w-0">
               <h4
-                className={`font-bold text-lg ${config.titleColor} mb-2 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent`}
+                className={`font-bold text-lg ${config.titleColor}  bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent`}
               >
                 Profile Update Required
               </h4>
