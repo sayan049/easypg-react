@@ -786,18 +786,14 @@ const HomePage = () => {
               {IsAuthenticated || isOwnerAuthenticated ? (
                 <div className="relative">
                   {/* Enhanced Profile Alert */}
-                  {/* {showProfileAlert && (
+                  {showProfileAlert && (
                     <ProfileAlert
                       // show={showProfileAlert}
                       onDismiss={() => setShowProfileAlert(false)}
                       type="info"
                     />
-                  )} */}
-                  <ProfileAlert
-                    // show={showProfileAlert}
-                    onDismiss={() => setShowProfileAlert(false)}
-                    type="info"
-                  />
+                  )}
+
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
