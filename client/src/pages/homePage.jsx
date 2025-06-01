@@ -1,5 +1,5 @@
 "use client";
-
+import React from "react";
 import { useState, useEffect, useRef } from "react";
 import Footer from "../components/footer";
 import { Link, useNavigate } from "react-router-dom";
@@ -104,7 +104,7 @@ const HomePage = () => {
   const [userDetails, setUserDetails] = useState(null);
 
   // Enhanced Alert Component
-  const ProfileAlert = ({ show, onDismiss, type = "warning" }) => {
+  const ProfileAlert = React.memo(({ show, onDismiss, type = "warning" }) => {
     // if (!show) return null;
 
     const alertConfig = {
@@ -331,12 +331,21 @@ const HomePage = () => {
       //   </div>
       // </div>
     );
-  };
+  });
 
   useEffect(() => {
     document.title = "MessMate - Find your nearest PG/Mess easily";
   }, []);
+  const debounce = (func, delay) => {
+    let timer;
+    return function (...args) {
+      clearTimeout(timer);
+      timer = setTimeout(() => func.apply(this, args), delay);
+    };
+  };
 
+  // Then use it when setting state
+  const debouncedSetAlert = debounce(setShowProfileAlert, 300);
   useEffect(() => {
     // console.log(
     //   "data:",
