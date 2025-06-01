@@ -936,7 +936,7 @@ const SettingsOwner = ({ userDetails, loginMethod }) => {
               setDetails({ ...details, minimumBookingDuration: e.target.value })
             }
           >
-            {["1 Month", "3 Months", "6 Months", "1 Year"].map((option) => (
+            {["1 Month", "3 Months", "6 Months", "12 Months"].map((option) => (
               <option key={option} value={option}>
                 {option}
               </option>
