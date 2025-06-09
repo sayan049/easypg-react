@@ -405,7 +405,7 @@ const HomePage = () => {
   ];
   useEffect(() => {
     const fetchDetails = async () => {
-      if (isOwnerAuthenticated && loginMethod === "google") {
+      if (isOwnerAuthenticated) {
         try {
           const userId = owner.type === "owner" ? owner?.id : null;
           if (!userId) return;
