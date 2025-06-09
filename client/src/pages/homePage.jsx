@@ -430,7 +430,7 @@ const HomePage = () => {
 
   useEffect(() => {
     if (!userDetails) return;
-    console.log("Full userDetails object:", userDetails);
+   // console.log("Full userDetails object:", userDetails);
     if ( userDetails) {
       const missingFields = requiredFields.filter(
         (field) =>
