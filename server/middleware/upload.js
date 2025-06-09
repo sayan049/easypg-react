@@ -194,9 +194,12 @@ const uploadToCloudinary = async (req, res, next) => {
           console.log(
             `⚡ Skipping compression (already compressed on frontend)`
           );
+          const uniqueId = `${
+            path.parse(file.originalname).name
+          }-${Date.now()}`;
 
           const result = await cloudinary.uploader.upload(filePath, {
-            public_id: path.parse(file.originalname).name,
+            public_id: uniqueId,
             folder: "", // Optional: 'messmate/profilePhotos'
             resource_type: "image",
           });
