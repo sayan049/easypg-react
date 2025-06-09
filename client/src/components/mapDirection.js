@@ -126,8 +126,11 @@ function MapDirection({ coordinates }) {
       // User marker with location.png
       const userMarkerStyle = new Style({
         image: new Icon({
-          anchor: [0.25, 1],
-          src: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1749450852/location_chsvqy.png", // Set the icon for the user
+          // anchor: [0.25, 1],
+          // src: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1749450852/location_chsvqy.png", // Set the icon for the user
+          // scale: 0.06, // Adjust the scale if needed
+          anchor: [0.5, 1],
+          src: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1749450829/location-pin_xgk2ja.png", // Set the icon for coordinates (destination)
           scale: 0.06, // Adjust the scale if needed
         }),
       });
@@ -156,11 +159,9 @@ function MapDirection({ coordinates }) {
       vectorLayer.getSource().addFeatures([userMarker, destinationMarker]);
 
       // Center the map to fit the route
-      map
-        .getView()
-        .fit(routeFeature.getGeometry().getExtent(), {
-          padding: [50, 50, 50, 50],
-        });
+      map.getView().fit(routeFeature.getGeometry().getExtent(), {
+        padding: [50, 50, 50, 50],
+      });
     });
   };
 
