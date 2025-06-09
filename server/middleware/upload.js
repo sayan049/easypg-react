@@ -160,7 +160,17 @@ const uploadTemp = multer({
     const extname = filetypes.test(
       path.extname(file.originalname).toLowerCase()
     );
-    const mimetype = filetypes.test(file.mimetype);
+    const allowedMimeTypes = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/gif",
+      "image/heic",
+      "image/heif",
+      "image/webp",
+    ];
+    const mimetype = allowedMimeTypes.includes(file.mimetype);
+
     if (mimetype && extname) {
       cb(null, true);
     } else {
