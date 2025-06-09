@@ -436,10 +436,11 @@ const HomePage = () => {
           (typeof userDetails[field] === "string" &&
             userDetails[field].trim() === "")
       );
+      console.log("Missing fields:", missingFields);
 
       if (missingFields.length > 0) {
         setShowProfileAlert(true);
-        console.log("Missing fields:", missingFields);
+
         localStorage.setItem("needToUpdateProfile", "true");
       } else {
         setShowProfileAlert(false);
