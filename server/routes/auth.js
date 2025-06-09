@@ -18,6 +18,8 @@ const likedMess = require("../controllers/likedMess");
 const frontendUrl = process.env.CLIENT_URL || "http://localhost:3000";
 const getLikedMess = require("../controllers/getLikedMess");
 const jwt = require("jsonwebtoken");
+
+
 const {
   createBookingRequest,
   handleBookingApproval,
@@ -103,29 +105,30 @@ router.post("/refresh-token", refreshToken.refreshTokenHandler);
 router.get("/getRefreshToken", refreshToken.getRefreshToken);
 router.get("/getAccessToken", refreshToken.getAccessToken);
 
-router.get("/check-session", authenticateJWT, (req, res) => {
-  // const accessToken = req.headers['authorization']?.split(' ')[1]; // Get token from Authorization header
-  const accessToken = req.cookies?.accessToken;
-  const decoded = req.user;
- 
-  const userResponse = {
-    isAuthenticated: true,
-    user: {
-      id: decoded.id,
-      email: decoded.email,
-      type: decoded.type,
-      name: decoded.name,
-    },
-    loginMethod: decoded.loginMethod,
-  };
+router.get("/check-session", (req, res) => {
+  const token = req.cookies?.accessToken;
 
-  // If user is an owner, attach the image
-  if (decoded.loginMethod === "google") {
-    userResponse.user.image = decoded.image; // Assuming the image is stored in the decoded token
+  if (!token) {
+    return res.json({ isAuthenticated: false });
   }
 
-  // Send the response with the user data
-  return res.status(200).json(userResponse);
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+
+    return res.json({
+      isAuthenticated: true,
+      user: {
+        id    : decoded.id,
+        email : decoded.email,
+        type  : decoded.type,
+        name  : decoded.name,
+        image : decoded.loginMethod === "google" ? decoded.image : undefined,
+      },
+      loginMethod: decoded.loginMethod,
+    });
+  } catch (_) {
+    return res.json({ isAuthenticated: false });
+  }
 });
 
 router.post(

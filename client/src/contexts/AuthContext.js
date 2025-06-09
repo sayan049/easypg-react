@@ -73,6 +73,12 @@ export const AuthProvider = ({ children }) => {
           },
           credentials: "include", // ✅ Important for cookies
         });
+          // Handle successful response (200 OK)
+        if (response.ok) {
+          const data = await response.json();
+          handleAuthState(data);
+          return;
+        }
         // If the access token is expired, try refreshing it
         if (response.status === 401 || response.status === 403) {
           const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
@@ -84,20 +90,7 @@ export const AuthProvider = ({ children }) => {
           });
 
           if (refreshResponse.ok) {
-            // const { accessToken: newAccessToken } =
-            //   await refreshResponse.json();
-            // localStorage.setItem("accessToken", newAccessToken);
-
-            // Retry the check-session call with the new access token
-            response = await fetch(`${baseurl}/auth/check-session`, {
-              method: "GET",
-              headers: {
-                //  Authorization: `Bearer ${newAccessToken}`,
-                "Content-Type": "application/json",
-              },
-              credentials: "include",
-            });
-            //    console.log("res", response);
+        return checkSession(); // Retry check-session after refreshing
           } else {
             // If refresh token is invalid, reset the state and return
             resetState();
