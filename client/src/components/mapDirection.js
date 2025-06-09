@@ -51,7 +51,7 @@ function MapDirection({ coordinates }) {
     const coordinatesMarkerStyle = new Style({
       image: new Icon({
         anchor: [0.5, 1],
-        src: 'assets/placeholder.png',  // Set the icon for coordinates (destination)
+        src:"https://res.cloudinary.com/dlfwb6sqd/image/upload/v1749450829/location-pin_xgk2ja.png" , // Set the icon for coordinates (destination)
         scale: 0.06,  // Adjust the scale if needed
       }),
     });
@@ -125,7 +125,7 @@ function MapDirection({ coordinates }) {
       const userMarkerStyle = new Style({
         image: new Icon({
           anchor: [0.5, 1],
-          src: 'assets/location.png',  // Set the icon for the user
+          src: 'https://res.cloudinary.com/dlfwb6sqd/image/upload/v1749450852/location_chsvqy.png',  // Set the icon for the user
           scale: 0.06,  // Adjust the scale if needed
         }),
       });
@@ -134,7 +134,7 @@ function MapDirection({ coordinates }) {
       const destinationMarkerStyle = new Style({
         image: new Icon({
           anchor: [0.5, 1],
-          src: 'assets/placeholder.png',  // Set the icon for destination (coordinates)
+          src: 'https://res.cloudinary.com/dlfwb6sqd/image/upload/v1749450829/location-pin_xgk2ja.png',  // Set the icon for destination (coordinates)
           scale: 0.06,  // Adjust the scale if needed
         }),
       });
