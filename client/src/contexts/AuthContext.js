@@ -210,6 +210,9 @@ export const AuthProvider = ({ children }) => {
         setType(data.user.type);
       }
     } else if (data.isAuthenticated && data.loginMethod === "local") {
+      console.log(data.user.type,"typexx");
+      console.log(data.user.name,"namexx");
+      console.log(data)
       setIsAuthenticated(data.isAuthenticated && data.user.type === "student");
       setIsOwnerAuthenticated(
         data.isAuthenticated && data.user.type === "owner"
