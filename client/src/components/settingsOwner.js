@@ -1063,12 +1063,12 @@ const SettingsOwner = ({ userDetails, loginMethod }) => {
       <button
         disabled={isUpdating}
         onClick={handleUpdate}
-        className={`px-4 py-2 rounded text-white transition
-              ${
-                isUpdating
-                  ? "bg-gray-500 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700"
-              }`}
+        className={`w-full px-4 py-2 rounded text-white transition
+    ${
+      isUpdating
+        ? "bg-gray-500 cursor-not-allowed"
+        : "bg-blue-600 hover:bg-blue-700"
+    }`}
       >
         {isUpdating ? "Updating…" : "Update Settings"}
       </button>

@@ -154,7 +154,7 @@ const tempStorage = multer.diskStorage({
 // Multer upload config
 const uploadTemp = multer({
   storage: tempStorage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 200MB
+  limits: { fileSize: 15 * 1024 * 1024 }, 
   fileFilter: (req, file, cb) => {
     const filetypes = /jpeg|jpg|png|gif|heic|heif/;
     const extname = filetypes.test(

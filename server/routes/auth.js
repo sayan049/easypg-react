@@ -48,7 +48,7 @@ const apiKey = process.env.GOOGLE_PLACES;
 
 router.get("/api/autocomplete", async (req, res) => {
   const { input } = req.query;
-  console.log("Input:", input);
+  // console.log("Input:", input);
   const url = `https://api.locationiq.com/v1/autocomplete?key=${apiKey}&q=${input}&countrycodes=IN`;
 
   try {
