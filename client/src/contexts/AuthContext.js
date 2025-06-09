@@ -27,7 +27,6 @@ const LoadingSpinner = () => (
   </div>
 );
 
-
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -73,14 +72,14 @@ export const AuthProvider = ({ children }) => {
           },
           credentials: "include", // ✅ Important for cookies
         });
-          // Handle successful response (200 OK)
+        // Handle successful response (200 OK)
         if (response.ok) {
           const data = await response.json();
           handleAuthState(data);
           return;
         }
         // If the access token is expired, try refreshing it
-        if (response.status === 401 ) {
+        if (response.status === 401) {
           const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
             method: "POST",
             // headers: { "Content-Type": "application/json", "X-Device-Info": deviceInfo, },
@@ -90,7 +89,7 @@ export const AuthProvider = ({ children }) => {
           });
 
           if (refreshResponse.ok) {
-        return checkSession(); // Retry check-session after refreshing
+            return checkSession(); // Retry check-session after refreshing
           } else {
             // If refresh token is invalid, reset the state and return
             resetState();
@@ -183,6 +182,10 @@ export const AuthProvider = ({ children }) => {
 
   // Helper function to update state based on authentication data
   const handleAuthState = (data) => {
+    if (!data.isAuthenticated) {
+      resetState(); // ✅ clear everything if not authenticated
+      return;
+    }
     if (data.isAuthenticated && data.loginMethod === "google") {
       setIsAuthenticated(data.isAuthenticated && data.user.type === "student");
       setIsOwnerAuthenticated(
@@ -203,9 +206,9 @@ export const AuthProvider = ({ children }) => {
         setType(data.user.type);
       }
     } else if (data.isAuthenticated && data.loginMethod === "local") {
-      console.log(data.user.type,"typexx");
-      console.log(data.user.name,"namexx");
-      console.log(data)
+      console.log(data.user.type, "typexx");
+      console.log(data.user.name, "namexx");
+      console.log(data);
       setIsAuthenticated(data.isAuthenticated && data.user.type === "student");
       setIsOwnerAuthenticated(
         data.isAuthenticated && data.user.type === "owner"
@@ -243,7 +246,7 @@ export const AuthProvider = ({ children }) => {
       });
 
       // if (sessionResponse.status === 401 || !accessToken) {
-      if (sessionResponse.status === 401 ) {
+      if (sessionResponse.status === 401) {
         console.log("Access token expired. Refreshing...");
         // Refresh the access token if it's expired
         const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
