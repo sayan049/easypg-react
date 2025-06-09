@@ -256,15 +256,45 @@ exports.updateDetails = async (req, res) => {
 
       for (const key in updateData) {
         if (allowedUpdates.includes(key)) {
+          // if (key === "location") {
+          //   try {
+          //     updatedUser[key] =
+          //       typeof updateData[key] === "string"
+          //         ? JSON.parse(updateData[key])
+          //         : updateData[key];
+          //   } catch (e) {
+          //     console.error("Error parsing location:", e);
+          //     continue;
+          //   }
+          // }
           if (key === "location") {
             try {
-              updatedUser[key] =
+              const parsedLocation =
                 typeof updateData[key] === "string"
                   ? JSON.parse(updateData[key])
                   : updateData[key];
+
+              if (
+                !parsedLocation ||
+                !Array.isArray(parsedLocation.coordinates) ||
+                parsedLocation.coordinates.length !== 2 ||
+                parsedLocation.coordinates.includes(undefined) ||
+                parsedLocation.type !== "Point"
+              ) {
+                return res
+                  .status(400)
+                  .json({ error: "Please update your location correctly." });
+              }
+
+              updatedUser[key] = parsedLocation;
             } catch (e) {
               console.error("Error parsing location:", e);
-              continue;
+              return res
+                .status(400)
+                .json({
+                  error:
+                    "Invalid location format. Please update your location.",
+                });
             }
           } else if (key === "facility" || key === "rulesToStay") {
             updatedUser[key] =

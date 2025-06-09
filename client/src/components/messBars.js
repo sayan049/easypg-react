@@ -182,7 +182,6 @@ function MessBars({
   //   navigate(`/details/Id=${owner._id}`);
   // };
   const clickNavi = (owner) => {
-
     navigate(`/details/${owner._id}`);
   };
 
@@ -437,7 +436,7 @@ function MessBars({
                       <h3 className="text-xl font-semibold text-gray-900">
                         {owner.messName}
                       </h3>
-                      <button
+                      {/* <button
                         className="p-2 hover:bg-blue-200 rounded-full transition-colors md:hidden"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -457,6 +456,15 @@ function MessBars({
                             d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z"
                           />
                         </svg>
+                      </button> */}
+                      <button
+                        className="px-3 py-1 text-sm font-semibold text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-colors md:hidden"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleFlip(owner._id);
+                        }}
+                      >
+                        Map
                       </button>
                     </div>
                     <p className="mt-1 text-sm text-gray-600">

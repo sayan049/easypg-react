@@ -1515,7 +1515,10 @@ exports.downloadInvoice = async (req, res) => {
       .font("Helvetica")
       .fontSize(10)
       .fillColor(secondaryColor)
-      .text(`Booking ID: #${booking._id.toString().slice(-6).toUpperCase()}`, 350)
+      .text(
+        `Booking ID: #${booking._id.toString().slice(-6).toUpperCase()}`,
+        350
+      )
       .text(`Date: ${booking.date || formattedDate}`, 350);
 
     doc.y = Math.max(doc.y, customerStartY + 100);
@@ -1577,26 +1580,45 @@ exports.downloadInvoice = async (req, res) => {
       .text("Amount", colPos.amount + 5, tableTop + 6);
 
     // ITEMS
+    // const items = [
+    //   {
+    //     description: "Monthly Rent",
+    //     qty: booking.period.durationMonths,
+    //     unit: "Month",
+    //     rate: booking.period.durationMonths ,
+    //     amount: `${booking.pricePerHead}/month` ,
+    //   },
+    //   {
+    //     description: "Security Deposit",
+    //     qty: 1,
+    //     unit: "Nos",
+    //     rate:
+    //       `${booking.payment.totalAmount -
+    //       booking.pricePerHead * booking.period.durationMonths}months`,
+    //     amount:
+    //       booking.pricePerHead,
+    //   },
+    // ];
     const items = [
       {
         description: "Monthly Rent",
         qty: booking.period.durationMonths,
         unit: "Month",
-        rate: booking.pricePerHead,
-        amount: booking.pricePerHead * booking.period.durationMonths,
+        rate: Number(booking.pricePerHead), // convert string to number
+        amount: Number(booking.pricePerHead),
       },
-      {
+    ];
+    console.log("Booking PG Owner:", booking.pgOwner.minimumSecurityDeposit);
+
+    if (booking.pgOwner?.minimumSecurityDeposit>0) {
+      items.push({
         description: "Security Deposit",
         qty: 1,
         unit: "Nos",
-        rate:
-          booking.payment.totalAmount -
-          booking.pricePerHead * booking.period.durationMonths,
-        amount:
-          booking.payment.totalAmount -
-          booking.pricePerHead * booking.period.durationMonths,
-      },
-    ];
+        rate: Number(booking.pgOwner.minimumSecurityDeposit),
+        amount: Number(booking.pgOwner.minimumSecurityDeposit) * booking.pricePerHead,
+      });
+    }
 
     let y = tableTop + 20;
     items.forEach((item, index) => {
@@ -1618,12 +1640,43 @@ exports.downloadInvoice = async (req, res) => {
         .text(booking.room || "N/A", colPos.roomId + 5, y + 6)
         .text(`${item.qty}`, colPos.qty + 5, y + 6, { align: "center" })
         .text(item.unit, colPos.unit + 5, y + 6)
-        .text(`₹ ${item.rate.toFixed(2)}`, colPos.rate + 5, y + 6, {
-          align: "right",
-        })
-        .text(`₹ ${item.amount.toFixed(2)}`, colPos.amount + 5, y + 6, {
-          align: "right",
-        });
+        .text(
+          `₹ ${
+            typeof item.rate === "number" ? item.rate.toFixed(2) : item.rate
+          }`,
+          colPos.rate + 5,
+          y + 6,
+          { align: "right" }
+        )
+        .text(
+          `₹ ${
+            typeof item.amount === "number"
+              ? item.amount.toFixed(2)
+              : item.amount
+          }`,
+          colPos.amount + 5,
+          y + 6,
+          { align: "right" }
+        );
+
+      // .text(
+      //   `₹ ${
+      //     typeof item.rate === "number" ? item.rate.toFixed(2) : item.rate
+      //   }`,
+      //   colPos.rate + 5,
+      //   y + 6,
+      //   { align: "right" }
+      // )
+      // .text(
+      //   `₹ ${
+      //     typeof item.amount === "number"
+      //       ? item.amount.toFixed(2)
+      //       : item.amount
+      //   }`,
+      //   colPos.amount + 5,
+      //   y + 6,
+      //   { align: "right" }
+      // );
 
       y += 20;
     });

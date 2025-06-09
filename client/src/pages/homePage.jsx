@@ -98,12 +98,14 @@ const HomePage = () => {
   const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState(null);
   const searchContainerRef = useRef(null);
-  const [showProfileAlert, setShowProfileAlert] = useState(false);
+  const [showProfileAlert, setShowProfileAlert] = useState(
+    localStorage.getItem("needToUpdateProfile") === "true"
+  );
   const [userDetails, setUserDetails] = useState(null);
 
   // Enhanced Alert Component
   const ProfileAlert = ({ show, onDismiss, type = "warning" }) => {
-    if (!show) return null;
+    // if (!show) return null;
 
     const alertConfig = {
       warning: {
@@ -146,104 +148,189 @@ const HomePage = () => {
     const Icon = config.icon;
 
     return (
-      <AnimatePresence>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8, y: -20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.8, y: -20 }}
-          transition={{
-            type: "spring",
-            stiffness: 300,
-            damping: 25,
-            duration: 0.3,
-          }}
-          className={`absolute -top-4 -left-[27rem] z-50 w-[27rem] ${config.bgColor} ${config.borderColor} border-2 rounded-2xl shadow-2xl ${config.glowColor} backdrop-blur-sm`}
-          style={{
-            filter: "drop-shadow(0 20px 25px rgb(0 0 0 / 0.15))",
-          }}
-        >
-          {/* Decorative top border */}
-          {/* <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent rounded-t-2xl"> */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#2CA4B5] to-transparent rounded-t-2xl"></div>
+      // <AnimatePresence>
+      //   <motion.div
+      //     // initial={{ opacity: 0, scale: 0.8, y: -20 }}
+      //     // animate={{ opacity: 1, scale: 1, y: 0 }}
+      //     // exit={{ opacity: 0, scale: 0.8, y: -20 }}
+      //     // transition={{
+      //     //   type: "spring",
+      //     //   stiffness: 300,
+      //     //   damping: 25,
+      //     //   duration: 0.3,
+      //     // }}
+      //     className={`absolute -top-4 -left-[27rem] z-50 w-[27rem] ${config.bgColor} ${config.borderColor} border-2 rounded-2xl shadow-2xl ${config.glowColor} backdrop-blur-sm`}
+      //     style={{
+      //       filter: "drop-shadow(0 20px 25px rgb(0 0 0 / 0.15))",
+      //     }}
+      //   >
+      //     {/* Decorative top border */}
+      //     {/* <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent rounded-t-2xl"> */}
+      //     <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#2CA4B5] to-transparent rounded-t-2xl"></div>
 
-          {/* Arrow pointing to profile */}
-          {/* <div className="absolute top-6 -right-2 w-4 h-4 bg-white border-r-2 border-b-2 border-amber-200 transform rotate-45"></div> */}
-          <div className="absolute top-6 -right-2 w-4 h-4 bg-white border-r-2 border-b-2 border-[#2CA4B5] transform rotate-45"></div>
+      //     {/* Arrow pointing to profile */}
+      //     {/* <div className="absolute top-6 -right-2 w-4 h-4 bg-white border-r-2 border-b-2 border-amber-200 transform rotate-45"></div> */}
+      //     <div className="absolute top-6 -right-2 w-4 h-4 bg-white border-r-2 border-b-2 border-[#2CA4B5] transform rotate-45"></div>
 
-          <div className="p-6">
-            <div className="flex items-start space-x-4">
-              {/* Animated Icon */}
-              <motion.div
-                initial={{ rotate: 0 }}
-                animate={{ rotate: [0, -10, 10, -5, 5, 0] }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className={`flex-shrink-0 w-12 h-12 ${config.bgColor} rounded-full flex items-center justify-center border-2 ${config.borderColor}`}
-              >
-                <Icon className={`w-6 h-6 ${config.iconColor}`} />
-              </motion.div>
+      //     <div className="p-6">
+      //       <div className="flex items-start space-x-4">
+      //         {/* Animated Icon */}
+      //         <motion.div
+      //           initial={{ rotate: 0 }}
+      //           animate={{ rotate: [0, -10, 10, -5, 5, 0] }}
+      //           transition={{ duration: 0.6, delay: 0.2 }}
+      //           className={`flex-shrink-0 w-12 h-12 ${config.bgColor} rounded-full flex items-center justify-center border-2 ${config.borderColor}`}
+      //         >
+      //           <Icon className={`w-6 h-6 ${config.iconColor}`} />
+      //         </motion.div>
 
-              <div className="flex-1 min-w-0">
-                {/* Title with gradient */}
-                <motion.h4
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 }}
-                  className={`font-bold text-lg ${config.titleColor} mb-2 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent`}
+      //         <div className="flex-1 min-w-0">
+      //           {/* Title with gradient */}
+      //           <motion.h4
+      //             initial={{ opacity: 0, x: -10 }}
+      //             animate={{ opacity: 1, x: 0 }}
+      //             transition={{ delay: 0.1 }}
+      //             className={`font-bold text-lg ${config.titleColor} mb-2 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent`}
 
-                  // className={`font-bold text-lg ${config.titleColor} mb-2 bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent`}
-                >
-                  Profile Update Required
-                </motion.h4>
+      //             // className={`font-bold text-lg ${config.titleColor} mb-2 bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent`}
+      //           >
+      //             Profile Update Required
+      //           </motion.h4>
 
-                {/* Message */}
-                <motion.p
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className={`text-sm ${config.textColor} leading-relaxed mb-4`}
-                >
-                  Complete your profile details to activate your mess listing
-                  and start receiving bookings.
-                </motion.p>
-              </div>
+      //           {/* Message */}
+      //           <motion.p
+      //             initial={{ opacity: 0, x: -10 }}
+      //             animate={{ opacity: 1, x: 0 }}
+      //             transition={{ delay: 0.2 }}
+      //             className={`text-sm ${config.textColor} leading-relaxed mb-4`}
+      //           >
+      //             Complete your profile details to activate your mess listing
+      //             and start receiving bookings.
+      //           </motion.p>
+      //         </div>
 
-              {/* Close button */}
-              <motion.button
-                whileHover={{ scale: 1.1, rotate: 90 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={onDismiss}
-                className={`flex-shrink-0 w-8 h-8 ${config.textColor} hover:bg-white/50 rounded-full flex items-center justify-center transition-all duration-200`}
-              >
-                <X className="w-4 h-4" />
-              </motion.button>
+      //         {/* Close button */}
+      //         <motion.button
+      //           whileHover={{ scale: 1.1, rotate: 90 }}
+      //           whileTap={{ scale: 0.9 }}
+      //           onClick={onDismiss}
+      //           className={`flex-shrink-0 w-8 h-8 ${config.textColor} hover:bg-white/50 rounded-full flex items-center justify-center transition-all duration-200`}
+      //         >
+      //           <X className="w-4 h-4" />
+      //         </motion.button>
+      //       </div>
+
+      //       {/* Progress indicator */}
+      //       <motion.div
+      //         initial={{ width: 0 }}
+      //         animate={{ width: "100%" }}
+      //         transition={{ duration: 2, delay: 0.5 }}
+      //         className="mt-4 h-1 bg-gradient-to-r from-[#99e2e5] to-[#2CA4B5] rounded-full overflow-hidden"
+
+      //         //className="mt-4 h-1 bg-gradient-to-r from-amber-200 to-orange-200 rounded-full overflow-hidden"
+      //       >
+      //         <motion.div
+      //           initial={{ x: "-100%" }}
+      //           animate={{ x: "100%" }}
+      //           transition={{
+      //             duration: 1.5,
+      //             delay: 0.5,
+      //             repeat: Number.POSITIVE_INFINITY,
+      //             repeatDelay: 1,
+      //           }}
+      //           className="h-full w-1/3 bg-gradient-to-r from-transparent via-[#2CA4B5] to-transparent"
+
+      //           //  className="h-full w-1/3 bg-gradient-to-r from-transparent via-amber-400 to-transparent"
+      //         />
+      //       </motion.div>
+      //     </div>
+      //   </motion.div>
+      // </AnimatePresence>
+
+      <div
+        // className={`absolute -top-4 -left-[27rem] z-50 w-[27rem]   ${config.bgColor} ${config.borderColor} border-2 rounded-2xl shadow-2xl ${config.glowColor} backdrop-blur-sm`}
+        className={`absolute -top-4 -left-[20rem]  z-50 w-[20rem] md:-left-[22rem] md:w-[22rem]   ${config.bgColor} ${config.borderColor} border-2 rounded-2xl shadow-2xl ${config.glowColor} backdrop-blur-sm`}
+        style={{
+          filter: "drop-shadow(0 20px 25px rgb(0 0 0 / 0.15))",
+        }}
+      >
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#2CA4B5] to-transparent rounded-t-2xl"></div>
+        <div className="absolute top-6 -right-2 w-4 h-4 bg-white border-r-2 border-b-2 border-[#2CA4B5] transform rotate-45"></div>
+
+        <div className="p-6">
+          <div className="flex items-start space-x-4">
+            <div
+              className={`flex-shrink-0 w-12 h-12 ${config.bgColor} rounded-full flex items-center justify-center border-2 ${config.borderColor}`}
+            >
+              <Icon className={`w-6 h-6 ${config.iconColor}`} />
             </div>
 
-            {/* Progress indicator */}
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: "100%" }}
-              transition={{ duration: 2, delay: 0.5 }}
-              className="mt-4 h-1 bg-gradient-to-r from-[#99e2e5] to-[#2CA4B5] rounded-full overflow-hidden"
+            <div className="flex-1 min-w-0">
+              <h4
+                className={`font-bold text-lg ${config.titleColor} mb-2 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent`}
+              >
+                Profile Update Required
+              </h4>
 
-              //className="mt-4 h-1 bg-gradient-to-r from-amber-200 to-orange-200 rounded-full overflow-hidden"
+              {/* <p className={`text-sm ${config.textColor} leading-relaxed mb-4`}>
+                Complete your profile details to activate your mess listing and
+                start receiving bookings.
+              </p> */}
+            </div>
+
+            <button
+              onClick={onDismiss}
+              className={`flex-shrink-0 w-8 h-8 ${config.textColor} hover:bg-white/50 rounded-full flex items-center justify-center transition-all duration-200`}
             >
-              <motion.div
-                initial={{ x: "-100%" }}
-                animate={{ x: "100%" }}
-                transition={{
-                  duration: 1.5,
-                  delay: 0.5,
-                  repeat: Number.POSITIVE_INFINITY,
-                  repeatDelay: 1,
-                }}
-                className="h-full w-1/3 bg-gradient-to-r from-transparent via-[#2CA4B5] to-transparent"
-
-                //  className="h-full w-1/3 bg-gradient-to-r from-transparent via-amber-400 to-transparent"
-              />
-            </motion.div>
+              <X className="w-4 h-4" />
+            </button>
           </div>
-        </motion.div>
-      </AnimatePresence>
+
+          <div className="mt-4 h-1 bg-gradient-to-r from-[#99e2e5] to-[#2CA4B5] rounded-full overflow-hidden">
+            <div className="h-full w-full bg-[#2CA4B5]" />
+          </div>
+        </div>
+      </div>
+
+      // <div
+      //   className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[90%] max-w-sm ${config.bgColor} ${config.borderColor} border rounded-xl shadow-lg ${config.glowColor} backdrop-blur-sm`}
+      //   style={{
+      //     filter: "drop-shadow(0 10px 15px rgb(0 0 0 / 0.1))",
+      //   }}
+      // >
+      //   <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#2CA4B5] to-transparent rounded-t-xl"></div>
+      //   <div className="p-4">
+      //     <div className="flex items-start space-x-3">
+      //       <div
+      //         className={`w-10 h-10 ${config.bgColor} rounded-full flex items-center justify-center border ${config.borderColor}`}
+      //       >
+      //         <Icon className={`w-5 h-5 ${config.iconColor}`} />
+      //       </div>
+
+      //       <div className="flex-1 min-w-0">
+      //         <h4
+      //           className={`font-semibold text-base ${config.titleColor} mb-1 bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent`}
+      //         >
+      //           Profile Update Required
+      //         </h4>
+      //         <p className={`text-xs ${config.textColor} leading-snug`}>
+      //           Complete your profile to activate your mess and get bookings.
+      //         </p>
+      //       </div>
+
+      //       <button
+      //         onClick={onDismiss}
+      //         className={`w-6 h-6 ${config.textColor} hover:bg-white/50 rounded-full flex items-center justify-center transition-all duration-200`}
+      //       >
+      //         <X className="w-4 h-4" />
+      //       </button>
+      //     </div>
+
+      //     <div className="mt-3 h-1 bg-gradient-to-r from-[#99e2e5] to-[#2CA4B5] rounded-full overflow-hidden">
+      //       <div className="h-full w-full bg-[#2CA4B5]" />
+      //     </div>
+      //   </div>
+      // </div>
     );
   };
 
@@ -341,6 +428,7 @@ const HomePage = () => {
   }, [owner]);
 
   useEffect(() => {
+    if (!userDetails) return;
     if (loginMethod === "google" && userDetails) {
       const missingFields = requiredFields.filter(
         (field) =>
@@ -351,6 +439,7 @@ const HomePage = () => {
 
       if (missingFields.length > 0) {
         setShowProfileAlert(true);
+
         localStorage.setItem("needToUpdateProfile", "true");
       } else {
         setShowProfileAlert(false);
@@ -358,6 +447,9 @@ const HomePage = () => {
       }
     }
   }, [userDetails]);
+  useEffect(() => {
+    console.log("hit ", showProfileAlert);
+  }, [showProfileAlert]);
 
   const debounceTimeout = useRef(null);
 
@@ -694,11 +786,13 @@ const HomePage = () => {
               {IsAuthenticated || isOwnerAuthenticated ? (
                 <div className="relative">
                   {/* Enhanced Profile Alert */}
-                  <ProfileAlert
-                    show={showProfileAlert}
-                    onDismiss={() => setShowProfileAlert(false)}
-                    type="info"
-                  />
+                  {showProfileAlert && (
+                    <ProfileAlert
+                      // show={showProfileAlert}
+                      onDismiss={() => setShowProfileAlert(false)}
+                      type="info"
+                    />
+                  )}
 
                   <motion.div
                     whileHover={{ scale: 1.05 }}
@@ -818,75 +912,76 @@ const HomePage = () => {
           </header>
 
           {/* Mobile Sidebar */}
-<AnimatePresence>
-  {menuOpen && (
-    <>
-      {/* Dimmed background overlay with blur */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.5, ease: [0.25, 0.8, 0.25, 1] }}
-        className="fixed inset-0 bg-white/40 backdrop-blur-sm z-40"
-        onClick={() => setMenuOpen(false)}
-      />
-
-      {/* Glossy Sidebar Panel */}
-      <motion.div
-        initial={{ x: "100%", opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        exit={{ x: "100%", opacity: 0 }}
-        transition={{ duration: 0.6, ease: [0.25, 0.8, 0.25, 1] }}
-        className="fixed top-0 right-0 w-1/2 md:w-64 h-full bg-white/60 backdrop-blur-2xl border-l border-white/20 shadow-2xl z-50 rounded-l-2xl flex flex-col"
-      >
-        {/* Close Button */}
-        <div className="flex justify-end p-4">
-          <button
-            onClick={() => setMenuOpen(false)}
-            className="text-gray-600 hover:text-gray-800 transition duration-200"
-            aria-label="Close menu"
-          >
-            <X className="h-6 w-6" />
-          </button>
-        </div>
-
-        {/* Navigation Links */}
-        <nav className="flex-1 px-4 py-6">
-          <div className="space-y-2">
-            {menuItems.map(({ name, path, icon: Icon }) => {
-              const isAuthLink = name === "Log In" || name === "Sign Up";
-              const href = `#${name.toLowerCase().replace(/\s+/g, "")}`;
-
-              return isAuthLink ? (
-                <Link
-                  key={name}
-                  to={path}
+          <AnimatePresence>
+            {menuOpen && (
+              <>
+                {/* Dimmed background overlay with blur */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5, ease: [0.25, 0.8, 0.25, 1] }}
+                  className="fixed inset-0 bg-white/40 backdrop-blur-sm z-40"
                   onClick={() => setMenuOpen(false)}
-                  className="flex items-center px-4 py-3 text-gray-800 hover:bg-white/30 rounded-xl transition duration-300 hover:shadow-lg"
-                >
-                  <Icon className="h-5 w-5 mr-4 text-[#2CA4B5]" />
-                  {name}
-                </Link>
-              ) : (
-                <a
-                  key={name}
-                  href={href}
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center px-4 py-3 text-gray-800 hover:bg-white/30 rounded-xl transition duration-300 hover:shadow-lg"
-                >
-                  <Icon className="h-5 w-5 mr-4 text-[#2CA4B5]" />
-                  {name}
-                </a>
-              );
-            })}
-          </div>
-        </nav>
-      </motion.div>
-    </>
-  )}
-</AnimatePresence>
+                />
 
+                {/* Glossy Sidebar Panel */}
+                <motion.div
+                  initial={{ x: "100%", opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: "100%", opacity: 0 }}
+                  transition={{ duration: 0.6, ease: [0.25, 0.8, 0.25, 1] }}
+                  className="fixed top-0 right-0 w-1/2 md:w-64 h-full bg-white/60 backdrop-blur-2xl border-l border-white/20 shadow-2xl z-50 rounded-l-2xl flex flex-col"
+                >
+                  {/* Close Button */}
+                  <div className="flex justify-end p-4">
+                    <button
+                      onClick={() => setMenuOpen(false)}
+                      className="text-gray-600 hover:text-gray-800 transition duration-200"
+                      aria-label="Close menu"
+                    >
+                      <X className="h-6 w-6" />
+                    </button>
+                  </div>
 
+                  {/* Navigation Links */}
+                  <nav className="flex-1 px-4 py-6">
+                    <div className="space-y-2">
+                      {menuItems.map(({ name, path, icon: Icon }) => {
+                        const isAuthLink =
+                          name === "Log In" || name === "Sign Up";
+                        const href = `#${name
+                          .toLowerCase()
+                          .replace(/\s+/g, "")}`;
+
+                        return isAuthLink ? (
+                          <Link
+                            key={name}
+                            to={path}
+                            onClick={() => setMenuOpen(false)}
+                            className="flex items-center px-4 py-3 text-gray-800 hover:bg-white/30 rounded-xl transition duration-300 hover:shadow-lg"
+                          >
+                            <Icon className="h-5 w-5 mr-4 text-[#2CA4B5]" />
+                            {name}
+                          </Link>
+                        ) : (
+                          <a
+                            key={name}
+                            href={href}
+                            onClick={() => setMenuOpen(false)}
+                            className="flex items-center px-4 py-3 text-gray-800 hover:bg-white/30 rounded-xl transition duration-300 hover:shadow-lg"
+                          >
+                            <Icon className="h-5 w-5 mr-4 text-[#2CA4B5]" />
+                            {name}
+                          </a>
+                        );
+                      })}
+                    </div>
+                  </nav>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
 
           <ToastContainer
             position="top-center"
@@ -1429,23 +1524,23 @@ const HomePage = () => {
         <section className="py-10 bg-gray-50" id="contactus">
           <div className="container mx-auto px-6">
             <motion.h2
-  initial={{ opacity: 0, y: 20 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.6 }}
-  viewport={{ once: true, margin: "-100px" }}
-  className="text-2xl sm:text-3xl font-bold text-gray-800 mb-12"
->
-  <p className="flex items-center text-2xl sm:text-3xl font-semibold text-gray-800 mb-6">
-    <span>Contact Us - </span>
-    <img
-      src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
-      alt="MessMate - company Logo"
-      className="ml-1 mr-[-4px] h-10 w-10 mb-[10px]"
-      loading="lazy"
-    />
-    <span className="text-[#2CA4B5] ml-1">essMate</span>
-  </p>
-</motion.h2>
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true, margin: "-100px" }}
+              className="text-2xl sm:text-3xl font-bold text-gray-800 mb-12"
+            >
+              <p className="flex items-center text-2xl sm:text-3xl font-semibold text-gray-800 mb-6">
+                <span>Contact Us - </span>
+                <img
+                  src="https://res.cloudinary.com/dlfwb6sqd/image/upload/v1746706292/companylogo-681c9f565d735_yorrie.webp"
+                  alt="MessMate - company Logo"
+                  className="ml-1 mr-[-4px] h-10 w-10 mb-[10px]"
+                  loading="lazy"
+                />
+                <span className="text-[#2CA4B5] ml-1">essMate</span>
+              </p>
+            </motion.h2>
 
             <div className="flex flex-col md:flex-row items-center gap-8">
               {/* Left Image Section */}
