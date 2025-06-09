@@ -107,7 +107,7 @@ router.get("/getAccessToken", refreshToken.getAccessToken);
 
 router.get("/check-session", (req, res) => {
   const token = req.cookies?.accessToken;
-
+console.log("check-session", token);
   if (!token) {
      return res.status(401).json({ isAuthenticated: false });
   }
