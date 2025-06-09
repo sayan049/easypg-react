@@ -198,9 +198,7 @@ exports.loginHandler = async (req, res) => {
     "Unknown Device"; // Extract device info from headers
 
   try {
-    // const user = await User.findOne({ email });
-    const user = await User.findOne({ email }).select("+password");
-
+    const user = await User.findOne({ email });
     if (!user) {
       console.log("User not found");
       return res.status(401).json({ message: "Invalid email or password." });
