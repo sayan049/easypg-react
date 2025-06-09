@@ -198,7 +198,6 @@ const uploadToCloudinary = async (req, res, next) => {
           }-${Date.now()}`;
           const result = await cloudinary.uploader.upload(filePath, {
             public_id: uniqueId, // Use unique ID to avoid conflicts
-            folder: "", // Optional: 'messmate/profilePhotos'
             resource_type: "image",
           });
 
