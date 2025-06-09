@@ -191,8 +191,7 @@ export const AuthProvider = ({ children }) => {
   // Helper function to update state based on authentication data
   const handleAuthState = (data) => {
     if (data.isAuthenticated && data.loginMethod === "google") {
-      // setIsAuthenticated(data.isAuthenticated && data.user.type === "student");
-      setIsAuthenticated(false);
+      setIsAuthenticated(data.isAuthenticated && data.user.type === "student");
       setIsOwnerAuthenticated(
         data.isAuthenticated && data.user.type === "owner"
       );
@@ -211,8 +210,7 @@ export const AuthProvider = ({ children }) => {
         setType(data.user.type);
       }
     } else if (data.isAuthenticated && data.loginMethod === "local") {
-      // setIsAuthenticated(data.isAuthenticated && data.user.type === "student");
-      setIsAuthenticated(false);
+      setIsAuthenticated(data.isAuthenticated && data.user.type === "student");
       setIsOwnerAuthenticated(
         data.isAuthenticated && data.user.type === "owner"
       );
