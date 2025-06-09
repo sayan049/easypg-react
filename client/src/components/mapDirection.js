@@ -129,7 +129,7 @@ function MapDirection({ coordinates }) {
           // anchor: [0.25, 1],
           // src: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1749450852/location_chsvqy.png", // Set the icon for the user
           // scale: 0.06, // Adjust the scale if needed
-          anchor: [0.25, 1],
+          anchor: [0.25, 1.1],
           src: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1749450829/location-pin_xgk2ja.png", // Set the icon for coordinates (destination)
           scale: 0.06, // Adjust the scale if needed
         }),
