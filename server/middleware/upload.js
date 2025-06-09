@@ -153,7 +153,7 @@ const tempStorage = multer.diskStorage({
 // Multer upload config
 const uploadTemp = multer({
   storage: tempStorage,
-  limits: { fileSize: 15 * 1024 * 1024 }, // 15MB
+  limits: { fileSize: 18 * 1024 * 1024 }, // 15MB
   fileFilter: (req, file, cb) => {
     console.log("file.originalname:", file.originalname);
     console.log("file.mimetype:", file.mimetype);
