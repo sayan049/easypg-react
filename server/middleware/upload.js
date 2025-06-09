@@ -189,11 +189,11 @@ const uploadToCloudinary = async (req, res, next) => {
         files.map(async (file) => {
           const filePath = file.path;
 
-          console.log(`\n📥 Received file: ${file.originalname}`);
-          console.log(`→ Path: ${filePath}`);
-          console.log(
-            `⚡ Skipping compression (already compressed on frontend)`
-          );
+          // console.log(`\n📥 Received file: ${file.originalname}`);
+          // console.log(`→ Path: ${filePath}`);
+          // console.log(
+          //   `⚡ Skipping compression (already compressed on frontend)`
+          // );
           const uniqueId = `${
             path.parse(file.originalname).name
           }-${Date.now()}`;
@@ -210,7 +210,7 @@ const uploadToCloudinary = async (req, res, next) => {
           // Clean up
           try {
             fs.unlinkSync(filePath);
-            console.log(`🧹 Deleted temp file: ${filePath}`);
+           // console.log(`🧹 Deleted temp file: ${filePath}`);
           } catch (e) {
             console.warn("Could not delete temp file", e);
           }
