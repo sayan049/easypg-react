@@ -159,26 +159,8 @@ const uploadTemp = multer({
     console.log("file.originalname:", file.originalname);
     console.log("file.mimetype:", file.mimetype);
 
-    const filetypes = /jpeg|jpg|png|gif|heic|heif|webp/;
-    const extname = filetypes.test(
-      path.extname(file.originalname).toLowerCase()
-    );
-
-    const allowedMimeTypes = [
-      "image/jpeg",
-      "image/jpg",
-      "image/png",
-      "image/gif",
-      "image/heic",
-      "image/heif",
-      "image/webp",
-    ];
-    const mimetype = allowedMimeTypes.includes(file.mimetype);
-
-    console.log("extname test:", extname);
-    console.log("mimetype test:", mimetype);
-
-    if (mimetype && extname) {
+    // Accept if mimetype starts with image/
+    if (file.mimetype.startsWith("image/")) {
       cb(null, true);
     } else {
       cb(new Error("Only image files are allowed!"));
