@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { Map, View } from 'ol';
-import Feature from 'ol/Feature';
-import Point from 'ol/geom/Point';
-import LineString from 'ol/geom/LineString';
-import TileLayer from 'ol/layer/Tile';
-import VectorLayer from 'ol/layer/Vector';
-import 'ol/ol.css';
-import { fromLonLat } from 'ol/proj';
-import OSM from 'ol/source/OSM';
-import VectorSource from 'ol/source/Vector';
-import Icon from 'ol/style/Icon';
-import Style from 'ol/style/Style';
-import Stroke from 'ol/style/Stroke';
-
+import React, { useEffect, useState } from "react";
+import { Map, View } from "ol";
+import Feature from "ol/Feature";
+import Point from "ol/geom/Point";
+import LineString from "ol/geom/LineString";
+import TileLayer from "ol/layer/Tile";
+import VectorLayer from "ol/layer/Vector";
+import "ol/ol.css";
+import { fromLonLat } from "ol/proj";
+import OSM from "ol/source/OSM";
+import VectorSource from "ol/source/Vector";
+import Icon from "ol/style/Icon";
+import Style from "ol/style/Style";
+import Stroke from "ol/style/Stroke";
 
 function MapDirection({ coordinates }) {
   const [map, setMap] = useState(null);
@@ -27,7 +26,7 @@ function MapDirection({ coordinates }) {
     const centerCoordinates = fromLonLat([coordinates.lng, coordinates.lat]);
 
     const mapInstance = new Map({
-      target: 'map',
+      target: "map",
       layers: [new TileLayer({ source: new OSM() })],
       view: new View({
         center: centerCoordinates,
@@ -51,8 +50,8 @@ function MapDirection({ coordinates }) {
     const coordinatesMarkerStyle = new Style({
       image: new Icon({
         anchor: [0.5, 1],
-        src: 'assets/placeholder.png',  // Set the icon for coordinates (destination)
-        scale: 0.06,  // Adjust the scale if needed
+        src: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1749450829/location-pin_xgk2ja.png", // Set the icon for coordinates (destination)
+        scale: 0.06, // Adjust the scale if needed
       }),
     });
 
@@ -66,18 +65,21 @@ function MapDirection({ coordinates }) {
 
   const handleGetDirections = async () => {
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser.');
+      alert("Geolocation is not supported by your browser.");
       return;
     }
 
     navigator.geolocation.getCurrentPosition(async (position) => {
-      const userLocation = [position.coords.longitude, position.coords.latitude];
+      const userLocation = [
+        position.coords.longitude,
+        position.coords.latitude,
+      ];
       const destination = [coordinates.lng, coordinates.lat];
 
       // Fetch route from OpenRouteService API
-      const apiKey =   process.env.REACT_APP_GOOGLE_API_KEY;
+      const apiKey = process.env.REACT_APP_GOOGLE_API_KEY;
       if (!apiKey) {
-        console.error('API key is missing. Check your .env file.');
+        console.error("API key is missing. Check your .env file.");
         return;
       }
       const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${userLocation[0]},${userLocation[1]}&end=${destination[0]},${destination[1]}`;
@@ -85,12 +87,12 @@ function MapDirection({ coordinates }) {
       const data = await response.json();
 
       if (!data || !data.features || !data.features.length) {
-        alert('No route found!');
+        alert("No route found!");
         return;
       }
 
-      const routeCoordinates = data.features[0].geometry.coordinates.map((coord) =>
-        fromLonLat(coord)
+      const routeCoordinates = data.features[0].geometry.coordinates.map(
+        (coord) => fromLonLat(coord)
       );
 
       const routeFeature = new Feature({
@@ -99,7 +101,7 @@ function MapDirection({ coordinates }) {
 
       const routeStyle = new Style({
         stroke: new Stroke({
-          color: '#397be6',
+          color: "#397be6",
           width: 3,
         }),
       });
@@ -124,18 +126,30 @@ function MapDirection({ coordinates }) {
       // User marker with location.png
       const userMarkerStyle = new Style({
         image: new Icon({
-          anchor: [0.5, 1],
-          src: 'assets/location.png',  // Set the icon for the user
-          scale: 0.06,  // Adjust the scale if needed
+          // anchor: [0.25, 1],
+          // src: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1749450852/location_chsvqy.png", // Set the icon for the user
+          // scale: 0.06, // Adjust the scale if needed
+          anchor: [0.25, 0.8],
+          src: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1749450829/location-pin_xgk2ja.png", // Set the icon for coordinates (destination)
+          scale: 0.06, // Adjust the scale if needed
         }),
       });
 
       // Destination marker with placeholder.png
+      // const destinationMarkerStyle = new Style({
+      //   image: new Icon({
+      //     anchor: [0.5, 1],
+      //     src: 'https://res.cloudinary.com/dlfwb6sqd/image/upload/v1748370229/png_company_xskvfs.png',  // Set the icon for destination (coordinates)
+      //     scale: 0.5,  // Adjust the scale if needed
+      //   }),
+      // });
       const destinationMarkerStyle = new Style({
         image: new Icon({
-          anchor: [0.5, 1],
-          src: 'assets/placeholder.png',  // Set the icon for destination (coordinates)
-          scale: 0.06,  // Adjust the scale if needed
+          anchor: [0.8, 1], // Center horizontally and vertically
+          anchorXUnits: "fraction",
+          anchorYUnits: "fraction",
+          src: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1748370229/png_company_xskvfs.png",
+          scale: 0.5,
         }),
       });
 
@@ -145,7 +159,9 @@ function MapDirection({ coordinates }) {
       vectorLayer.getSource().addFeatures([userMarker, destinationMarker]);
 
       // Center the map to fit the route
-      map.getView().fit(routeFeature.getGeometry().getExtent(), { padding: [50, 50, 50, 50] });
+      map.getView().fit(routeFeature.getGeometry().getExtent(), {
+        padding: [50, 50, 50, 50],
+      });
     });
   };
 
@@ -157,7 +173,10 @@ function MapDirection({ coordinates }) {
       >
         Get Directions
       </button>
-      <div id="map" className="h-64 flex items-center justify-center className='hadow-md shadow-gray-300 p-2 border rounded'"></div>
+      <div
+        id="map"
+        className="h-64 flex items-center justify-center className='hadow-md shadow-gray-300 p-2 border rounded'"
+      ></div>
     </>
   );
 }

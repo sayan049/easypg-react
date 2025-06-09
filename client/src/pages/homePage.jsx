@@ -405,7 +405,7 @@ const HomePage = () => {
   ];
   useEffect(() => {
     const fetchDetails = async () => {
-      if (isOwnerAuthenticated && loginMethod === "google") {
+      if (isOwnerAuthenticated) {
         try {
           const userId = owner.type === "owner" ? owner?.id : null;
           if (!userId) return;
@@ -418,6 +418,7 @@ const HomePage = () => {
           if (!response.ok) throw new Error("Failed to fetch details");
           const data = await response.json();
           setUserDetails(data);
+      //    console.log("Fetched user details:", data,userDetails);
         } catch (error) {
           console.error("Error fetching details:", error);
         }
@@ -429,14 +430,15 @@ const HomePage = () => {
 
   useEffect(() => {
     if (!userDetails) return;
-    if (loginMethod === "google" && userDetails) {
+   // console.log("Full userDetails object:", userDetails);
+    if ( userDetails) {
       const missingFields = requiredFields.filter(
         (field) =>
           !userDetails[field] ||
           (typeof userDetails[field] === "string" &&
             userDetails[field].trim() === "")
       );
-      console.log("Missing fields:", missingFields);
+    //  console.log("Missing fields:", missingFields);
 
       if (missingFields.length > 0) {
         setShowProfileAlert(true);
