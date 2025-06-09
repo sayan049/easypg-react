@@ -15,6 +15,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/ol": "^7.0.0",
     "axios": "^1.7.0",
+    "browser-image-compression": "^2.0.2",
     "chart.js": "^4.4.3",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
