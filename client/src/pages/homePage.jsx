@@ -418,7 +418,7 @@ const HomePage = () => {
           if (!response.ok) throw new Error("Failed to fetch details");
           const data = await response.json();
           setUserDetails(data);
-          console.log("Fetched user details:", data,userDetails);
+      //    console.log("Fetched user details:", data,userDetails);
         } catch (error) {
           console.error("Error fetching details:", error);
         }
@@ -431,7 +431,7 @@ const HomePage = () => {
   useEffect(() => {
     if (!userDetails) return;
     console.log("Full userDetails object:", userDetails);
-    if (loginMethod === "google" && userDetails) {
+    if ( userDetails) {
       const missingFields = requiredFields.filter(
         (field) =>
           !userDetails[field] ||
