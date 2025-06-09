@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require("../modules/user");
 const PgOwner = require("../modules/pgProvider");
 const authHandlers = require("../controllers/authHandlers");
-const { upload, uploadToCloudinary } = require("../middleware/upload");
+const { uploadTemp, uploadToCloudinary, uploadTemp } = require("../middleware/upload");
 // const { refreshTokenHandler } = require("../controllers/refreshTokenHandler");
 const refreshToken = require("../controllers/refreshTokenHandler");
 const updateDetailshandler = require("../controllers/updateDetails");
@@ -72,7 +72,7 @@ router.get("/check-email-verification", authHandlers.checkEmailVerification);
 router.post("/login", authHandlers.loginHandler);
 router.post(
   "/signupOwner",
-  upload,
+  uploadTemp,
   uploadToCloudinary,
   authHandlers.signupHandlerOwner
 );
@@ -130,7 +130,7 @@ router.get("/check-session", authenticateJWT, (req, res) => {
 
 router.post(
   "/updateDetails",
-  upload,
+  uploadTemp,
   uploadToCloudinary,
   updateDetailshandler.updateDetails
 );
