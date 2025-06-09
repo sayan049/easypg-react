@@ -429,6 +429,7 @@ const HomePage = () => {
 
   useEffect(() => {
     if (!userDetails) return;
+    console.log("Full userDetails object:", userDetails);
     if (loginMethod === "google" && userDetails) {
       const missingFields = requiredFields.filter(
         (field) =>
