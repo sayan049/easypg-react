@@ -135,7 +135,7 @@ function MapDirection({ coordinates }) {
         image: new Icon({
           anchor: [0.5, 1],
           src: 'https://res.cloudinary.com/dlfwb6sqd/image/upload/v1748370229/png_company_xskvfs.png',  // Set the icon for destination (coordinates)
-          scale: 0.06,  // Adjust the scale if needed
+          scale: 0.1,  // Adjust the scale if needed
         }),
       });
 
