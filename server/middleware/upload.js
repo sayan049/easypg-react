@@ -154,7 +154,7 @@ const tempStorage = multer.diskStorage({
 // Multer upload config
 const uploadTemp = multer({
   storage: tempStorage,
-  limits: { fileSize: 110 * 1024 * 1024 }, // 110MB
+  limits: { fileSize: 10 * 1024 * 1024 }, // 200MB
   fileFilter: (req, file, cb) => {
     const filetypes = /jpeg|jpg|png|gif|heic|heif/;
     const extname = filetypes.test(
@@ -185,6 +185,7 @@ const compressImage = async (inputPath, outputPath) => {
 const uploadToCloudinary = async (req, res, next) => {
   try {
     if (!req.files || Object.keys(req.files).length === 0) {
+      console.log("No files found in request.");
       return next(); // no files uploaded
     }
 
@@ -200,18 +201,21 @@ const uploadToCloudinary = async (req, res, next) => {
           path.parse(file.filename).name
         }.webp`;
         const compressedPath = path.join(tempDir, compressedFilename);
+        console.log(`\n📥 Received file: ${file.originalname}`);
+        console.log(`→ Saved temporarily at: ${originalPath}`);
 
         // Check original file exists
         if (!fs.existsSync(originalPath)) {
+            console.error(`❌ File not found at path: ${originalPath}`);
           return next({
             status: 400,
             message: `File not found: ${file.originalname}`,
           });
         }
-
+ console.log(`🛠 Compressing ${file.originalname}...`);
         // Compress
         await compressImage(originalPath, compressedPath);
-
+      console.log(`✅ Compressed and saved to: ${compressedPath}`);
         // Upload
         const result = await cloudinary.uploader.upload(compressedPath, {
           public_id: path.parse(file.originalname).name,
@@ -219,17 +223,19 @@ const uploadToCloudinary = async (req, res, next) => {
           resource_type: "image",
           format: "webp",
         });
-
+ console.log(`✅ Uploaded to Cloudinary: ${result.secure_url}`);
         cloudinaryResults[field].push(result.secure_url);
 
         // Clean up
         try {
           fs.unlinkSync(originalPath);
+            console.log(`🧹 Deleted original file: ${originalPath}`);
         } catch (e) {
           console.warn("Could not delete original", e);
         }
         try {
           fs.unlinkSync(compressedPath);
+              console.log(`🧹 Deleted compressed file: ${compressedPath}`);
         } catch (e) {
           console.warn("Could not delete compressed", e);
         }
@@ -237,6 +243,7 @@ const uploadToCloudinary = async (req, res, next) => {
     }
 
     req.cloudinaryResults = cloudinaryResults;
+    console.log("🎉 All files processed and uploaded successfully.");
     next();
   } catch (error) {
     console.error("File upload error:", error);

@@ -42,6 +42,7 @@ const SettingsOwner = ({ userDetails, loginMethod }) => {
   const [rules, setRules] = useState([]);
   const [customRuleInput, setCustomRuleInput] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const predefinedRules = [
     "No alcohol consumption on premises",
@@ -147,7 +148,9 @@ const SettingsOwner = ({ userDetails, loginMethod }) => {
         confirmPassword: "",
       });
     } catch (err) {
-      toast.error(err.response?.data?.message ||err.message || "An error occurred");
+      toast.error(
+        err.response?.data?.message || err.message || "An error occurred"
+      );
       setPasswordError(err.message);
     } finally {
       setIsUpdatingPassword(false);
@@ -241,6 +244,8 @@ const SettingsOwner = ({ userDetails, loginMethod }) => {
     });
   };
   const handleUpdate = async () => {
+    if (isUpdating) return; // guard against double-clicks
+    setIsUpdating(true);
     const formData = new FormData();
 
     const existingUrls = details.messPhoto
@@ -309,8 +314,12 @@ const SettingsOwner = ({ userDetails, loginMethod }) => {
       }
     } catch (err) {
       console.error("Update error:", err);
-      toast.error(err.response?.data?.message||"An error occurred during update.");
+      toast.error(
+        err.response?.data?.message || "An error occurred during update."
+      );
       // alert("An error occurred during update.");
+    } finally {
+      setIsUpdating(false); // ✅ always reset the flag
     }
   };
 
@@ -357,6 +366,16 @@ const SettingsOwner = ({ userDetails, loginMethod }) => {
       rulesToStay: updatedRules,
     }));
   };
+  {
+    isUpdating && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm">
+        <div className="bg-white px-6 py-4 rounded-lg shadow-xl text-center animate-pulse">
+          <p className="text-lg font-semibold text-gray-800">Updating…</p>
+          <div className="mt-3 h-6 w-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 max-w-6xl mx-auto space-y-8">
@@ -1041,15 +1060,18 @@ const SettingsOwner = ({ userDetails, loginMethod }) => {
       </div>
 
       {/* Footer Actions */}
-      <div className="flex justify-end space-x-4">
-        {/* <button className="px-4 py-2 border rounded">Reset</button> */}
-        <button
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          onClick={handleUpdate}
-        >
-          Update Settings
-        </button>
-      </div>
+      <button
+        disabled={isUpdating}
+        onClick={handleUpdate}
+        className={`px-4 py-2 rounded text-white transition
+              ${
+                isUpdating
+                  ? "bg-gray-500 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
+      >
+        {isUpdating ? "Updating…" : "Update Settings"}
+      </button>
     </div>
   );
 };
