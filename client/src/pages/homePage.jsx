@@ -418,6 +418,7 @@ const HomePage = () => {
           if (!response.ok) throw new Error("Failed to fetch details");
           const data = await response.json();
           setUserDetails(data);
+          console.log("Fetched user details:", data,userDetails);
         } catch (error) {
           console.error("Error fetching details:", error);
         }
