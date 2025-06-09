@@ -142,7 +142,7 @@ function MapDirection({ coordinates }) {
       // });
       const destinationMarkerStyle = new Style({
         image: new Icon({
-          anchor: [0.25, 0.5], // Center horizontally and vertically
+          anchor: [0.8, 1], // Center horizontally and vertically
           anchorXUnits: "fraction",
           anchorYUnits: "fraction",
           src: "https://res.cloudinary.com/dlfwb6sqd/image/upload/v1748370229/png_company_xskvfs.png",
