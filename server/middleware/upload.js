@@ -156,10 +156,14 @@ const uploadTemp = multer({
   storage: tempStorage,
   limits: { fileSize: 15 * 1024 * 1024 }, // 15MB
   fileFilter: (req, file, cb) => {
+    console.log("file.originalname:", file.originalname);
+    console.log("file.mimetype:", file.mimetype);
+
     const filetypes = /jpeg|jpg|png|gif|heic|heif|webp/;
     const extname = filetypes.test(
       path.extname(file.originalname).toLowerCase()
     );
+
     const allowedMimeTypes = [
       "image/jpeg",
       "image/jpg",
@@ -170,6 +174,9 @@ const uploadTemp = multer({
       "image/webp",
     ];
     const mimetype = allowedMimeTypes.includes(file.mimetype);
+
+    console.log("extname test:", extname);
+    console.log("mimetype test:", mimetype);
 
     if (mimetype && extname) {
       cb(null, true);
