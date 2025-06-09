@@ -109,13 +109,13 @@ router.get("/check-session", (req, res) => {
   const token = req.cookies?.accessToken;
 
   if (!token) {
-    return res.json({ isAuthenticated: false });
+     return res.status(401).json({ isAuthenticated: false });
   }
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    return res.json({
+    return res.status(200).json({
       isAuthenticated: true,
       user: {
         id    : decoded.id,

@@ -80,7 +80,7 @@ export const AuthProvider = ({ children }) => {
           return;
         }
         // If the access token is expired, try refreshing it
-        if (response.status === 401 || response.status === 403) {
+        if (response.status === 401 ) {
           const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
             method: "POST",
             // headers: { "Content-Type": "application/json", "X-Device-Info": deviceInfo, },
@@ -243,7 +243,7 @@ export const AuthProvider = ({ children }) => {
       });
 
       // if (sessionResponse.status === 401 || !accessToken) {
-      if (sessionResponse.status === 401 || sessionResponse.status === 403) {
+      if (sessionResponse.status === 401 ) {
         console.log("Access token expired. Refreshing...");
         // Refresh the access token if it's expired
         const refreshResponse = await fetch(`${baseurl}/auth/refresh-token`, {
