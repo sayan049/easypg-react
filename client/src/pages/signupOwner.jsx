@@ -9,6 +9,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Helmet } from "react-helmet";
 import { baseurl } from "../constant/urls";
+import imageCompression from "browser-image-compression";
 import {
   MapPin,
   Eye,
@@ -534,9 +535,18 @@ function SignupOwner() {
 
       for (const key in formData) {
         if (key === "messPhoto") {
-          formData.messPhoto.forEach((file) =>
-            formDataToSend.append(key, file)
-          );
+          // formData.messPhoto.forEach((file) =>
+          //   formDataToSend.append(key, file)
+          // );
+          // Compress each photo before appending
+          for (const file of formData.messPhoto) {
+            const compressedFile = await imageCompression(file, {
+              maxSizeMB: 1, // compress to <= 1MB
+              maxWidthOrHeight: 1200, // resize max dimension to 1200px
+              useWebWorker: true,
+            });
+            formDataToSend.append(key, compressedFile);
+          }
         } else if (key === "roomInfo" || key === "location") {
           // Stringify arrays and objects to send them as JSON strings
           formDataToSend.append(key, JSON.stringify(formData[key]));
