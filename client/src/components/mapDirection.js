@@ -134,7 +134,7 @@ function MapDirection({ coordinates }) {
       const destinationMarkerStyle = new Style({
         image: new Icon({
           anchor: [0.5, 1],
-          src: 'https://res.cloudinary.com/dlfwb6sqd/image/upload/v1749450829/location-pin_xgk2ja.png',  // Set the icon for destination (coordinates)
+          src: 'https://res.cloudinary.com/dlfwb6sqd/image/upload/v1748370229/png_company_xskvfs.png',  // Set the icon for destination (coordinates)
           scale: 0.06,  // Adjust the scale if needed
         }),
       });
