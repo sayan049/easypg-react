@@ -262,6 +262,7 @@ exports.loginHandler = async (req, res) => {
 
     res.status(200).json({
       message: "Login successful.",
+      accessToken
     });
 
     console.log("Successfully logged in");
@@ -653,6 +654,7 @@ exports.loginHandlerOwner = async (req, res) => {
 
     res.status(200).json({
       message: "Login successful.",
+      accessToken
     });
 
     console.log("Successfully logged in");
