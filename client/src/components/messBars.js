@@ -575,11 +575,11 @@ function MessBars({
                           e.stopPropagation();
                           clickNavi(owner);
                         }}
-                        onTouchEnd={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          clickNavi(owner);
-                        }}
+                        // onTouchEnd={(e) => {
+                        //   e.preventDefault();
+                        //   e.stopPropagation();
+                        //   clickNavi(owner);
+                        // }}
                       >
                         View Details
                       </button>
@@ -588,11 +588,11 @@ function MessBars({
                         onClick={() => {
                           clickBook(owner);
                         }}
-                        onTouchEnd={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          clickBook(owner);
-                        }}
+                        // onTouchEnd={(e) => {
+                        //   e.preventDefault();
+                        //   e.stopPropagation();
+                        //   clickBook(owner);
+                        // }}
                       >
                         Book Now
                       </button>
