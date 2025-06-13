@@ -93,7 +93,7 @@ const refreshToken = {
 
       res
         .status(200)
-        .json({ message: "Access and refresh tokens refreshed successfully" });
+        .json({ message: "Access and refresh tokens refreshed successfully", newAccessToken, newRefreshToken });
     } catch (error) {
       console.error("Refresh token error:", error);
       return res
