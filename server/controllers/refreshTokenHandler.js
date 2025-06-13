@@ -7,7 +7,7 @@ const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
 const refreshToken = {
   refreshTokenHandler: async (req, res) => {
-    const refreshToken = req.cookies?.refreshToken;
+    const refreshToken = req.cookies?.refreshToken  || req.headers.authorization?.split(" ")[1];
     const deviceInfo =
       req.headers["x-device-info"] ||
       req.headers["user-agent"] ||
