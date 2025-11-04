@@ -5,7 +5,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 const authenticateJWT = (req, res, next) => {
  // const token = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
- const token = req.cookies?.accessToken;
+ const token = req.cookies?.accessToken || req.headers.authorization?.split(" ")[1];
  //console.log("axy",token);
 
   if (!token) {
