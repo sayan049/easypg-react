@@ -6,15 +6,20 @@ const USER_PASSWORD = process.env.USER_PASSWORD;
 const frontendUrl = process.env.CLIENT_URL || "http://localhost:3000";
 
 async function sendmail(name, email, userId) {
+console.log("Connecting to Zoho...");
 const transporter = nodemailer.createTransport({
-  host: "smtp.zoho.in", // or smtp.zoho.com (if not India-based)
+  host: "smtp.zoho.in",
   port: 465,
-  secure: true, // true for 465, false for 587
+  secure: true,
   auth: {
     user: USER_EMAIL,
     pass: USER_PASSWORD,
   },
+  logger: true,
+  debug: true,
+  connectionTimeout: 15000,
 });
+console.log("Transporter created, sending...");
   /* The `mailOptions` object is being used to define the details of the email that will be sent. Here's
    a breakdown of its properties: */
    const currentYear = new Date().getFullYear();
