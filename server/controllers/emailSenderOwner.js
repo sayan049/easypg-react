@@ -5,13 +5,15 @@ const USER_EMAIL = process.env.USER_EMAIL;
 const USER_PASSWORD = process.env.USER_PASSWORD;
 const frontendUrl = process.env.CLIENT_URL || "http://localhost:3000";
 async function sendmailOwner(name, email, userId) {
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: USER_EMAIL,
-      pass: USER_PASSWORD,
-    },
-  });
+const transporter = nodemailer.createTransport({
+  host: "smtp.zoho.in", // or smtp.zoho.com (if not India-based)
+  port: 465,
+  secure: true, // true for 465, false for 587
+  auth: {
+    user: USER_EMAIL,
+    pass: USER_PASSWORD,
+  },
+});
   const currentYear = new Date().getFullYear();
   const emailHtml = `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -147,7 +149,7 @@ async function sendmailOwner(name, email, userId) {
       <div class="footer-box">
         <div style="margin-bottom: 8px;">
           Need help? Contact us anytime at<br/>
-          <a href="mailto:helpmessmate@gmail.com">helpmessmate@gmail.com</a>
+          <a href="mailto:support@messmate.co.in">support@messmate.co.in</a>
         </div>
         <div>
           Messmate © ${currentYear} | All rights reserved.
@@ -166,10 +168,10 @@ ${frontendUrl}/MailVerifyOwner?id=${userId}&email=${encodeURIComponent(email)}
 
  We’re excited to have you on board!
 
-Need help? Contact us at: helpmessmate@gmail.com
+Need help? Contact us at: support@messmate.co.in
 Messmate © ${currentYear} | All rights reserved.`;
   const mailOptions = {
-    from: USER_EMAIL,
+    from: `"Messmate" <${USER_EMAIL}>`,
     to: email,
     subject: "Email Verification for Messmate Owner",
     // html:'<h3>Hi, '+name+' Click <a href="https://easypg-react-client.onrender.com/MailVerifyOwner?id='+userId+'">here</a> to verify you email </h3>'

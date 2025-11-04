@@ -21,13 +21,15 @@ async function sendMailConfirmedBooking(
   terms_of_service,
   cancellation_policy
 ) {
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: USER_EMAIL,
-      pass: USER_PASSWORD,
-    },
-  });
+const transporter = nodemailer.createTransport({
+  host: "smtp.zoho.in", // or smtp.zoho.com (if not India-based)
+  port: 465,
+  secure: true, // true for 465, false for 587
+  auth: {
+    user: USER_EMAIL,
+    pass: USER_PASSWORD,
+  },
+});
   /* The `mailOptions` object is being used to define the details of the email that will be sent. Here's
    a breakdown of its properties: */
   const currentYear = new Date().getFullYear();
@@ -227,7 +229,7 @@ Cancel Policy: ${cancellation_policy}
 Messmate © ${currentYear}
 (This is an automated message)`;
   const mailOptions = {
-    from: USER_EMAIL,
+    from:`"Messmate" <${USER_EMAIL}>`,
     to: email,
     subject: "Booking Confirmed – Messmate",
 

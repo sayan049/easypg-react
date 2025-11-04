@@ -122,13 +122,15 @@ async function sendEmailForUserBookingRequest(
   termsLink,
   privacyLink
 ) {
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: USER_EMAIL,
-      pass: USER_PASSWORD,
-    },
-  });
+const transporter = nodemailer.createTransport({
+  host: "smtp.zoho.in", // or smtp.zoho.com (if not India-based)
+  port: 465,
+  secure: true, // true for 465, false for 587
+  auth: {
+    user: USER_EMAIL,
+    pass: USER_PASSWORD,
+  },
+});
   /* The `mailOptions` object is being used to define the details of the email that will be sent. Here's
    a breakdown of its properties: */
   const currentYear = new Date().getFullYear();
@@ -252,8 +254,8 @@ async function sendEmailForUserBookingRequest(
                 <tr>
                   <td align="center" style="color:#6b7280;font-size:14px;padding-top:30px;">
                     Need help? Contact us at
-                    <a href="mailto:helpmessmate@gmail.com" style="color:#3b82f6;text-decoration:none;">
-                      helpmessmate@gmail.com
+                    <a href="mailto:support@messmate.co.in" style="color:#3b82f6;text-decoration:none;">
+                      support@messmate.co.in
                     </a>
                   </td>
                 </tr>
@@ -314,7 +316,7 @@ What's Next?
 - You'll receive confirmation email once approved
 - Payment will be collected after confirmation
 
-Need help? Contact us at helpmessmate@gmail.com
+Need help? Contact us at support@messmate.co.in
 
 ----------------------------------------
 Messmate © ${currentYear}
@@ -324,7 +326,7 @@ Privacy: ${privacyLink}
 This is an automated message. Please do not reply directly to this email.
 `;
   const mailOptions = {
-    from: USER_EMAIL,
+    from: `"Messmate" <${USER_EMAIL}>`,
     to: email,
     subject: "Booking Request Submitted",
     

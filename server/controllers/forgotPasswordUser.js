@@ -43,13 +43,15 @@ const forgotPasswordUser = async (req, res) => {
     );
 
     // Set up email transport
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: USER_EMAIL,
-        pass: USER_PASSWORD,
-      },
-    });
+const transporter = nodemailer.createTransport({
+  host: "smtp.zoho.in", // or smtp.zoho.com (if not India-based)
+  port: 465,
+  secure: true, // true for 465, false for 587
+  auth: {
+    user: USER_EMAIL,
+    pass: USER_PASSWORD,
+  },
+});
 
     // Construct reset URL for the user
     // const resetUrl = `https://easypg-react-client.onrender.com/LoginUser?resetToken=${resetToken}`;
@@ -216,7 +218,7 @@ const forgotPasswordUser = async (req, res) => {
       <div class="footer-box">
         <div style="margin-bottom: 8px;">
           Need help with your account? Contact us at<br/>
-          <a href="mailto:helpmessmate@gmail.com">helpmessmate@gmail</a>
+          <a href="mailto:support@messmate.co.in">support@messmate.co.in</a>
         </div>
         <div>
           Messmate © ${currentYear} | All rights reserved<br/>
@@ -246,7 +248,7 @@ The Messmate Security Team
 
 –––––––––––––––––––––––––––––––––––
 
-Need help with your account? Contact us at: helpmessmate@gmail.com
+Need help with your account? Contact us at: support@messmate.co.in
 
 Messmate © ${currentYear} | All rights reserved  
 Privacy Policy: https://messmate.co.in/privacy  
@@ -254,7 +256,7 @@ Terms of Service: https://messmate.co.in/terms
 `;
 
     const mailOptions = {
-      from: USER_EMAIL,
+      from: `"Messmate" <${USER_EMAIL}>`,
       to: email,
       subject: "Reset Your Messmate User Account Password",
       html: htmlResetUrl,

@@ -1463,7 +1463,7 @@ exports.downloadInvoice = async (req, res) => {
       .font("Helvetica")
       .fillColor(secondaryColor)
       .text("Messmate, Haringhata, Kalyani, West Bengal, India")
-      .text("Email: helpmessmate@gmail.com | Phone: +91-7479170108");
+      .text("Email: support@messmate.co.in | Phone: +91-7479170108");
 
     drawHorizontalLine(doc.y + 10);
     doc.moveDown(1);

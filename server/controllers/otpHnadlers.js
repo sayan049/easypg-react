@@ -2,6 +2,10 @@ const User = require("../modules/user");
 const pgProvider = require("../modules/pgProvider");
 const OTP = require("../modules/otp");
 const nodemailer = require("nodemailer");
+require("dotenv").config();
+
+const USER_EMAIL = process.env.USER_EMAIL;
+const USER_PASSWORD = process.env.USER_PASSWORD;
 
 const sendOtp = async (req, res) => {
   const { email } = req.body;
@@ -11,14 +15,17 @@ const sendOtp = async (req, res) => {
   const existingUser = await User.findOne({ email });
   if (existingProvider || existingUser) {
     return res.status(400).json({ error: "Email already exists" });
+
   }
-  const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    auth: {
-      user: process.env.USER_EMAIL,
-      pass: process.env.USER_PASSWORD,
-    },
-  });
+const transporter = nodemailer.createTransport({
+  host: "smtp.zoho.in", // or smtp.zoho.com (if not India-based)
+  port: 465,
+  secure: true, // true for 465, false for 587
+  auth: {
+    user: USER_EMAIL,
+    pass: USER_PASSWORD,
+  },
+});
 
   const code = Math.floor(1000 + Math.random() * 9000).toString();
   const currentYear = new Date().getFullYear();
@@ -166,7 +173,7 @@ const sendOtp = async (req, res) => {
       <div class="footer-box">
         <div style="margin-bottom: 8px;">
           Need assistance? Contact our support team at<br/>
-          <a href="mailto:helpmessmate@gmail.com">helpmessmate@gmail.com</a>
+          <a href="mailto:support@messmate.co.in">support@messmate.co.in</a>
         </div>
         <div>
           Messmate © ${currentYear} | All rights reserved.<br/>
@@ -191,7 +198,7 @@ The Messmate Security Team
 
 –––––––––––––––––––––––––––––––––––
 
-Need assistance? Contact our support team at: helpmessmate@gmail.com
+Need assistance? Contact our support team at: support@messmate.co.in
 
 Messmate © ${currentYear} | All rights reserved.  
 Privacy Policy: https://messmate.co.in/privacy  
@@ -206,7 +213,7 @@ Terms of Service: https://messmate.co.in/terms
 
     // Send OTP via email
     await transporter.sendMail({
-      from: process.env.USER_EMAIL,
+      from: `"Messmate" <${USER_EMAIL}>`,
       to: email,
       subject: "OTP Verification - Messmate",
       html: emailHtmlOtp,
