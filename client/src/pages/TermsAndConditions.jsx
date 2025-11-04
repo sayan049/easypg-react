@@ -182,10 +182,10 @@ const TermsAndConditions = () => {
       <p>
         If you have any questions about these Terms, please contact us at{" "}
         <a
-          href="mailto:helpmessmate@gmail.com"
+          href="mailto:support@messmate.co.in"
           className="text-blue-600 underline"
         >
-          helpmessmate@gmail.com
+          support@messmate.co.in
         </a>
         .
       </p>
