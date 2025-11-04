@@ -175,9 +175,16 @@ exports.resendVerificationEmail = async (req, res) => {
     }
 
     // Call your existing sendmail function
-    await sendmail(user.firstName, email, user._id);
+    const sent = await sendmail(user.firstName, email, user._id);
 
-    res.status(200).json({
+    if (!sent) {
+      return res.status(500).json({
+        success: false,
+        error: "Failed to send verification email",
+      });
+    }
+
+    return res.status(200).json({
       success: true,
       message: "Verification email sent successfully",
     });
@@ -263,7 +270,7 @@ exports.loginHandler = async (req, res) => {
     res.status(200).json({
       message: "Login successful.",
       accessToken,
-      refreshToken
+      refreshToken,
     });
 
     console.log("Successfully logged in");
@@ -656,7 +663,7 @@ exports.loginHandlerOwner = async (req, res) => {
     res.status(200).json({
       message: "Login successful.",
       accessToken,
-      refreshToken
+      refreshToken,
     });
 
     console.log("Successfully logged in");

@@ -182,12 +182,16 @@ Messmate © ${currentYear} | All rights reserved.`;
     html: emailHtml,
     text: emailText,
   };
-  try {
-    const result = await transporter.sendMail(mailOptions);
-    console.log("email has ben sent succesfully");
-  } catch (error) {
-    console.log("Error: ", error);
-  }
+try {
+  console.log("Attempting to send email via Zoho...");
+  const result = await transporter.sendMail(mailOptions);
+  console.log("Email has been sent successfully:", result.response);
+  return true; // ✅ always return something to avoid hanging
+} catch (error) {
+  console.error("Error while sending email:", error);
+  return false;
+}
+
 }
 
 module.exports = sendmail;
