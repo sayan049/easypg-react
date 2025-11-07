@@ -20,6 +20,9 @@ const ORIGIN = process.env.CLIENT_URL; // Default to localhost if not set
 const PORT = process.env.PORT || 8080;
 const PRERENDER_TOKEN = process.env.PRERENDER_TOKEN;
 const MissedSocketEvent = require("./modules/missedSocket");
+const ZOHO_CLIENT_ID = process.env.ZOHO_CLIENT_ID;
+const ZOHO_CLIENT_SECRET = process.env.ZOHO_CLIENT_SECRET;
+const axios = require("axios");
 
 console.log(ORIGIN, "origin");
 console.log(PRERENDER_TOKEN, "prerender");
@@ -194,6 +197,39 @@ app.get("/auth/google/callback", (req, res, next) => {
 
 app.get("/", (req, res) => {
   res.send("Server is running");
+});
+//zoho mail
+app.get("/oauth/zoho/callback", async (req, res) => {
+  const code = req.query.code;
+
+  if (!code) {
+    return res.status(400).send("Authorization code missing");
+  }
+
+  try {
+    // Exchange code for access & refresh tokens
+    const response = await axios.post("https://accounts.zoho.in/oauth/v2/token", null, {
+      params: {
+        code: code,
+        client_id: "ZOHO_CLIENT_ID",
+        client_secret: "ZOHO_CLIENT_SECRET",
+        redirect_uri: "https://api.messmate.co.in/oauth/zoho/callback", // same as in Zoho app
+        grant_type: "authorization_code",
+      },
+    });
+
+    console.log("✅ Tokens received:", response.data);
+
+    res.send(`
+      <h2>✅ Authorization Successful!</h2>
+      <p>Access Token: ${response.data.access_token}</p>
+      <p>Refresh Token: ${response.data.refresh_token}</p>
+      <p>Copy and save these securely for your backend.</p>
+    `);
+  } catch (error) {
+    console.error("❌ Token exchange failed:", error.response?.data || error.message);
+    res.status(500).send("Error exchanging code for tokens.");
+  }
 });
 
 // Error handling middleware
