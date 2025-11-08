@@ -673,11 +673,11 @@ Messmate © ${currentYear} | All rights reserved.`;
 
     // 💡 3. Check Response Status
     if (result.status === 200 || result.status === 201) {
-        console.log("✅ Email sent successfully via Zoho API:", result.data);
+        console.log("✅ Email sent successfully via Zoho API:");
         return true;
     } else {
         // This is a catch for unexpected non-error statuses (e.g., 202, 300)
-        console.error("Zoho API returned unexpected status:", result.status, result.data);
+        console.error("Zoho API returned unexpected status:", result.status);
         return false;
     }
 
