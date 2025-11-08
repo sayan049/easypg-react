@@ -26,11 +26,21 @@ exports.zohoCallback = async (req, res) => {
     const data = response.data;
     console.log("✅ Tokens received:", data);
 
-    await ZohoToken.findOneAndUpdate({}, data, { upsert: true, new: true });
+    // Extract only required fields from Zoho response
+    const tokenDoc = {
+      access_token: data.access_token,
+      refresh_token: data.refresh_token,
+      expires_in: data.expires_in_sec || data.expires_in || 3600,
+      token_type: data.token_type || "Bearer",
+      last_updated: new Date(),
+    };
+
+    // Store or update in DB
+    await ZohoToken.findOneAndUpdate({}, tokenDoc, { upsert: true, new: true });
 
     res.send(`
       <h2>✅ Authorization Successful!</h2>
-      <p>Tokens have been stored securely in your database.</p>
+      <p>Tokens have been securely stored in your MongoDB.</p>
       <p>You can now send emails using Zoho OAuth!</p>
     `);
   } catch (error) {
