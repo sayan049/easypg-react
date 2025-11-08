@@ -239,8 +239,8 @@ async function sendmail(name, email, userId) {
     console.log("🚀 Creating transporter...");
     const transporter = nodemailer.createTransport({
       host: "smtp.zoho.in",
-      port: 587,
-      secure: false,
+      port: 465,
+      secure: true,
       auth: {
         type: "OAuth2",
         user: USER_EMAIL,
