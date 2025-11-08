@@ -654,7 +654,7 @@ Messmate © ${currentYear} | All rights reserved.`;
     console.log("🚀 Sending email via Zoho Mail API...");
 
     // 💡 2. Make the HTTP POST request using Axios
-    const result = await axios.post(ZOHO_API_URL, mailData, {
+    const result = await axios.post(sendMailUrl, mailData, {
         headers: {
             // Use the valid access token for authorization
             'Authorization': `Zoho-oauthtoken ${tokenData.access_token}`,
