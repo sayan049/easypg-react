@@ -423,8 +423,8 @@
 // }
 
 // module.exports = sendmail;
-const axios = require('axios'); // ✅ Required for making HTTP API calls
-// const nodemailer = require("nodemailer"); // ❌ Nodemailer is no longer needed
+const axios = require('axios');
+// const nodemailer = require("nodemailer"); // Nodemailer is no longer needed
 require("dotenv").config();
 
 const USER_EMAIL = process.env.USER_EMAIL;
@@ -432,41 +432,68 @@ const frontendUrl = process.env.CLIENT_URL || "http://localhost:3000";
 const { refreshZohoToken } = require("../controllers/zohoAuthController");
 const ZohoToken = require("../modules/zohoToken");
 
-// Zoho Mail API endpoint. This uses standard HTTPS (port 443).
-const ZOHO_API_URL = "https://mail.zoho.in/api/accounts/primary/messages";
+// BASE URL for Zoho Mail API
+const ZOHO_MAIL_BASE_URL = "https://mail.zoho.in/api";
+
+/**
+ * Fetches the user's Zoho Mail Account ID using the OAuth Access Token.
+ * @param {string} accessToken - Valid Zoho OAuth Access Token.
+ * @returns {string} The Zoho Account ID.
+ */
+async function getZohoAccountId(accessToken) {
+    console.log("🔍 Fetching Zoho Account ID...");
+    const url = `${ZOHO_MAIL_BASE_URL}/accounts`;
+    
+    const response = await axios.get(url, {
+        headers: {
+            'Authorization': `Zoho-oauthtoken ${accessToken}`,
+            'Content-Type': 'application/json'
+        },
+        timeout: 10000 
+    });
+
+    if (response.data && response.data.data && response.data.data.length > 0) {
+        // The first account in the list is typically the main account
+        const accountId = response.data.data[0].accountId; 
+        console.log(`✅ Retrieved Account ID: ${accountId}`);
+        return accountId;
+    }
+
+    throw new Error("Could not retrieve Zoho Account ID from API. Check OAuth scopes.");
+}
+
 
 async function sendmail(name, email, userId) {
-  try {
-    console.log("📡 Checking Zoho token...");
+    try {
+        console.log("📡 Checking Zoho token...");
 
-    // 🔹 Token Fetch and Refresh Logic (KEPT AS IS)
-    let tokenData = await ZohoToken.findOne().sort({ updatedAt: -1 });
-    if (!tokenData) throw new Error("No Zoho token found in database");
+        // 🔹 Token Fetch and Refresh Logic (KEPT AS IS)
+        let tokenData = await ZohoToken.findOne().sort({ updatedAt: -1 });
+        if (!tokenData) throw new Error("No Zoho token found in database");
 
-    if (tokenData.isExpired()) {
-      console.log("⚠️ Zoho access token expired — refreshing...");
-      const req = { query: { secret: process.env.ZOHO_CRON_SECRET } };
-      // Dummy response object for refreshZohoToken function
-      const res = {
-        status: () => ({ json: () => {} }),
-        json: () => {},
-      };
-      await refreshZohoToken(req, res);
+        if (tokenData.isExpired()) {
+            console.log("⚠️ Zoho access token expired — refreshing...");
+            const req = { query: { secret: process.env.ZOHO_CRON_SECRET } };
+            const res = { status: () => ({ json: () => {} }), json: () => {} };
+            await refreshZohoToken(req, res);
 
-      // Fetch the updated token
-      tokenData = await ZohoToken.findOne().sort({ updatedAt: -1 });
-      console.log(
-        "✅ Token refreshed successfully at:",
-        tokenData.last_updated
-      );
-    }
-    
-   
-    
-    const currentYear = new Date().getFullYear();
+            // Fetch the updated token
+            tokenData = await ZohoToken.findOne().sort({ updatedAt: -1 });
+            console.log(
+                "✅ Token refreshed successfully at:",
+                tokenData.last_updated
+            );
+        }
 
- 
-    const emailHtml = `<!DOCTYPE html>
+        // 🎯 NEW STEP: Get the correct Account ID
+        const accountId = await getZohoAccountId(tokenData.access_token);
+
+        // Final send mail URL uses the retrieved accountId
+        const sendMailUrl = `${ZOHO_MAIL_BASE_URL}/accounts/${accountId}/messages`;
+        
+        // --- Existing HTML and Text generation (KEPT AS IS) ---
+        const currentYear = new Date().getFullYear();
+        const emailHtml = `<!DOCTYPE html>
  <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
    <head>
      <meta charset="UTF-8" />
@@ -614,44 +641,44 @@ We’re excited to have you on board!
 Need help? Contact us at support@messmate.co.in
 Messmate © ${currentYear} | All rights reserved.`;
 
-    // 💡 1. Construct the Zoho API Payload
-    const mailData = {
-        fromAddress: `"Messmate" <${USER_EMAIL}>`,
-        toAddress: email,
-        subject: "Email Verification for Messmate User",
-        content: emailHtml, // Zoho API uses 'content' for the HTML body
-        mailFormat: 'html', // Specify that the content is HTML
-        // Note: Zoho API handles the "from" name based on your account settings
-    };
+    // 💡 1. Construct the Zoho API Payload
+    const mailData = {
+        fromAddress: `"Messmate" <${USER_EMAIL}>`,
+        toAddress: email,
+        subject: "Email Verification for Messmate User",
+        content: emailHtml, // Zoho API uses 'content' for the HTML body
+        mailFormat: 'html', // Specify that the content is HTML
+        // Note: Zoho API handles the "from" name based on your account settings
+    };
 
-    console.log("🚀 Sending email via Zoho Mail API...");
+    console.log("🚀 Sending email via Zoho Mail API...");
 
-    // 💡 2. Make the HTTP POST request using Axios
-    const result = await axios.post(ZOHO_API_URL, mailData, {
-        headers: {
-            // Use the valid access token for authorization
-            'Authorization': `Zoho-oauthtoken ${tokenData.access_token}`,
-            'Content-Type': 'application/json'
-        },
-        timeout: 20000 // Set a 20-second timeout for the API call
-    });
+    // 💡 2. Make the HTTP POST request using Axios
+    const result = await axios.post(ZOHO_API_URL, mailData, {
+        headers: {
+            // Use the valid access token for authorization
+            'Authorization': `Zoho-oauthtoken ${tokenData.access_token}`,
+            'Content-Type': 'application/json'
+        },
+        timeout: 20000 // Set a 20-second timeout for the API call
+    });
 
 
-    // 💡 3. Check Response Status
-    if (result.status === 200 || result.status === 201) {
-        console.log("✅ Email sent successfully via Zoho API:", result.data);
-        return true;
-    } else {
-        // This is a catch for unexpected non-error statuses (e.g., 202, 300)
-        console.error("Zoho API returned unexpected status:", result.status, result.data);
-        return false;
-    }
+    // 💡 3. Check Response Status
+    if (result.status === 200 || result.status === 201) {
+        console.log("✅ Email sent successfully via Zoho API:", result.data);
+        return true;
+    } else {
+        // This is a catch for unexpected non-error statuses (e.g., 202, 300)
+        console.error("Zoho API returned unexpected status:", result.status, result.data);
+        return false;
+    }
 
-  } catch (error) {
-    // Catch axios-related errors and handle the API response body if available
-    console.error("❌ Error while sending email via Zoho API:", error.response?.data || error.message);
-    return false;
-  }
+  } catch (error) {
+    // Catch axios-related errors and handle the API response body if available
+    console.error("❌ Error while sending email via Zoho API:", error.response?.data || error.message);
+    return false;
+  }
 }
 
 module.exports = sendmail;
