@@ -322,7 +322,7 @@ router.get("/owner/chart-stats", authenticateJWT, getChartStats);
 //submit fraud report
 router.post('/report-fraud', authenticateJWT, submitFraudReport);
 //zoho mail
-router.get("/oauth/zoho/callback", zohoCallback);
+// router.get("/oauth/zoho/callback", zohoCallback);
 
 
 module.exports = router;
