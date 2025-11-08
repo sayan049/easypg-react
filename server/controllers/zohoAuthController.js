@@ -1,5 +1,5 @@
 const axios = require("axios");
-const ZohoToken = require("../modules/ZohoToken");
+const ZohoToken = require("../modules/zohoToken");
 require("dotenv").config();
 
 const ZOHO_CLIENT_ID = process.env.ZOHO_CLIENT_ID;
