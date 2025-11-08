@@ -7,7 +7,6 @@
 // const { refreshZohoToken } = require("../controllers/zohoAuthController");
 // const ZohoToken = require("../modules/zohoToken");
 
-
 // async function sendmail(name, email, userId) {
 // console.log("Connecting to Zoho...");
 // const transporter = nodemailer.createTransport({
@@ -117,7 +116,7 @@
 //           font-size: 13px;
 //         }
 //         .btn {
-         
+
 //           box-sizing: border-box;
 //         }
 //         .logo {
@@ -231,7 +230,10 @@ async function sendmail(name, email, userId) {
 
       // Fetch the updated token
       tokenData = await ZohoToken.findOne().sort({ updatedAt: -1 });
-      console.log("✅ Token refreshed successfully at:", tokenData.last_updated);
+      console.log(
+        "✅ Token refreshed successfully at:",
+        tokenData.last_updated
+      );
     }
 
     console.log("🚀 Creating transporter...");
@@ -243,10 +245,13 @@ async function sendmail(name, email, userId) {
         type: "OAuth2",
         user: USER_EMAIL,
         accessToken: tokenData.access_token,
+        clientId: process.env.ZOHO_CLIENT_ID,
+        clientSecret: process.env.ZOHO_CLIENT_SECRET,
+        refreshToken: tokenData.refresh_token,
       },
       logger: true,
-      debug: false,
-      connectionTimeout: 15000,
+      debug: true,
+      connectionTimeout: 50000,
     });
 
     const currentYear = new Date().getFullYear();
@@ -368,8 +373,8 @@ async function sendmail(name, email, userId) {
        </div
        <div style="text-align: center; margin: 40px 0;">
          <a href="${frontendUrl}/MailVerify?id=${userId}&email=${encodeURIComponent(
-       email
-     )}" class="btn">Verify Email</a>
+      email
+    )}" class="btn">Verify Email</a>
        </div
        <div class="team-msg">
         We’re excited to have you on board!
