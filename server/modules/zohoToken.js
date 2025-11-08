@@ -32,4 +32,5 @@ zohoTokenSchema.methods.isExpired = function () {
   return Date.now() > expiryTime;
 };
 
-export default mongoose.model("ZohoToken", zohoTokenSchema);
+const ZohoToken= mongoose.model("ZohoToken", zohoTokenSchema);
+module.exports = ZohoToken;
