@@ -38,6 +38,8 @@ const {
 } = require("../controllers/bookingController");
 const {sendOtp,verifyOtp}= require("../controllers/otpHnadlers");
 
+
+
 //admin import
 
 
@@ -319,6 +321,8 @@ router.get("/dashboard/owner-stats", authenticateJWT, getOwnerDashboardStats);
 router.get("/owner/chart-stats", authenticateJWT, getChartStats);
 //submit fraud report
 router.post('/report-fraud', authenticateJWT, submitFraudReport);
+//zoho mail
+router.get("/oauth/zoho/callback", zohoCallback);
 
 
 module.exports = router;

@@ -1,9 +1,16 @@
-import axios from "axios";
-import ZohoToken from "../modules/zohoToken.js";
+const axios = require("axios");
+const ZohoToken = require("../modules/ZohoToken");
+require("dotenv").config();
 
-export const zohoCallback = async (req, res) => {
+const ZOHO_CLIENT_ID = process.env.ZOHO_CLIENT_ID;
+const ZOHO_CLIENT_SECRET = process.env.ZOHO_CLIENT_SECRET;
+
+exports.zohoCallback = async (req, res) => {
   const code = req.query.code;
-  if (!code) return res.status(400).send("Authorization code missing");
+
+  if (!code) {
+    return res.status(400).send("Authorization code missing");
+  }
 
   try {
     const response = await axios.post("https://accounts.zoho.in/oauth/v2/token", null, {
@@ -16,28 +23,16 @@ export const zohoCallback = async (req, res) => {
       },
     });
 
-    const { access_token, refresh_token, expires_in, token_type } = response.data;
+    const data = response.data;
+    console.log("✅ Tokens received:", data);
 
-    // Save or update
-    const existing = await ZohoToken.findOne();
-    if (existing) {
-      existing.access_token = access_token;
-      existing.refresh_token = refresh_token;
-      existing.expires_in = expires_in;
-      existing.token_type = token_type;
-      existing.last_updated = new Date();
-      await existing.save();
-    } else {
-      await ZohoToken.create({
-        access_token,
-        refresh_token,
-        expires_in,
-        token_type,
-      });
-    }
+    await ZohoToken.findOneAndUpdate({}, data, { upsert: true, new: true });
 
-    console.log("✅ Tokens saved to DB");
-    res.send("✅ Authorization successful and tokens stored securely.");
+    res.send(`
+      <h2>✅ Authorization Successful!</h2>
+      <p>Tokens have been stored securely in your database.</p>
+      <p>You can now send emails using Zoho OAuth!</p>
+    `);
   } catch (error) {
     console.error("❌ Token exchange failed:", error.response?.data || error.message);
     res.status(500).send("Error exchanging code for tokens.");

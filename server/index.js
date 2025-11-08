@@ -20,11 +20,10 @@ const ORIGIN = process.env.CLIENT_URL; // Default to localhost if not set
 const PORT = process.env.PORT || 8080;
 const PRERENDER_TOKEN = process.env.PRERENDER_TOKEN;
 const MissedSocketEvent = require("./modules/missedSocket");
-const ZOHO_CLIENT_ID = process.env.ZOHO_CLIENT_ID;
-const ZOHO_CLIENT_SECRET = process.env.ZOHO_CLIENT_SECRET;
-const axios = require("axios");
 
-import { zohoCallback } from "./controllers/zohoAuthController.js";
+const axios = require("axios");
+const zohoRoutes = require("./routes/zohoRoutes");
+
 
 console.log(ORIGIN, "origin");
 console.log(PRERENDER_TOKEN, "prerender");
@@ -196,9 +195,8 @@ app.get("/auth/google/callback", (req, res, next) => {
     );
   })(req, res, next);
 });
-//zoho mail
-app.get("/oauth/zoho/callback", zohoCallback);
-
+//zoho routes
+app.use("/oauth/zoho", zohoRoutes);
 app.get("/", (req, res) => {
   res.send("Server is running");
 });
