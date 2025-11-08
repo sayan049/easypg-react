@@ -16,8 +16,8 @@ exports.zohoCallback = async (req, res) => {
     const response = await axios.post("https://accounts.zoho.in/oauth/v2/token", null, {
       params: {
         code,
-        client_id: process.env.ZOHO_CLIENT_ID,
-        client_secret: process.env.ZOHO_CLIENT_SECRET,
+        client_id: ZOHO_CLIENT_ID,
+        client_secret: ZOHO_CLIENT_SECRET,
         redirect_uri: "https://api.messmate.co.in/oauth/zoho/callback",
         grant_type: "authorization_code",
       },
@@ -38,3 +38,52 @@ exports.zohoCallback = async (req, res) => {
     res.status(500).send("Error exchanging code for tokens.");
   }
 };
+exports.refreshZohoToken = async (req, res) => {
+  try {
+    const tokenData = await ZohoToken.findOne();
+    if (!tokenData?.refresh_token) {
+      return res
+        .status(400)
+        .json({ success: false, error: "No refresh token found in database" });
+    }
+
+    // Check if token is still valid
+    if (!tokenData.isExpired()) {
+      console.log("🔹 Access token still valid, no refresh needed.");
+      return res
+        ? res.status(200).json({ success: true, message: "Token still valid" })
+        : null;
+    }
+
+    // Request new access token
+    const response = await axios.post("https://accounts.zoho.in/oauth/v2/token", null, {
+      params: {
+        refresh_token: tokenData.refresh_token,
+        client_id: process.env.ZOHO_CLIENT_ID,
+        client_secret: process.env.ZOHO_CLIENT_SECRET,
+        grant_type: "refresh_token",
+      },
+    });
+
+    // Update DB
+    tokenData.access_token = response.data.access_token;
+    tokenData.expires_in = response.data.expires_in || 3600;
+    tokenData.last_updated = new Date();
+    await tokenData.save();
+
+    console.log("✅ Zoho Access Token refreshed successfully");
+
+    if (res) {
+      res.status(200).json({
+        success: true,
+        message: "Access token refreshed successfully",
+      });
+    }
+  } catch (error) {
+    console.error("❌ Error refreshing Zoho token:", error.response?.data || error.message);
+    if (res) {
+      res.status(500).json({ success: false, error: "Failed to refresh Zoho token" });
+    }
+  }
+};
+

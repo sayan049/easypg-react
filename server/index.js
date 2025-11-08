@@ -25,7 +25,7 @@ const axios = require("axios");
 const zohoRoutes = require("./routes/zohoRoutes");
 
 
-console.log(ORIGIN, "origin");
+
 console.log(PRERENDER_TOKEN, "prerender");
 // Enhanced CORS configuration
 const corsOptions = {
@@ -197,6 +197,7 @@ app.get("/auth/google/callback", (req, res, next) => {
 });
 //zoho routes
 app.use("/oauth/zoho", zohoRoutes);
+
 app.get("/", (req, res) => {
   res.send("Server is running");
 });

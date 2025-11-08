@@ -11,7 +11,7 @@ const zohoTokenSchema = new mongoose.Schema(
       required: true,
     },
     expires_in: {
-      type: Number, // seconds
+      type: Number, // in seconds
       required: true,
     },
     token_type: {
@@ -26,11 +26,13 @@ const zohoTokenSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Optional helper to check if token expired
+// ✅ Helper to check if the token is expired or near expiry (5 min buffer)
 zohoTokenSchema.methods.isExpired = function () {
   const expiryTime = new Date(this.last_updated).getTime() + this.expires_in * 1000;
-  return Date.now() > expiryTime;
+  // Return true if current time is 5 min before expiry
+  return Date.now() >= expiryTime - 5 * 60 * 1000;
 };
 
-const ZohoToken= mongoose.model("ZohoToken", zohoTokenSchema);
+const ZohoToken = mongoose.model("ZohoToken", zohoTokenSchema);
 module.exports = ZohoToken;
+
