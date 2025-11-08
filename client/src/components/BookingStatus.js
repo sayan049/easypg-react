@@ -936,10 +936,7 @@ import {
   HourglassIcon,
   CheckCircleIcon,
   XCircleIcon,
-  RefreshCw,
-  AlertTriangle,
-  Check,
-  Clock,
+
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
@@ -1344,7 +1341,7 @@ const BookingStatus = () => {
   const [maintenanceRequests, setMaintenanceRequests] = useState({
     requests: [],
   });
-  const { setHasUnreadOwner, isConnected, setIsConnected } = useSocket();
+  const { isConnected, setIsConnected } = useSocket();
   const [bookings, setBookings] = useState({
     pending: { data: [], page: 1, total: 0 },
     confirmed: { data: [], page: 1, total: 0 },
@@ -1368,7 +1365,7 @@ const BookingStatus = () => {
   const [currentBookingId, setCurrentBookingId] = useState(null);
 
   const limit = 10;
-  const { user, owner } = useAuth();
+  const {  owner } = useAuth();
   const ownerId = owner?.id;
   const socket = io(baseurl);
 
