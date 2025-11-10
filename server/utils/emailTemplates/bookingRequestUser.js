@@ -104,37 +104,87 @@
 // </html>`;
 // };
 
-const nodemailer = require("nodemailer");
+// ✅ REWRITTEN TO USE ZOHO MAIL API INSTEAD OF NODEMAILER
+
+
+
+
+
+
+
+
+// const nodemailer = require("nodemailer"); // ❌ REMOVED: Nodemailer will be replaced
+const axios = require('axios'); // ✅ ADDED: For Zoho API calls
 require("dotenv").config();
 
+// Assuming these modules are available relative to this file's location:
+const { refreshZohoToken } = require("../../controllers/zohoAuthController"); 
+const ZohoToken = require("../../modules/zohoToken"); 
+
 const USER_EMAIL = process.env.USER_EMAIL;
-const USER_PASSWORD = process.env.USER_PASSWORD;
+// const USER_PASSWORD = process.env.USER_PASSWORD; // No longer needed for OAuth API
 const frontendUrl = process.env.CLIENT_URL || "http://localhost:3000";
 
+// BASE URL for Zoho Mail API
+const ZOHO_MAIL_BASE_URL = "https://mail.zoho.in/api";
+
+// --- Helper Function ---
+/**
+ * Fetches the user's Zoho Mail Account ID using the OAuth Access Token.
+ * @param {string} accessToken - Valid Zoho OAuth Access Token.
+ * @returns {string} The Zoho Account ID.
+ */
+async function getZohoAccountId(accessToken) {
+    const url = `${ZOHO_MAIL_BASE_URL}/accounts`;
+    
+    const response = await axios.get(url, {
+        headers: {
+            'Authorization': `Zoho-oauthtoken ${accessToken}`,
+            'Content-Type': 'application/json'
+        },
+        timeout: 10000 
+    });
+
+    if (response.data && response.data.data && response.data.data.length > 0) {
+        return response.data.data[0].accountId; 
+    }
+    throw new Error("Could not retrieve Zoho Account ID from API. Check OAuth scopes.");
+}
+// -----------------------
+
+
 async function sendEmailForUserBookingRequest(
-  email,
-  requestId,
-  submissionDate,
-  submissionTime,
-  pgName,
-  hostContact,
-  responseTime,
-  termsLink,
-  privacyLink
+    email,
+    requestId,
+    submissionDate,
+    submissionTime,
+    pgName,
+    hostContact,
+    responseTime,
+    termsLink,
+    privacyLink
 ) {
-const transporter = nodemailer.createTransport({
-  host: "smtp.zoho.in", // or smtp.zoho.com (if not India-based)
-  port: 465,
-  secure: true, // true for 465, false for 587
-  auth: {
-    user: USER_EMAIL,
-    pass: USER_PASSWORD,
-  },
-});
-  /* The `mailOptions` object is being used to define the details of the email that will be sent. Here's
-   a breakdown of its properties: */
-  const currentYear = new Date().getFullYear();
-  const emailHtml = `<!DOCTYPE html>
+    try {
+        // --- 1. Zoho Token Handling ---
+        let tokenData = await ZohoToken.findOne().sort({ updatedAt: -1 });
+        if (!tokenData) throw new Error("No Zoho token found in database for API.");
+
+        if (tokenData.isExpired()) {
+            const reqDummy = { query: { secret: process.env.ZOHO_CRON_SECRET } };
+            const resDummy = { status: () => ({ json: () => {} }), json: () => {} };
+            await refreshZohoToken(reqDummy, resDummy);
+            tokenData = await ZohoToken.findOne().sort({ updatedAt: -1 });
+        }
+
+        // 🎯 2. Dynamic Account ID Retrieval
+        const accountId = await getZohoAccountId(tokenData.access_token);
+        const sendMailUrl = `${ZOHO_MAIL_BASE_URL}/accounts/${accountId}/messages`;
+        
+        // --- 3. Content Setup (KEPT AS IS) ---
+        const currentYear = new Date().getFullYear();
+        
+        // HTML Content
+        const emailHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -292,9 +342,10 @@ const transporter = nodemailer.createTransport({
   </table>
 </body>
 </html>
-
 `;
-  const emailText = `✓ REQUEST SUBMITTED
+        
+        // Text Content
+  const emailText = `✓ REQUEST SUBMITTED
 
 Hello,
 
@@ -325,20 +376,31 @@ Privacy: ${privacyLink}
 
 This is an automated message. Please do not reply directly to this email.
 `;
-  const mailOptions = {
-    from: `"Messmate" <${USER_EMAIL}>`,
-    to: email,
-    subject: "Booking Request Submitted",
-    
-    html: emailHtml,
-    text: emailText,
-  };
-  try {
-    const result = await transporter.sendMail(mailOptions);
-    console.log("email has ben sent succesfully");
-  } catch (error) {
-    console.log("Error: ", error);
-  }
+
+        // 💡 4. Construct API Payload
+  const mailData = {
+    fromAddress: `"Messmate" <${USER_EMAIL}>`,
+    toAddress: email,
+    subject: "Booking Request Submitted",
+    content: emailHtml,
+    mailFormat: 'html',
+  };
+        
+        // --- 5. Send Email via Zoho API ---
+        await axios.post(sendMailUrl, mailData, {
+            headers: {
+                'Authorization': `Zoho-oauthtoken ${tokenData.access_token}`,
+                'Content-Type': 'application/json'
+            },
+            timeout: 20000 
+        });
+
+    console.log("email has ben sent succesfully");
+    return true;
+  } catch (error) {
+    console.error("Error: ", error.response?.data || error.message);
+    return false;
+  }
 }
 
 module.exports = sendEmailForUserBookingRequest;
