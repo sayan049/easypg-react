@@ -171,7 +171,7 @@ require("dotenv").config();
 
 // Assuming these modules are available relative to this file's location:
 const { refreshZohoToken } = require("../../controllers/zohoAuthController"); 
-const ZohoToken = require(".../../modules/zohoToken"); 
+const ZohoToken = require("../../modules/zohoToken"); 
 
 const USER_EMAIL = process.env.USER_EMAIL;
 // const USER_PASSWORD = process.env.USER_PASSWORD; // No longer needed for OAuth API
