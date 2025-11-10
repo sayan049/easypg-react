@@ -106,7 +106,7 @@
 //           font-size: 13px;
 //         }
 //         .btn {
-         
+
 //           box-sizing: border-box;
 //         }
 //         .logo {
@@ -188,17 +188,17 @@
 
 // module.exports = sendmailOwner;
 
-const axios = require('axios'); // Required for API calls
+const axios = require("axios"); // Required for API calls
 // const nodemailer = require("nodemailer"); // Removed Nodemailer
 require("dotenv").config();
 
 // Assuming these modules are available in the scope where this file is used:
 const { refreshZohoToken } = require("../controllers/zohoAuthController");
-const ZohoToken = require("../modules/zohoToken"); 
+const ZohoToken = require("../modules/zohoToken");
 
 const USER_EMAIL = process.env.USER_EMAIL;
 // USER_PASSWORD is not used in the API method, so it's safe to keep it, but it's unnecessary here.
-// const USER_PASSWORD = process.env.USER_PASSWORD; 
+// const USER_PASSWORD = process.env.USER_PASSWORD;
 const frontendUrl = process.env.CLIENT_URL || "http://localhost:3000";
 
 // BASE URL for Zoho Mail API
@@ -209,51 +209,50 @@ const ZOHO_MAIL_BASE_URL = "https://mail.zoho.in/api";
  * (Copied from the previous successful implementation)
  */
 async function getZohoAccountId(accessToken) {
-    // We reuse the logic from the previously working function
-    const url = `${ZOHO_MAIL_BASE_URL}/accounts`;
-    
-    const response = await axios.get(url, {
-        headers: {
-            'Authorization': `Zoho-oauthtoken ${accessToken}`,
-            'Content-Type': 'application/json'
-        },
-        timeout: 10000 
-    });
+  // We reuse the logic from the previously working function
+  const url = `${ZOHO_MAIL_BASE_URL}/accounts`;
 
-    if (response.data && response.data.data && response.data.data.length > 0) {
-        const accountId = response.data.data[0].accountId; 
-        return accountId;
-    }
-    throw new Error("Could not retrieve Zoho Account ID from API.");
+  const response = await axios.get(url, {
+    headers: {
+      Authorization: `Zoho-oauthtoken ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    timeout: 10000,
+  });
+
+  if (response.data && response.data.data && response.data.data.length > 0) {
+    const accountId = response.data.data[0].accountId;
+    return accountId;
+  }
+  throw new Error("Could not retrieve Zoho Account ID from API.");
 }
 
-
 async function sendmailOwner(name, email, userId) {
-    try {
-        console.log("📡 [Owner Mail] Checking Zoho token...");
+  try {
+    console.log("📡 [Owner Mail] Checking Zoho token...");
 
-        // 🔹 1. Token Fetch and Refresh Logic
-        let tokenData = await ZohoToken.findOne().sort({ updatedAt: -1 });
-        if (!tokenData) throw new Error("No Zoho token found in database");
+    // 🔹 1. Token Fetch and Refresh Logic
+    let tokenData = await ZohoToken.findOne().sort({ updatedAt: -1 });
+    if (!tokenData) throw new Error("No Zoho token found in database");
 
-        if (tokenData.isExpired()) {
-            console.log("⚠️ [Owner Mail] Zoho access token expired — refreshing...");
-            const req = { query: { secret: process.env.ZOHO_CRON_SECRET } };
-            const res = { status: () => ({ json: () => {} }), json: () => {} };
-            await refreshZohoToken(req, res);
-            tokenData = await ZohoToken.findOne().sort({ updatedAt: -1 });
-            console.log("✅ [Owner Mail] Token refreshed successfully.");
-        }
+    if (tokenData.isExpired()) {
+      console.log("⚠️ [Owner Mail] Zoho access token expired — refreshing...");
+      const req = { query: { secret: process.env.ZOHO_CRON_SECRET } };
+      const res = { status: () => ({ json: () => {} }), json: () => {} };
+      await refreshZohoToken(req, res);
+      tokenData = await ZohoToken.findOne().sort({ updatedAt: -1 });
+      console.log("✅ [Owner Mail] Token refreshed successfully.");
+    }
 
-        // 🎯 2. Get the correct Account ID
-        const accountId = await getZohoAccountId(tokenData.access_token);
-        const sendMailUrl = `${ZOHO_MAIL_BASE_URL}/accounts/${accountId}/messages`;
+    // 🎯 2. Get the correct Account ID
+    const accountId = await getZohoAccountId(tokenData.access_token);
+    const sendMailUrl = `${ZOHO_MAIL_BASE_URL}/accounts/${accountId}/messages`;
 
-        // --- Content setup (KEPT AS IS) ---
-        const currentYear = new Date().getFullYear();
-        
-        // Note: The HTML and Text content remains the same structure as your input.
-        const emailHtml = `<!DOCTYPE html>
+    // --- Content setup (KEPT AS IS) ---
+    const currentYear = new Date().getFullYear();
+
+    // Note: The HTML and Text content remains the same structure as your input.
+    const emailHtml = `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="UTF-8" />
@@ -376,8 +375,8 @@ async function sendmailOwner(name, email, userId) {
 
       <div style="text-align: center; margin: 40px 0;">
         <a href="${frontendUrl}/MailVerifyOwner?id=${userId}&email=${encodeURIComponent(
-    email
-  )}" class="btn">Verify Email</a>
+      email
+    )}" class="btn">Verify Email</a>
       </div>
 
       <div class="team-msg">
@@ -397,51 +396,62 @@ async function sendmailOwner(name, email, userId) {
   </body>
 </html>
 `;
-        
-        const emailText = `Hi, ${name} 👋
+
+    const emailText = `Hi, ${name} 👋
 
             Thanks for signing up! Let’s get your email verified so you can start enjoying all the perks.
 
             Click the link below to verify your email:
-            ${frontendUrl}/MailVerifyOwner?id=${userId}&email=${encodeURIComponent(email)}
+            ${frontendUrl}/MailVerifyOwner?id=${userId}&email=${encodeURIComponent(
+      email
+    )}
 
             We’re excited to have you on board!
 
             Need help? Contact us at: support@messmate.co.in
             Messmate © ${currentYear} | All rights reserved.`;
 
-        // 💡 3. Construct the Zoho API Payload
-        const mailData = {
-            fromAddress: `"Messmate" <${USER_EMAIL}>`,
-            toAddress: email,
-            subject: "Email Verification for Messmate Owner",
-            content: emailHtml,
-            mailFormat: 'html', 
-        };
+    // 💡 3. Construct the Zoho API Payload
+    const mailData = {
+      fromAddress: `"Messmate" <${USER_EMAIL}>`,
+      toAddress: email,
+      subject: "Email Verification for Messmate Owner",
+      content: emailHtml,
+      mailFormat: "html",
+    };
 
-        console.log("🚀 [Owner Mail] Sending email via Zoho Mail API...");
+    console.log("🚀 [Owner Mail] Sending email via Zoho Mail API...");
 
-        // 💡 4. Make the HTTP POST request using Axios
-        const result = await axios.post(sendMailUrl, mailData, {
-            headers: {
-                'Authorization': `Zoho-oauthtoken ${tokenData.access_token}`,
-                'Content-Type': 'application/json'
-            },
-            timeout: 20000 
-        });
+    // 💡 4. Make the HTTP POST request using Axios
+    const result = await axios.post(sendMailUrl, mailData, {
+      headers: {
+        Authorization: `Zoho-oauthtoken ${tokenData.access_token}`,
+        "Content-Type": "application/json",
+      },
+      timeout: 20000,
+    });
 
-        if (result.status === 200 || result.status === 201) {
-            console.log("✅ [Owner Mail] Email sent successfully via Zoho API:", result.data);
-            return true;
-        } else {
-            console.error("[Owner Mail] Zoho API returned unexpected status:", result.status, result.data);
-            return false;
-        }
-
-    } catch (error) {
-        console.error("❌ [Owner Mail] Error while sending email via Zoho API:", error.response?.data || error.message);
-        return false;
+    if (result.status === 200 || result.status === 201) {
+      console.log(
+        "✅ [Owner Mail] Email sent successfully via Zoho API:",
+        result.data
+      );
+      return true;
+    } else {
+      console.error(
+        "[Owner Mail] Zoho API returned unexpected status:",
+        result.status,
+        result.data
+      );
+      return false;
     }
+  } catch (error) {
+    console.error(
+      "❌ [Owner Mail] Error while sending email via Zoho API:",
+      error.response?.data || error.message
+    );
+    return false;
+  }
 }
 
 module.exports = sendmailOwner;
