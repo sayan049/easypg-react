@@ -336,7 +336,7 @@ const axios = require('axios'); // ✅ ADDED: For Zoho API calls
 require("dotenv").config();
 
 // Assuming these modules are available relative to this file's location:
-const { refreshZohoToken } = require("./zohoAuthController"); 
+const { refreshZohoToken } = require("../../controllers/zohoAuthController"); 
 const ZohoToken = require("../modules/zohoToken"); 
 
 const USER_EMAIL = process.env.USER_EMAIL;
