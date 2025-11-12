@@ -153,6 +153,10 @@ const bookingSchema = new mongoose.Schema(
       default: "", // Optional, only filled when user cancels
       trim: true,
     },
+    isCheckedIn: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
