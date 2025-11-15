@@ -1051,6 +1051,7 @@ import {
   MdKitchen,
 } from "react-icons/md";
 import ContactOwnerButton from "./ContactOwnerButton";
+import { QRCodeCanvas } from "qrcode.react";
 
 const BookingTable = ({
   bookings = [],
@@ -1063,6 +1064,8 @@ const BookingTable = ({
   const [comments, setComments] = useState({});
   const [expandedBookingId, setExpandedBookingId] = useState(null);
   const [openDetails, setOpenDetails] = useState(null);
+  const [showQR, setShowQR] = useState(null);
+
   const toggleDetails = (id) => {
     setExpandedBookingId((prev) => (prev === id ? null : id));
   };
@@ -1461,6 +1464,7 @@ const BookingTable = ({
                 <th className="py-2 px-4">Amount</th>
                 <th className="py-2 px-4">Status</th>
                 <th className="py-2 px-4">Action</th>
+                <th className="py-2 px-4">CheckIn QR</th>
               </tr>
             </thead>
             <tbody className="text-sm text-gray-800">
@@ -1514,11 +1518,19 @@ const BookingTable = ({
                           </button>
                         )}
                       </td>
+                      <td className="py-3 px-4">
+                        <button
+                          onClick={() => setShowQR(booking._id)}
+                          className="text-blue-600 hover:text-blue-800"
+                        >
+                          Tap to QR
+                        </button>
+                      </td>
                     </tr>
 
                     {isExpanded && (
                       <tr className="border-t border-gray-100 bg-gray-50">
-                        <td colSpan={6} className="p-4 transition-all">
+                        <td colSpan={7} className="p-4 transition-all">
                           <div className="text-sm text-gray-700">
                             {booking.status === "cancelled" && (
                               <p>
@@ -1598,6 +1610,15 @@ const BookingTable = ({
                   </div>
                 </div>
 
+                <div className="mt-4">
+                  <button
+                    onClick={() => setShowQR(booking._id)}
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    Tap to QR
+                  </button>
+                </div>
+
                 {booking.status === "confirmed" ? (
                   <button
                     onClick={() => handleDownloadInvoice(booking._id)}
@@ -1639,6 +1660,19 @@ const BookingTable = ({
           })}
         </div>
       </div>
+      {showQR && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={() => setShowQR(null)}
+        >
+          <div
+            className="bg-white p-8 rounded-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <QRCodeCanvas value={showQR} size={256} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
