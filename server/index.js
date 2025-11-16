@@ -22,9 +22,8 @@ const PRERENDER_TOKEN = process.env.PRERENDER_TOKEN;
 const MissedSocketEvent = require("./modules/missedSocket");
 
 const axios = require("axios");
+const checkInRoutes = require("./routes/checkIn");
 const zohoRoutes = require("./routes/zohoRoutes");
-
-
 
 console.log(PRERENDER_TOKEN, "prerender");
 // Enhanced CORS configuration
@@ -135,6 +134,7 @@ connectDB();
 app.use("/mail", mailRoute);
 app.use("/mailOwner", mailVerifyOwner);
 app.use("/auth", authRoutes);
+app.use("/api", checkInRoutes);
 
 // Google OAuth routes
 app.get("/auth/google", (req, res, next) => {
@@ -201,8 +201,6 @@ app.use("/oauth/zoho", zohoRoutes);
 app.get("/", (req, res) => {
   res.send("Server is running");
 });
-
-
 
 // Error handling middleware
 app.use((err, req, res, next) => {

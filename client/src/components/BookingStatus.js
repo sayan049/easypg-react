@@ -936,7 +936,7 @@ import {
   HourglassIcon,
   CheckCircleIcon,
   XCircleIcon,
-
+  QrCode,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
@@ -946,6 +946,7 @@ import PropTypes from "prop-types";
 import { baseurl } from "../constant/urls";
 import { io } from "socket.io-client";
 import { useSocket } from "../contexts/socketContext";
+import { QRCodeCanvas } from "qrcode.react";
 
 const RejectModal = ({ isOpen, onClose, onSubmit }) => {
   const [reason, setReason] = useState("");
@@ -991,6 +992,7 @@ const BookingCard = React.memo(
     maintenanceRequests,
     handleMaintenanceCancel,
     handleMaintenanceResolve,
+    setShowQR,
   }) => {
     const [showMaintenance, setShowMaintenance] = useState(false);
     const [actionType, setActionType] = useState(null);
@@ -1047,13 +1049,24 @@ const BookingCard = React.memo(
                 </p>
               </div>
             </div>
-            <span
-              className={`${
-                statusColors[booking.status] || "bg-gray-100 text-gray-800"
-              } text-xs px-2 py-1 rounded-full`}
-            >
-              {(booking.status || "unknown").toUpperCase()}
-            </span>
+            <div className="flex items-center gap-2">
+              <span
+                className={`${
+                  statusColors[booking.status] || "bg-gray-100 text-gray-800"
+                } text-xs px-2 py-1 rounded-full`}
+              >
+                {(booking.status || "unknown").toUpperCase()}
+              </span>
+              {booking.status === "confirmed" && (
+                <button
+                  onClick={() => setShowQR(booking._id)}
+                  className="text-blue-600 hover:text-blue-800 flex items-center gap-1 text-xs"
+                >
+                  <QrCode className="w-4 h-4" />
+                  Scan to CheckIn
+                </button>
+              )}
+            </div>
           </div>
 
           {/* PG Information */}
@@ -1363,9 +1376,10 @@ const BookingStatus = () => {
   });
   const [showModal, setShowModal] = useState(false);
   const [currentBookingId, setCurrentBookingId] = useState(null);
+  const [showQR, setShowQR] = useState(null);
 
   const limit = 10;
-  const {  owner } = useAuth();
+  const { owner } = useAuth();
   const ownerId = owner?.id;
   const socket = io(baseurl);
 
@@ -1767,6 +1781,7 @@ const BookingStatus = () => {
                       maintenanceRequests={maintenanceRequests}
                       handleMaintenanceCancel={handleMaintenanceCancel}
                       handleMaintenanceResolve={handleMaintenanceResolve}
+                      setShowQR={setShowQR}
                     />
                   ))
                 ) : (
@@ -1794,6 +1809,19 @@ const BookingStatus = () => {
           }}
           onSubmit={handleModalSubmit}
         />
+        {showQR && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            onClick={() => setShowQR(null)}
+          >
+            <div
+              className="bg-white p-8 rounded-lg"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <QRCodeCanvas value={showQR} size={256} />
+            </div>
+          </div>
+        )}
       </div>
     </BookingStatusErrorBoundary>
   );
