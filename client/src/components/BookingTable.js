@@ -566,7 +566,7 @@
 //   MdOpacity,
 //   MdPhone,
 //   MdEmail,
-//   MdPersonOutline	
+//   MdPersonOutline
 // } from "react-icons/md";
 // import axios from "axios";
 // import { baseurl } from "../constant/urls";
@@ -1019,24 +1019,27 @@
 // };
 
 // export default BookingTable;
-import React from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { baseurl } from "../constant/urls";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   FaDownload,
   FaBed,
   FaRupeeSign,
   FaCalendarAlt,
   FaEye,
+  FaPaperPlane,
 } from "react-icons/fa";
+import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import {
   MdOutlineAccessTime,
   MdOutlineHome,
   MdOutlineHistory,
   MdOutlineWifi,
-  MdOutlineKitchen,
   MdOutlinePower,
   MdTv,
   MdOutlineAcUnit,
@@ -1045,15 +1048,70 @@ import {
   MdPhone,
   MdEmail,
   MdPersonOutline,
-  MdKitchen 
+  MdKitchen,
 } from "react-icons/md";
+import ContactOwnerButton from "./ContactOwnerButton";
+import { QRCodeCanvas } from "qrcode.react";
 
-const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = false }) => {
+const BookingTable = ({
+  bookings = [],
+  currentStay = [],
+  stats = {},
+  loading = false,
+}) => {
+  const [showFeedbackIndex, setShowFeedbackIndex] = useState(null);
+  const [ratings, setRatings] = useState({});
+  const [comments, setComments] = useState({});
+  const [expandedBookingId, setExpandedBookingId] = useState(null);
+  const [openDetails, setOpenDetails] = useState(null);
+  const [showQR, setShowQR] = useState(null);
+
+  const toggleDetails = (id) => {
+    setExpandedBookingId((prev) => (prev === id ? null : id));
+  };
   const statusColors = {
     confirmed: "text-green-700 bg-green-100",
     pending: "text-yellow-700 bg-yellow-100",
     rejected: "text-red-700 bg-red-100",
     cancelled: "text-gray-700 bg-gray-100",
+  };
+
+  const handleFeedbackSubmit = async (stayId, rating, comment) => {
+    if (!rating) {
+      toast.warning("Please provide a star rating.");
+      return;
+    }
+
+    const token = localStorage.getItem("accessToken");
+
+    try {
+      const response = await axios.post(
+        `${baseurl}/auth/ratings-feedback`,
+        { stayId, rating, comment },
+        {
+          withCredentials: true, // Automatically send cookies
+          headers: {
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Feedback submitted successfully!");
+
+        // Reset state
+        setRatings((prev) => ({ ...prev, [stayId]: 0 }));
+        setComments((prev) => ({ ...prev, [stayId]: "" }));
+        setShowFeedbackIndex(null);
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      const msg = error.response?.data?.message || "An error occurred while submitting feedback.";
+      console.error("Feedback submission error:", error);
+      toast.error(msg);
+    }
   };
 
   const handleDownloadInvoice = async (bookingId) => {
@@ -1064,7 +1122,11 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
       const response = await axios.get(
         `${baseurl}/auth/bookings/${bookingId}/invoice`,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true, // Automatically send cookies
+          headers: {
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
+          },
           responseType: "blob",
         }
       );
@@ -1108,12 +1170,28 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
 
   return (
     <div className="px-4 sm:px-6 md:px-8 lg:px-6 xl:px-4 py-4 mx-auto">
+      <ToastContainer
+        position="top-center"
+        autoClose={3000} // auto-close after 3 seconds
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light" // or "dark", "colored"
+        toastClassName="!max-w-[90vw] mx-auto mt-4 sm:mt-0"
+      />
+
       {/* Booking Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center mb-6">
         <div className="flex items-center justify-between sm:justify-center bg-white shadow-md p-4 rounded-xl">
           <div className="text-left">
             <p className="text-sm text-gray-500">Upcoming Bookings</p>
-            <h2 className="text-2xl font-bold text-blue-600">{stats.upcoming || 0}</h2>
+            <h2 className="text-2xl font-bold text-blue-600">
+              {stats.upcoming || 0}
+            </h2>
           </div>
           <MdOutlineAccessTime className="text-3xl text-blue-500" />
         </div>
@@ -1121,7 +1199,9 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
         <div className="flex items-center justify-between sm:justify-center bg-white shadow-md p-4 rounded-xl">
           <div className="text-left">
             <p className="text-sm text-gray-500">Active Stay</p>
-            <h2 className="text-2xl font-bold text-green-600">{stats.active || 0}</h2>
+            <h2 className="text-2xl font-bold text-green-600">
+              {stats.active || 0}
+            </h2>
           </div>
           <MdOutlineHome className="text-3xl text-green-500" />
         </div>
@@ -1129,7 +1209,9 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
         <div className="flex items-center justify-between sm:justify-center bg-white shadow-md p-4 rounded-xl">
           <div className="text-left">
             <p className="text-sm text-gray-500">Past Bookings</p>
-            <h2 className="text-2xl font-bold text-purple-600">{stats.past || 0}</h2>
+            <h2 className="text-2xl font-bold text-purple-600">
+              {stats.past || 0}
+            </h2>
           </div>
           <MdOutlineHistory className="text-3xl text-purple-500" />
         </div>
@@ -1138,10 +1220,15 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
       {/* Current Accommodation */}
       {currentStay?.length > 0 ? (
         <div className="space-y-6 mb-6">
-          <h3 className="text-lg font-semibold">Current Accommodations ({currentStay.length})</h3>
-          
+          <h3 className="text-lg font-semibold">
+            Current Accommodations ({currentStay.length})
+          </h3>
+
           {currentStay.map((stay, index) => (
-            <div key={stay._id || index} className="bg-white shadow-md p-6 rounded-xl border-l-4 border-blue-200">
+            <div
+              key={stay._id || index}
+              className="bg-white shadow-md p-6 rounded-xl border-l-4 border-green-200"
+            >
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h2 className="text-xl font-bold flex items-center gap-2">
@@ -1149,21 +1236,15 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
                     {stay.pgOwner?.messName || "PG Name Not Available"}
                   </h2>
                   {currentStay.length > 1 && (
-                    <span className="text-sm text-gray-500">Stay #{index + 1}</span>
+                    <span className="text-sm text-gray-500">
+                      Stay #{index + 1}
+                    </span>
                   )}
                 </div>
-                {stay._id && (
-                  <button
-                    onClick={() => handleDownloadInvoice(stay._id)}
-                    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm"
-                  >
-                    <FaDownload /> Invoice
-                  </button>
-                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Owner Information */}
+                {/* Owner Info */}
                 <div className="space-y-3">
                   <h4 className="font-medium text-gray-700 flex items-center gap-2">
                     <MdPersonOutline /> Owner Details
@@ -1176,15 +1257,21 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
                       <MdEmail /> {stay.pgOwner?.email || "Email not specified"}
                     </p>
                     <p className="text-sm text-gray-600 flex items-center gap-2">
-                      <MdPhone /> {stay.pgOwner?.mobileNo || "Phone not specified"}
+                      <MdPhone />{" "}
+                      {stay.pgOwner?.mobileNo
+                        ? `${stay.pgOwner.mobileNo.slice(0, 4)}${"X".repeat(
+                            stay.pgOwner.mobileNo.length - 4
+                          )}`
+                        : "Phone not specified"}
                     </p>
                     <p className="text-sm text-gray-600 flex items-center gap-2">
-                      <HiOutlineLocationMarker /> {stay.pgOwner?.address || "Address not specified"}
+                      <HiOutlineLocationMarker />{" "}
+                      {stay.pgOwner?.address || "Address not specified"}
                     </p>
                   </div>
                 </div>
 
-                {/* Stay Details */}
+                {/* Stay Info */}
                 <div className="space-y-3">
                   <h4 className="font-medium text-gray-700 flex items-center gap-2">
                     <FaBed /> Room Details
@@ -1193,11 +1280,15 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
                     <p className="text-sm text-gray-600">
                       {stay.room || "Room not specified"}
                       {stay.bedsBooked && (
-                        <span> ({stay.bedsBooked} bed{stay.bedsBooked > 1 ? "s" : ""})</span>
+                        <span>
+                          {" "}
+                          ({stay.bedsBooked} bed{stay.bedsBooked > 1 ? "s" : ""}
+                          )
+                        </span>
                       )}
                     </p>
                     <p className="text-sm text-gray-600 flex items-center gap-2">
-                      <FaRupeeSign /> 
+                      <FaRupeeSign />
                       {stay.payment?.totalAmount ? (
                         <>
                           ₹{stay.payment.totalAmount}
@@ -1210,17 +1301,14 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
                       )}
                     </p>
                     <p className="text-sm text-gray-600 flex items-center gap-2">
-                      <FaCalendarAlt /> 
-                      {stay.period?.startDate ? (
-                        new Date(stay.period.startDate).toLocaleDateString()
-                      ) : (
-                        "Start date not specified"
-                      )} -{" "}
-                      {stay.period?.endDate ? (
-                        new Date(stay.period.endDate).toLocaleDateString()
-                      ) : (
-                        "End date not specified"
-                      )}
+                      <FaCalendarAlt />
+                      {stay.period?.startDate
+                        ? new Date(stay.period.startDate).toLocaleDateString()
+                        : "Start date not specified"}{" "}
+                      -{" "}
+                      {stay.period?.endDate
+                        ? new Date(stay.period.endDate).toLocaleDateString()
+                        : "End date not specified"}
                     </p>
                   </div>
                 </div>
@@ -1243,7 +1331,8 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
                     )}
                     {stay.pgOwner.facility.includes("Power Backup") && (
                       <span className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                        <MdOutlinePower className="text-blue-500" /> Power Backup
+                        <MdOutlinePower className="text-blue-500" /> Power
+                        Backup
                       </span>
                     )}
                     {stay.pgOwner.facility.includes("WiFi") && (
@@ -1269,20 +1358,101 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
                   </div>
                 </div>
               )}
+
+              {/* Buttons: Invoice + Feedback */}
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                {stay._id && (
+                  <button
+                    onClick={() => handleDownloadInvoice(stay._id)}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg hover:bg-blue-700 bg-blue-600 text-white text-sm font-medium"
+                  >
+                    <FaDownload /> Download Invoice
+                  </button>
+                )}
+                <button
+                  onClick={() =>
+                    setShowFeedbackIndex(
+                      showFeedbackIndex === index ? null : index
+                    )
+                  }
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg hover:bg-yellow-500 bg-yellow-400 text-white text-sm font-medium"
+                >
+                  <FaPaperPlane /> Give Feedback
+                </button>
+              </div>
+
+              {/* Feedback Form */}
+              {showFeedbackIndex === index && (
+                <div className="mt-4 p-4 border border-yellow-300 rounded-lg bg-yellow-50">
+                  <div className="mb-3">
+                    <p className="text-sm font-medium mb-1">Your Rating:</p>
+                    <div className="flex gap-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          onClick={() =>
+                            setRatings((prev) => ({
+                              ...prev,
+                              [stay._id]: star,
+                            }))
+                          }
+                          className="text-2xl text-yellow-500"
+                        >
+                          {ratings[stay._id] >= star ? (
+                            <AiFillStar />
+                          ) : (
+                            <AiOutlineStar />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="mb-3">
+                    <textarea
+                      rows={4}
+                      className="w-full p-2 border border-gray-300 rounded-lg text-sm"
+                      placeholder="Write your feedback..."
+                      value={comments[stay._id] || ""}
+                      onChange={(e) =>
+                        setComments((prev) => ({
+                          ...prev,
+                          [stay._id]: e.target.value,
+                        }))
+                      }
+                    ></textarea>
+                  </div>
+                  <button
+                    onClick={() =>
+                      handleFeedbackSubmit(
+                        stay._id,
+                        ratings[stay._id],
+                        comments[stay._id]
+                      )
+                    }
+                    className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm"
+                  >
+                    <FaPaperPlane /> Submit Feedback
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
       ) : (
         <div className="bg-white shadow-md p-6 rounded-xl mb-6 text-center">
           <MdOutlineHome className="mx-auto text-4xl text-gray-400 mb-3" />
-          <h3 className="text-lg font-semibold text-gray-700">No Current Stay</h3>
-          <p className="text-gray-500 mt-1">You don't have any active accommodations right now.</p>
+          <h3 className="text-lg font-semibold text-gray-700">
+            No Current Stay
+          </h3>
+          <p className="text-gray-500 mt-1">
+            You don't have any active accommodations right now.
+          </p>
         </div>
       )}
 
       {/* Booking History Table */}
-           {/* Booking History Table (desktop) */}
-           <div className="hidden md:block bg-white shadow-md p-4 rounded-xl mb-6">
+      {/* Booking History Table (desktop) */}
+      <div className="hidden md:block bg-white shadow-md p-4 rounded-xl mb-6">
         <h3 className="text-lg font-semibold mb-4">Booking History</h3>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
@@ -1294,48 +1464,101 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
                 <th className="py-2 px-4">Amount</th>
                 <th className="py-2 px-4">Status</th>
                 <th className="py-2 px-4">Action</th>
+                <th className="py-2 px-4">CheckIn QR</th>
               </tr>
             </thead>
             <tbody className="text-sm text-gray-800">
-              {bookings.map((booking) => (
-                <tr
-                  key={booking._id}
-                  className="border-t border-gray-100 hover:bg-gray-50"
-                >
-                  <td className="py-3 px-4">
-                    #{booking._id.slice(-6).toUpperCase()}
-                  </td>
-                  <td className="py-3 px-4">{booking.pgOwner?.messName}</td>
-                  <td className="py-3 px-4">
-                    {new Date(booking.period.startDate).toLocaleDateString()} -{" "}
-                    {new Date(booking.period.endDate).toLocaleDateString()}
-                  </td>
-                  <td className="py-3 px-4">₹{booking.payment.totalAmount}</td>
-                  <td className="py-3 px-4">
-                    <span
-                      className={`text-xs px-2 py-1 rounded-full ${
-                        statusColors[booking.status]
-                      }`}
-                    >
-                      {booking.status}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4">
-                    {booking.status === "confirmed" ? (
-                      <button
-                        onClick={() => handleDownloadInvoice(booking._id)}
-                        className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
-                      >
-                        <FaDownload /> Invoice
-                      </button>
-                    ) : (
-                      <button className="text-blue-600 hover:text-blue-800 flex items-center gap-1">
-                        <FaEye /> Details
-                      </button>
+              {bookings.map((booking) => {
+                const showDetailsBtn =
+                  booking.status === "cancelled" ||
+                  booking.status === "rejected";
+                const isExpanded = expandedBookingId === booking._id;
+
+                return (
+                  <React.Fragment key={booking._id}>
+                    <tr className="border-t border-gray-100 hover:bg-gray-50">
+                      <td className="py-3 px-4">
+                        #{booking._id.slice(-6).toUpperCase()}
+                      </td>
+                      <td className="py-3 px-4">{booking.pgOwner?.messName}</td>
+                      <td className="py-3 px-4">
+                        {new Date(
+                          booking.period.startDate
+                        ).toLocaleDateString()}{" "}
+                        -{" "}
+                        {new Date(booking.period.endDate).toLocaleDateString()}
+                      </td>
+                      <td className="py-3 px-4">
+                        ₹{booking.payment.totalAmount}
+                      </td>
+                      <td className="py-3 px-4">
+                        <span
+                          className={`text-xs px-2 py-1 rounded-full ${
+                            statusColors[booking.status]
+                          }`}
+                        >
+                          {booking.status.toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        {booking.status === "confirmed" && (
+                          <button
+                            onClick={() => handleDownloadInvoice(booking._id)}
+                            className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                          >
+                            <FaDownload /> Invoice
+                          </button>
+                        )}
+                        {showDetailsBtn && (
+                          <button
+                            onClick={() => toggleDetails(booking._id)}
+                            className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                          >
+                            <FaEye /> Details
+                          </button>
+                        )}
+                      </td>
+                      <td className="py-3 px-4">
+                        <button
+                          onClick={() => setShowQR(booking._id)}
+                          className="text-blue-600 hover:text-blue-800"
+                        >
+                          Tap to QR
+                        </button>
+                      </td>
+                    </tr>
+
+                    {isExpanded && (
+                      <tr className="border-t border-gray-100 bg-gray-50">
+                        <td colSpan={7} className="p-4 transition-all">
+                          <div className="text-sm text-gray-700">
+                            {booking.status === "cancelled" && (
+                              <p>
+                                <strong>You cancelled</strong> this booking for
+                                the reason:{" "}
+                                <span className="italic text-red-600">
+                                  {booking.userCancellationReason ||
+                                    "No reason provided"}
+                                </span>
+                              </p>
+                            )}
+                            {booking.status === "rejected" && (
+                              <p>
+                                <strong>PG Owner rejected</strong> your booking
+                                for the reason:{" "}
+                                <span className="italic text-red-600">
+                                  {booking.ownerRejectionReason ||
+                                    "No reason provided"}
+                                </span>
+                              </p>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
                     )}
-                  </td>
-                </tr>
-              ))}
+                  </React.Fragment>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -1345,63 +1568,113 @@ const BookingTable = ({ bookings = [], currentStay = [], stats = {}, loading = f
       <div className="md:hidden bg-white shadow-md p-4 rounded-xl mb-6">
         <h3 className="text-lg font-semibold mb-4">Booking History</h3>
         <div className="space-y-4">
-          {bookings.map((booking) => (
-            <div
-              key={booking._id}
-              className="border border-gray-200 rounded-xl p-4 bg-white shadow-sm"
-            >
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-xs text-gray-500">
-                    Booking ID: #{booking._id.slice(-6).toUpperCase()}
-                  </p>
-                  <h4 className="text-md font-semibold">
-                    {booking.pgOwner?.messName}
-                  </h4>
-                </div>
-                <span
-                  className={`text-xs px-2 py-1 rounded-full ${
-                    statusColors[booking.status]
-                  }`}
-                >
-                  {booking.status}
-                </span>
-              </div>
+          {bookings.map((booking) => {
+            const isOpen = openDetails === booking._id;
+            const showDetailsButton =
+              booking.status === "cancelled" || booking.status === "rejected";
 
-              <div className="mt-2 text-sm text-gray-700">
-                <div className="flex items-center gap-2">
-                  <FaCalendarAlt className="text-gray-400" />
-                  {new Date(
-                    booking.period.startDate
-                  ).toLocaleDateString()} -{" "}
-                  {new Date(booking.period.endDate).toLocaleDateString()}
+            return (
+              <div
+                key={booking._id}
+                className="border border-gray-200 rounded-xl p-4 bg-white shadow-sm"
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-xs text-gray-500">
+                      Booking ID: #{booking._id.slice(-6).toUpperCase()}
+                    </p>
+                    <h4 className="text-md font-semibold">
+                      {booking.pgOwner?.messName}
+                    </h4>
+                  </div>
+                  <span
+                    className={`text-xs px-2 py-1 rounded-full ${
+                      statusColors[booking.status]
+                    }`}
+                  >
+                    {booking.status.toUpperCase()}
+                  </span>
                 </div>
-                <div className="mt-1 flex items-center">
-                  <FaRupeeSign className="mr-1" />
-                  {booking.payment.totalAmount}
-                </div>
-              </div>
 
-              {booking.status === "confirmed" ? (
-                <button
-                  onClick={() => handleDownloadInvoice(booking._id)}
-                  className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium"
-                >
-                  <FaDownload /> Download Invoice
-                </button>
-              ) : (
-                <button className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gray-200 text-gray-800 text-sm font-medium">
-                  <FaEye /> View Details
-                </button>
-              )}
-            </div>
-          ))}
+                <div className="mt-2 text-sm text-gray-700">
+                  <div className="flex items-center gap-2">
+                    <FaCalendarAlt className="text-gray-400" />
+                    {new Date(
+                      booking.period.startDate
+                    ).toLocaleDateString()} -{" "}
+                    {new Date(booking.period.endDate).toLocaleDateString()}
+                  </div>
+                  <div className="mt-1 flex items-center">
+                    <FaRupeeSign className="mr-1" />
+                    {booking.payment.totalAmount}
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <button
+                    onClick={() => setShowQR(booking._id)}
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    Tap to QR
+                  </button>
+                </div>
+
+                {booking.status === "confirmed" ? (
+                  <button
+                    onClick={() => handleDownloadInvoice(booking._id)}
+                    className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium"
+                  >
+                    <FaDownload /> Download Invoice
+                  </button>
+                ) : showDetailsButton ? (
+                  <>
+                    <button
+                      onClick={() =>
+                        setOpenDetails(isOpen ? null : booking._id)
+                      }
+                      className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gray-200 text-gray-800 text-sm font-medium"
+                    >
+                      <FaEye /> View Details
+                    </button>
+
+                    <div
+                      className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                        isOpen ? "max-h-40 mt-2" : "max-h-0"
+                      }`}
+                    >
+                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-700">
+                        {booking.status === "cancelled" &&
+                          `You cancelled this booking for the reason: ${
+                            booking.userCancellationReason || "N/A"
+                          }`}
+                        {booking.status === "rejected" &&
+                          `PG owner rejected your booking for the reason: ${
+                            booking.ownerRejectionReason || "N/A"
+                          }`}
+                      </div>
+                    </div>
+                  </>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
       </div>
-
+      {showQR && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          onClick={() => setShowQR(null)}
+        >
+          <div
+            className="bg-white p-8 rounded-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <QRCodeCanvas value={showQR} size={256} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default BookingTable;
-

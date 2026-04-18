@@ -1,783 +1,379 @@
-// import React, { useState } from "react";
-// import { useLocation, useNavigate } from "react-router-dom";
-// import axios from "axios"; // For making API requests
-// import { useSocket } from "../contexts/socketContext"; // To use socket for real-time updates
-// import { useAuth } from "../contexts/AuthContext"; // To get user details
+"use client";
 
-// export default function BookingPage() {
-//   const navigate = useNavigate();
-//   const location = useLocation();
-//   const { owner } = location.state || {};
-//   const [selectedRoom, setSelectedRoom] = useState(
-//     owner?.roomInfo?.[0]?._id || ""
-//   );
-//   const [showAllPhotos, setShowAllPhotos] = useState(false);
-//   const [duration, setDuration] = useState(6); // in months
-//   const [checkInDate, setCheckInDate] = useState(""); // to store check-in date
-//   const socket = useSocket(); // for real-time notifications
-//   const { user } = useAuth(); // To get the authenticated user
-
-//   // console.log(owner, owner.roomInfo, "room");
-//   const handleBookingRequest = async () => {
-//     try {
-//       const selectedRoomInfo = owner?.roomInfo?.find(
-//         (r) => r._id === selectedRoom
-//       );
-//       const monthlyRent = selectedRoomInfo?.pricePerHead || 0;
-//       const totalAmount = monthlyRent * duration + monthlyRent; // Total including deposit
-
-//       const bookingData = {
-//         studentId: user.id,
-//         ownerId: owner._id,
-//         room: selectedRoom,
-//         checkInDate,
-//         duration,
-//         totalAmount,
-//         roomInfo: selectedRoomInfo,
-//       };
-
-//       // Make API call to create booking
-//       const response = await axios.post(`/api/bookings`, bookingData);
-
-//       if (response.status === 200) {
-//         // Emit real-time notification for the owner
-//         socket.emit("new-booking-request", {
-//           ownerId: owner._id,
-//           bookingId: response.data.booking._id,
-//           studentId: user.id,
-//           room: selectedRoomInfo.room,
-//           bedContains: selectedRoomInfo.bedContains,
-//           pricePerHead: selectedRoomInfo.pricePerHead,
-//         });
-
-//         // Show a success message
-//         alert("Booking request sent successfully!");
-//         navigate(-1); // Navigate back to the previous page or to another page
-//       }
-//     } catch (error) {
-//       console.error("Error creating booking request:", error);
-//       alert("An error occurred while sending the booking request.");
-//     }
-//   };
-
-//   const primaryColor = "#2CA4B5";
-
-//   return (
-//     <div className="p-4 md:p-8 max-w-[100rem] mx-auto space-y-6 font-sans">
-//       <div className="flex items-center gap-4 mb-6 border-b pb-4 border-gray-300 justify-between">
-//         <div className="flex items-center gap-2">
-//           <img
-//             src="assets/backIcon.png"
-//             className="h-6 cursor-pointer"
-//             alt=""
-//             onClick={() => navigate(-1)}
-//           />
-//           <h1 className="text-xl font-bold">Confirm Your Booking</h1>
-//         </div>
-//         <div className="">
-//           <img src="assets/share.png" className="h-5" alt="" />
-//         </div>
-//       </div>
-//       {owner?.messName && (
-//         <div className="flex  mb-6 flex-col justify-start ">
-//           <h2 className="text-2xl font-bold">{owner?.messName}</h2>
-//           <div className="flex gap-4 flex-col md:flex-row">
-//             <p className="flex items-center text-gray-600 text-base gap-2">
-//               <img src="assets/greyMarker.png" className="h-4" alt="" />
-//               {owner?.address}
-//             </p>
-//             <p className="flex items-center text-gray-600 text-base gap-2">
-//               <img src="assets/phoneIcon.png" className="h-5" alt="" />
-//               {owner?.mobileNo}
-//             </p>
-//           </div>
-//         </div>
-//       )}
-//       {/* <div className="flex  mb-6 flex-col justify-start ">
-//         <h2 className="text-2xl font-bold">xxx</h2>
-//         <div className="flex gap-4 flex-col md:flex-row">
-//           <p className="flex items-center text-gray-600 text-base gap-2">
-//             <img src="assets/greyMarker.png" className="h-4" alt="" />
-//             xx xx xxx
-//           </p>
-//           <p className="flex items-center text-gray-600 text-base gap-2">
-//             <img src="assets/phoneIcon.png" className='h-5'alt="" />
-//             445677
-//           </p>
-//         </div>
-//       </div> */}
-
-//       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-//         {/* Left Side */}
-//         <div className="lg:col-span-2 space-y-6">
-//           <div className="rounded-2xl shadow-md bg-white">
-//             <div className="p-4 space-y-4">
-//               <h2 className="text-xl font-semibold">Select a Room</h2>
-//               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//                 {owner?.roomInfo?.map(
-//                   (room) =>
-//                     room && (
-//                       <div
-//                         key={room._id}
-//                         className={`border rounded-2xl p-4 space-y-2 ${
-//                           room.roomAvailable
-//                             ? selectedRoom === room._id
-//                               ? ""
-//                               : "border-gray-200"
-//                             : "border-red-500"
-//                         }`}
-//                         style={{
-//                           borderColor: !room.roomAvailable
-//                             ? "red"
-//                             : selectedRoom === room._id
-//                             ? primaryColor
-//                             : undefined,
-//                         }}
-//                       >
-//                         <div className="flex justify-between items-center">
-//                           <h3 className="font-semibold text-lg">{room.room}</h3>
-//                           <span
-//                             className={`text-sm px-2 py-1 rounded-full ${
-//                               room.roomAvailable
-//                                 ? "bg-green-100 text-green-700"
-//                                 : "bg-red-100 text-red-700"
-//                             }`}
-//                           >
-//                             {room.roomAvailable ? "Available" : "Not Available"}
-//                           </span>
-//                         </div>
-//                         <div className="flex items-center space-x-2 text-gray-600 text-sm">
-//                           <span>WiFi</span>
-//                           <span>AC</span>
-//                           <span>{room._id === "102" ? "Double" : "TV"}</span>
-//                         </div>
-//                         <div
-//                           className="text-lg font-bold"
-//                           style={{ color: primaryColor }}
-//                         >
-//                           ₹{room.pricePerHead?.toLocaleString()}
-//                           <span className="text-sm font-medium text-gray-500">
-//                             /mo
-//                           </span>
-//                         </div>
-//                         <button
-//                           onClick={() =>
-//                             room.roomAvailable && setSelectedRoom(room._id)
-//                           }
-//                           disabled={!room.roomAvailable}
-//                           className={`w-full py-2 px-4 rounded-md font-semibold ${
-//                             selectedRoom === room._id ? "text-white" : "border"
-//                           } ${
-//                             !room.roomAvailable
-//                               ? "opacity-50 cursor-not-allowed"
-//                               : ""
-//                           }`}
-//                           style={{
-//                             backgroundColor:
-//                               selectedRoom === room._id && room.roomAvailable
-//                                 ? primaryColor
-//                                 : "transparent",
-//                             borderColor: !room.roomAvailable
-//                               ? "red"
-//                               : primaryColor,
-//                             color:
-//                               selectedRoom === room._id && room.roomAvailable
-//                                 ? "white"
-//                                 : primaryColor,
-//                           }}
-//                         >
-//                           {selectedRoom === room._id ? "Selected" : "Select"}
-//                         </button>
-//                       </div>
-//                     )
-//                 )}
-//               </div>
-//             </div>
-//           </div>
-
-//           <div className="rounded-2xl shadow-md bg-white">
-//             <div className="p-4">
-//               <h2 className="text-xl font-semibold mb-4">Room Preview</h2>
-//               {/* <div className="flex gap-4 overflow-x-auto pb-2">
-//                 {(showAllPhotos
-//                   ? owner?.messPhoto
-//                   : owner?.messPhoto?.slice(0, 4)
-//                 )?.map((image, index) => (
-//                   <img
-//                     key={index}
-//                     src={image}
-//                     alt={`Room ${index + 1}`}
-//                     className="rounded-2xl w-64 h-48 object-cover flex-shrink-0"
-//                   />
-//                 ))}
-//               </div> */}
-//               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//                 {(showAllPhotos
-//                   ? owner?.messPhoto
-//                   : owner?.messPhoto?.slice(0, 4)
-//                 )?.map((image, index) => (
-//                   <img
-//                     key={index}
-//                     src={image}
-//                     alt={`Room ${index + 1}`}
-//                     className="rounded-2xl w-full h-48 object-cover"
-//                   />
-//                 ))}
-//               </div>
-
-//               {owner?.messPhoto?.length > 4 && (
-//                 <button
-//                   onClick={() => setShowAllPhotos(!showAllPhotos)}
-//                   className="text-blue-600 underline text-sm mt-2 w-full text-left"
-//                 ></button>
-//               )}
-
-//               {owner?.messPhoto?.length > 4 && (
-//                 <button
-//                   onClick={() => setShowAllPhotos(!showAllPhotos)}
-//                   className="text-blue-600 underline text-sm mt-2 w-full"
-//                 >
-//                   {showAllPhotos ? "View Less" : "View More"}
-//                 </button>
-//               )}
-//               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-sm text-gray-700">
-//                 <ul className="space-y-1">
-//                   <li>🛏️ Double Bed</li>
-//                   <li>🚿 Attached Bathroom</li>
-//                   <li>⚡ Power Backup</li>
-//                 </ul>
-//                 <ul className="space-y-1">
-//                   <li>👥 2 Person Sharing</li>
-//                   <li>📅 Available from June 1</li>
-//                   <li>✅ 1 Bed Available</li>
-//                 </ul>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* Right Side */}
-//         <div className="space-y-6">
-//           <div className="rounded-2xl shadow-md bg-white">
-//             <div className="p-4 space-y-4">
-//               <h2 className="text-xl font-semibold">Booking Summary</h2>
-//               <div>
-//                 <label className="text-sm">Check-in Date</label>
-//                 <input
-//                   type="date"
-//                   className="mt-2 border rounded-md w-full p-2"
-//                   value={checkInDate}
-//                   onChange={(e) => setCheckInDate(e.target.value)}
-//                 />
-//               </div>
-//               <div>
-//                 <label className="text-sm">Duration</label>
-//                 <select
-//                   className="mt-2 border rounded-md w-full p-2"
-//                   value={duration}
-//                   onChange={(e) => setDuration(Number(e.target.value))}
-//                 >
-//                   <option value={3}>3 months</option>
-//                   <option value={6}>6 months</option>
-//                   <option value={12}>12 months</option>
-//                 </select>
-//               </div>
-//               {(() => {
-//                 const room = owner?.roomInfo?.find(
-//                   (r) => r._id === selectedRoom
-//                 );
-//                 const monthly = room?.pricePerHead || 0;
-//                 const total = monthly * duration + monthly; // deposit = 1 month rent
-//                 return (
-//                   <>
-//                     <p>Room Rent (monthly): ₹{monthly.toLocaleString()}</p>
-//                     <p>Duration: {duration} months</p>
-//                     <p>Security Deposit: ₹{monthly.toLocaleString()}</p>
-//                     <div
-//                       className="text-lg font-bold text-right"
-//                       style={{ color: primaryColor }}
-//                     >
-//                       Total: ₹{total.toLocaleString()}
-//                     </div>
-//                   </>
-//                 );
-//               })()}
-//             </div>
-//           </div>
-//           {/*
-//           <div className="rounded-2xl shadow-md bg-white">
-//             <div className="p-4 space-y-4">
-//               <h2 className="text-xl font-semibold">Payment Method</h2>
-//               <div className="space-y-2">
-//                 <label className="flex items-center gap-2">
-//                   <input
-//                     type="radio"
-//                     name="payment"
-//                     value="upi"
-//                     defaultChecked
-//                   />
-//                   UPI Payment
-//                 </label>
-//                 <label className="flex items-center gap-2">
-//                   <input type="radio" name="payment" value="card" />
-//                   Credit/Debit Card
-//                 </label>
-//                 <label className="flex items-center gap-2">
-//                   <input type="radio" name="payment" value="netbanking" />
-//                   Net Banking
-//                 </label>
-//               </div>
-//               <div>
-//                 <label className="text-sm">Have a coupon?</label>
-//                 <div className="flex items-center gap-2 mt-2">
-//                   <input
-//                     className="border p-2 rounded-md flex-1"
-//                     placeholder="Enter code"
-//                   />
-//                   <button
-//                     className="px-4 py-2 rounded-md text-white"
-//                     style={{ backgroundColor: primaryColor }}
-//                   >
-//                     Apply
-//                   </button>
-//                 </div>
-//               </div>
-//               <button
-//                 className="w-full mt-4 py-2 px-4 rounded-md text-white"
-//                 style={{ backgroundColor: primaryColor }}
-//               >
-//                 Proceed to Payment
-//               </button>
-//             </div>
-//           </div> */}
-//           <button
-//             className="w-full mt-4 py-2 px-4 rounded-md text-white"
-//             style={{ backgroundColor: primaryColor }}
-//             onClick={handleBookingRequest}
-//           disabled={!selectedRoom || !checkInDate}
-//           >
-//             Book Request
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-// import React, { useState, useEffect } from "react";
-// import { useLocation, useNavigate } from "react-router-dom";
-// import axios from "axios";
-// import { useSocket } from "../contexts/socketContext";
-// import { useAuth } from "../contexts/AuthContext";
-// import { toast } from "react-toastify";
-// import { bookingRequestUrl } from "../constant/urls";
-
-// export default function BookingPage() {
-//   const navigate = useNavigate();
-//   const location = useLocation();
-//   const { owner } = location.state || {};
-//   const [selectedRoom, setSelectedRoom] = useState(null);
-//   const [showAllPhotos, setShowAllPhotos] = useState(false);
-//   const [duration, setDuration] = useState(6);
-//   const [checkInDate, setCheckInDate] = useState("");
-//   const [isLoading, setIsLoading] = useState(false);
-//   const { socket, isConnected, emitWithAck, isInitialized } = useSocket();
-
-//   const { user } = useAuth();
-
-//   // Track if socket is ready to emit events
-//   const [socketReady, setSocketReady] = useState(false);
-//   useEffect(() => {
-//     // if (!isInitialized || !socketReady) {
-//     //   toast.warning("Please wait, setting up real-time connection...");
-//     //   return;
-//     // }
-//     // if (socket) {
-//     //   const handleConnect = () => setSocketReady(true);
-//     //   const handleDisconnect = () => setSocketReady(false);
-
-//     //   // Set initial state
-//     //   setSocketReady(socket.connected);
-
-//     //   socket.on('connect', handleConnect);
-//     //   socket.on('disconnect', handleDisconnect);
-
-//     //   return () => {
-//     //     socket.off('connect', handleConnect);
-//     //     socket.off('disconnect', handleDisconnect);
-//     //   };
-//     // }
-//     if (!socket) return;
-
-//     const handleConnect = () => setSocketReady(true);
-//     const handleDisconnect = () => setSocketReady(false);
-
-//     setSocketReady(socket.connected); // Initial
-
-//     socket.on('connect', handleConnect);
-//     socket.on('disconnect', handleDisconnect);
-
-//     return () => {
-//       socket.off('connect', handleConnect);
-//       socket.off('disconnect', handleDisconnect);
-//     };
-//   }, [socket]);
-//   // Convert bedCount string to number
-//   const bedCountToNumber = {
-//     one: 1,
-//     two: 2,
-//     three: 3,
-//     four: 4,
-//     five: 5
-//   };
-
-//   const handleBookingRequest = async () => {
-//     try {
-//       setIsLoading(true);
-
-//       // Validate inputs
-//       if (!selectedRoom || !checkInDate) {
-//         throw new Error("Please select a room and check-in date");
-//       }
-
-//       const selectedRoomInfo = owner?.roomInfo?.find(
-//         (r) => r._id === selectedRoom
-//       );
-
-//       if (!selectedRoomInfo) {
-//         throw new Error("Selected room not found");
-//       }
-
-//       // Prepare booking data
-//       const bookingData = {
-//         student: user.id,
-//         pgOwner: owner._id,
-//         room: selectedRoomInfo.room,
-//         bedsBooked: 1,
-//         originalBedCount: selectedRoomInfo.bedContains,
-//         pricePerHead: selectedRoomInfo.pricePerHead,
-//         period: {
-//           startDate: checkInDate,
-//           durationMonths: duration
-//         },
-//         payment: {
-//           totalAmount: selectedRoomInfo.pricePerHead * (duration + 1),
-//           deposit: selectedRoomInfo.pricePerHead
-//         },
-//         status: "pending"
-//       };
-
-//       // Make booking request
-//       const response = await axios.post(bookingRequestUrl, bookingData, {
-//         headers: {
-//           Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-//         }
-//       });
-
-//       // Send socket notification if booking was successful
-//       if (response.data) {
-//         const MAX_RETRIES = 3;
-//         let retryCount = 0;
-
-//         const sendNotification = async () => {
-//           try {
-//             await emitWithAck('new-booking-request', {
-//               ownerId: owner._id,
-//               bookingId:response.data.booking?._id,
-//               studentId: user.id,
-//               room: selectedRoomInfo.room,
-//               bedsBooked: 1,
-//               pricePerHead: selectedRoomInfo.pricePerHead,
-//               timestamp: new Date().toISOString()
-//             });
-
-//             console.log('Real-time notification sent successfully');
-//           } catch (error) {
-//             console.log('Real-time notification error:', error);
-//             console.log("xxx",owner._id,response.data.booking._id, user.id, selectedRoomInfo.room, selectedRoomInfo.pricePerHead);
-//             if (retryCount < MAX_RETRIES) {
-//               retryCount++;
-//               console.warn(`Retry ${retryCount} for notification...`);
-//               await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
-//               return sendNotification();
-//             }
-//             throw error;
-//           }
-//         };
-
-//         try {
-//           await sendNotification();
-//           toast.success("Booking created with real-time notification!");
-//         } catch (error) {
-//           console.warn("Real-time notification failed after retries:", error);
-//           toast.success("Booking created! Owner will be notified when online");
-//         }
-//       }
-
-//     } catch (error) {
-//       console.error("Booking error:", error);
-//       toast.error(error.response?.data?.message || error.message || "Booking failed");
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-
-//   const primaryColor = "#2CA4B5";
-
-//   return (
-//     <div className="p-4 md:p-8 max-w-[100rem] mx-auto space-y-6 font-sans">
-//       <div className="flex items-center gap-4 mb-6 border-b pb-4 border-gray-300 justify-between">
-//         <div className="flex items-center gap-2">
-//           <img
-//             src="assets/backIcon.png"
-//             className="h-6 cursor-pointer"
-//             alt=""
-//             onClick={() => navigate(-1)}
-//           />
-//           <h1 className="text-xl font-bold">Confirm Your Booking</h1>
-//         </div>
-//         <div className="">
-//           <img src="assets/share.png" className="h-5" alt="" />
-//         </div>
-//       </div>
-
-//       {owner?.messName && (
-//         <div className="flex mb-6 flex-col justify-start">
-//           <h2 className="text-2xl font-bold">{owner?.messName}</h2>
-//           <div className="flex gap-4 flex-col md:flex-row">
-//             <p className="flex items-center text-gray-600 text-base gap-2">
-//               <img src="assets/greyMarker.png" className="h-4" alt="" />
-//               {owner?.address}
-//             </p>
-//             <p className="flex items-center text-gray-600 text-base gap-2">
-//               <img src="assets/phoneIcon.png" className="h-5" alt="" />
-//               {owner?.mobileNo}
-//             </p>
-//           </div>
-//         </div>
-//       )}
-
-//       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-//         {/* Left Side */}
-//         <div className="lg:col-span-2 space-y-6">
-//           <div className="rounded-2xl shadow-md bg-white">
-//             <div className="p-4 space-y-4">
-//               <h2 className="text-xl font-semibold">Select a Room</h2>
-//               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//                 {owner?.roomInfo?.map((room) => (
-//                   <div
-//                     key={room._id}
-//                     className={`border rounded-2xl p-4 space-y-2 ${
-//                       room.roomAvailable
-//                         ? selectedRoom === room._id
-//                           ? "border-blue-500"
-//                           : "border-gray-200"
-//                         : "border-red-500"
-//                     }`}
-//                     style={{
-//                       borderColor: !room.roomAvailable
-//                         ? "red"
-//                         : selectedRoom === room._id
-//                         ? primaryColor
-//                         : undefined,
-//                     }}
-//                   >
-//                     <div className="flex justify-between items-center">
-//                       <h3 className="font-semibold text-lg">{room.room}</h3>
-//                       <span
-//                         className={`text-sm px-2 py-1 rounded-full ${
-//                           room.roomAvailable
-//                             ? "bg-green-100 text-green-700"
-//                             : "bg-red-100 text-red-700"
-//                         }`}
-//                       >
-//                         {room.roomAvailable
-//                           ? `${bedCountToNumber[room.bedContains]} Bed${bedCountToNumber[room.bedContains] > 1 ? 's' : ''} Available`
-//                           : "Fully Booked"}
-//                       </span>
-//                     </div>
-//                     <div className="flex items-center space-x-2 text-gray-600 text-sm">
-//                       {owner.facility?.slice(0, 3).map((facility, index) => (
-//                         <span key={index}>{facility}</span>
-//                       ))}
-//                     </div>
-//                     <div className="text-lg font-bold" style={{ color: primaryColor }}>
-//                       ₹{room.pricePerHead?.toLocaleString()}
-//                       <span className="text-sm font-medium text-gray-500">/mo</span>
-//                     </div>
-//                     <button
-//                       onClick={() => room.roomAvailable && setSelectedRoom(room._id)}
-//                       disabled={!room.roomAvailable}
-//                       className={`w-full py-2 px-4 rounded-md font-semibold ${
-//                         selectedRoom === room._id ? "text-white" : "border"
-//                       } ${
-//                         !room.roomAvailable ? "opacity-50 cursor-not-allowed" : ""
-//                       }`}
-//                       style={{
-//                         backgroundColor:
-//                           selectedRoom === room._id && room.roomAvailable
-//                             ? primaryColor
-//                             : "transparent",
-//                         borderColor: !room.roomAvailable ? "red" : primaryColor,
-//                         color:
-//                           selectedRoom === room._id && room.roomAvailable
-//                             ? "white"
-//                             : primaryColor,
-//                       }}
-//                     >
-//                       {selectedRoom === room._id ? "Selected" : "Select"}
-//                     </button>
-//                   </div>
-//                 ))}
-//               </div>
-//             </div>
-//           </div>
-
-//           <div className="rounded-2xl shadow-md bg-white">
-//             <div className="p-4">
-//               <h2 className="text-xl font-semibold mb-4">Room Preview</h2>
-//               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//                 {(showAllPhotos ? owner?.messPhoto : owner?.messPhoto?.slice(0, 4))?.map(
-//                   (image, index) => (
-//                     <img
-//                       key={index}
-//                       src={image}
-//                       alt={`Room ${index + 1}`}
-//                       className="rounded-2xl w-full h-48 object-cover"
-//                     />
-//                   )
-//                 )}
-//               </div>
-//               {owner?.messPhoto?.length > 4 && (
-//                 <button
-//                   onClick={() => setShowAllPhotos(!showAllPhotos)}
-//                   className="text-blue-600 underline text-sm mt-2 w-full"
-//                 >
-//                   {showAllPhotos ? "View Less" : "View More"}
-//                 </button>
-//               )}
-//               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-sm text-gray-700">
-//                 <ul className="space-y-1">
-//                   {owner?.facility?.slice(0, 3).map((item, index) => (
-//                     <li key={index}>✅ {item}</li>
-//                   ))}
-//                 </ul>
-//                 <ul className="space-y-1">
-//                   {owner?.facility?.slice(3, 6).map((item, index) => (
-//                     <li key={index}>✅ {item}</li>
-//                   ))}
-//                 </ul>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* Right Side - Booking Summary */}
-//         <div className="space-y-6">
-//           <div className="rounded-2xl shadow-md bg-white">
-//             <div className="p-4 space-y-4">
-//               <h2 className="text-xl font-semibold">Booking Summary</h2>
-
-//               <div>
-//                 <label className="text-sm">Check-in Date</label>
-//                 <input
-//                   type="date"
-//                   className="mt-2 border rounded-md w-full p-2"
-//                   value={checkInDate}
-//                   min={new Date().toISOString().split('T')[0]}
-//                   onChange={(e) => setCheckInDate(e.target.value)}
-//                   required
-//                 />
-//               </div>
-
-//               <div>
-//                 <label className="text-sm">Duration (months)</label>
-//                 <select
-//                   className="mt-2 border rounded-md w-full p-2"
-//                   value={duration}
-//                   onChange={(e) => setDuration(Number(e.target.value))}
-//                 >
-//                   {[1, 2, 3, 6, 12].map((num) => (
-//                     <option key={num} value={num}>
-//                       {num} month{num !== 1 ? 's' : ''}
-//                     </option>
-//                   ))}
-//                 </select>
-//               </div>
-
-//               {selectedRoom && (
-//                 <div className="space-y-2">
-//                   <div className="flex justify-between">
-//                     <span>Room:</span>
-//                     <span>
-//                       {owner?.roomInfo?.find(r => r._id === selectedRoom)?.room}
-//                     </span>
-//                   </div>
-//                   <div className="flex justify-between">
-//                     <span>Monthly Rent:</span>
-//                     <span>₹{owner?.roomInfo?.find(r => r._id === selectedRoom)?.pricePerHead?.toLocaleString()}</span>
-//                   </div>
-//                   <div className="flex justify-between">
-//                     <span>Duration:</span>
-//                     <span>{duration} month{duration !== 1 ? 's' : ''}</span>
-//                   </div>
-//                   <div className="flex justify-between">
-//                     <span>Security Deposit:</span>
-//                     <span>₹{owner?.roomInfo?.find(r => r._id === selectedRoom)?.pricePerHead?.toLocaleString()}</span>
-//                   </div>
-//                   <div className="border-t pt-2 flex justify-between font-semibold">
-//                     <span>Total Amount:</span>
-//                     <span style={{ color: primaryColor }}>
-//                       ₹{(owner?.roomInfo?.find(r => r._id === selectedRoom)?.pricePerHead * (duration + 1))?.toLocaleString()}
-//                     </span>
-//                   </div>
-//                 </div>
-//               )}
-//             </div>
-//           </div>
-
-//           <button
-//             className={`w-full mt-4 py-3 px-4 rounded-md text-white font-medium flex items-center justify-center ${
-//               (!selectedRoom || !checkInDate || isLoading) ? 'opacity-70 cursor-not-allowed' : ''
-//             }`}
-//             style={{ backgroundColor: primaryColor }}
-//             onClick={handleBookingRequest}
-//             disabled={!selectedRoom || !checkInDate || isLoading}
-//           >
-//             {isLoading ? (
-//               <>
-//                 <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-//                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-//                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-//                 </svg>
-//                 Processing...
-//               </>
-//             ) : (
-//               'Request Booking'
-//             )}
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import { bookingRequestUrl } from "../constant/urls";
 import "react-toastify/dist/ReactToastify.css";
+import { viewDetailsUrl, fetchDetailsUrl } from "../constant/urls";
+import { Dialog } from "@headlessui/react";
+import {
+  ArrowLeft,
+  Share,
+  MapPin,
+  Phone,
+  Check,
+  Calendar,
+  Clock,
+  Home,
+  Shield,
+  CreditCard,
+  Copy,
+  Link,
+  Facebook,
+  Twitter,
+  Mail,
+} from "lucide-react";
+import { use } from "react";
+import { updateDetailsUrl } from "../constant/urls";
+
+// components/BookingSkeleton.jsx
+export const BookingSkeleton = () => {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header Skeleton */}
+      <div className="bg-white shadow-sm sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center space-x-3">
+              <div className="h-5 w-5 bg-gray-200 rounded-full"></div>
+              <div className="h-6 w-32 bg-gray-200 rounded"></div>
+            </div>
+            <div className="h-5 w-5 bg-gray-200 rounded-full"></div>
+          </div>
+        </div>
+      </div>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Property Details Skeleton */}
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-6 space-y-3">
+          <div className="h-8 w-3/4 bg-gray-200 rounded"></div>
+          <div className="flex gap-4">
+            <div className="h-4 w-1/2 bg-gray-200 rounded"></div>
+            <div className="h-4 w-1/2 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column Skeleton */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Room Selection Skeleton */}
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="h-6 w-1/3 bg-gray-200 rounded mb-6"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[...Array(4)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="border border-gray-200 rounded-xl p-5"
+                  >
+                    <div className="flex justify-between mb-3">
+                      <div className="h-5 w-1/4 bg-gray-200 rounded"></div>
+                      <div className="h-5 w-1/4 bg-gray-200 rounded"></div>
+                    </div>
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {[...Array(3)].map((_, j) => (
+                        <div
+                          key={j}
+                          className="h-4 w-16 bg-gray-200 rounded-full"
+                        ></div>
+                      ))}
+                    </div>
+                    <div className="h-6 w-1/2 bg-gray-200 rounded mb-4"></div>
+                    <div className="h-10 w-full bg-gray-200 rounded-lg"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Photos Skeleton */}
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="h-6 w-1/4 bg-gray-200 rounded mb-4"></div>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {[...Array(6)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="aspect-square bg-gray-200 rounded-lg"
+                  ></div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column Skeleton */}
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="h-6 w-1/3 bg-gray-200 rounded mb-6"></div>
+              <div className="space-y-4">
+                <div>
+                  <div className="h-4 w-1/4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-10 w-full bg-gray-200 rounded-lg"></div>
+                </div>
+                <div>
+                  <div className="h-4 w-1/4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-10 w-full bg-gray-200 rounded-lg"></div>
+                </div>
+                <div className="pt-4 mt-4 border-t border-gray-200 space-y-3">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="flex justify-between">
+                      <div className="h-4 w-1/3 bg-gray-200 rounded"></div>
+                      <div className="h-4 w-1/4 bg-gray-200 rounded"></div>
+                    </div>
+                  ))}
+                </div>
+                <div className="h-12 w-full bg-gray-200 rounded-lg mt-6"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+const TermsAndConditionsPopup = ({ onAccept, onClose, isOpen }) => {
+  return (
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center p-4 z-50"
+    >
+      <div className="bg-white rounded-lg max-w-2xl max-h-[90vh] overflow-y-auto">
+        <Dialog.Panel className="p-6">
+          <Dialog.Title className="text-2xl font-bold mb-4">
+            Terms & Conditions
+          </Dialog.Title>
+
+          {/* <div className="prose prose-sm text-gray-700 mb-6">
+            <h3 className="font-semibold">1. Platform Usage</h3>
+            <p>
+              By using MessMate, you agree to pay a non-refundable platform fee
+              of ₹99 for each booking. This fee covers administrative costs and
+              is charged regardless of booking outcome.
+            </p>
+
+            <h3 className="font-semibold mt-4">2. Payment Terms</h3>
+            <p>
+              A 2% payment gateway charge will be applied to all transactions
+              and is non-refundable. The security deposit (typically one month's
+              rent) must be paid after signing the rental agreement.
+            </p>
+
+            <h3 className="font-semibold mt-4">3. Rental Agreement</h3>
+            <p>
+              We strongly recommend signing the rental agreement with the
+              property owner before making any security deposit payment.
+              MessMate is not responsible for disputes arising from unsigned
+              agreements.
+            </p>
+
+            <h3 className="font-semibold mt-4">4. Refund Policy</h3>
+            <p>
+              Platform fees and payment gateway charges are non-refundable.
+              Security deposits are refundable as per the terms of your rental
+              agreement with the property owner.
+            </p>
+
+            <h3 className="font-semibold mt-4">5. Legal Compliance</h3>
+            <p>
+              MessMate acts only as a booking platform. All legal agreements are
+              between tenant and property owner. We recommend verifying property
+              documents before payment.
+            </p>
+
+            <h3 className="font-semibold mt-4">6. Dispute Resolution</h3>
+            <p>
+              For any disputes, please contact our support team. Unresolved
+              disputes may be referred to local consumer forums in accordance
+              with Indian law.
+            </p>
+          </div> */}
+          <div className="prose prose-sm text-gray-700 mb-6">
+            <h3 className="font-semibold">1. Platform Usage</h3>
+            <p>
+              By using MessMate, you acknowledge that we are a platform that
+              helps users discover nearby mess accommodations. We do not charge
+              any fees for using the service and do not facilitate bookings or
+              transactions.
+            </p>
+
+            <h3 className="font-semibold mt-4">2. Payment Terms</h3>
+            <p>
+              MessMate does not handle payments or deposits. All financial
+              transactions are to be made directly between users and property
+              owners. We do not charge any service or gateway fees.
+            </p>
+
+            <h3 className="font-semibold mt-4">3. Rental Agreement</h3>
+            <p>
+              Users are advised to enter into a written rental agreement with
+              the mess owner before making any payments. MessMate is not a party
+              to such agreements and does not mediate or enforce any terms.
+            </p>
+
+            <h3 className="font-semibold mt-4">4. Refund Policy</h3>
+            <p>
+              As MessMate does not process payments, we do not offer or handle
+              refunds. Any security deposit or payment-related refunds must be
+              addressed with the mess owner directly.
+            </p>
+
+            <h3 className="font-semibold mt-4">5. Legal Compliance</h3>
+            <p>
+              MessMate is a location discovery service. All legal and financial
+              responsibilities rest with the tenant and the property owner.
+              Users are encouraged to verify property documents and meet owners
+              in person before making commitments.
+            </p>
+
+            <h3 className="font-semibold mt-4">6. Dispute Resolution</h3>
+            <p>
+              For disputes involving mess listings or agreements, users must
+              resolve issues directly with the property owner. MessMate may
+              assist with contact details but is not liable for any outcomes.
+              Legal recourse may be pursued under applicable Indian consumer
+              protection laws.
+            </p>
+          </div>
+
+          <div className="flex justify-end space-x-3">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={onAccept}
+              className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700"
+            >
+              I Accept
+            </button>
+          </div>
+        </Dialog.Panel>
+      </div>
+    </Dialog>
+  );
+};
 
 export default function BookingPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { owner } = location.state || {};
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [showAllPhotos, setShowAllPhotos] = useState(false);
   const [duration, setDuration] = useState(6);
   const [checkInDate, setCheckInDate] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { user } = useAuth();
+  const [messData, setMessData] = useState(null);
+  const { user, IsAuthenticated, isOwnerAuthenticated } = useAuth();
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [showTermsPopup, setShowTermsPopup] = useState(false);
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [userDetails, setUserDetails] = useState(null);
+
+  const { messId } = useParams();
+
+  useEffect(() => {
+    console.log(user, "user in booking page");
+    const fetchMessDetails = async () => {
+      try {
+        const res = await axios.get(`${viewDetailsUrl}/${messId}`);
+        setMessData(res.data.data);
+      } catch (err) {
+        console.error("Failed to fetch mess details:", err);
+      }
+    };
+
+    fetchMessDetails();
+  }, [messId]);
+
+  // const handleUpdate = async () => {
+  //   if (!phoneNumber) return toast("Please enter a phone number.");
+  //   const phoneRegex = /^[6-9]\d{9}$/;
+  //   if (!phoneRegex.test(phoneNumber)) {
+  //     return toast("Please enter a valid 10-digit phone number.");
+  //   }
+  //   setIsLoading(true);
+
+  //   try {
+  //     const payload = {
+  //       userId: user.id,
+  //       type: "student",
+  //       phone: phoneNumber,
+  //     };
+
+  //     await fetch(updateDetailsUrl, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(payload),
+  //     });
+
+  //     //  setMessage("Phone number updated successfully.");
+  //   } catch (err) {
+  //     toast(err.message||"Failed to update phone number.");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+  useEffect(() => {
+    const fetchAllData = async () => {
+      try {
+        const type = user?.type;
+        const userId = type === "student" ? user?.id : "";
+        if (!userId) return;
+        setIsLoading(true);
+        const detailsUrl = new URL(fetchDetailsUrl);
+        detailsUrl.searchParams.append("userId", userId);
+        detailsUrl.searchParams.append("type", type);
+
+        const detailsResponse = await fetch(detailsUrl, { method: "GET" });
+        if (!detailsResponse.ok)
+          throw new Error("Failed to fetch user details");
+        const detailsData = await detailsResponse.json();
+        setUserDetails(detailsData);
+        console.log("User details:", detailsData.phone);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error(error.response?.data?.message || "Failed to load data");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchAllData();
+  }, [user]);
+
+  const handleUpdate = async () => {
+    if (!phoneNumber) return toast("Please enter a phone number.");
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(phoneNumber)) {
+      return toast("Please enter a valid 10-digit phone number.");
+    }
+
+    try {
+      //  console.log("Updating phone number for user:", user.id, updateDetailsUrl);
+      const payload = {
+        userId: user.id,
+        type: user.type || "student", // Default to "student" if type is not set
+        phone: phoneNumber,
+      };
+
+      await axios.post(updateDetailsUrl, payload, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      // toast.success("Phone number updated successfully.");
+    } catch (err) {
+      toast.error(err.message || "Failed to update phone number.");
+    } finally {
+    }
+  };
 
   // Convert bedCount string to number
   const bedCountToNumber = {
@@ -789,9 +385,48 @@ export default function BookingPage() {
   };
 
   const handleBookingRequest = async () => {
+    // console.log(
+    //   "auth",
+    //   parseInt(messData.minimumBookingDuration.split(" ")[0]),
+    //   duration
+    // );
+    if (!hasAcceptedTerms) {
+      setShowTermsPopup(true);
+      return;
+    }
+    if (isOwnerAuthenticated) {
+      return toast.error("mess owners can't book messes");
+    }
+    if (!IsAuthenticated) return toast.error("please login to book any mess");
+    if (duration < parseInt(messData.minimumBookingDuration.split(" ")[0]))
+      return toast.error(
+        `Minimum booking duration is ${messData.minimumBookingDuration}`
+      );
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize to start of day
+
+    const selectedDate = new Date(checkInDate);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    const minDate = new Date(today);
+    minDate.setDate(today.getDate() + 4);
+
+    const maxDate = new Date(today);
+    maxDate.setDate(today.getDate() + 30);
+
+    if (selectedDate < minDate) {
+      return toast.error("Check-in date must be at least 4 days from today");
+    }
+    if (selectedDate > maxDate) {
+      return toast.error(
+        "Check-in date cannot be more than 30 days from today"
+      );
+    }
     try {
       setIsLoading(true);
-
+      if (!userDetails.phone) {
+        handleUpdate();
+      } // Update phone number if needed
       // Validate inputs
       if (!selectedRoom || !checkInDate) {
         toast.error("Please select a room and check-in date");
@@ -799,7 +434,7 @@ export default function BookingPage() {
         return;
       }
 
-      const selectedRoomInfo = owner?.roomInfo?.find(
+      const selectedRoomInfo = messData?.roomInfo?.find(
         (r) => r._id === selectedRoom
       );
 
@@ -812,7 +447,7 @@ export default function BookingPage() {
       // Prepare booking data
       const bookingData = {
         student: user.id,
-        pgOwner: owner._id,
+        pgOwner: messData._id,
         room: selectedRoomInfo.room,
         bedsBooked: 1,
         originalBedCount: selectedRoomInfo.bedContains,
@@ -830,8 +465,10 @@ export default function BookingPage() {
 
       // Make booking request
       const { data } = await axios.post(bookingRequestUrl, bookingData, {
+        withCredentials: true, // Automatically send cookies
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest", // Bypass tracking prevention
         },
       });
 
@@ -867,10 +504,70 @@ export default function BookingPage() {
       setIsLoading(false);
     }
   };
-  const primaryColor = "#2CA4B5";
+
+  // share section
+  const handleShareClick = () => {
+    setShowShareMenu(!showShareMenu);
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const shareOnSocialMedia = (platform) => {
+    const shareUrl = window.location.href;
+    const title = `Check out ${messData?.messName || "this mess"} on messmate`;
+
+    switch (platform) {
+      case "facebook":
+        window.open(
+          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+            shareUrl
+          )}`,
+          "_blank"
+        );
+        break;
+      case "twitter":
+        window.open(
+          `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+            shareUrl
+          )}&text=${encodeURIComponent(title)}`,
+          "_blank"
+        );
+        break;
+      case "email":
+        window.open(
+          `mailto:?subject=${encodeURIComponent(
+            title
+          )}&body=${encodeURIComponent(`${title}: ${shareUrl}`)}`
+        );
+        break;
+      default:
+        break;
+    }
+
+    setShowShareMenu(false);
+  };
+
+  const handleNativeShare = async () => {
+    try {
+      await navigator.share({
+        title: `Check out ${messData?.messName || "this mess"} on HostelHub`,
+        text: `I found this great mess on HostelHub: ${messData?.messName}`,
+        url: window.location.href,
+      });
+    } catch (err) {
+      console.log("Native share not supported or was cancelled", err);
+    }
+    setShowShareMenu(false);
+  };
+
+  if (!messData) return <BookingSkeleton />;
 
   return (
-    <div className="p-4 md:p-8 max-w-[100rem] mx-auto space-y-6 font-sans">
+    <div className="min-h-screen bg-gray-50">
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -881,290 +578,510 @@ export default function BookingPage() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        style={{ zIndex: 9999 }} // Ensure it's above other elements
+        toastClassName="!max-w-[90vw] mx-auto mt-4 sm:mt-0"
+        style={{ zIndex: 9999 }}
       />
-      <div className="flex items-center gap-4 mb-6 border-b pb-4 border-gray-300 justify-between">
-        <div className="flex items-center gap-2">
-          <img
-            src="assets/backIcon.png"
-            className="h-6 cursor-pointer"
-            alt=""
-            onClick={() => navigate(-1)}
-          />
-          <h1 className="text-xl font-bold">Confirm Your Booking</h1>
-        </div>
-        <div className="">
-          <img src="assets/share.png" className="h-5" alt="" />
-        </div>
-      </div>
 
-      {owner?.messName && (
-        <div className="flex mb-6 flex-col justify-start">
-          <h2 className="text-2xl font-bold">{owner?.messName}</h2>
-          <div className="flex gap-4 flex-col md:flex-row">
-            <p className="flex items-center text-gray-600 text-base gap-2">
-              <img src="assets/greyMarker.png" className="h-4" alt="" />
-              {owner?.address}
-            </p>
-            <p className="flex items-center text-gray-600 text-base gap-2">
-              <img src="assets/phoneIcon.png" className="h-5" alt="" />
-              {owner?.mobileNo}
-            </p>
-          </div>
-        </div>
-      )}
+      {/* Header */}
+      <header className="bg-white shadow-sm sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={() => navigate(-1)}
+                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                aria-label="Go back"
+              >
+                <ArrowLeft className="h-5 w-5 text-gray-600" />
+              </button>
+              <h1 className="text-xl font-bold text-gray-900">
+                Book Your Stay
+              </h1>
+            </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Side */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="rounded-2xl shadow-md bg-white">
-            <div className="p-4 space-y-4">
-              <h2 className="text-xl font-semibold">Select a Room</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {owner?.roomInfo?.map((room) => (
-                  <div
-                    key={room._id}
-                    className={`border rounded-2xl p-4 space-y-2 ${
-                      room.roomAvailable
-                        ? selectedRoom === room._id
-                          ? "border-blue-500"
-                          : "border-gray-200"
-                        : "border-red-500"
-                    }`}
-                    style={{
-                      borderColor: !room.roomAvailable
-                        ? "red"
-                        : selectedRoom === room._id
-                        ? primaryColor
-                        : undefined,
-                    }}
-                  >
-                    <div className="flex justify-between items-center">
-                      <h3 className="font-semibold text-lg">{room.room}</h3>
-                      <span
-                        className={`text-sm px-2 py-1 rounded-full ${
-                          room.roomAvailable
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
+            {/* share */}
+            <div className="relative">
+              <button
+                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                aria-label="Share"
+                onClick={handleShareClick}
+              >
+                <Share className="h-5 w-5 text-gray-600" />
+              </button>
+              {showShareMenu && (
+                <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-20">
+                  <div className="py-1">
+                    {navigator.share ? (
+                      <button
+                        onClick={handleNativeShare}
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                       >
-                        {room.roomAvailable
-                          ? `${bedCountToNumber[room.bedContains]} Bed${
-                              bedCountToNumber[room.bedContains] > 1 ? "s" : ""
-                            } Available`
-                          : "Fully Booked"}
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-2 text-gray-600 text-sm">
-                      {owner.facility?.slice(0, 3).map((facility, index) => (
-                        <span key={index}>{facility}</span>
-                      ))}
-                    </div>
-                    <div
-                      className="text-lg font-bold"
-                      style={{ color: primaryColor }}
-                    >
-                      ₹{room.pricePerHead?.toLocaleString()}
-                      <span className="text-sm font-medium text-gray-500">
-                        /mo
-                      </span>
-                    </div>
-                    <button
-                      onClick={() =>
-                        room.roomAvailable && setSelectedRoom(room._id)
-                      }
-                      disabled={!room.roomAvailable}
-                      className={`w-full py-2 px-4 rounded-md font-semibold ${
-                        selectedRoom === room._id ? "text-white" : "border"
-                      } ${
-                        !room.roomAvailable
-                          ? "opacity-50 cursor-not-allowed"
-                          : ""
-                      }`}
-                      style={{
-                        backgroundColor:
-                          selectedRoom === room._id && room.roomAvailable
-                            ? primaryColor
-                            : "transparent",
-                        borderColor: !room.roomAvailable ? "red" : primaryColor,
-                        color:
-                          selectedRoom === room._id && room.roomAvailable
-                            ? "white"
-                            : primaryColor,
-                      }}
-                    >
-                      {selectedRoom === room._id ? "Selected" : "Select"}
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-2xl shadow-md bg-white">
-            <div className="p-4">
-              <h2 className="text-xl font-semibold mb-4">Room Preview</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {(showAllPhotos
-                  ? owner?.messPhoto
-                  : owner?.messPhoto?.slice(0, 4)
-                )?.map((image, index) => (
-                  <img
-                    key={index}
-                    src={image}
-                    alt={`Room ${index + 1}`}
-                    className="rounded-2xl w-full h-48 object-cover"
-                  />
-                ))}
-              </div>
-              {owner?.messPhoto?.length > 4 && (
-                <button
-                  onClick={() => setShowAllPhotos(!showAllPhotos)}
-                  className="text-blue-600 underline text-sm mt-2 w-full"
-                >
-                  {showAllPhotos ? "View Less" : "View More"}
-                </button>
-              )}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-sm text-gray-700">
-                <ul className="space-y-1">
-                  {owner?.facility?.slice(0, 3).map((item, index) => (
-                    <li key={index}>✅ {item}</li>
-                  ))}
-                </ul>
-                <ul className="space-y-1">
-                  {owner?.facility?.slice(3, 6).map((item, index) => (
-                    <li key={index}>✅ {item}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Side - Booking Summary */}
-        <div className="space-y-6">
-          <div className="rounded-2xl shadow-md bg-white">
-            <div className="p-4 space-y-4">
-              <h2 className="text-xl font-semibold">Booking Summary</h2>
-
-              <div>
-                <label className="text-sm">Check-in Date</label>
-                <input
-                  type="date"
-                  className="mt-2 border rounded-md w-full p-2"
-                  value={checkInDate}
-                  min={new Date().toISOString().split("T")[0]}
-                  onChange={(e) => setCheckInDate(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="text-sm">Duration (months)</label>
-                <select
-                  className="mt-2 border rounded-md w-full p-2"
-                  value={duration}
-                  onChange={(e) => setDuration(Number(e.target.value))}
-                >
-                  {[1, 2, 3, 6, 12].map((num) => (
-                    <option key={num} value={num}>
-                      {num} month{num !== 1 ? "s" : ""}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {selectedRoom && (
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>Room:</span>
-                    <span>
-                      {
-                        owner?.roomInfo?.find((r) => r._id === selectedRoom)
-                          ?.room
-                      }
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Monthly Rent:</span>
-                    <span>
-                      ₹
-                      {owner?.roomInfo
-                        ?.find((r) => r._id === selectedRoom)
-                        ?.pricePerHead?.toLocaleString()}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Duration:</span>
-                    <span>
-                      {duration} month{duration !== 1 ? "s" : ""}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Security Deposit:</span>
-                    <span>
-                      ₹
-                      {owner?.roomInfo
-                        ?.find((r) => r._id === selectedRoom)
-                        ?.pricePerHead?.toLocaleString()}
-                    </span>
-                  </div>
-                  <div className="border-t pt-2 flex justify-between font-semibold">
-                    <span>Total Amount:</span>
-                    <span style={{ color: primaryColor }}>
-                      ₹
-                      {(
-                        owner?.roomInfo?.find((r) => r._id === selectedRoom)
-                          ?.pricePerHead *
-                        (duration + 1)
-                      )?.toLocaleString()}
-                    </span>
+                        <Share className="h-4 w-4 mr-2" />
+                        Share via...
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          onClick={copyToClipboard}
+                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        >
+                          {copied ? (
+                            <>
+                              <Check className="h-4 w-4 mr-2 text-green-500" />
+                              Copied!
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="h-4 w-4 mr-2" />
+                              Copy link
+                            </>
+                          )}
+                        </button>
+                        <button
+                          onClick={() => shareOnSocialMedia("facebook")}
+                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        >
+                          <Facebook className="h-4 w-4 mr-2 text-blue-600" />
+                          Share on Facebook
+                        </button>
+                        <button
+                          onClick={() => shareOnSocialMedia("twitter")}
+                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        >
+                          <Twitter className="h-4 w-4 mr-2 text-blue-400" />
+                          Share on Twitter
+                        </button>
+                        <button
+                          onClick={() => shareOnSocialMedia("email")}
+                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        >
+                          <Mail className="h-4 w-4 mr-2" />
+                          Share via Email
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
               )}
             </div>
           </div>
-
-          <button
-            className={`w-full mt-4 py-3 px-4 rounded-md text-white font-medium flex items-center justify-center ${
-              !selectedRoom || !checkInDate || isLoading
-                ? "opacity-70 cursor-not-allowed"
-                : ""
-            }`}
-            style={{ backgroundColor: primaryColor }}
-            onClick={handleBookingRequest}
-            disabled={!selectedRoom || !checkInDate || isLoading}
-          >
-            {isLoading ? (
-              <>
-                <svg
-                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                Processing...
-              </>
-            ) : (
-              "Request Booking"
-            )}
-          </button>
         </div>
-      </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Property Details */}
+        {messData?.messName && (
+          <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              {messData?.messName}
+            </h2>
+            <div className="flex flex-col md:flex-row md:items-center gap-4 text-gray-600">
+              <div className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-gray-500" />
+                <span>{messData?.address}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Phone className="h-4 w-4 text-gray-500" />
+                <span>{messData?.mobileNo.slice(0, 4)}xxxxxx</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Room Selection */}
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="p-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                  <Home className="h-5 w-5 mr-2 text-teal-600" />
+                  Select Your Room
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {messData?.roomInfo?.map((room) => (
+                    <div
+                      key={room._id}
+                      className={`relative rounded-xl overflow-hidden transition-all duration-200 ${
+                        !room.roomAvailable
+                          ? "opacity-75 border border-red-500"
+                          : selectedRoom === room._id
+                          ? "ring-2 ring-teal-500 shadow-md"
+                          : "hover:shadow-md border border-gray-200"
+                      }`}
+                    >
+                      <div className="p-5">
+                        <div className="flex justify-between items-start mb-3">
+                          <h3 className="font-semibold text-lg text-gray-900">
+                            {room.room}
+                          </h3>
+                          <span
+                            className={`text-xs px-2 py-1 rounded-full ${
+                              room.roomAvailable
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
+                          >
+                            {room.roomAvailable
+                              ? `${bedCountToNumber[room.bedContains]} Bed${
+                                  bedCountToNumber[room.bedContains] > 1
+                                    ? "s"
+                                    : ""
+                                } Available`
+                              : "Fully Booked"}
+                          </span>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {messData.facility
+                            ?.slice(0, 3)
+                            .map((facility, index) => (
+                              <span
+                                key={index}
+                                className="inline-flex items-center text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded-full"
+                              >
+                                <Check className="h-3 w-3 mr-1 text-teal-600" />
+                                {facility}
+                              </span>
+                            ))}
+                        </div>
+
+                        <div className="flex items-baseline mb-4">
+                          <span className="text-2xl font-bold text-teal-600">
+                            ₹{room.pricePerHead?.toLocaleString()}
+                          </span>
+                          <span className="text-sm text-gray-500 ml-1">
+                            /month
+                          </span>
+                        </div>
+
+                        <button
+                          onClick={() =>
+                            room.roomAvailable && setSelectedRoom(room._id)
+                          }
+                          disabled={!room.roomAvailable}
+                          className={`w-full py-2.5 px-4 rounded-lg font-medium transition-colors ${
+                            !room.roomAvailable
+                              ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-red-500"
+                              : selectedRoom === room._id
+                              ? "bg-teal-600 text-white"
+                              : "bg-white text-teal-600 border border-teal-600 hover:bg-teal-50"
+                          }`}
+                        >
+                          {selectedRoom === room._id
+                            ? "Selected"
+                            : "Select Room"}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Phone Number Section */}
+            {!userDetails?.phone && (
+              <div className="bg-white rounded-xl shadow-sm p-6 max-w-[25rem]">
+                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                  <Phone className="h-5 w-5 mr-2 text-teal-600" />
+                  Your Phone Number
+                </h2>
+                <input
+                  type="tel"
+                  placeholder="Enter your phone number"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+            )}
+
+            {/* Room Preview */}
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="p-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">
+                  Room Gallery
+                </h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {(showAllPhotos
+                    ? messData?.messPhoto
+                    : messData?.messPhoto?.slice(0, 6)
+                  )?.map((image, index) => (
+                    <div
+                      key={index}
+                      className="aspect-square rounded-lg overflow-hidden"
+                    >
+                      <img
+                        src={image || "/placeholder.svg"}
+                        alt={`Room ${index + 1}`}
+                        className="w-full h-full object-cover transition-transform hover:scale-105"
+                      />
+                    </div>
+                  ))}
+                </div>
+                {messData?.messPhoto?.length > 6 && (
+                  <button
+                    onClick={() => setShowAllPhotos(!showAllPhotos)}
+                    className="mt-4 text-teal-600 font-medium hover:text-teal-700 transition-colors flex items-center"
+                  >
+                    {showAllPhotos ? "Show Less Photos" : "View All Photos"}
+                  </button>
+                )}
+              </div>
+
+              {/* Amenities */}
+              <div className="px-6 pb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  Amenities
+                </h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {messData?.facility?.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 text-gray-700"
+                    >
+                      <Check className="h-4 w-4 text-teal-600 flex-shrink-0" />
+                      <span className="text-sm">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Booking Summary */}
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl shadow-sm sticky top-24">
+              <div className="p-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                  <CreditCard className="h-5 w-5 mr-2 text-teal-600" />
+                  Booking Summary
+                </h2>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <Calendar className="h-4 w-4 inline mr-1" />
+                      Check-in Date
+                    </label>
+                    <input
+                      type="date"
+                      className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors"
+                      value={checkInDate}
+                      min={
+                        new Date(Date.now() + 4 * 24 * 60 * 60 * 1000)
+                          .toISOString()
+                          .split("T")[0]
+                      }
+                      max={
+                        new Date(new Date().setMonth(new Date().getMonth() + 1))
+                          .toISOString()
+                          .split("T")[0]
+                      }
+                      onChange={(e) => setCheckInDate(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <Clock className="h-4 w-4 inline mr-1" />
+                      Duration
+                    </label>
+                    <select
+                      className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors"
+                      value={duration}
+                      onChange={(e) => setDuration(Number(e.target.value))}
+                    >
+                      {[1, 2, 3, 6, 12, 24].map((num) => (
+                        <option key={num} value={num}>
+                          {num} month{num !== 1 ? "s" : ""}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {selectedRoom && (
+                    <div className="mt-6 pt-4 border-t border-gray-200">
+                      <div className="space-y-3">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Room Type:</span>
+                          <span className="font-medium">
+                            {
+                              messData?.roomInfo?.find(
+                                (r) => r._id === selectedRoom
+                              )?.room
+                            }
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Monthly Rent:</span>
+                          <span className="font-medium">
+                            ₹
+                            {messData?.roomInfo
+                              ?.find((r) => r._id === selectedRoom)
+                              ?.pricePerHead?.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Duration:</span>
+                          <span className="font-medium">
+                            {duration} month{duration !== 1 ? "s" : ""}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">
+                            Security Deposit:
+                          </span>
+                          <span className="font-medium">
+                            ₹
+                            {(
+                              messData?.roomInfo?.find(
+                                (r) => r._id === selectedRoom
+                              )?.pricePerHead * messData?.minimumSecurityDeposit
+                            ).toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="pt-3 mt-3 border-t border-gray-200">
+                          <div className="flex justify-between items-center">
+                            <span className="font-semibold text-gray-900">
+                              Total Amount:
+                            </span>
+                            <span className="text-xl font-bold text-teal-600">
+                              ₹
+                              {(
+                                messData?.roomInfo?.find(
+                                  (r) => r._id === selectedRoom
+                                )?.pricePerHead *
+                                (duration + messData?.minimumSecurityDeposit)
+                              )?.toLocaleString()}
+                            </span>
+                          </div>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Includes security deposit and {duration} month
+                            {duration !== 1 ? "s" : ""} rent
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            your security deposit will be refunded you when u
+                            leave the Mess
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* <div className="pt-4">
+                    <button
+                      className={`w-full py-3.5 px-4 rounded-lg font-medium text-white transition-all ${
+                        !selectedRoom || !checkInDate || isLoading
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-teal-600 hover:bg-teal-700 shadow-md hover:shadow-lg"
+                      }`}
+                      onClick={handleBookingRequest}
+                      disabled={!selectedRoom || !checkInDate || isLoading}
+                    >
+                      {isLoading ? (
+                        <div className="flex items-center justify-center">
+                          <svg
+                            className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          Processing...
+                        </div>
+                      ) : (
+                        "Confirm Booking"
+                      )}
+                    </button>
+                  </div> */}
+                  <div className="pt-4">
+                    <button
+                      className={`w-full py-3.5 px-4 rounded-lg font-medium text-white transition-all ${
+                        !selectedRoom ||
+                        !checkInDate ||
+                        isLoading ||
+                        (phoneNumber === "" && !userDetails?.phone)
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-teal-600 hover:bg-teal-700 shadow-md hover:shadow-lg"
+                      }`}
+                      onClick={() => {
+                        //  if (!selectedRoom || !checkInDate || isLoading) return;
+                        setShowTermsPopup(true);
+                      }}
+                      disabled={
+                        !selectedRoom ||
+                        !checkInDate ||
+                        isLoading ||
+                        (phoneNumber === "" && !userDetails?.phone)
+                      }
+                    >
+                      {isLoading ? (
+                        <div className="flex items-center justify-center">
+                          <svg
+                            className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          Processing...
+                        </div>
+                      ) : (
+                        "Confirm Booking"
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Trust badges */}
+                  <div className="flex items-center justify-center mt-4 text-xs text-gray-500">
+                    <Shield className="h-4 w-4 mr-1 text-teal-600" />
+                    Secure booking process with 100% data protection
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      {/* {showTermsPopup && ( */}
+      <TermsAndConditionsPopup
+        isOpen={showTermsPopup}
+        onAccept={() => {
+          setHasAcceptedTerms(true);
+          setShowTermsPopup(false);
+          handleBookingRequest();
+        }}
+        onClose={() => setShowTermsPopup(false)}
+      />
+      {/* )} */}
     </div>
   );
 }

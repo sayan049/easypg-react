@@ -1,7 +1,6 @@
 // const baseUrl = 'https://easypg-react.onrender.com';
 //   const baseUrl = `${process.env.REACT_APP_BACKEND_URL}` || `https://messmate-server.onrender.com`;
-const baseUrl =`https://messmate-server.onrender.com`
-
+const baseUrl =`${process.env.REACT_APP_BACKEND_URL}` ;
 export const loginUrl = `${baseUrl}/auth/login`;
 export const signupUrl = `${baseUrl}/auth/signup`;
 
@@ -32,3 +31,8 @@ export const updatePasswordDashboardOwner= `${baseUrl}/auth/updatePasswordDashbo
 export const bookingRequestUrl= `${baseUrl}/auth/bookings`;
 export const bookingApprovalUrl= `${baseUrl}/auth/bookings/:id/status`;
 export const bookingCancelUrl= `${baseUrl}/auth/bookings/:id`;
+export const likedMessesUrl= `${baseUrl}/auth/likedMess`;
+export const getLikedMessUrl= `${baseUrl}/auth/getLikedMess`;
+export const getCartUrl= `${baseUrl}/auth/getCart`;
+export const getRecomendationsUrl=`${baseUrl}/auth/getRecc`;
+export const viewDetailsUrl= `${baseUrl}/auth/viewDetails`;
